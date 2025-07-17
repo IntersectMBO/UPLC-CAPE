@@ -1,0 +1,17 @@
+{
+  "scenario": "<scenario>",
+  "version": "1.0.0",
+  "measurements": {
+    "cpu_units": "<integer>",
+    "memory_units": "<integer>",
+    "script_size_bytes": "<integer>",
+    "term_size": "<integer>"
+  },
+  "execution_environment": {
+    "evaluator": "<evaluator-version>",
+    "protocol_version": "<protocol-version>"
+  },
+  "timestamp": "<ISO-8601 timestamp>",
+  "measurement_method": "manual",
+  "notes": "<optional notes>"
+}
