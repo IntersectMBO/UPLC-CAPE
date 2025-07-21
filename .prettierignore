@@ -1,0 +1,39 @@
+# Dependencies
+node_modules/
+
+# Build outputs
+result
+result-*
+dist/
+build/
+
+# Generated files
+*.generated.*
+flake.lock
+
+# Git
+.git/
+
+# Environment
+.direnv/
+.env*
+
+# IDE
+.vscode/
+.idea/
+
+# Temporary files
+*.tmp
+*.temp
+*~
+
+# Binary files
+*.png
+*.jpg
+*.jpeg
+*.gif
+*.ico
+*.pdf
+
+# Log files
+*.log
