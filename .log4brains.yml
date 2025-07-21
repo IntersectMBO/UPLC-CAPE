@@ -1,0 +1,5 @@
+project:
+  name: UPLC-CAPE
+  tz: Europe/Berlin
+  adrFolder: ./doc/adr
+  packages: []
