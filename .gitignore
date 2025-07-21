@@ -2,3 +2,5 @@
 .vscode
 .github/copilot-*.md
 node_modules
+plinth/dist-newstyle
+plinth/*.uplc

@@ -1,0 +1,104 @@
+cabal-version: 3.4
+name:          uplc-cape-benchmarks
+version:       1.0.0
+synopsis:      UPLC-CAPE benchmark implementations using Plinth/PlutusTx
+description:
+  A collection of benchmark implementations for the UPLC-CAPE
+  (Comparative Artifact Performance Evaluation) framework,
+  implemented using Plinth (PlutusTx) for Cardano smart contracts.
+
+author:        Unisay
+maintainer:    Unisay
+category:      Blockchain
+license:       Apache-2.0
+license-file:  LICENSE
+
+common common-deps
+  build-depends:
+    , aeson
+    , aeson-pretty
+    , base               >=4.16
+    , bytestring
+    , flat
+    , plutus-core        >=1.49
+    , plutus-ledger-api  >=1.49
+    , plutus-tx          >=1.49
+    , plutus-tx-plugin   >=1.49
+    , relude             ^>=1.2.2
+    , serialise
+    , text
+    , time
+
+common common-language
+  import:             common-deps
+  ghc-options:
+    -Wall -Wcompat -Wincomplete-uni-patterns -Wredundant-constraints
+    -Wmissing-export-lists -Wmissing-deriving-strategies
+    -Wpartial-fields
+
+  default-language:   Haskell2010
+  mixins:
+    base hiding (Prelude),
+    relude (Relude as Prelude)
+
+  default-extensions:
+    DataKinds
+    DeriveAnyClass
+    DeriveGeneric
+    DerivingStrategies
+    FlexibleContexts
+    FlexibleInstances
+    GeneralizedNewtypeDeriving
+    ImportQualifiedPost
+    MultiParamTypeClasses
+    OverloadedStrings
+    ScopedTypeVariables
+    Strict
+    TemplateHaskell
+    TypeApplications
+    UndecidableInstances
+    ViewPatterns
+
+library
+  import:          common-language
+  exposed-modules: Fibonacci
+
+  -- Future benchmark modules:
+  -- TwoPartyEscrow
+  -- StreamingPayments
+  -- SimpleDAOVoting
+  -- TimelockedStaking
+
+  hs-source-dirs:  src
+
+-- Fibonacci benchmark scenario
+executable fibonacci
+  import:         common-language
+  main-is:        Main.hs
+  build-depends:
+    , base
+    , bytestring
+    , plutus-core
+    , plutus-core:plutus-core-testlib
+    , plutus-ledger-api
+    , plutus-tx
+    , plutus-tx-plugin
+    , plutus-tx:plutus-tx-testlib
+    , text
+    , uplc-cape-benchmarks
+
+  hs-source-dirs: app
+
+-- Template for future benchmark executables:
+--
+-- executable two-party-escrow
+--   import: common-language
+--
+--   main-is: TwoPartyEscrowMain.hs
+--   other-modules:
+--     TwoPartyEscrow
+--
+--   build-depends:
+--     uplc-cape-benchmarks
+--
+--   hs-source-dirs: app
