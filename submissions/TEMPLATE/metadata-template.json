@@ -1,0 +1,28 @@
+{
+  "compiler": {
+    "name": "<string>",
+    "version": "<string>",
+    "commit_hash": "<string>"
+  },
+  "compilation_config": {
+    "optimization_level": "<string>",
+    "target": "uplc",
+    "flags": ["<string>"],
+    "environment": {
+      "dependencies": {
+        "<package>": "<version>"
+      }
+    }
+  },
+  "contributor": {
+    "name": "<optional string>",
+    "organization": "<optional string>",
+    "contact": "<optional string>"
+  },
+  "submission": {
+    "date": "<ISO-8601 timestamp>",
+    "source_available": "<boolean>",
+    "source_repository": "<optional string>",
+    "implementation_notes": "<string>"
+  }
+}

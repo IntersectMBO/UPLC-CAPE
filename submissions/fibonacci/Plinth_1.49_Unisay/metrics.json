@@ -1,0 +1,16 @@
+{
+  "execution_environment": {
+    "evaluator": "PlutusTx.Eval-1.49.0.0",
+    "protocol_version": "plutus-core-1.1.0"
+  },
+  "measurements": {
+    "cpu_units": 169864973614,
+    "memory_units": 701701354,
+    "script_size_bytes": 58,
+    "term_size": 48
+  },
+  "notes": "Generated using Fibonacci implementation with parameter 25",
+  "scenario": "fibonacci",
+  "timestamp": "2025-07-18T15:42:19Z",
+  "version": "1.0.0"
+}

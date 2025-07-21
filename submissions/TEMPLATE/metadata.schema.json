@@ -1,0 +1,127 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://github.com/IntersectMBO/UPLC-CAPE/submissions/TEMPLATE/metadata.schema.json",
+  "title": "UPLC-CAPE Metadata Schema",
+  "description": "Schema for benchmark submission metadata in the UPLC-CAPE framework",
+  "type": "object",
+  "properties": {
+    "compiler": {
+      "type": "object",
+      "description": "Information about the compiler used",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Name of the compiler or toolchain",
+          "examples": ["aiken", "plutus-tx", "plu-ts", "helios"]
+        },
+        "version": {
+          "type": "string",
+          "description": "Version of the compiler",
+          "examples": ["1.0.8", "1.49.0.0", "0.7.1"]
+        },
+        "commit_hash": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{40}$",
+          "description": "Full Git commit hash (40 characters) of the compiler version"
+        }
+      },
+      "required": ["name", "version"],
+      "additionalProperties": false
+    },
+    "compilation_config": {
+      "type": "object",
+      "description": "Configuration used during compilation",
+      "properties": {
+        "optimization_level": {
+          "type": "string",
+          "description": "Optimization level used",
+          "examples": ["none", "basic", "aggressive", "O0", "O1", "O2", "O3"]
+        },
+        "target": {
+          "type": "string",
+          "enum": ["uplc"],
+          "description": "Compilation target (always 'uplc' for this framework)"
+        },
+        "flags": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Additional compiler flags used",
+          "examples": [
+            ["--optimize"],
+            ["-O2", "--inline-functions"],
+            ["--no-dead-code-elimination"]
+          ]
+        },
+        "environment": {
+          "type": "object",
+          "description": "Environment configuration",
+          "properties": {
+            "dependencies": {
+              "type": "object",
+              "description": "Package dependencies and their versions",
+              "patternProperties": {
+                "^[a-zA-Z0-9_-]+$": {
+                  "type": "string",
+                  "description": "Version string for the dependency"
+                }
+              },
+              "additionalProperties": false
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "required": ["target"],
+      "additionalProperties": false
+    },
+    "contributor": {
+      "type": "object",
+      "description": "Information about the contributor (all fields optional for privacy)",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Name or handle of the contributor"
+        },
+        "organization": {
+          "type": "string",
+          "description": "Organization or company affiliation"
+        },
+        "contact": {
+          "type": "string",
+          "description": "Contact information (email, GitHub handle, etc.)"
+        }
+      },
+      "additionalProperties": false
+    },
+    "submission": {
+      "type": "object",
+      "description": "Information about the submission",
+      "properties": {
+        "date": {
+          "type": "string",
+          "format": "date-time",
+          "description": "ISO-8601 timestamp when the submission was created"
+        },
+        "source_available": {
+          "type": "boolean",
+          "description": "Whether source code is publicly available"
+        },
+        "source_repository": {
+          "type": "string",
+          "format": "uri",
+          "description": "URL to source code repository (if source_available is true)"
+        },
+        "implementation_notes": {
+          "type": "string",
+          "description": "Notes about the implementation approach, algorithms, or design decisions"
+        }
+      },
+      "required": ["date", "source_available", "implementation_notes"],
+      "additionalProperties": false
+    }
+  },
+  "required": ["compiler", "compilation_config", "submission"],
+  "additionalProperties": false
+}
