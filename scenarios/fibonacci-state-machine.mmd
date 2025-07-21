@@ -1,0 +1,27 @@
+stateDiagram-v2
+    [*] --> Start
+    Start --> Computing : execute(n)
+    Computing --> Computing : fibonacci_computation()<br/>(recursive calls)
+    Computing --> Result : base_case_reached()<br/>(n <= 2)
+    Result --> Complete : return fibonacci(n)
+    Complete --> [*]
+
+    note right of Start
+        Program begins execution
+        with compile-time target value n
+    end note
+
+    note right of Computing
+        Recursive computation
+        in progress: fib(n-1) + fib(n-2)
+    end note
+
+    note right of Result
+        Base case reached or
+        computation completes
+    end note
+
+    note right of Complete
+        Program execution
+        terminates with result
+    end note
