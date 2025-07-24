@@ -1,0 +1,78 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://github.com/IntersectMBO/UPLC-CAPE/submissions/TEMPLATE/metrics.schema.json",
+  "title": "UPLC-CAPE Metrics Schema",
+  "description": "Schema for benchmark metrics data in the UPLC-CAPE framework",
+  "type": "object",
+  "properties": {
+    "scenario": {
+      "type": "string",
+      "description": "The benchmark scenario name",
+      "examples": ["fibonacci", "two-party-escrow", "streaming-payments"]
+    },
+    "version": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$",
+      "description": "Schema version in semantic versioning format",
+      "default": "1.0.0"
+    },
+    "measurements": {
+      "type": "object",
+      "description": "Performance measurements from UPLC evaluation",
+      "properties": {
+        "cpu_units": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "CPU execution units consumed"
+        },
+        "memory_units": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Memory units consumed"
+        },
+        "script_size_bytes": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Size of serialized UPLC script in bytes"
+        },
+        "term_size": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Number of AST nodes in the UPLC term"
+        }
+      },
+      "required": ["cpu_units", "memory_units", "script_size_bytes", "term_size"],
+      "additionalProperties": false
+    },
+    "execution_environment": {
+      "type": "object",
+      "description": "Information about the evaluation environment",
+      "properties": {
+        "evaluator": {
+          "type": "string",
+          "description": "Name and version of the evaluator used",
+          "examples": ["PlutusTx.Eval-1.49.0.0", "plutus-core-executable-1.49.0.0"]
+        },
+        "protocol_version": {
+          "type": "string",
+          "description": "Plutus Core protocol version",
+          "pattern": "^plutus-core-\\d+\\.\\d+\\.\\d+$",
+          "examples": ["plutus-core-1.1.0", "plutus-core-1.0.0"]
+        }
+      },
+      "required": ["evaluator", "protocol_version"],
+      "additionalProperties": false
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO-8601 timestamp when measurements were taken"
+    },
+    "notes": {
+      "type": "string",
+      "description": "Optional notes about the implementation or measurements"
+    }
+  },
+  "required": ["scenario", "version", "measurements", "execution_environment", "timestamp"],
+  "additionalProperties": false
+}

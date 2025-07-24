@@ -1,0 +1,49 @@
+# treefmt configuration
+# https://treefmt.com/
+
+[formatter.shfmt]
+command = "shfmt"
+options = [
+  "--indent", "2",      # Use 2-space indentation
+  "--case-indent",      # Indent case statements
+  "--binary-next-line", # Put binary operators at start of next line
+  "--space-redirects",  # Add space after redirection operators
+  "--write"             # Write result to file instead of stdout
+]
+includes = ["*.sh", "*.bash"]
+
+[formatter.prettier]
+command = "prettier"
+options = ["--write"]
+includes = [
+  "*.md", "*.markdown",   # Markdown files
+  "*.yml", "*.yaml",      # YAML files
+  "*.json",               # JSON files
+]
+
+[formatter.nixfmt]
+command = "nixfmt"
+options = []
+includes = ["*.nix"]
+
+# Global settings
+[global]
+excludes = [
+  # Exclude nix-specific directories and files
+  "result",
+  "result-*",
+  ".direnv/**",
+
+  # Exclude temporary and build directories
+  "node_modules/**",
+  "dist/**",
+  "build/**",
+  ".git/**",
+  "plinth-workspace/dist-newstyle/**",
+
+  # Exclude specific files that shouldn't be formatted
+  "flake.lock",
+
+  # Exclude any auto-generated files
+  "**/*.generated.*"
+]

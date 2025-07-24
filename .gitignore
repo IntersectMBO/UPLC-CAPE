@@ -1,0 +1,4 @@
+.md
+.vscode
+.github/copilot-*.md
+node_modules
