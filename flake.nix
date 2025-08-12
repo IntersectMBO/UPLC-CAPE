@@ -149,7 +149,7 @@
             '')
 
             # JSON schema validation tool required by submission validation script
-            python3Packages.check-jsonschema
+            check-jsonschema
           ];
 
           shellHook = ''
