@@ -3,10 +3,7 @@
 ## Overview
 
 The Fibonacci benchmark is a **synthetic computational scenario** designed to
-measure the performance characteristics of recursive algorithms implemented as
-UPLC programs. This benchmark tests a compiler's ability to optimize recursive
-function calls, manage stack depth, and handle integer arithmetic operations
-efficiently.
+measure the performance characteristics of recursive algorithms implemented as UPLC programs. This benchmark tests a compiler's ability to optimize recursive function calls, manage stack depth, and handle integer arithmetic operations efficiently.
 
 **Purpose**: This scenario serves as a standardized test for measuring:
 
@@ -15,11 +12,7 @@ efficiently.
 - Script size optimization for mathematical algorithms
 - Term size efficiency in recursive function encoding
 
-**Key Constraint**: The UPLC program must be **fully-applied** before
-benchmarking, meaning the Fibonacci number to compute is baked into the script
-itself rather than passed as a parameter. This ensures consistent measurement
-across all compiler implementations and prevents variations based on different
-argument values.
+**Key Constraint**: The UPLC program must be **fully-applied** before benchmarking, meaning the Fibonacci number to compute is baked into the script itself rather than passed as a parameter. This ensures consistent measurement across all compiler implementations and prevents variations based on different argument values.
 
 **Target Computation**: `fibonacci(25) = 75025`
 
@@ -28,8 +21,7 @@ argument values.
 - It fits comfortably within the CEK machine execution budget limits
 - It provides sufficient recursive depth to test optimization capabilities
 
-**Success Criteria**: The program must successfully compute the 25th Fibonacci
-number (75025) within the execution budget constraints.
+**Success Criteria**: The program must successfully compute the 25th Fibonacci number (75025) within the execution budget constraints.
 
 ---
 
