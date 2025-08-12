@@ -147,6 +147,9 @@
               # This ensures the user can work on their actual project files, not read-only Nix store
               exec ${./scripts/cape.sh} --project-root "$PWD" "$@"
             '')
+
+            # JSON schema validation tool required by submission validation script
+            python3Packages.check-jsonschema
           ];
 
           shellHook = ''
