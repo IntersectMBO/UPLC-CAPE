@@ -21,6 +21,16 @@ includes = [
   "*.json",               # JSON files
 ]
 
+[formatter.fourmolu]
+command = "fourmolu"
+options = ["--mode", "inplace"]
+includes = ["*.hs", "*.lhs"]
+
+[formatter.cabal-fmt]
+command = "cabal-fmt"
+options = ["--inplace"]
+includes = ["*.cabal"]
+
 [formatter.nixfmt]
 command = "nixfmt"
 options = []
@@ -39,7 +49,7 @@ excludes = [
   "dist/**",
   "build/**",
   ".git/**",
-  "plinth-workspace/dist-newstyle/**",
+  "plinth/dist-newstyle/**",
 
   # Exclude specific files that shouldn't be formatted
   "flake.lock",

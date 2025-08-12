@@ -2,8 +2,37 @@
   description = "UPLC-CAPE: Comparative Artifact Performance Evaluation for UPLC";
 
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+    haskell-nix = {
+      url = "github:input-output-hk/haskell.nix";
+      inputs.hackage.follows = "hackage";
+    };
+
+    nixpkgs.follows = "haskell-nix/nixpkgs";
     flake-utils.url = "github:numtide/flake-utils";
+
+    # Plutus and Cardano tooling
+    hackage = {
+      url = "github:input-output-hk/hackage.nix";
+      flake = false;
+    };
+
+    CHaP = {
+      url = "github:IntersectMBO/cardano-haskell-packages?ref=repo";
+      flake = false;
+    };
+
+    plutus = {
+      url = "github:IntersectMBO/plutus";
+      inputs.hackage.follows = "hackage";
+      inputs.CHaP.follows = "CHaP";
+      inputs.haskell-nix.follows = "haskell-nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    iohk-nix = {
+      url = "github:input-output-hk/iohk-nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs =
@@ -11,12 +40,48 @@
       self,
       nixpkgs,
       flake-utils,
+      haskell-nix,
+      hackage,
+      CHaP,
+      plutus,
+      iohk-nix,
     }:
     flake-utils.lib.eachDefaultSystem (
       system:
       let
-        pkgs = nixpkgs.legacyPackages.${system};
+        # Import nixpkgs with haskell.nix overlays
+        pkgs = import nixpkgs {
+          inherit system;
+          config = haskell-nix.config;
+          overlays = [
+            iohk-nix.overlays.crypto
+            iohk-nix.overlays.cardano-lib
+            haskell-nix.overlay
+            iohk-nix.overlays.haskell-nix-crypto
+            iohk-nix.overlays.haskell-nix-extra
+          ];
+        };
 
+        # Plinth project configuration
+        plinthProject = pkgs.haskell-nix.cabalProject' {
+          name = "uplc-cape-benchmarks";
+          compiler-nix-name = "ghc966";
+          src = ./plinth;
+          inputMap = {
+            "https://chap.intersectmbo.org/" = CHaP;
+          };
+          modules = [
+            {
+              packages = { };
+            }
+          ];
+        };
+
+        # Plinth development tools
+        plinthTools = {
+          cabal = plinthProject.tool "cabal" "latest";
+          haskell-language-server = plinthProject.tool "haskell-language-server" "latest";
+        };
       in
       {
         devShells.default = pkgs.mkShell {
@@ -99,15 +164,26 @@
             # Mermaid CLI for diagram generation
             mermaid-cli
 
-            # JSON Schema validation
+            # JSON Schema validation (required by submission validation script)
             check-jsonschema
 
             # CAPE project management tool
             (writeShellScriptBin "cape" ''
               # Use the current working directory as the project root when in Nix shell
-              # This ensures the user can work on their actual project files, not read-only Nix store
               exec ${./scripts/cape.sh} --project-root "$PWD" "$@"
             '')
+
+            # --- Additive Plinth / Cardano tooling below (new) ---
+            pkg-config
+            libsodium
+            secp256k1
+            libblst
+            plinthTools.cabal
+            plinthTools.haskell-language-server
+            haskell.compiler.ghc966
+            fourmolu
+            haskellPackages.cabal-fmt
+            nixfmt-rfc-style
           ];
 
           shellHook = ''
@@ -122,4 +198,17 @@
         };
       }
     );
+
+  nixConfig = {
+    extra-substituters = [
+      "https://cache.iog.io"
+      "https://cache.zw3rk.com"
+    ];
+    extra-trusted-public-keys = [
+      "hydra.iohk.io:f/Ea+s+dFdN+3Y/G+FDgSq+a5NEWhJGzdjvKNGv0/EQ="
+      "loony-tools:pr9m4BkM/5/eSTZlkQyRt57Jz7OMBxNSUiMC4FkcNfk="
+    ];
+    allow-import-from-derivation = true;
+    accept-flake-config = true;
+  };
 }

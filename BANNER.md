@@ -33,3 +33,26 @@ UPLC
 - treefmt <file>: Format specific files
 - shfmt: Format shell scripts (called by treefmt)
 - prettier: Format YAML, Markdown, JSON (called by treefmt)
+- fourmolu: Format Haskell code (called by treefmt)
+- cabal-fmt: Format Cabal files (called by treefmt)
+- nixfmt: Format Nix files (called by treefmt)
+
+🔧 Plinth (PlutusTx) Development Environment:
+
+Available tools for Cardano smart contract development:
+
+- GHC compiler (ghc) for Haskell/PlutusTx compilation
+- Cabal build system with CHaP (Cardano Haskell Packages) integration
+- Haskell Language Server for IDE support
+- Access to Plutus Core libraries and PlutusTx compiler
+
+📝 Getting Started with Plinth:
+
+1. Navigate to the `plinth` directory
+2. Use `cabal build` to build the example Fibonacci benchmark
+3. Use `cabal run fibonacci-benchmark` to execute
+4. Modify `src/Fibonacci.hs` to implement your own benchmarks
+5. Follow the patterns in the example for PlutusTx development
+
+💡 The nix shell provides all necessary dependencies for Plinth development,
+including proper CHaP integration for accessing Cardano ecosystem packages.
