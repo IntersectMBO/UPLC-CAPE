@@ -113,8 +113,8 @@ OPTIONS:
     -s, --single     Validate a specific file (requires file path)
 
 ARGUMENTS:
-    PATH            Path to submission directory or specific file to validate
-                    If not provided with --all, defaults to current directory
+  PATH            Path to a submission directory to validate (optional when using --all or --single)
+          NOTE: Running without either --all, --single, or an explicit PATH now errors with guidance.
 
 EXAMPLES:
     # Validate all submissions
@@ -125,9 +125,6 @@ EXAMPLES:
 
     # Validate a specific file
     cape submission validate --single path/to/metrics.json
-
-    # Validate current directory
-    cape submission validate
 
 SCHEMAS:
     - Metrics schema: submissions/TEMPLATE/metrics.schema.json
@@ -166,6 +163,24 @@ while [[ $# -gt 0 ]]; do
       ;;
   esac
 done
+
+# Enforce explicit mode or path to avoid accidental no-op validations
+if [[ "$validate_all" == false && "$validate_single" == false && -z "${target_path}" ]]; then
+  print_error "No mode or path specified."
+  echo
+  print_info "You must specify one of:"
+  echo "  --all            Validate all submissions under submissions/"
+  echo "  --single <file>  Validate a specific metrics.json or metadata.json file"
+  echo "  <path>           Validate a specific submission directory (e.g. submissions/fibonacci)"
+  echo
+  print_info "Examples:"
+  echo "  cape submission validate --all"
+  echo "  cape submission validate submissions/fibonacci"
+  echo "  cape submission validate --single submissions/fibonacci/Plinth_*/metadata.json"
+  echo
+  print_info "Run with --help to see full usage."
+  exit 1
+fi
 
 # Main validation logic
 main() {
