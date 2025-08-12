@@ -123,7 +123,7 @@
                 "preview"|"p")
                   npx log4brains preview
                   ;;
-                "build"|"b") 
+                "build"|"b")
                   npx log4brains build
                   ;;
                 "help"|"h"|*)
@@ -134,7 +134,7 @@
                   echo "Commands:"
                   echo "  new, n <title>    Create new ADR"
                   echo "  preview, p        Preview ADRs in browser"
-                  echo "  build, b          Build static site"  
+                  echo "  build, b          Build static site"
                   echo "  help, h           Show this help"
                   echo ""
                   echo "Single letter aliases available: adr n, adr p, adr b, adr h"
@@ -148,7 +148,10 @@
               exec ${./scripts/cape.sh} --project-root "$PWD" "$@"
             '')
 
-            # JSON schema validation tool required by submission validation script
+            # Mermaid CLI for diagram generation
+            mermaid-cli
+
+            # JSON Schema validation (required by submission validation script)
             check-jsonschema
           ];
 
