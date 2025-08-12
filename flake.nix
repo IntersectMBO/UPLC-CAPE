@@ -89,26 +89,10 @@
             # Core development tools
             git
 
-            # System dependencies for Cardano/Plutus
-            pkg-config
-            pkgs.libsodium
-            pkgs.secp256k1
-            pkgs.libblst
-
-            # Plinth/PlutusTx tooling
-            plinthTools.cabal
-            plinthTools.haskell-language-server
-
-            # GHC compiler (matching the project's GHC version)
-            haskell.compiler.ghc966
-
             # Formatting tools
             treefmt
             shfmt # Shell script formatter
             nodePackages.prettier # YAML, Markdown, and more
-            fourmolu # Haskell formatter
-            haskellPackages.cabal-fmt # Cabal file formatter
-            nixfmt-rfc-style # Nix file formatter
 
             # Documentation and ADR tools
             nodejs_20 # Required for log4brains
@@ -121,31 +105,60 @@
                   npx log4brains adr new "$@"
                   ;;
                 "preview"|"p")
-                  npx log4brains preview
+                  shift
+                  npx log4brains preview "$@"
                   ;;
                 "build"|"b")
-                  npx log4brains build
+                  shift
+                  npx log4brains build "$@"
                   ;;
-                "help"|"h"|*)
-                  echo "ADR (Architecture Decision Records) tool"
+                "init"|"i")
+                  shift
+                  npx log4brains init "$@"
+                  ;;
+                "help"|"h"|"--help"|"-h")
+                  echo "ADR (Architecture Decision Records) Tool"
                   echo ""
-                  echo "Usage: adr <command> [args...]"
+                  echo "Usage: adr <command> [options]"
                   echo ""
                   echo "Commands:"
-                  echo "  new, n <title>    Create new ADR"
-                  echo "  preview, p        Preview ADRs in browser"
-                  echo "  build, b          Build static site"
-                  echo "  help, h           Show this help"
+                  echo "  new, n        Create a new ADR"
+                  echo "  preview, p    Preview ADRs in browser"
+                  echo "  build, b      Build static documentation site"
+                  echo "  init, i       Initialize log4brains project"
+                  echo "  help, h       Show this help message"
                   echo ""
-                  echo "Single letter aliases available: adr n, adr p, adr b, adr h"
+                  echo "Examples:"
+                  echo "  adr new \"My Decision Title\""
+                  echo "  adr preview"
+                  echo "  adr build --out ./docs"
+                  echo ""
+                  echo "For more options, use: npx log4brains <command> --help"
+                  ;;
+                "")
+                  echo "Error: No command specified"
+                  echo "Run 'adr help' for usage information"
+                  exit 1
+                  ;;
+                *)
+                  echo "Error: Unknown command '$1'"
+                  echo "Run 'adr help' for available commands"
+                  exit 1
                   ;;
               esac
             '')
 
-            # CAPE CLI wrapper that ensures the script can find project files
-            (writeShellScriptBin "cape" ''
-              # This ensures the user can work on their actual project files, not read-only Nix store
-              exec ${./scripts/cape.sh} --project-root "$PWD" "$@"
+            # Essential utilities
+            just
+            jq
+            tree
+
+            # Markdown rendering in terminal
+            glow
+
+            # Convenience alias for viewing usage documentation
+            (writeShellScriptBin "usage" ''
+              exec glow USAGE.md
             '')
 
             # Mermaid CLI for diagram generation
@@ -153,11 +166,30 @@
 
             # JSON Schema validation (required by submission validation script)
             check-jsonschema
+
+            # CAPE project management tool
+            (writeShellScriptBin "cape" ''
+              # Use the current working directory as the project root when in Nix shell
+              exec ${./scripts/cape.sh} --project-root "$PWD" "$@"
+            '')
+
+            # --- Additive Plinth / Cardano tooling below (new) ---
+            pkg-config
+            libsodium
+            secp256k1
+            libblst
+            plinthTools.cabal
+            plinthTools.haskell-language-server
+            haskell.compiler.ghc966
+            fourmolu
+            haskellPackages.cabal-fmt
+            nixfmt-rfc-style
           ];
 
           shellHook = ''
             # Display banner using glow for better markdown rendering
             glow BANNER.md
+            echo ""
 
             # Install log4brains via npx when needed
             # Create node_modules directory if it doesn't exist
