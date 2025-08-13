@@ -77,6 +77,7 @@ executable fibonacci
   build-depends:
     , base
     , bytestring
+    , mtl
     , plutus-core
     , plutus-core:plutus-core-testlib
     , plutus-ledger-api
