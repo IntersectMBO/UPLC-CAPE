@@ -78,13 +78,8 @@ measureUplcFile uplcFile metricsFile = do
       scriptBytes = SBS.fromShort (serialiseCompiledCode code)
       scriptSize = BS.length scriptBytes
       PLC.Version major minor patch = UPLC._progVer program
-      protocolVersionString =
-        "plutus-core-"
-          <> show major
-          <> "."
-          <> show minor
-          <> "."
-          <> show patch
+      plutusCoreVersion :: Text =
+        show major <> "." <> show minor <> "." <> show patch
 
   -- Determine evaluator version using gitAwareVersionInfo on this package's version
   evaluatorVersion <- getEvaluatorVersion
@@ -108,8 +103,8 @@ measureUplcFile uplcFile metricsFile = do
   putTextLn $ "CPU units: " <> Text.pack (show cpu)
   putTextLn $ "Memory units: " <> Text.pack (show mem)
   putTextLn $ "Term size: " <> Text.pack (show (countAstNodes code))
+  putTextLn $ "Plutus Core version: " <> plutusCoreVersion
   putTextLn $ "Evaluator: " <> Text.pack evaluatorString
-  putTextLn $ "Protocol version: " <> Text.pack protocolVersionString
 
 -- | Metrics data structure matching the schema
 data Metrics = Metrics
