@@ -9,7 +9,7 @@ set -euo pipefail
 
 ## Help
 if [ $# -eq 1 ] && [ "$1" = "--help" ]; then
-  cat <<EOF
+  cat << EOF
 Usage:
   cape benchmark list [benchmark]
   cape benchmark [benchmark]
@@ -95,9 +95,9 @@ render_markdown() {
     cat
     return
   fi
-  if command -v glow >/dev/null 2>&1; then
+  if command -v glow > /dev/null 2>&1; then
     # Use a safe theme; fallback to cat on error
-    glow - 2>/dev/null || cat
+    glow - 2> /dev/null || cat
   else
     cat
   fi
@@ -111,7 +111,10 @@ if [ -n "$BENCHMARK" ]; then
   else
     # fallback: first supplementary
     for f in scenarios/$BENCHMARK-*.md; do
-      if [ -f "$f" ]; then canonical="$f"; break; fi
+      if [ -f "$f" ]; then
+        canonical="$f"
+        break
+      fi
     done
   fi
   if [ -z "${canonical:-}" ]; then
