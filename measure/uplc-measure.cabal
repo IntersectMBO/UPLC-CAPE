@@ -71,6 +71,7 @@ executable measure
     , plutus-tx
     , plutus-tx-plugin
     , plutus-tx:plutus-tx-testlib
+    , process
     , serialise
     , text
 
