@@ -1,7 +1,7 @@
 .md
-.vscode
-.direnv
+.vscode/
+.direnv/
 .github/copilot-*.md
-node_modules
-plinth/dist-newstyle
+node_modules/
+dist-newstyle/
 plinth/*.uplc

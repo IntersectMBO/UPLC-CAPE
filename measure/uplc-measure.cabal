@@ -1,0 +1,77 @@
+cabal-version: 3.4
+name:          uplc-measure
+version:       1.0.0
+synopsis:      UPLC measurement tool for CAPE framework
+description:
+  A tool for measuring UPLC program performance metrics including
+  CPU units, memory units, script size, and term size for the
+  UPLC-CAPE framework.
+
+author:        UPLC-CAPE Project
+maintainer:    UPLC-CAPE Project
+category:      Blockchain
+license:       Apache-2.0
+
+common common-deps
+  build-depends:
+    , aeson
+    , aeson-pretty
+    , base               >=4.16
+    , bytestring
+    , flat
+    , plutus-core        >=1.49
+    , plutus-ledger-api  >=1.49
+    , plutus-tx          >=1.49
+    , plutus-tx-plugin   >=1.49
+    , relude             ^>=1.2.2
+    , serialise
+    , text
+    , time
+
+common common-language
+  import:             common-deps
+  ghc-options:
+    -Wall -Wcompat -Wincomplete-uni-patterns -Wredundant-constraints
+    -Wmissing-export-lists -Wmissing-deriving-strategies
+    -Wpartial-fields
+
+  default-language:   Haskell2010
+  mixins:
+    base hiding (Prelude),
+    relude (Relude as Prelude)
+
+  default-extensions:
+    DataKinds
+    DeriveAnyClass
+    DeriveGeneric
+    DerivingStrategies
+    FlexibleContexts
+    FlexibleInstances
+    GeneralizedNewtypeDeriving
+    ImportQualifiedPost
+    MultiParamTypeClasses
+    OverloadedStrings
+    ScopedTypeVariables
+    TemplateHaskell
+    TypeApplications
+    UndecidableInstances
+    ViewPatterns
+
+-- UPLC measurement tool
+executable measure
+  import:         common-language
+  main-is:        Main.hs
+  build-depends:
+    , base
+    , bytestring
+    , megaparsec
+    , plutus-core
+    , plutus-core:plutus-core-testlib
+    , plutus-ledger-api
+    , plutus-tx
+    , plutus-tx-plugin
+    , plutus-tx:plutus-tx-testlib
+    , serialise
+    , text
+
+  hs-source-dirs: app
