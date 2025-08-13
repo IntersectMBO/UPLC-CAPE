@@ -16,6 +16,8 @@
 - cape benchmark <scenario>: Show scenario details
 - cape submission new <scenario> <language> <version> <handle> Example: cape submission new fibonacci Aiken 1.0.8 Unisay
 - cape submission validate: Validate submission files against JSON schemas
+- cape submission measure: Measure UPLC program performance and generate metrics.json
+- cape submission aggregate: Generate CSV report of benchmark submissions
 
 🎨 Documentation & Diagram Tools:
 
@@ -42,6 +44,7 @@ Available tools for Cardano smart contract development:
 - Cabal build system with CHaP (Cardano Haskell Packages) integration
 - Haskell Language Server for IDE support
 - Access to Plutus Core libraries and PlutusTx compiler
+- Plutus Core executables: plutus, uplc, plc, pir for working with Plutus programs
 
 📝 Getting Started with Plinth:
 
