@@ -62,9 +62,6 @@ The easiest way to validate your submissions is using the built-in CAPE
 validation commands:
 
 ```bash
-# Validate all files in current directory
-cape submission validate
-
 # Validate all submissions in the project
 cape submission validate --all
 

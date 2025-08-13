@@ -12,10 +12,7 @@
 
 ## Performance Results
 
-- CPU Units: `<cpu_units>`
-- Memory Units: `<memory_units>`
-- Script Size (bytes): `<script_size_bytes>`
-- Term Size: `<term_size>`
+- See [metrics.json](metrics.json) for detailed performance measurements
 
 ## Reproducibility
 

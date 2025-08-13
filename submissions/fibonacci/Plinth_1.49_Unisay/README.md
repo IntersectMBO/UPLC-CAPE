@@ -2,29 +2,20 @@
 
 **Scenario**: `fibonacci`
 
-**Submission ID**: `Plinth_1.49_Unisay` (Format:
-`Language_Version_GitHubHandle`)
+**Submission ID**: `Plinth_1.49_Unisay`
 
 ## Implementation Details
 
-- **Compiler**: `<compiler name and version>`
-- **Implementation Approach**: `<recursive|iterative|memoized>`
-- **Compilation Flags**: `<optional flags>`
+- **Compiler**: `Plinth 1.49`
+- **Implementation Approach**: `recursive`
+- **Compilation Flags**: N/A
 
 ## Performance Results
 
-- CPU Units: `<cpu_units>`
-- Memory Units: `<memory_units>`
-- Script Size (bytes): `<script_size_bytes>`
-- Term Size: `<term_size>`
+- See [metrics.json](metrics.json) for detailed performance measurements
 
 ## Reproducibility
 
-- **Source Available**: `<true|false>`
-- **Source Repository**: `<URL or N/A>`
-- **Compilation Config**: describe any non-default parameters
-
-## Notes
-
-Describe any notable optimizations, deviations from the spec, or measurement
-conditions.
+- **Source Available**: `true`
+- **Source Repository**: `https://github.com/IntersectMBO/UPLC-CAPE`
+- **Compilation Config**: default parameters, no special flags used
