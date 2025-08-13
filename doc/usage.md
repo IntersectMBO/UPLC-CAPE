@@ -16,6 +16,11 @@ cape benchmark new my-benchmark        # Create new benchmark
 cape submission list                   # List all submissions
 cape submission list fibonacci         # Show benchmark submissions
 cape submission new fibonacci Aiken 1.0.8 myhandle  # Create submission
+cape submission validate               # Validate submission files
+cape submission measure                # Measure UPLC performance
+cape submission aggregate              # Generate CSV report
+cape submission report fibonacci       # Generate HTML report with charts for benchmark
+cape submission report --all           # Generate HTML reports for all benchmarks
 
 # HELP
 cape --help                           # Main help

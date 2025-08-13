@@ -19,6 +19,8 @@
 - `cape submission validate`: Validate submission files against JSON schemas
 - `cape submission measure`: Measure UPLC program performance and generate metrics.json
 - `cape submission aggregate`: Generate CSV report of benchmark submissions
+- `cape submission report <benchmark>`: Generate HTML performance reports with charts
+- `cape submission report --all`: Generate HTML reports for all benchmarks
 
 🎨 Documentation & Diagram Tools:
 

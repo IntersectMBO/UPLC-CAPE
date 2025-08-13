@@ -94,6 +94,10 @@ cape submission list fibonacci         # Show submissions for specific benchmark
 cape submission new fibonacci Aiken 1.0.8 myhandle  # Create new submission
 cape submission validate                # Validate submission files
 cape submission validate --all          # Validate all submissions
+cape submission measure                  # Measure UPLC performance
+cape submission aggregate                # Generate CSV performance report
+cape submission report fibonacci         # Generate HTML report with charts for benchmark
+cape submission report --all             # Generate HTML reports for all benchmarks
 ```
 
 ### Interactive Mode
