@@ -25,6 +25,18 @@ print_success() { echo -e "${GREEN}SUCCESS:${NC} $1"; }
 print_warning() { echo -e "${YELLOW}WARNING:${NC} $1"; }
 print_info() { echo -e "${BLUE}INFO:${NC} $1"; }
 
+# Helper: path relative to project root
+relpath() {
+  local target="$1"
+  if [[ "$target" == "$PROJECT_ROOT" ]]; then
+    echo "."
+  elif [[ "$target" == "$PROJECT_ROOT"/* ]]; then
+    echo "${target#$PROJECT_ROOT/}"
+  else
+    echo "$target"
+  fi
+}
+
 # Check if check-jsonschema is available
 check_jsonschema() {
   if ! command -v check-jsonschema &> /dev/null; then
@@ -39,24 +51,27 @@ validate_file() {
   local file="$1"
   local schema="$2"
   local file_type="$3"
+  local rel_file
+  rel_file="$(relpath "$file")"
 
   if [[ ! -f "$file" ]]; then
-    print_warning "File not found: $file"
+    print_warning "File not found: $rel_file"
     return 1
   fi
 
   if [[ ! -f "$schema" ]]; then
-    print_error "Schema not found: $schema"
+    print_error "Schema not found: $(relpath "$schema")"
     return 1
   fi
 
-  print_info "Validating $file_type: $(basename "$file")"
+  print_info "Validating $file_type: $rel_file"
 
-  if check-jsonschema --schemafile "$schema" "$file" 2> /dev/null; then
-    print_success "✓ Valid $file_type"
+  # Suppress default 'ok -- validation done' output on success
+  if check-jsonschema --schemafile "$schema" "$file" > /dev/null 2>&1; then
+    print_success "✓ $file_type valid ($rel_file)"
     return 0
   else
-    print_error "✗ Invalid $file_type"
+    print_error "✗ $file_type invalid ($rel_file)"
     echo "Running detailed validation:"
     check-jsonschema --schemafile "$schema" "$file"
     return 1
@@ -67,8 +82,10 @@ validate_file() {
 validate_submission_dir() {
   local dir="$1"
   local has_errors=0
+  local rel_dir
+  rel_dir="$(relpath "$dir")"
 
-  print_info "Validating submission directory: $dir"
+  print_info "Validating submission directory: $rel_dir"
 
   # Find and validate metrics.json files
   if find "$dir" -name "metrics.json" -type f | grep -q .; then
@@ -78,7 +95,7 @@ validate_submission_dir() {
       fi
     done < <(find "$dir" -name "metrics.json" -type f -print0)
   else
-    print_warning "No metrics.json files found in $dir"
+    print_warning "No metrics.json files found in $rel_dir"
   fi
 
   # Find and validate metadata.json files
@@ -89,7 +106,7 @@ validate_submission_dir() {
       fi
     done < <(find "$dir" -name "metadata.json" -type f -print0)
   else
-    print_warning "No metadata.json files found in $dir"
+    print_warning "No metadata.json files found in $rel_dir"
   fi
 
   return $has_errors
@@ -189,7 +206,7 @@ main() {
   local exit_code=0
 
   if [[ "$validate_all" == true ]]; then
-    print_info "Validating all submissions in $PROJECT_ROOT/submissions/"
+    print_info "Validating all submissions in $(relpath "$PROJECT_ROOT/submissions/")"
 
     # Find all submission directories (excluding TEMPLATE)
     local submission_dirs=()
@@ -220,7 +237,7 @@ main() {
     fi
 
     if [[ ! -f "$target_path" ]]; then
-      print_error "File not found: $target_path"
+      print_error "File not found: $(relpath "$target_path")"
       exit 1
     fi
 
@@ -247,7 +264,7 @@ main() {
     local dir_to_validate="${target_path:-$PWD}"
 
     if [[ ! -d "$dir_to_validate" ]]; then
-      print_error "Directory not found: $dir_to_validate"
+      print_error "Directory not found: $(relpath "$dir_to_validate")"
       exit 1
     fi
 
