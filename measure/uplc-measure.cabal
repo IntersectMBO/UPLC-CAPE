@@ -1,14 +1,14 @@
 cabal-version: 3.4
-name:          uplc-cape-benchmarks
+name:          uplc-measure
 version:       1.0.0
-synopsis:      UPLC-CAPE benchmark implementations using Plinth/PlutusTx
+synopsis:      UPLC measurement tool for CAPE framework
 description:
-  A collection of benchmark implementations for the UPLC-CAPE
-  (Comparative Artifact Performance Evaluation) framework,
-  implemented using Plinth (PlutusTx) for Cardano smart contracts.
+  A tool for measuring UPLC program performance metrics including
+  CPU units, memory units, script size, and term size for the
+  UPLC-CAPE framework.
 
-author:        Unisay
-maintainer:    Unisay
+author:        UPLC-CAPE Project
+maintainer:    UPLC-CAPE Project
 category:      Blockchain
 license:       Apache-2.0
 
@@ -52,53 +52,27 @@ common common-language
     MultiParamTypeClasses
     OverloadedStrings
     ScopedTypeVariables
-    Strict
     TemplateHaskell
     TypeApplications
     UndecidableInstances
     ViewPatterns
 
-library
-  import:          common-language
-  exposed-modules: Fibonacci
-
-  -- Future benchmark modules:
-  -- TwoPartyEscrow
-  -- StreamingPayments
-  -- SimpleDAOVoting
-  -- TimelockedStaking
-
-  hs-source-dirs:  src
-
--- Fibonacci benchmark scenario
-executable fibonacci
+-- UPLC measurement tool
+executable measure
   import:         common-language
   main-is:        Main.hs
   build-depends:
     , base
     , bytestring
-    , mtl
+    , megaparsec
     , plutus-core
     , plutus-core:plutus-core-testlib
     , plutus-ledger-api
     , plutus-tx
     , plutus-tx-plugin
     , plutus-tx:plutus-tx-testlib
+    , process
+    , serialise
     , text
-    , uplc-cape-benchmarks
 
   hs-source-dirs: app
-
--- Template for future benchmark executables:
---
--- executable two-party-escrow
---   import: common-language
---
---   main-is: TwoPartyEscrowMain.hs
---   other-modules:
---     TwoPartyEscrow
---
---   build-depends:
---     uplc-cape-benchmarks
---
---   hs-source-dirs: app

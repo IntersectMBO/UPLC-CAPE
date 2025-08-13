@@ -22,7 +22,6 @@ measurements and execution environment information.
   - `term_size`: Number of AST nodes in the UPLC term
 - `execution_environment`: Evaluation environment information containing:
   - `evaluator`: Name and version of the evaluator used
-  - `protocol_version`: Plutus Core protocol version
 - `timestamp`: ISO-8601 timestamp when measurements were taken
 
 **Optional fields:**

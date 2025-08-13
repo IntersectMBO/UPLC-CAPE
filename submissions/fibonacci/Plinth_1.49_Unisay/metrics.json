@@ -1,16 +1,15 @@
 {
   "execution_environment": {
-    "evaluator": "PlutusTx.Eval-1.49.0.0",
-    "protocol_version": "plutus-core-1.1.0"
+    "evaluator": "PlutusTx.Eval-1.49.0.0"
   },
   "measurements": {
-    "cpu_units": 169864973614,
-    "memory_units": 701701354,
-    "script_size_bytes": 58,
-    "term_size": 48
+    "cpu_units": 117422538753,
+    "memory_units": 437984037,
+    "script_size_bytes": 45,
+    "term_size": 38
   },
-  "notes": "Generated using Fibonacci implementation with parameter 25",
+  "notes": "Generated using UPLC-CAPE measure tool",
   "scenario": "fibonacci",
-  "timestamp": "2025-07-18T15:42:19Z",
+  "timestamp": "2025-08-13T11:44:46Z",
   "version": "1.0.0"
 }

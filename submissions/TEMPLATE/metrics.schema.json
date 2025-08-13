@@ -52,15 +52,9 @@
           "type": "string",
           "description": "Name and version of the evaluator used",
           "examples": ["PlutusTx.Eval-1.49.0.0", "plutus-core-executable-1.49.0.0"]
-        },
-        "protocol_version": {
-          "type": "string",
-          "description": "Plutus Core protocol version",
-          "pattern": "^plutus-core-\\d+\\.\\d+\\.\\d+$",
-          "examples": ["plutus-core-1.1.0", "plutus-core-1.0.0"]
         }
       },
-      "required": ["evaluator", "protocol_version"],
+      "required": ["evaluator"],
       "additionalProperties": false
     },
     "timestamp": {

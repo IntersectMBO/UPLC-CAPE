@@ -1,3 +1,37 @@
-# TODO: Replace this with your compiled UPLC program
-# This should be a fully-applied UPLC script with the benchmark target baked in
-# For example, for fibonacci benchmark, it should compute fibonacci(25) = 75025
+(program
+  1.1.0
+  [
+    [
+      (lam s-0 [ s-0 s-0 ])
+      (lam
+        s-1
+        (lam
+          n-2
+          (case
+            [ [ (builtin lessThanEqualsInteger) n-2 ] (con integer 1) ]
+            [
+              (lam
+                cse-3
+                [
+                  [
+                    (builtin addInteger)
+                    [
+                      cse-3
+                      [ [ (builtin subtractInteger) n-2 ] (con integer 1) ]
+                    ]
+                  ]
+                  [
+                    cse-3 [ [ (builtin subtractInteger) n-2 ] (con integer 2) ]
+                  ]
+                ]
+              )
+              [ s-1 s-1 ]
+            ]
+            n-2
+          )
+        )
+      )
+    ]
+    (con integer 25)
+  ]
+)

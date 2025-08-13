@@ -77,11 +77,35 @@
           ];
         };
 
+        # Measure project configuration
+        measureProject = pkgs.haskell-nix.cabalProject' {
+          name = "uplc-measure";
+          compiler-nix-name = "ghc966";
+          src = ./measure;
+          inputMap = {
+            "https://chap.intersectmbo.org/" = CHaP;
+          };
+          modules = [
+            {
+              packages = { };
+            }
+          ];
+        };
+
         # Plinth development tools
         plinthTools = {
           cabal = plinthProject.tool "cabal" "latest";
           haskell-language-server = plinthProject.tool "haskell-language-server" "latest";
         };
+
+        # Measure tool executable
+        measureTool = measureProject.flake'.packages."uplc-measure:exe:measure";
+
+        # UPLC CLI from Plutus repository (musl build)
+        uplcMusl = plutus.packages.${system}.musl64-uplc;
+        plcMusl = plutus.packages.${system}.musl64-plc;
+        pirMusl = plutus.packages.${system}.musl64-pir;
+        plutusMusl = plutus.packages.${system}.musl64-plutus;
       in
       {
         devShells.default = pkgs.mkShell {
@@ -184,6 +208,11 @@
             fourmolu
             haskellPackages.cabal-fmt
             nixfmt-rfc-style
+            measureTool
+            uplcMusl
+            plcMusl
+            pirMusl
+            plutusMusl
           ];
 
           shellHook = ''

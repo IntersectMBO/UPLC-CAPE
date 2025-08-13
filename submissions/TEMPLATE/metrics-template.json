@@ -8,8 +8,7 @@
     "term_size": "<integer>"
   },
   "execution_environment": {
-    "evaluator": "<evaluator-version>",
-    "protocol_version": "<protocol-version>"
+    "evaluator": "<evaluator-version>"
   },
   "timestamp": "<ISO-8601 timestamp>",
   "notes": "<optional notes>"
