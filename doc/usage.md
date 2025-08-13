@@ -2,8 +2,7 @@
 
 Quick reference for UPLC-CAPE commands and workflows.
 
-> 💡 **Tip**: Type `usage` in the UPLC-CAPE shell to view this cheat sheet
-> anytime!
+> 💡 **Tip**: Type `usage` in the UPLC-CAPE shell to view this cheat sheet anytime!
 
 ## 📊 CAPE Commands
 

@@ -8,14 +8,11 @@ Accepted
 
 ## Context
 
-We need a tool to manage our Architecture Decision Records effectively. The
-project requires a modern, maintainable solution for creating, organizing, and
-presenting ADRs to the development team and community.
+We need a tool to manage our Architecture Decision Records effectively. The project requires a modern, maintainable solution for creating, organizing, and presenting ADRs to the development team and community.
 
 ## Decision
 
-We will use Log4brains as our ADR management tool instead of custom shell
-scripts.
+We will use Log4brains as our ADR management tool instead of custom shell scripts.
 
 ## Consequences
 
@@ -34,8 +31,7 @@ scripts.
 
 ## Implementation
 
-Log4brains is integrated into our Nix development shell with convenient short
-aliases:
+Log4brains is integrated into our Nix development shell with convenient short aliases:
 
 - `adr new "Title"` - Create new ADR
 - `adr preview` - Preview ADRs in browser

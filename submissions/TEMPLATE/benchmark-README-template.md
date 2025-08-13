@@ -22,5 +22,4 @@
 
 ## Notes
 
-Describe any notable optimizations, deviations from the spec, or measurement
-conditions.
+Describe any notable optimizations, deviations from the spec, or measurement conditions.

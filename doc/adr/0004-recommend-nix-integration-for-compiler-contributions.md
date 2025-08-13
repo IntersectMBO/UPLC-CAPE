@@ -6,26 +6,18 @@
 
 ## Context and Problem Statement
 
-Contributors wanting to submit benchmark implementations need a consistent and
-reproducible development environment to write, compile, and evaluate their
-implementations. Currently, contributors must set up their own development
-environments, which can lead to inconsistencies in compilation results and
-difficulty reproducing benchmark outcomes across different systems.
+Contributors wanting to submit benchmark implementations need a consistent and reproducible development environment to write, compile, and evaluate their implementations. Currently, contributors must set up their own development environments, which can lead to inconsistencies in compilation results and difficulty reproducing benchmark outcomes across different systems.
 
-How can we provide a standardized development environment that supports multiple
-compilers while maintaining flexibility for contributors who prefer their own
-tooling?
+How can we provide a standardized development environment that supports multiple compilers while maintaining flexibility for contributors who prefer their own tooling?
 
 ## Decision Drivers
 
 - Need for reproducible compilation environments across different systems
 - Desire to lower the barrier to entry for new contributors
-- Requirement to support multiple compiler toolchains (Aiken, Plutarch, Helios,
-  etc.)
+- Requirement to support multiple compiler toolchains (Aiken, Plutarch, Helios, etc.)
 - Existing project infrastructure already uses Nix for development environment
 - Need to maintain flexibility for contributors who prefer external tooling
-- Goal of ensuring consistent benchmark results regardless of contributor's
-  local setup
+- Goal of ensuring consistent benchmark results regardless of contributor's local setup
 
 ## Considered Options
 
@@ -36,28 +28,22 @@ tooling?
 
 ## Decision Outcome
 
-Chosen option: "Recommend Nix integration with optional external tooling",
-because it provides the best balance between standardization and flexibility.
-This approach leverages the existing Nix infrastructure while not forcing
-contributors into a specific workflow.
+Chosen option: "Recommend Nix integration with optional external tooling", because it provides the best balance between standardization and flexibility. This approach leverages the existing Nix infrastructure while not forcing contributors into a specific workflow.
 
 ### Positive Consequences
 
 - Contributors can extend the existing Nix environment with their compiler tools
 - Reproducible compilation environments across different systems
-- Lower barrier to entry for new contributors who can use the provided
-  environment
+- Lower barrier to entry for new contributors who can use the provided environment
 - Consistent evaluation and testing environment for benchmark implementations
-- Maintains flexibility for experienced contributors who prefer their own
-  tooling
+- Maintains flexibility for experienced contributors who prefer their own tooling
 - Leverages existing project infrastructure and tooling
 
 ### Negative Consequences
 
 - Contributors need to learn Nix if they want to use the recommended approach
 - Maintaining compiler dependencies in the Nix flake requires ongoing effort
-- Some contributors may still choose external tooling, leading to potential
-  inconsistencies
+- Some contributors may still choose external tooling, leading to potential inconsistencies
 - Additional complexity in the contribution documentation
 
 ## Pros and Cons of the Options
@@ -76,8 +62,7 @@ contributors into a specific workflow.
 - **Good**: Maximum standardization and reproducibility
 - **Good**: Consistent compilation environments
 - **Bad**: High barrier to entry for contributors unfamiliar with Nix
-- **Bad**: May discourage contributions from experienced developers with
-  existing workflows
+- **Bad**: May discourage contributions from experienced developers with existing workflows
 - **Bad**: Inflexible approach that may not suit all compiler ecosystems
 
 ### Provide no standardized environment recommendations
@@ -105,10 +90,7 @@ The recommended workflow includes:
 1. Fork the repository
 2. Add required compiler pipeline and tools to the Nix shell via `flake.nix`
 3. Use the available compiler tools within the Nix development shell
-4. Write, compile, and evaluate benchmark implementations in the standardized
-   environment
+4. Write, compile, and evaluate benchmark implementations in the standardized environment
 5. Prepare submissions following the established structure and file requirements
 
-This approach is documented in `CONTRIBUTING.md` as the recommended but not
-mandatory workflow, with the standard external tooling approach remaining
-available as an alternative.
+This approach is documented in `CONTRIBUTING.md` as the recommended but not mandatory workflow, with the standard external tooling approach remaining available as an alternative.

@@ -1,7 +1,6 @@
 # Benchmark Implementation Notes
 
-**Scenario**: `fibonacci`
-**Submission ID**: `Aiken_1.1.17_KtorZ`
+**Scenario**: `fibonacci` **Submission ID**: `Aiken_1.1.17_KtorZ`
 
 ## Implementation Details
 

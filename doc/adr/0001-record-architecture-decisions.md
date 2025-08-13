@@ -12,11 +12,8 @@ We need to record the architectural decisions made on this project.
 
 ## Decision
 
-We will use Architecture Decision Records, as described by Michael Nygard in
-this article:
-http://thinkrelevance.com/blog/2011/11/15/documenting-architecture-decisions
+We will use Architecture Decision Records, as described by Michael Nygard in this article: http://thinkrelevance.com/blog/2011/11/15/documenting-architecture-decisions
 
 ## Consequences
 
-See Michael Nygard's article, linked above. We have implemented ADRs using
-Log4brains as our management tool (see ADR 0002).
+See Michael Nygard's article, linked above. We have implemented ADRs using Log4brains as our management tool (see ADR 0002).

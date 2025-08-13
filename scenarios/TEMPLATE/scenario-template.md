@@ -2,10 +2,7 @@
 
 ## Overview
 
-The {Scenario Name} benchmark is a **{synthetic/real-world} {type}** designed to
-measure the performance characteristics of {description} implemented as UPLC
-programs. This benchmark tests a compiler's ability to {specific capabilities
-being tested}.
+The {Scenario Name} benchmark is a **{synthetic/real-world} {type}** designed to measure the performance characteristics of {description} implemented as UPLC programs. This benchmark tests a compiler's ability to {specific capabilities being tested}.
 
 **Purpose**: This scenario serves as a standardized test for measuring:
 
@@ -14,20 +11,15 @@ being tested}.
 - {Metric 3} optimization for {specific algorithms/patterns}
 - {Metric 4} efficiency in {specific encoding/representation}
 
-**Key Constraint**: The UPLC program must be **fully-applied** before
-benchmarking, meaning {specific constraint explanation}. This ensures consistent
-measurement across all compiler implementations and prevents variations based on
-different {parameter/input} values.
+**Key Constraint**: The UPLC program must be **fully-applied** before benchmarking, meaning {specific constraint explanation}. This ensures consistent measurement across all compiler implementations and prevents variations based on different {parameter/input} values.
 
-**Target Computation**:
-`{computation_description}({parameters}) = {expected_result}`
+**Target Computation**: `{computation_description}({parameters}) = {expected_result}`
 
 - This {value/computation} is chosen to be {rationale for choice}
 - It fits comfortably within the CEK machine execution budget limits
 - It provides sufficient {complexity/depth} to test {optimization capabilities}
 
-**Success Criteria**: The program must successfully {success condition} within
-the execution budget constraints.
+**Success Criteria**: The program must successfully {success condition} within the execution budget constraints.
 
 ---
 
@@ -39,12 +31,12 @@ The {Scenario Name} program operates as a **{description of execution model}**:
 [Start] --{operation}()--> [{Result State}: {expected_result}]
 ```
 
-| Current State          | Event                  | Condition                  | Next State                                             |
-| ---------------------- | ---------------------- | -------------------------- | ------------------------------------------------------ |
-| **Start**              | `{initial_event}()`    | Program starts execution   | **{Processing_State}**                                 |
-| **{Processing_State}** | `{processing_event}()` | {processing_condition}     | **{Processing_State}** (until {termination_condition}) |
-| **{Processing_State}** | `{completion_event}()` | {completion_condition}     | **Result**                                             |
-| **Result**             | -                      | Result = {expected_result} | **Complete**                                           |
+| Current State | Event | Condition | Next State |
+| --- | --- | --- | --- |
+| **Start** | `{initial_event}()` | Program starts execution | **{Processing_State}** |
+| **{Processing_State}** | `{processing_event}()` | {processing_condition} | **{Processing_State}** (until {termination_condition}) |
+| **{Processing_State}** | `{completion_event}()` | {completion_condition} | **Result** |
+| **Result** | - | Result = {expected_result} | **Complete** |
 
 **State Descriptions**:
 
@@ -84,8 +76,7 @@ The {Scenario Name} program operates as a **{description of execution model}**:
 
 ### Technical Constraints
 
-1. **Execution Budget**: The program must complete within standard CEK machine
-   limits
+1. **Execution Budget**: The program must complete within standard CEK machine limits
 2. **Determinism**: Results must be identical across multiple executions
 3. **Self-Contained**: All parameters must be baked into the UPLC program
 4. **Correctness**: Must produce the exact expected result: `{expected_result}`
@@ -98,8 +89,7 @@ The {Scenario Name} program operates as a **{description of execution model}**:
 - Memory Units: {min_mem} - {max_mem}
 - Script Size: {min_size} - {max_size} bytes
 
-_Note: These ranges are indicative and may vary significantly based on compiler
-optimizations and implementation approaches._
+_Note: These ranges are indicative and may vary significantly based on compiler optimizations and implementation approaches._
 
 ### Validation
 
@@ -115,8 +105,7 @@ To validate your implementation:
 
 ### Primary Test Case
 
-**Input**: {input_description} **Expected Output**: `{expected_result}`
-**Validation Method**: {how_to_validate}
+**Input**: {input_description} **Expected Output**: `{expected_result}` **Validation Method**: {how_to_validate}
 
 ### Edge Case Considerations
 
@@ -143,8 +132,7 @@ All submissions must include measurements for:
 
 ### Reporting Format
 
-Use the standard metrics template in
-`submissions/TEMPLATE/metrics-template.json`:
+Use the standard metrics template in `submissions/TEMPLATE/metrics-template.json`:
 
 ```json
 {
@@ -212,5 +200,4 @@ Use the standard metrics template in
 
 ---
 
-_This scenario is part of the CAPE (Comparative Artifact Performance Evaluation)
-framework for benchmarking UPLC compiler performance._
+_This scenario is part of the CAPE (Comparative Artifact Performance Evaluation) framework for benchmarking UPLC compiler performance._

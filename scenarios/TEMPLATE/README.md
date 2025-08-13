@@ -1,7 +1,6 @@
 # Benchmark Templates
 
-This directory contains template files for creating new benchmark scenarios in
-the CAPE framework.
+This directory contains template files for creating new benchmark scenarios in the CAPE framework.
 
 ## Files
 
@@ -61,8 +60,7 @@ The benchmark template includes:
 
 ## Completing a Benchmark
 
-When creating a new benchmark, replace all `{placeholder}` values with concrete
-specifications:
+When creating a new benchmark, replace all `{placeholder}` values with concrete specifications:
 
 - `{Scenario Name}`: Human-readable title
 - `{scenario_name}`: Machine-readable identifier
@@ -98,8 +96,6 @@ specifications:
 
 ## Related Documentation
 
-- [Domain Model](../../doc/domain-model.md) - Framework entities and
-  relationships
-- [Contributing Guide](../../CONTRIBUTING.md) - How to contribute benchmarks and
-  submissions
+- [Domain Model](../../doc/domain-model.md) - Framework entities and relationships
+- [Contributing Guide](../../CONTRIBUTING.md) - How to contribute benchmarks and submissions
 - [Benchmark List](../) - Available benchmark scenarios

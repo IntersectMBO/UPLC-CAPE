@@ -14,7 +14,7 @@ includes = ["*.sh", "*.bash"]
 
 [formatter.prettier]
 command = "prettier"
-options = ["--write"]
+options = ["--write", "--prose-wrap", "never"]
 includes = [
   "*.md", "*.markdown",   # Markdown files
   "*.yml", "*.yaml",      # YAML files

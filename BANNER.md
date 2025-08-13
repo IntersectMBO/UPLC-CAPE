@@ -2,8 +2,7 @@
 <!-- This file is read by flake.nix to display the shell welcome message -->
 <!-- Edit this file to customize the development shell banner -->
 
-🚀 UPLC-CAPE Development Shell Comparative Artifact Performance Evaluation for
-UPLC
+# 🚀 UPLC-CAPE Development Shell
 
 💡 Quick Start:
 
@@ -15,8 +14,7 @@ UPLC
 
 - cape benchmark: List all scenarios
 - cape benchmark <scenario>: Show scenario details
-- cape submission new <scenario> <language> <version> <handle> Example: cape
-  submission new fibonacci Aiken 1.0.8 Unisay
+- cape submission new <scenario> <language> <version> <handle> Example: cape submission new fibonacci Aiken 1.0.8 Unisay
 - cape submission validate: Validate submission files against JSON schemas
 
 🎨 Documentation & Diagram Tools:
@@ -24,8 +22,7 @@ UPLC
 - glow README.md: View main documentation
 - usage: View command cheat sheet (alias for 'glow USAGE.md')
 - adr help: Architecture Decision Records tool
-- mmdc: Mermaid CLI for generating diagrams Example: mmdc -i diagram.mmd -o
-  diagram.png
+- mmdc: Mermaid CLI for generating diagrams Example: mmdc -i diagram.mmd -o diagram.png
 
 🎨 Formatting Tools:
 
@@ -54,5 +51,4 @@ Available tools for Cardano smart contract development:
 4. Modify `src/Fibonacci.hs` to implement your own benchmarks
 5. Follow the patterns in the example for PlutusTx development
 
-💡 The nix shell provides all necessary dependencies for Plinth development,
-including proper CHaP integration for accessing Cardano ecosystem packages.
+💡 The nix shell provides all necessary dependencies for Plinth development, including proper CHaP integration for accessing Cardano ecosystem packages.

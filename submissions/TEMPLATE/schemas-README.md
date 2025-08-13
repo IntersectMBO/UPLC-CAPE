@@ -1,15 +1,12 @@
 # JSON Schema Definitions
 
-This directory contains JSON Schema definitions for validating the data files
-used in the UPLC-CAPE framework. These schemas are part of the submission
-template files.
+This directory contains JSON Schema definitions for validating the data files used in the UPLC-CAPE framework. These schemas are part of the submission template files.
 
 ## Schema Files
 
 ### `metrics.schema.json`
 
-Validates the structure of benchmark metrics files that contain performance
-measurements and execution environment information.
+Validates the structure of benchmark metrics files that contain performance measurements and execution environment information.
 
 **Required fields:**
 
@@ -30,8 +27,7 @@ measurements and execution environment information.
 
 ### `metadata.schema.json`
 
-Validates the structure of submission metadata files that contain information
-about the compiler, compilation configuration, and contributor details.
+Validates the structure of submission metadata files that contain information about the compiler, compilation configuration, and contributor details.
 
 **Required fields:**
 
@@ -58,8 +54,7 @@ about the compiler, compilation configuration, and contributor details.
 
 ### With CAPE Command Line Tools (Recommended)
 
-The easiest way to validate your submissions is using the built-in CAPE
-validation commands:
+The easiest way to validate your submissions is using the built-in CAPE validation commands:
 
 ```bash
 # Validate all submissions in the project
@@ -75,8 +70,7 @@ cape submission validate --single metadata.json
 
 ### With check-jsonschema (Manual)
 
-If you prefer to use check-jsonschema directly, these schemas can be used with
-any JSON Schema validation tool:
+If you prefer to use check-jsonschema directly, these schemas can be used with any JSON Schema validation tool:
 
 ```bash
 # Using check-jsonschema (available in CAPE nix shell)
@@ -89,5 +83,4 @@ check-jsonschema --schemafile submissions/TEMPLATE/metadata.schema.json path/to/
 
 ## Schema Version
 
-Both schemas use JSON Schema Draft 7 for maximum compatibility with validation
-tools and editors.
+Both schemas use JSON Schema Draft 7 for maximum compatibility with validation tools and editors.

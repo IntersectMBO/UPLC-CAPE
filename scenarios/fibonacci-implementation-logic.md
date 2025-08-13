@@ -1,33 +1,20 @@
 # Fibonacci Implementation Logic View
 
-This document provides detailed implementation specifications for the Fibonacci
-algorithm. It includes pseudocode for different implementation approaches that
-compiler teams can use as reference when implementing this benchmark.
+This document provides detailed implementation specifications for the Fibonacci algorithm. It includes pseudocode for different implementation approaches that compiler teams can use as reference when implementing this benchmark.
 
-> **Note**: This view focuses on the algorithmic implementation details. For
-> behavioral specifications, see
-> [fibonacci-behavioral-scenarios.md](./fibonacci-behavioral-scenarios.md). For
-> state management, see
-> [fibonacci-state-machine.md](./fibonacci-state-machine.md).
+> **Note**: This view focuses on the algorithmic implementation details. For behavioral specifications, see [fibonacci-behavioral-scenarios.md](./fibonacci-behavioral-scenarios.md). For state management, see [fibonacci-state-machine.md](./fibonacci-state-machine.md).
 
 ## Implementation Philosophy
 
-**Compiler Author's Choice**: The framework places no requirements or
-expectations on which implementation approach to use. Compiler authors are free
-to choose the approach that best demonstrates their compiler's strengths and
-optimization capabilities.
+**Compiler Author's Choice**: The framework places no requirements or expectations on which implementation approach to use. Compiler authors are free to choose the approach that best demonstrates their compiler's strengths and optimization capabilities.
 
-**Function vs Application**: The implementation describes a generic Fibonacci
-function that accepts an argument. For benchmarking, this function is
-fully-applied with a specific value (the application is what gets measured, not
-the function definition itself).
+**Function vs Application**: The implementation describes a generic Fibonacci function that accepts an argument. For benchmarking, this function is fully-applied with a specific value (the application is what gets measured, not the function definition itself).
 
 ## Core Implementation Specification
 
 ### Primary Recursive Implementation
 
-The most straightforward implementation uses simple recursion to match the
-mathematical definition of Fibonacci numbers:
+The most straightforward implementation uses simple recursion to match the mathematical definition of Fibonacci numbers:
 
 ```pseudocode
 // Generic Fibonacci function that accepts an argument
@@ -51,8 +38,7 @@ function fibonacci_recursive(n):
 
 ## Alternative Implementation Approaches
 
-**Note**: These are provided for reference only. Compiler authors may choose any
-approach or create their own variations.
+**Note**: These are provided for reference only. Compiler authors may choose any approach or create their own variations.
 
 ### Iterative Implementation
 
@@ -82,14 +68,12 @@ function fibonacci_iterative(n):
 - **Function Parameter**: Must accept an integer argument `n`
 - **Mathematical Correctness**: Must implement the correct Fibonacci sequence
 - **No External Dependencies**: Cannot rely on external libraries or oracles
-- **Pure Function**: No side effects or state mutations (memoization within
-  function scope is acceptable)
+- **Pure Function**: No side effects or state mutations (memoization within function scope is acceptable)
 - **Deterministic Output**: Must produce consistent results for the same input
 
 ### Performance Characteristics
 
-The framework measures performance when the function is applied to a specific
-argument:
+The framework measures performance when the function is applied to a specific argument:
 
 - **CPU Usage**: Total execution units consumed during computation
 - **Memory Usage**: Peak memory allocation during computation
@@ -98,11 +82,9 @@ argument:
 ### Compilation and Execution Requirements
 
 - **Function Definition**: Implement as a function that accepts an argument
-- **Full Application**: For benchmarking, the function is fully-applied with a
-  specific value
+- **Full Application**: For benchmarking, the function is fully-applied with a specific value
 - **Self-Contained**: Complete function that can be executed independently
-- **Budget Compliant**: Must execute within CEK machine execution limits when
-  applied
+- **Budget Compliant**: Must execute within CEK machine execution limits when applied
 
 ## Verification Points
 
@@ -111,16 +93,14 @@ argument:
 1. **Base Case 1**: `fibonacci(1) = 1`
 2. **Base Case 2**: `fibonacci(2) = 1`
 3. **Small Values**: `fibonacci(3) = 2`, `fibonacci(4) = 3`, `fibonacci(5) = 5`
-4. **Mathematical Sequence**: Must follow the correct Fibonacci sequence for any
-   input
+4. **Mathematical Sequence**: Must follow the correct Fibonacci sequence for any input
 
 ### Performance Verification
 
 1. **CPU Budget Compliance**: Must execute within CEK machine limits
 2. **Memory Budget Compliance**: Must not exceed memory allocation limits
 3. **Script Size**: Should be reasonably compact for the computation performed
-4. **Execution Consistency**: Should produce identical results across multiple
-   runs
+4. **Execution Consistency**: Should produce identical results across multiple runs
 
 ## Compiler-Specific Guidance
 
@@ -136,13 +116,11 @@ argument:
 
 ### Potential Challenges
 
-1. **Base Case Handling**: Ensure correct handling of `fibonacci(1)` and
-   `fibonacci(2)`
+1. **Base Case Handling**: Ensure correct handling of `fibonacci(1)` and `fibonacci(2)`
 2. **Sequence Indexing**: Verify correct Fibonacci sequence numbering
 3. **Integer Arithmetic**: Handle integer operations efficiently in UPLC
 4. **Execution Budget**: Ensure implementation stays within CEK machine limits
-5. **Compile-Time Integration**: Properly embed the target value during
-   compilation
+5. **Compile-Time Integration**: Properly embed the target value during compilation
 
 ### Success Metrics
 
@@ -152,13 +130,10 @@ The framework measures success based on:
 - **Efficiency**: Demonstrating good resource utilization
 - **Completeness**: Successfully executing within budget constraints
 
-**No Implementation Preference**: The framework treats all correct
-implementations equally, regardless of the algorithmic approach chosen.
+**No Implementation Preference**: The framework treats all correct implementations equally, regardless of the algorithmic approach chosen.
 
 ## Cross-References
 
-- **Behavioral Testing**:
-  [fibonacci-behavioral-scenarios.md](./fibonacci-behavioral-scenarios.md)
-- **State Management**:
-  [fibonacci-state-machine.md](./fibonacci-state-machine.md)
+- **Behavioral Testing**: [fibonacci-behavioral-scenarios.md](./fibonacci-behavioral-scenarios.md)
+- **State Management**: [fibonacci-state-machine.md](./fibonacci-state-machine.md)
 - **Complete Specification**: [fibonacci.md](./fibonacci.md)

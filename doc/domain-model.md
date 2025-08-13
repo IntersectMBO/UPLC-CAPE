@@ -2,17 +2,13 @@
 
 ## Overview
 
-This document describes the core domain entities and their relationships within
-the CAPE (Comparative Artifact Performance Evaluation) framework. CAPE is
-designed to benchmark the on-chain performance of UPLC programs produced by
-different compilers in the Cardano ecosystem.
+This document describes the core domain entities and their relationships within the CAPE (Comparative Artifact Performance Evaluation) framework. CAPE is designed to benchmark the on-chain performance of UPLC programs produced by different compilers in the Cardano ecosystem.
 
 ## Core Domain Entities
 
 ### 1. Scenario
 
-A **Scenario** represents an abstract benchmark specification that defines a
-computational task to be implemented by various compilers.
+A **Scenario** represents an abstract benchmark specification that defines a computational task to be implemented by various compilers.
 
 **Properties:**
 
@@ -31,18 +27,13 @@ computational task to be implemented by various compilers.
 
 ### 2. Implementation
 
-An **Implementation** is an abstract concept representing the realization of a
-Scenario. In practice, this is always materialized as a **Submission** (see
-below).
+An **Implementation** is an abstract concept representing the realization of a Scenario. In practice, this is always materialized as a **Submission** (see below).
 
-**Note:** This entity exists conceptually but is always represented concretely
-as a Submission with full metadata.
+**Note:** This entity exists conceptually but is always represented concretely as a Submission with full metadata.
 
 ### 3. Submission (Implementation)
 
-A **Submission** represents a complete implementation of a scenario by a
-specific compiler, including the UPLC code, metadata, and performance
-measurements. This is the primary entity that embodies an implementation.
+A **Submission** represents a complete implementation of a scenario by a specific compiler, including the UPLC code, metadata, and performance measurements. This is the primary entity that embodies an implementation.
 
 **Properties:**
 
@@ -53,8 +44,7 @@ measurements. This is the primary entity that embodies an implementation.
 - `compilation_config`: Configuration used during compilation
 - `benchmark_results`: Performance measurements
 - `contributor_info`: Information about who submitted this implementation
-- `submission_id`: Unique identifier (format:
-  `{compiler}_{version}_{contributor}`)
+- `submission_id`: Unique identifier (format: `{compiler}_{version}_{contributor}`)
 - `submission_date`: When the submission was created
 
 **Structure:**
@@ -72,15 +62,11 @@ submissions/{scenario}/{compiler}_{version}_{contributor}/
 - Must be fully-applied (parameters baked into the script)
 - Must successfully execute within budget limits
 - Must produce the expected result
-- Each submission must be unique in terms of UPLC program content or compilation
-  configuration, even when using the same compiler and scenario
+- Each submission must be unique in terms of UPLC program content or compilation configuration, even when using the same compiler and scenario
 
 ### 4. Compiler
 
-A **Compiler** represents a specific version of a tool that can transform source
-code into UPLC programs. In the CAPE framework, different versions of the same
-compiler are treated as distinct entities (e.g., "Plinth 1.48" and "Plinth 1.49"
-are considered two different compilers).
+A **Compiler** represents a specific version of a tool that can transform source code into UPLC programs. In the CAPE framework, different versions of the same compiler are treated as distinct entities (e.g., "Plinth 1.48" and "Plinth 1.49" are considered two different compilers).
 
 **Properties:**
 
@@ -89,14 +75,11 @@ are considered two different compilers).
 - `commit_hash`: Specific commit identifier for reproducibility
 - `target`: Always "uplc" for this framework
 
-**Identity:** A compiler is uniquely identified by the combination of `name` and
-`version`. The same tool at different versions constitutes different compilers
-for benchmarking purposes.
+**Identity:** A compiler is uniquely identified by the combination of `name` and `version`. The same tool at different versions constitutes different compilers for benchmarking purposes.
 
 ### 5. Compilation Configuration
 
-**Compilation Configuration** captures all settings that influence the compiler
-output.
+**Compilation Configuration** captures all settings that influence the compiler output.
 
 **Properties:**
 
@@ -107,8 +90,7 @@ output.
 
 ### 6. Benchmark Results
 
-**Benchmark Results** contain the measured performance metrics from executing a
-Submission.
+**Benchmark Results** contain the measured performance metrics from executing a Submission.
 
 **Properties:**
 
@@ -122,8 +104,7 @@ Submission.
 
 ### 7. Contributor
 
-A **Contributor** represents a person or organization submitting
-implementations.
+A **Contributor** represents a person or organization submitting implementations.
 
 **Properties:**
 
@@ -204,53 +185,37 @@ erDiagram
 2. **Compiler to Submission**: One-to-Many
 
    - A specific compiler version can produce submissions for multiple scenarios
-   - A specific compiler version can have multiple submissions for the same
-     scenario from different contributors, as long as the UPLC programs or
-     compilation configurations differ
-   - Each submission is produced by exactly one compiler name-version
-     combination
-   - Different versions of the same compiler tool are treated as distinct
-     entities
+   - A specific compiler version can have multiple submissions for the same scenario from different contributors, as long as the UPLC programs or compilation configurations differ
+   - Each submission is produced by exactly one compiler name-version combination
+   - Different versions of the same compiler tool are treated as distinct entities
 
 3. **Contributor to Submission**: One-to-Many
    - A contributor can submit multiple implementations for different scenarios
-   - A contributor can submit multiple implementations for the same scenario
-     using different compilers
-   - Multiple contributors can submit implementations using the same compiler
-     for the same scenario, provided the implementations differ in their UPLC
-     programs or compilation configurations
+   - A contributor can submit multiple implementations for the same scenario using different compilers
+   - Multiple contributors can submit implementations using the same compiler for the same scenario, provided the implementations differ in their UPLC programs or compilation configurations
    - Each submission is associated with exactly one contributor
 
 ### Multiple Submissions per Compiler
 
-The framework allows multiple contributors to submit different implementations
-using the same compiler for the same scenario. This enables exploration of:
+The framework allows multiple contributors to submit different implementations using the same compiler for the same scenario. This enables exploration of:
 
-- **Different compilation configurations**: Various optimization levels, flags,
-  or dependency versions
-- **Different source code approaches**: Alternative algorithms or implementation
-  strategies that compile to different UPLC programs
-- **Configuration experimentation**: Testing how different compiler settings
-  affect performance
+- **Different compilation configurations**: Various optimization levels, flags, or dependency versions
+- **Different source code approaches**: Alternative algorithms or implementation strategies that compile to different UPLC programs
+- **Configuration experimentation**: Testing how different compiler settings affect performance
 
-Each submission is uniquely identified by its `submission_id` (format:
-`{compiler}_{version}_{contributor}`) and must contain either:
+Each submission is uniquely identified by its `submission_id` (format: `{compiler}_{version}_{contributor}`) and must contain either:
 
-- A different UPLC program (resulting from different source code or compilation
-  approach), or
+- A different UPLC program (resulting from different source code or compilation approach), or
 - A different compilation configuration (even if the source code is similar)
 
-This design encourages experimentation and allows the community to discover
-optimal configurations and implementation approaches for each compiler.
+This design encourages experimentation and allows the community to discover optimal configurations and implementation approaches for each compiler.
 
 ## Workflow and Lifecycle
 
 ### 1. Benchmark Definition Phase
 
-1. A new **Benchmark** is defined using the template:
-   `cape benchmark new <benchmark-name>`
-2. The benchmark specification is completed with requirements, constraints, and
-   test cases
+1. A new **Benchmark** is defined using the template: `cape benchmark new <benchmark-name>`
+2. The benchmark specification is completed with requirements, constraints, and test cases
 3. The Plutus Core team creates a reference **Submission** using Plinth
 4. The benchmark is published to invite community participation
 
@@ -279,13 +244,11 @@ optimal configurations and implementation approaches for each compiler.
 - All UPLC programs must be valid and executable
 - Benchmark results must be reproducible
 - Metadata must be complete and accurate
-- Submissions using the same compiler and scenario must differ in either the
-  UPLC program or compilation configuration
+- Submissions using the same compiler and scenario must differ in either the UPLC program or compilation configuration
 
 ### Naming Conventions
 
-- Scenario names: lowercase, hyphen-separated (e.g., "fibonacci",
-  "two-party-escrow")
+- Scenario names: lowercase, hyphen-separated (e.g., "fibonacci", "two-party-escrow")
 - Submission IDs: `{compiler}_{version}_{contributor}` format
 - File names: scenario name + appropriate extension
 
@@ -299,20 +262,15 @@ optimal configurations and implementation approaches for each compiler.
 
 The domain model is designed to support future extensions:
 
-1. **New Scenario Types**: The framework can accommodate both synthetic and
-   real-world scenarios
-2. **Additional Metrics**: New performance measurements can be added to
-   Benchmark Results
-3. **Compiler Support**: New compilers and new versions of existing compilers
-   can participate without framework changes
+1. **New Scenario Types**: The framework can accommodate both synthetic and real-world scenarios
+2. **Additional Metrics**: New performance measurements can be added to Benchmark Results
+3. **Compiler Support**: New compilers and new versions of existing compilers can participate without framework changes
 4. **Evaluation Methods**: Different measurement approaches can be supported
 
 ## Related Documentation
 
-- [Scenario Specifications](../scenarios/) - Detailed specifications for each
-  benchmark scenario
-- [Submission Guidelines](../CONTRIBUTING.md) - How to create and submit
-  implementations
+- [Scenario Specifications](../scenarios/) - Detailed specifications for each benchmark scenario
+- [Submission Guidelines](../CONTRIBUTING.md) - How to create and submit implementations
 - [Architecture Decision Records](./adr/) - Design decisions and rationale
 
 ## Directory Structure
@@ -341,8 +299,7 @@ The CAPE framework uses the following top-level directory organization:
 
 ## Framework Tools
 
-The CAPE framework provides command-line tools for managing benchmarks and
-submissions:
+The CAPE framework provides command-line tools for managing benchmarks and submissions:
 
 ### Benchmark Management
 
