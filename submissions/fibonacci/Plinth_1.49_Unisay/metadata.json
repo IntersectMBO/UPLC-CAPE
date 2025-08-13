@@ -1,6 +1,6 @@
 {
   "compiler": {
-    "name": "PlutusTx",
+    "name": "Plinth",
     "version": "1.49.0.0"
   },
   "compilation_config": {
