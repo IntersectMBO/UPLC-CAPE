@@ -1,16 +1,15 @@
 {
-  "scenario": "fibonacci",
-  "version": "1.0.0",
+  "execution_environment": {
+    "evaluator": "PlutusTx.Eval-1.49.0.0"
+  },
   "measurements": {
     "cpu_units": 155308959218,
     "memory_units": 559619722,
-    "script_size_bytes": 87,
+    "script_size_bytes": 89,
     "term_size": 81
   },
-  "execution_environment": {
-    "evaluator": "Aiken",
-    "protocol_version": "plutus-core-1.1.0"
-  },
-  "timestamp": "2025-07-24T19:35:38.551Z",
-  "notes": "The 'term_size' is only a best-effort in the sense that I do not know how this is typically calculated within the Plinthe codebase."
+  "notes": "Generated using UPLC-CAPE measure tool",
+  "scenario": "fibonacci",
+  "timestamp": "2025-08-13T12:38:39Z",
+  "version": "1.0.0"
 }
