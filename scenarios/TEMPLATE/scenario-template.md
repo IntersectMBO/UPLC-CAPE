@@ -139,7 +139,6 @@ All submissions must include measurements for:
 ### Measurement Environment
 
 - **Evaluator**: Use the standard CEK machine evaluator
-- **Protocol Version**: Specify the Cardano protocol version used
 - **Measurement Method**: Document how metrics were obtained
 
 ### Reporting Format
@@ -158,8 +157,7 @@ Use the standard metrics template in
     "term_size": "<measured_value>"
   },
   "execution_environment": {
-    "evaluator": "<evaluator_version>",
-    "protocol_version": "<protocol_version>"
+    "evaluator": "<evaluator_version>"
   },
   "timestamp": "<ISO-8601_timestamp>",
   "measurement_method": "manual",
