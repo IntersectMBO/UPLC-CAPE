@@ -23,4 +23,4 @@ jobs:
 
       - name: Validate all submissions
         run: |
-          nix develop --accept-flake-config --command ./scripts/cape.sh submission validate --all
+          nix develop --accept-flake-config --command cape submission validate --all
