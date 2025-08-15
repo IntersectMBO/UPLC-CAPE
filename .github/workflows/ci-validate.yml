@@ -1,4 +1,4 @@
-name: Validate submissions and tests
+name: Verify dev tooling and validate submissions
 
 on:
   pull_request:
@@ -8,8 +8,8 @@ permissions:
   contents: read
 
 jobs:
-  smoke:
-    name: Nix shell and tests
+  check:
+    name: Verify dev tooling and validate submissions
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -26,24 +26,10 @@ jobs:
           # Ensure the dev shell is instantiated and dependencies are downloaded
           nix develop --accept-flake-config --command cape --help > /dev/null
 
-      - name: Run test suite
-        run: |
-          nix develop --accept-flake-config --command cape test
-
-  validate:
-    name: Submission validation
-    runs-on: ubuntu-latest
-    needs: smoke
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Install Nix
-        uses: cachix/install-nix-action@v27
-        with:
-          extra_nix_config: |
-            accept-flake-config = true
-
       - name: Validate all submissions
         run: |
           nix develop --accept-flake-config --command cape submission validate --all
+
+      - name: Run test suite
+        run: |
+          nix develop --accept-flake-config --command cape test
