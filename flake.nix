@@ -23,6 +23,9 @@
 
     plutus = {
       url = "github:IntersectMBO/plutus";
+      # TODO: Pin to Plutus 1.52.0.0 tag/commit
+      # Find the correct commit at: https://github.com/IntersectMBO/plutus/releases/tag/1.52.0.0
+      # Then update with: url = "github:IntersectMBO/plutus/COMMIT_HASH";
       inputs.hackage.follows = "hackage";
       inputs.CHaP.follows = "CHaP";
       inputs.haskell-nix.follows = "haskell-nix";
