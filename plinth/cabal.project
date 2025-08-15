@@ -11,9 +11,27 @@ repository cardano-haskell-packages
 
 index-state:
   -- Bump both the following dates if you need newer packages from Hackage
-  , hackage.haskell.org 2025-07-21T09:43:09Z
+  , hackage.haskell.org 2025-08-14T08:21:37Z
   -- Bump this if you need newer packages from CHaP
-  , cardano-haskell-packages 2025-07-17T12:00:21Z
+  , cardano-haskell-packages 2025-08-14T08:21:37Z
 
 packages:
   ./.
+
+source-repository-package
+  type: git
+  location: https://github.com/IntersectMBO/plutus
+  tag: 800c67d38d01177fd0a36d01aa23ff7fea7bd1ba
+  --sha256: 1qy65w4kihmdg5j1f7nrljnlp4r4fd0svyrvnk7pq86f4x1zybgh
+  subdir:
+    plutus-core
+    plutus-ledger-api
+    plutus-tx
+    plutus-tx-plugin
+    plutus-metatheory
+
+allow-newer:
+  -- Resolve QuickCheck version conflicts with Plutus 1.52.0.0
+  ral:QuickCheck
+  , fin:QuickCheck
+  , *:QuickCheck

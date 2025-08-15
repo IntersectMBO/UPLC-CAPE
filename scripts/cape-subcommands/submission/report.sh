@@ -143,21 +143,60 @@ generate_benchmark_report() {
     cp "$HOME/.cache/uplc-cape-color-map.txt" "$color_map_file"
   fi
 
-  # Assign colors
+  # Define a set of 100 distinct colors for maximum support
+  local distinct_colors=(
+    # Primary bright colors
+    "#e31a1c" "#1f78b4" "#33a02c" "#ff7f00" "#6a3d9a"
+    "#b15928" "#f781bf" "#999999" "#ffff33" "#a65628"
+    # Secondary vibrant colors
+    "#377eb8" "#4daf4a" "#984ea3" "#ff7f00" "#a6cee3"
+    "#b2df8a" "#fdbf6f" "#cab2d6" "#fb9a99" "#ffff99"
+    # Tertiary distinct colors
+    "#8dd3c7" "#bebada" "#fb8072" "#80b1d3" "#fdb462"
+    "#b3de69" "#fccde5" "#d9d9d9" "#bc80bd" "#ccebc5"
+    # Quaternary colors - darker variants
+    "#1b9e77" "#d95f02" "#7570b3" "#e7298a" "#66a61e"
+    "#e6ab02" "#a6761d" "#666666" "#8e0152" "#c51b7d"
+    # More bright colors
+    "#de2d26" "#238b45" "#081d58" "#2c7fb8" "#7fcdbb"
+    "#41b6c4" "#2c7fb8" "#253494" "#fed976" "#feb24c"
+    # Extended palette - reds
+    "#bd0026" "#e31a1c" "#fc4e2a" "#fd8d3c" "#feb24c"
+    "#fed976" "#ffffb2" "#800026" "#bd0026" "#e31a1c"
+    # Extended palette - blues
+    "#08306b" "#08519c" "#2171b5" "#4292c6" "#6baed6"
+    "#9ecae1" "#c6dbef" "#deebf7" "#08589e" "#2b8cbe"
+    # Extended palette - greens
+    "#00441b" "#006d2c" "#238b45" "#41ab5d" "#74c476"
+    "#a1d99b" "#c7e9c0" "#e5f5e0" "#005a32" "#238b45"
+    # Extended palette - purples
+    "#3f007d" "#54278f" "#6a51a3" "#807dba" "#9e9ac8"
+    "#bcbddc" "#dadaeb" "#efedf5" "#4a1486" "#6a51a3"
+    # Extended palette - oranges
+    "#7f2704" "#a63603" "#d94801" "#f16913" "#fd8d3c"
+    "#fdae6b" "#fdd0a2" "#feedde" "#8c2d04" "#cc4c02"
+    # Extended palette - teals and cyans
+    "#00363d" "#006064" "#00838f" "#00acc1" "#26c6da"
+    "#4dd0e1" "#80deea" "#b2ebf2" "#006064" "#00838f"
+  )
+
+  # Assign colors using distinct palette
   local all_labels
   all_labels=$(echo "$csv_data" | awk -F, '{print $10}')
   while read -r label; do
     [ -n "$label" ] || continue
-    local color_index
-    color_index=$(grep "^${label}:" "$color_map_file" | cut -d: -f2 || true)
-    if [ -z "$color_index" ]; then
-      local hash
-      hash=$(printf '%s' "$label" | md5sum | cut -c1-8)
-      color_index=$((0x$hash % 256))
+    local color_spec
+    color_spec=$(grep "^${label}:" "$color_map_file" | cut -d: -f2 || true)
+    if [ -z "$color_spec" ]; then
+      # Count existing assignments to get next index
+      local next_index
+      next_index=$(wc -l < "$color_map_file")
+      local palette_index=$((next_index % ${#distinct_colors[@]}))
+      color_spec="${distinct_colors[$palette_index]}"
       if [[ $DRY_RUN -eq 1 ]]; then
-        log_info "[dry-run] Would add color mapping: ${label}:${color_index}"
+        log_info "[dry-run] Would add color mapping: ${label}:${color_spec}"
       else
-        echo "${label}:${color_index}" >> "$color_map_file"
+        echo "${label}:${color_spec}" >> "$color_map_file"
       fi
     fi
   done <<< "$all_labels"
@@ -197,18 +236,35 @@ set grid y
 set key off
 set auto x
 set yrange [0:$max_cpu_padded]
-plot '-' using 2:3:4:xtic(1) with boxes lc variable title 'CPU Units'
 EOF
+    # Generate plot command with individual series for each submission
+    local plot_cmd="plot "
+    local i=1
+    local first=true
+    while read -r label; do
+      [ -n "$label" ] || continue
+      local value color_spec
+      value=$(echo "$cpu_values" | sed -n "${i}p")
+      color_spec=$(grep "^${label}:" "$color_map_file" | cut -d: -f2)
+      if [ "$first" = "false" ]; then
+        plot_cmd="$plot_cmd, "
+      fi
+      first=false
+      plot_cmd="$plot_cmd'-' using 1:2:xtic(3) with boxes lc rgb \"$color_spec\" notitle"
+      ((i++))
+    done <<< "$cpu_labels"
+    echo "$plot_cmd" >> "$plot_file"
+
+    # Generate data sections for each submission
     local i=1
     while read -r label; do
       [ -n "$label" ] || continue
-      local value color_idx
+      local value
       value=$(echo "$cpu_values" | sed -n "${i}p")
-      color_idx=$(grep "^${label}:" "$color_map_file" | cut -d: -f2)
-      echo "$label $i $value $color_idx" >> "$plot_file"
+      echo "$i $value $label" >> "$plot_file"
+      echo "e" >> "$plot_file"
       ((i++))
     done <<< "$cpu_labels"
-    echo "e" >> "$plot_file"
     gnuplot "$plot_file"
   fi
 
@@ -237,18 +293,35 @@ set grid y
 set key off
 set auto x
 set yrange [0:$max_memory_padded]
-plot '-' using 2:3:4:xtic(1) with boxes lc variable title 'Memory Units'
 EOF
+    # Generate plot command with individual series for each submission
+    local plot_cmd="plot "
+    local i=1
+    local first=true
+    while read -r label; do
+      [ -n "$label" ] || continue
+      local value color_spec
+      value=$(echo "$memory_values" | sed -n "${i}p")
+      color_spec=$(grep "^${label}:" "$color_map_file" | cut -d: -f2)
+      if [ "$first" = "false" ]; then
+        plot_cmd="$plot_cmd, "
+      fi
+      first=false
+      plot_cmd="$plot_cmd'-' using 1:2:xtic(3) with boxes lc rgb \"$color_spec\" notitle"
+      ((i++))
+    done <<< "$memory_labels"
+    echo "$plot_cmd" >> "$plot_file"
+
+    # Generate data sections for each submission
     local i=1
     while read -r label; do
       [ -n "$label" ] || continue
-      local value color_idx
+      local value
       value=$(echo "$memory_values" | sed -n "${i}p")
-      color_idx=$(grep "^${label}:" "$color_map_file" | cut -d: -f2)
-      echo "$label $i $value $color_idx" >> "$plot_file"
+      echo "$i $value $label" >> "$plot_file"
+      echo "e" >> "$plot_file"
       ((i++))
     done <<< "$memory_labels"
-    echo "e" >> "$plot_file"
     gnuplot "$plot_file"
   fi
 
@@ -277,18 +350,35 @@ set grid y
 set key off
 set auto x
 set yrange [0:$max_script_size_padded]
-plot '-' using 2:3:4:xtic(1) with boxes lc variable title 'Script Size'
 EOF
+    # Generate plot command with individual series for each submission
+    local plot_cmd="plot "
+    local i=1
+    local first=true
+    while read -r label; do
+      [ -n "$label" ] || continue
+      local value color_spec
+      value=$(echo "$script_values" | sed -n "${i}p")
+      color_spec=$(grep "^${label}:" "$color_map_file" | cut -d: -f2)
+      if [ "$first" = "false" ]; then
+        plot_cmd="$plot_cmd, "
+      fi
+      first=false
+      plot_cmd="$plot_cmd'-' using 1:2:xtic(3) with boxes lc rgb \"$color_spec\" notitle"
+      ((i++))
+    done <<< "$script_labels"
+    echo "$plot_cmd" >> "$plot_file"
+
+    # Generate data sections for each submission
     local i=1
     while read -r label; do
       [ -n "$label" ] || continue
-      local value color_idx
+      local value
       value=$(echo "$script_values" | sed -n "${i}p")
-      color_idx=$(grep "^${label}:" "$color_map_file" | cut -d: -f2)
-      echo "$label $i $value $color_idx" >> "$plot_file"
+      echo "$i $value $label" >> "$plot_file"
+      echo "e" >> "$plot_file"
       ((i++))
     done <<< "$script_labels"
-    echo "e" >> "$plot_file"
     gnuplot "$plot_file"
   fi
 
@@ -317,18 +407,35 @@ set grid y
 set key off
 set auto x
 set yrange [0:$max_term_size_padded]
-plot '-' using 2:3:4:xtic(1) with boxes lc variable title 'Term Size'
 EOF
+    # Generate plot command with individual series for each submission
+    local plot_cmd="plot "
+    local i=1
+    local first=true
+    while read -r label; do
+      [ -n "$label" ] || continue
+      local value color_spec
+      value=$(echo "$term_values" | sed -n "${i}p")
+      color_spec=$(grep "^${label}:" "$color_map_file" | cut -d: -f2)
+      if [ "$first" = "false" ]; then
+        plot_cmd="$plot_cmd, "
+      fi
+      first=false
+      plot_cmd="$plot_cmd'-' using 1:2:xtic(3) with boxes lc rgb \"$color_spec\" notitle"
+      ((i++))
+    done <<< "$term_labels"
+    echo "$plot_cmd" >> "$plot_file"
+
+    # Generate data sections for each submission
     local i=1
     while read -r label; do
       [ -n "$label" ] || continue
-      local value color_idx
+      local value
       value=$(echo "$term_values" | sed -n "${i}p")
-      color_idx=$(grep "^${label}:" "$color_map_file" | cut -d: -f2)
-      echo "$label $i $value $color_idx" >> "$plot_file"
+      echo "$i $value $label" >> "$plot_file"
+      echo "e" >> "$plot_file"
       ((i++))
     done <<< "$term_labels"
-    echo "e" >> "$plot_file"
     gnuplot "$plot_file"
   fi
 
