@@ -1,4 +1,4 @@
-name: Validate submissions
+name: Validate submissions and tests
 
 on:
   pull_request:
@@ -9,7 +9,7 @@ permissions:
 
 jobs:
   validate:
-    name: Validate submissions
+    name: Validate submissions and tests
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
