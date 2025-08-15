@@ -1,0 +1,21 @@
+Usage:
+  cape benchmark list [benchmark]
+  cape benchmark [benchmark]
+
+Description:
+  'cape benchmark list' outputs only benchmark names (one per line).
+  Benchmarks are defined by a primary markdown file 'scenarios/<name>.md'.
+  Supplementary files named '<name>-*.md' are grouped under the same benchmark
+  and not listed separately.
+
+Details:
+  'cape benchmark <name>' shows the full Overview section plus submission info.
+
+Examples:
+  cape benchmark list
+  cape benchmark fibonacci
+  cape benchmark list fibonacci
+{{- if not .has_glow }}
+
+(Tip: install 'glow' to render markdown nicely; set CAPE_NO_GLOW=1 to disable)
+{{- end }}
