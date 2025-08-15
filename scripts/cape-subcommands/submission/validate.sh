@@ -3,47 +3,28 @@
 # CAPE Submission Validation Script
 # Validates submission files against JSON schemas
 
-set -euo pipefail
+set -Eeuo pipefail
+IFS=$'\n\t'
+trap 'code=$?; echo "Error: ${BASH_SOURCE[0]}:${LINENO}: command \"${BASH_COMMAND}\" failed with exit code ${code}" >&2; exit ${code}' ERR
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-PROJECT_ROOT="${PROJECT_ROOT:-$(cd "$SCRIPT_DIR/../../.." && pwd)}"
+# shellcheck disable=SC1091
+source "$SCRIPT_DIR/../../lib/cape_common.sh"
+cape_detect_root "$SCRIPT_DIR"
 
 # Schema file paths
 METRICS_SCHEMA="$PROJECT_ROOT/submissions/TEMPLATE/metrics.schema.json"
 METADATA_SCHEMA="$PROJECT_ROOT/submissions/TEMPLATE/metadata.schema.json"
 
-# Colors for output
-RED='\033[0;31m'
-GREEN='\033[0;32m'
-YELLOW='\033[1;33m'
-BLUE='\033[0;34m'
-NC='\033[0m' # No Color
-
-# Print colored output
-print_error() { echo -e "${RED}ERROR:${NC} $1" >&2; }
-print_success() { echo -e "${GREEN}SUCCESS:${NC} $1"; }
-print_warning() { echo -e "${YELLOW}WARNING:${NC} $1"; }
-print_info() { echo -e "${BLUE}INFO:${NC} $1"; }
-
-# Helper: path relative to project root
-relpath() {
-  local target="$1"
-  if [[ "$target" == "$PROJECT_ROOT" ]]; then
-    echo "."
-  elif [[ "$target" == "$PROJECT_ROOT"/* ]]; then
-    echo "${target#$PROJECT_ROOT/}"
-  else
-    echo "$target"
-  fi
-}
+# Early help handling via shared helper
+if cape_help_requested "$@"; then
+  cape_render_help "${BASH_SOURCE[0]}"
+  exit 0
+fi
 
 # Check if check-jsonschema is available
 check_jsonschema() {
-  if ! command -v check-jsonschema &> /dev/null; then
-    print_error "check-jsonschema is not available. Please ensure you're running this in the nix development shell."
-    print_info "The nix shell includes python3Packages.check-jsonschema for JSON schema validation."
-    exit 1
-  fi
+  cape_require_cmd check-jsonschema "Run 'nix develop' to get check-jsonschema."
 }
 
 # Validate a single file against a schema
@@ -52,28 +33,63 @@ validate_file() {
   local schema="$2"
   local file_type="$3"
   local rel_file
-  rel_file="$(relpath "$file")"
+  rel_file="$(cape_relpath "$file")"
 
   if [[ ! -f "$file" ]]; then
-    print_warning "File not found: $rel_file"
+    cape_warn "File not found: $rel_file"
     return 1
   fi
 
   if [[ ! -f "$schema" ]]; then
-    print_error "Schema not found: $(relpath "$schema")"
+    cape_error "Schema not found: $(cape_relpath "$schema")"
     return 1
   fi
 
-  print_info "Validating $file_type: $rel_file"
+  cape_info "Validating $file_type: $rel_file"
 
   # Suppress default 'ok -- validation done' output on success
   if check-jsonschema --schemafile "$schema" "$file" > /dev/null 2>&1; then
-    print_success "✓ $file_type valid ($rel_file)"
+    # Capitalize first letter and change message
+    local capitalized_type="$(echo "${file_type:0:1}" | tr '[:lower:]' '[:upper:]')${file_type:1}"
+    cape_success "✓ $capitalized_type matches schema ($rel_file)"
     return 0
   else
-    print_error "✗ $file_type invalid ($rel_file)"
+    cape_error "✗ $file_type invalid ($rel_file)"
     echo "Running detailed validation:"
     check-jsonschema --schemafile "$schema" "$file"
+    return 1
+  fi
+}
+
+# Validate directory name format based on metadata.json contents
+validate_directory_name() {
+  local submission_dir="$1"
+  local metadata_file="$2"
+  local expected_name
+  local actual_name
+
+  actual_name="$(basename "$submission_dir")"
+
+  # Extract values from metadata.json using basic JSON parsing
+  local compiler_name=$(grep -o '"name"[[:space:]]*:[[:space:]]*"[^"]*"' "$metadata_file" | head -1 | cut -d'"' -f4)
+  local compiler_version=$(grep -o '"version"[[:space:]]*:[[:space:]]*"[^"]*"' "$metadata_file" | head -1 | cut -d'"' -f4)
+  local contributor_name=$(grep -o '"name"[[:space:]]*:[[:space:]]*"[^"]*"' "$metadata_file" | tail -1 | cut -d'"' -f4)
+
+  # If contributor name is the same as compiler name, it means contributor.name wasn't found
+  if [ "$contributor_name" = "$compiler_name" ]; then
+    contributor_name=""
+  fi
+
+  # Construct expected directory name
+  expected_name="${compiler_name}_${compiler_version}_${contributor_name}"
+
+  if [ "$actual_name" = "$expected_name" ]; then
+    cape_success "✓ Directory name matches metadata ($actual_name)"
+    return 0
+  else
+    cape_error "✗ Directory name mismatch"
+    cape_error "  Expected: $expected_name"
+    cape_error "  Actual:   $actual_name"
     return 1
   fi
 }
@@ -83,9 +99,9 @@ validate_submission_dir() {
   local dir="$1"
   local has_errors=0
   local rel_dir
-  rel_dir="$(relpath "$dir")"
+  rel_dir="$(cape_relpath "$dir")"
 
-  print_info "Validating submission directory: $rel_dir"
+  cape_info "Validating submission directory: $rel_dir"
 
   # Find and validate metrics.json files
   if find "$dir" -name "metrics.json" -type f | grep -q .; then
@@ -95,7 +111,7 @@ validate_submission_dir() {
       fi
     done < <(find "$dir" -name "metrics.json" -type f -print0)
   else
-    print_warning "No metrics.json files found in $rel_dir"
+    cape_warn "No metrics.json files found in $rel_dir"
   fi
 
   # Find and validate metadata.json files
@@ -103,51 +119,22 @@ validate_submission_dir() {
     while IFS= read -r -d '' file; do
       if ! validate_file "$file" "$METADATA_SCHEMA" "metadata file"; then
         has_errors=1
+      else
+        # If metadata validation passed, also check directory name format
+        local submission_dir="$(dirname "$file")"
+        # Check if this looks like an individual submission directory (contains metadata.json directly)
+        if [[ -f "$submission_dir/metadata.json" && -f "$submission_dir/metrics.json" ]]; then
+          if ! validate_directory_name "$submission_dir" "$file"; then
+            has_errors=1
+          fi
+        fi
       fi
     done < <(find "$dir" -name "metadata.json" -type f -print0)
   else
-    print_warning "No metadata.json files found in $rel_dir"
+    cape_warn "No metadata.json files found in $rel_dir"
   fi
 
   return $has_errors
-}
-
-# Show usage information
-show_usage() {
-  cat << EOF
-CAPE Submission Validation
-
-USAGE:
-    cape submission validate [OPTIONS] [PATH]
-
-DESCRIPTION:
-    Validates submission files (metrics.json and metadata.json) against
-    their respective JSON schemas to ensure proper format and completeness.
-
-OPTIONS:
-    -h, --help       Show this help message
-    -a, --all        Validate all submissions in the submissions directory
-    -s, --single     Validate a specific file (requires file path)
-
-ARGUMENTS:
-  PATH            Path to a submission directory to validate (optional when using --all or --single)
-          NOTE: Running without either --all, --single, or an explicit PATH now errors with guidance.
-
-EXAMPLES:
-    # Validate all submissions
-    cape submission validate --all
-
-    # Validate a specific submission directory
-    cape submission validate submissions/fibonacci
-
-    # Validate a specific file
-    cape submission validate --single path/to/metrics.json
-
-SCHEMAS:
-    - Metrics schema: submissions/TEMPLATE/metrics.schema.json
-    - Metadata schema: submissions/TEMPLATE/metadata.schema.json
-
-EOF
 }
 
 # Parse command line arguments
@@ -157,10 +144,6 @@ target_path=""
 
 while [[ $# -gt 0 ]]; do
   case $1 in
-    -h | --help)
-      show_usage
-      exit 0
-      ;;
     -a | --all)
       validate_all=true
       shift
@@ -170,8 +153,8 @@ while [[ $# -gt 0 ]]; do
       shift
       ;;
     -*)
-      print_error "Unknown option: $1"
-      show_usage
+      cape_error "Unknown option: $1"
+      cape_render_help "${BASH_SOURCE[0]}"
       exit 1
       ;;
     *)
@@ -183,19 +166,8 @@ done
 
 # Enforce explicit mode or path to avoid accidental no-op validations
 if [[ "$validate_all" == false && "$validate_single" == false && -z "${target_path}" ]]; then
-  print_error "No mode or path specified."
-  echo
-  print_info "You must specify one of:"
-  echo "  --all            Validate all submissions under submissions/"
-  echo "  --single <file>  Validate a specific metrics.json or metadata.json file"
-  echo "  <path>           Validate a specific submission directory (e.g. submissions/fibonacci)"
-  echo
-  print_info "Examples:"
-  echo "  cape submission validate --all"
-  echo "  cape submission validate submissions/fibonacci"
-  echo "  cape submission validate --single submissions/fibonacci/Plinth_*/metadata.json"
-  echo
-  print_info "Run with --help to see full usage."
+  cape_error "No mode or path specified."
+  cape_render_help "${BASH_SOURCE[0]}"
   exit 1
 fi
 
@@ -206,7 +178,7 @@ main() {
   local exit_code=0
 
   if [[ "$validate_all" == true ]]; then
-    print_info "Validating all submissions in $(relpath "$PROJECT_ROOT/submissions/")"
+    cape_info "Validating all submissions in $(cape_relpath "$PROJECT_ROOT/submissions/")"
 
     # Find all submission directories (excluding TEMPLATE)
     local submission_dirs=()
@@ -218,7 +190,7 @@ main() {
     done < <(find "$PROJECT_ROOT/submissions" -mindepth 1 -maxdepth 1 -type d -print0 2> /dev/null || true)
 
     if [[ ${#submission_dirs[@]} -eq 0 ]]; then
-      print_warning "No submission directories found"
+      cape_warn "No submission directories found"
       exit 0
     fi
 
@@ -231,13 +203,13 @@ main() {
 
   elif [[ "$validate_single" == true ]]; then
     if [[ -z "$target_path" ]]; then
-      print_error "File path required when using --single option"
-      show_usage
+      cape_error "File path required when using --single option"
+      cape_render_help "${BASH_SOURCE[0]}"
       exit 1
     fi
 
     if [[ ! -f "$target_path" ]]; then
-      print_error "File not found: $(relpath "$target_path")"
+      cape_error "File not found: $(cape_relpath "$target_path")"
       exit 1
     fi
 
@@ -253,8 +225,8 @@ main() {
         exit_code=$?
         ;;
       *)
-        print_error "Unknown file type: $filename"
-        print_info "Supported files: metrics.json, metadata.json"
+        cape_error "Unknown file type: $filename"
+        cape_info "Supported files: metrics.json, metadata.json"
         exit 1
         ;;
     esac
@@ -264,7 +236,7 @@ main() {
     local dir_to_validate="${target_path:-$PWD}"
 
     if [[ ! -d "$dir_to_validate" ]]; then
-      print_error "Directory not found: $(relpath "$dir_to_validate")"
+      cape_error "Directory not found: $(cape_relpath "$dir_to_validate")"
       exit 1
     fi
 
@@ -273,9 +245,9 @@ main() {
   fi
 
   if [[ $exit_code -eq 0 ]]; then
-    print_success "All validations passed!"
+    cape_success "All validations passed!"
   else
-    print_error "Some validations failed. Please check the output above."
+    cape_error "Some validations failed. Please check the output above."
   fi
 
   exit $exit_code
