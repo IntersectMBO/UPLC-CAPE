@@ -1,5 +1,7 @@
 # Fibonacci Benchmark Scenario
 
+The Fibonacci benchmark is a **synthetic computational scenario** designed to measure the performance characteristics of recursive algorithms implemented as UPLC programs. This benchmark tests a compiler's ability to optimize recursive function calls, manage stack depth, and handle integer arithmetic operations efficiently.
+
 ## TL;DR
 
 Implement a Fibonacci function that computes **fibonacci(25) = 75025** and compile it as a fully-applied UPLC program.
@@ -28,10 +30,34 @@ Implement a Fibonacci function and compile it as a **fully-applied UPLC program*
 
 3. **Target Computation**: `fibonacci(25)` must produce exactly `75025`
 
-4. **Implementation Approach**: Choose any approach that works best for your compiler:
-   - **Recursive**: Direct translation of mathematical definition
-   - **Iterative**: Loop-based implementation for efficiency
-   - **Memoized**: Cached computation for optimization
+### Implementation Approaches
+
+Choose the approach that works best for your compiler:
+
+#### Recursive Implementation (Most Direct)
+```pseudocode
+function fibonacci_recursive(n):
+    if n == 1 OR n == 2:
+        return 1
+    return fibonacci_recursive(n - 1) + fibonacci_recursive(n - 2)
+```
+
+#### Iterative Implementation (More Efficient)
+```pseudocode
+function fibonacci_iterative(n):
+    if n == 1 OR n == 2:
+        return 1
+    
+    prev1 = 1  // fib(1)
+    prev2 = 1  // fib(2)
+    
+    for i in range(3, n + 1):
+        current = prev1 + prev2
+        prev1 = prev2
+        prev2 = current
+    
+    return prev2
+```
 
 ---
 
@@ -60,6 +86,19 @@ All submissions are measured on these standardized metrics:
 
 **Measurement Environment**: Standard CEK machine evaluator with default budget limits.
 
+### Performance Context
+
+**Why fibonacci(25)?**
+- **Computationally Significant**: ~242,785 recursive calls in naive implementation
+- **Budget Safe**: Fits comfortably within CEK machine limits
+- **Optimization Sensitive**: Large enough to show compiler differences
+- **Manageable**: Not so large as to create measurement difficulties
+
+**Expected Performance Ranges** (approximate):
+- **Recursive**: Higher CPU usage, demonstrates optimization capabilities
+- **Iterative**: Lower CPU usage, more predictable memory patterns  
+- **Memoized**: Moderate CPU, higher memory usage
+
 ---
 
 ## Submission Checklist
@@ -84,7 +123,7 @@ Use these templates from `submissions/TEMPLATE/`:
 
 ---
 
-## Quick Local Validation
+## Local Validation
 
 1. **Functional Test**: Execute your UPLC program and verify output is `75025`
 2. **Budget Test**: Ensure execution completes within CEK machine limits  
@@ -103,9 +142,7 @@ cape submission validate submissions/fibonacci/YourCompiler_1.0.0_YourHandle/
 
 ---
 
-## Constraints and Notes
-
-### Technical Constraints
+## Technical Constraints
 
 - **Plutus Core Version**: Target Plutus Core 1.1.0
 - **Plutus Version**: V3 recommended (V1, V2 acceptable)
@@ -113,33 +150,20 @@ cape submission validate submissions/fibonacci/YourCompiler_1.0.0_YourHandle/
 - **No External Dependencies**: Program must be self-contained
 - **Deterministic**: Must produce consistent results
 
-### Performance Context
-
-**Why fibonacci(25)?**
-- **Computationally Significant**: ~242,785 recursive calls in naive implementation
-- **Budget Safe**: Fits comfortably within CEK machine limits
-- **Optimization Sensitive**: Large enough to show compiler differences
-- **Manageable**: Not so large as to create measurement difficulties
-
-**Expected Performance Ranges** (approximate):
-- **Recursive**: Higher CPU usage, demonstrates optimization capabilities
-- **Iterative**: Lower CPU usage, more predictable memory patterns  
-- **Memoized**: Moderate CPU, higher memory usage
-
 ---
 
-## Appendix: Deep Dives
+## Verification Points
 
-For detailed algorithmic and implementation guidance, see these specialized views:
+### Correctness Verification
+1. **Base Cases**: `fibonacci(1) = 1` and `fibonacci(2) = 1`
+2. **Small Values**: `fibonacci(3) = 2`, `fibonacci(4) = 3`, `fibonacci(5) = 5`
+3. **Target Value**: `fibonacci(25) = 75025`
 
-### 📊 [State Machine View](./fibonacci-state-machine.md)
-Execution lifecycle with visual diagrams showing program flow from start to completion.
-
-### 🎭 [Behavioral Scenarios](./fibonacci-behavioral-scenarios.md) 
-Gherkin-based test specifications covering correctness, performance, and edge cases.
-
-### 💻 [Implementation Logic](./fibonacci-implementation-logic.md)
-Detailed pseudocode for recursive, iterative, and memoized approaches with compiler guidance.
+### Performance Verification
+1. **CPU Budget Compliance**: Must execute within CEK machine limits
+2. **Memory Budget Compliance**: Must not exceed memory allocation limits
+3. **Script Size**: Should be reasonably compact for the computation performed
+4. **Execution Consistency**: Should produce identical results across multiple runs
 
 ---
 
