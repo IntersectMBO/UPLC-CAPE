@@ -66,12 +66,12 @@ submissions/{scenario}/{compiler}_{version}_{contributor}/
 
 ### 4. Compiler
 
-A **Compiler** represents a specific version of a tool that can transform source code into UPLC programs. In the CAPE framework, different versions of the same compiler are treated as distinct entities (e.g., "Plinth 1.48" and "Plinth 1.49" are considered two different compilers).
+A **Compiler** represents a specific version of a tool that can transform source code into UPLC programs. In the CAPE framework, different versions of the same compiler are treated as distinct entities (e.g., "Plinth 1.51" and "Plinth 1.52" are considered two different compilers).
 
 **Properties:**
 
 - `name`: Compiler name (e.g., "Aiken", "Plutarch", "Plinth")
-- `version`: Semantic version string (e.g., "1.48", "2.1.0")
+- `version`: Semantic version string (e.g., "1.52", "2.1.0")
 - `commit_hash`: Specific commit identifier for reproducibility
 - `target`: Always "uplc" for this framework
 

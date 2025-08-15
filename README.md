@@ -211,7 +211,7 @@ cape submission new fibonacci    # Prompts for compiler, version, handle
          "term_size": 45
        },
        "execution_environment": {
-         "evaluator": "plutus-core-executable-1.49.0.0"
+         "evaluator": "plutus-core-executable-1.52.0.0"
        },
        "timestamp": "2025-01-15T00:00:00Z",
        "notes": "Optional notes."
