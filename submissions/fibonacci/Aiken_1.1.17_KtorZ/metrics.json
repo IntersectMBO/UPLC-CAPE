@@ -1,6 +1,6 @@
 {
   "execution_environment": {
-    "evaluator": "PlutusTx.Eval-1.49.0.0"
+    "evaluator": "PlutusTx.Eval-1.52.0.0"
   },
   "measurements": {
     "cpu_units": 155308959218,
@@ -10,6 +10,6 @@
   },
   "notes": "Generated using UPLC-CAPE measure tool",
   "scenario": "fibonacci",
-  "timestamp": "2025-08-14T13:57:10Z",
+  "timestamp": "2025-08-15T15:13:18Z",
   "version": "1.0.0"
 }

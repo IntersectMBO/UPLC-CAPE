@@ -51,7 +51,7 @@
         "evaluator": {
           "type": "string",
           "description": "Name and version of the evaluator used",
-          "examples": ["PlutusTx.Eval-1.49.0.0", "plutus-core-executable-1.49.0.0"]
+          "examples": ["PlutusTx.Eval-1.52.0.0", "plutus-core-executable-1.52.0.0"]
         }
       },
       "required": ["evaluator"],
