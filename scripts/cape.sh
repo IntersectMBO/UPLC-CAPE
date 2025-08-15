@@ -1,9 +1,10 @@
 #!/usr/bin/env bash
-set -euo pipefail
+set -Eeuo pipefail
+IFS=$'\n\t'
+trap 'code=$?; echo "Error: ${BASH_SOURCE[0]}:${LINENO}: command \"${BASH_COMMAND}\" failed with exit code ${code}" >&2; exit ${code}' ERR
 
 # CAPE - UPLC-CAPE project management tool
 # Usage: cape <command> [subcommand] [args...]
-# Version: 1.5 - Updated benchmark command to focus on scenarios with default list behavior
 
 # Handle --project-root argument (used by Nix wrapper)
 PROJECT_ROOT_OVERRIDE=""
@@ -11,6 +12,31 @@ if [ $# -gt 0 ] && [ "$1" = "--project-root" ]; then
   PROJECT_ROOT_OVERRIDE="$2"
   shift 2
 fi
+
+# Global flags: -v/--verbose, --no-color
+while [ $# -gt 0 ]; do
+  case "$1" in
+    -v | --verbose)
+      export CAPE_VERBOSE=1
+      shift
+      ;;
+    --no-color)
+      export NO_COLOR=1
+      shift
+      ;;
+    --)
+      shift
+      break
+      ;;
+    -*)
+      # Unknown global option; stop parsing to allow subcommand handling to catch it
+      break
+      ;;
+    *)
+      break
+      ;;
+  esac
+done
 
 # Find the project root by looking for the scenarios directory
 find_project_root() {
@@ -69,7 +95,7 @@ discover_commands() {
   if [ -d "$CAPE_DIR" ]; then
     for cmd_dir in "$CAPE_DIR"/*; do
       if [ -d "$cmd_dir" ]; then
-        commands+=($(basename "$cmd_dir"))
+        commands+=("$(basename "$cmd_dir")")
       fi
     done
   fi
@@ -85,7 +111,8 @@ discover_subcommands() {
   if [ -d "$cmd_dir" ]; then
     for script in "$cmd_dir"/*.sh; do
       if [ -f "$script" ]; then
-        local basename=$(basename "$script" .sh)
+        local basename
+        basename="$(basename "$script" .sh)"
         subcommands+=("$basename")
       fi
     done
@@ -94,12 +121,17 @@ discover_subcommands() {
 }
 
 show_help() {
-  local commands=($(discover_commands))
+  local commands=()
+  mapfile -t commands < <(discover_commands)
 
   cat << EOF
 CAPE - UPLC-CAPE Project Management Tool
 
-Usage: cape <command> [subcommand] [args...]
+Usage: cape [global flags] <command> [subcommand] [args...]
+
+Global flags:
+  -v, --verbose   Enable verbose logs for all subcommands
+      --no-color  Disable colored output
 
 EOF
 
@@ -107,7 +139,8 @@ EOF
     echo "Available commands:"
     for cmd in "${commands[@]}"; do
       echo "  $cmd"
-      local subcommands=($(discover_subcommands "$cmd"))
+      local subcommands=()
+      mapfile -t subcommands < <(discover_subcommands "$cmd")
       for subcmd in "${subcommands[@]}"; do
         echo "    $subcmd"
       done
@@ -115,7 +148,8 @@ EOF
     echo ""
     echo "Examples:"
     for cmd in "${commands[@]}"; do
-      local subcommands=($(discover_subcommands "$cmd"))
+      local subcommands=()
+      mapfile -t subcommands < <(discover_subcommands "$cmd")
       if [ ${#subcommands[@]} -gt 0 ]; then
         echo "  cape $cmd ${subcommands[0]} [args...]"
       fi
@@ -160,10 +194,18 @@ case "$COMMAND" in
           cd "$PROJECT_ROOT"
           exec "$script_path" "$@"
         fi
+      # For test command, run the test script directly
+      elif [ "$COMMAND" = "test" ]; then
+        script_path="$CAPE_DIR/$COMMAND/test.sh"
+        if [ -f "$script_path" ]; then
+          cd "$PROJECT_ROOT"
+          exec "$script_path" "$@"
+        fi
       fi
 
       # For other commands, show available subcommands
-      subcommands=($(discover_subcommands "$COMMAND"))
+      subcommands=()
+      mapfile -t subcommands < <(discover_subcommands "$COMMAND")
       echo "Error: $COMMAND command requires a subcommand"
       if [ ${#subcommands[@]} -gt 0 ]; then
         echo "Available subcommands: ${subcommands[*]}"
@@ -179,8 +221,18 @@ case "$COMMAND" in
 
     case "$SUBCOMMAND" in
       "--help" | "-h" | "help")
+        # For test command, pass --help through to the test script
+        if [ "$COMMAND" = "test" ]; then
+          script_path="$CAPE_DIR/$COMMAND/test.sh"
+          if [ -f "$script_path" ]; then
+            cd "$PROJECT_ROOT"
+            exec "$script_path" --help
+          fi
+        fi
+
         # Show help for the command
-        subcommands=($(discover_subcommands "$COMMAND"))
+        subcommands=()
+        mapfile -t subcommands < <(discover_subcommands "$COMMAND")
         echo "$COMMAND management commands:"
         for subcmd in "${subcommands[@]}"; do
           echo "  $subcmd"
@@ -194,6 +246,10 @@ case "$COMMAND" in
             echo "         cape $COMMAND fibonacci    # Show fibonacci benchmark details"
             echo "         cape $COMMAND list         # Same as first example"
             echo "         cape $COMMAND new <name>   # Create new benchmark"
+          elif [ "$COMMAND" = "test" ]; then
+            echo "Usage: cape $COMMAND [options]"
+            echo "Example: cape $COMMAND              # Run complete test suite"
+            echo "         cape $COMMAND --help       # Show test help"
           else
             echo "Usage: cape $COMMAND <subcommand> [args...]"
             echo "Example: cape $COMMAND ${subcommands[0]} [args...]"
@@ -220,7 +276,8 @@ case "$COMMAND" in
           if [ "$COMMAND" = "benchmark" ]; then
             echo "Error: '$SUBCOMMAND' is not a valid benchmark subcommand or benchmark name"
             echo ""
-            subcommands=($(discover_subcommands "$COMMAND"))
+            subcommands=()
+            mapfile -t subcommands < <(discover_subcommands "$COMMAND")
             if [ ${#subcommands[@]} -gt 0 ]; then
               echo "Available subcommands: ${subcommands[*]}"
             fi
@@ -244,7 +301,8 @@ case "$COMMAND" in
             echo "       cape benchmark new <benchmark-name>"
           else
             echo "Error: Unknown $COMMAND subcommand '$SUBCOMMAND'"
-            subcommands=($(discover_subcommands "$COMMAND"))
+            subcommands=()
+            mapfile -t subcommands < <(discover_subcommands "$COMMAND")
             if [ ${#subcommands[@]} -gt 0 ]; then
               echo "Available subcommands: ${subcommands[*]}"
             fi
