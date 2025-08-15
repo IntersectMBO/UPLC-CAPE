@@ -1,0 +1,41 @@
+name: Verify dev tooling and validate submissions
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    name: Verify dev tooling and validate submissions
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install Nix
+        uses: cachix/install-nix-action@v27
+        with:
+          extra_nix_config: |
+            accept-flake-config = true
+
+      - name: Use Cachix (pull/push if token provided)
+        uses: cachix/cachix-action@v14
+        with:
+          name: uplc-cape
+          authToken: ${{ secrets.CACHIX_AUTH_TOKEN }}
+
+      - name: Warm up Nix dev shell
+        run: |
+          # Ensure the dev shell is instantiated and dependencies are downloaded
+          nix develop --accept-flake-config --command cape --help > /dev/null
+
+      - name: Validate all submissions
+        run: |
+          nix develop --accept-flake-config --command cape submission validate --all
+
+      - name: Run test suite
+        run: |
+          nix develop --accept-flake-config --command cape test
