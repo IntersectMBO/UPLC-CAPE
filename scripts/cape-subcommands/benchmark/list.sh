@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
-set -euo pipefail
+set -Eeuo pipefail
+IFS=$'\n\t'
+trap 'code=$?; echo "Error: ${BASH_SOURCE[0]}:${LINENO}: command \"${BASH_COMMAND}\" failed with exit code ${code}" >&2; exit ${code}' ERR
 
 ## Benchmark listing / details
 # Usage:
@@ -7,32 +9,51 @@ set -euo pipefail
 #   cape benchmark <name>          # shows detailed info (Overview + submissions)
 #   cape benchmark list <name>     # same as above
 
-## Help
-if [ $# -eq 1 ] && [ "$1" = "--help" ]; then
-  cat << EOF
-Usage:
-  cape benchmark list [benchmark]
-  cape benchmark [benchmark]
+# Optional command check (non-fatal)
+has_cmd() { command -v "$1" > /dev/null 2>&1; }
 
-Description:
-  'cape benchmark list' outputs only benchmark names (one per line).
-  Benchmarks are defined by a primary markdown file 'scenarios/<name>.md'.
-  Supplementary files named '<name>-*.md' are grouped under the same benchmark
-  and not listed separately.
+# Resolve project root relative to this script
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+# Source shared helpers and detect root
+# shellcheck disable=SC1091
+source "$SCRIPT_DIR/../../lib/cape_common.sh"
+cape_detect_root "$SCRIPT_DIR"
+PROJECT_ROOT="${PROJECT_ROOT:-$(cd "$SCRIPT_DIR/../../.." && pwd)}"
 
-Details:
-  'cape benchmark <name>' shows the full Overview section plus submission info.
+# Show help text via gomplate
+render_help() {
+  cape_render_help "${BASH_SOURCE[0]}"
+}
 
-Examples:
-  cape benchmark list
-  cape benchmark fibonacci
-  cape benchmark list fibonacci
-EOF
+# Show help text
+show_help() {
+  render_help
+}
+
+# Check for help first
+if cape_help_requested "$@"; then
+  show_help
   exit 0
 fi
 
+# Parse options (support -h)
+OPTIND=1
+while getopts ":h" opt; do
+  case "$opt" in
+    h)
+      show_help
+      exit 0
+      ;;
+    \?)
+      echo "Unknown option: -$OPTARG" >&2
+      exit 1
+      ;;
+  esac
+done
+shift $((OPTIND - 1))
+
 if [ $# -gt 1 ]; then
-  echo "Usage: cape benchmark list [benchmark]" >&2
+  show_help
   exit 1
 fi
 
@@ -56,8 +77,8 @@ extract_overview() {
 discover_benchmarks() {
   declare -gA MAIN_FILES=()
   declare -gA HAS_SUPPLEMENTARY=()
-  if [ -d "scenarios" ]; then
-    for f in scenarios/*.md; do
+  if [ -d "$PROJECT_ROOT/scenarios" ]; then
+    for f in "$PROJECT_ROOT"/scenarios/*.md; do
       [ -f "$f" ] || continue
       local base
       base=$(basename "$f" .md)
@@ -85,6 +106,7 @@ sorted_benchmark_names() {
   } | sort -u
 }
 
+# Determine benchmark positional (if any)
 if [ $# -eq 1 ]; then BENCHMARK="$1"; else BENCHMARK=""; fi
 
 discover_benchmarks
@@ -105,12 +127,12 @@ render_markdown() {
 
 if [ -n "$BENCHMARK" ]; then
   # Detailed view
-  local_file="scenarios/$BENCHMARK.md"
+  local_file="$PROJECT_ROOT/scenarios/$BENCHMARK.md"
   if [ -f "$local_file" ]; then
     canonical="$local_file"
   else
     # fallback: first supplementary
-    for f in scenarios/$BENCHMARK-*.md; do
+    for f in "$PROJECT_ROOT"/scenarios/$BENCHMARK-*.md; do
       if [ -f "$f" ]; then
         canonical="$f"
         break
@@ -133,19 +155,17 @@ if [ -n "$BENCHMARK" ]; then
     echo
   fi
   # submissions summary
-  if [ -d "submissions/$BENCHMARK" ]; then
-    submission_count=$(find "submissions/$BENCHMARK" -maxdepth 1 -type d ! -path "submissions/$BENCHMARK" | wc -l)
+  if [ -d "$PROJECT_ROOT/submissions/$BENCHMARK" ]; then
+    submission_count=$(find "$PROJECT_ROOT/submissions/$BENCHMARK" -maxdepth 1 -type d ! -path "$PROJECT_ROOT/submissions/$BENCHMARK" | wc -l)
   else
     submission_count=0
   fi
   echo "Submissions ($submission_count):"
   if [ $submission_count -gt 0 ]; then
-    find "submissions/$BENCHMARK" -maxdepth 1 -type d ! -path "submissions/$BENCHMARK" | head -5 | while read d; do
+    # List all submissions safely
+    while IFS= read -r -d '' d; do
       echo "  - $(basename "$d")"
-    done
-    if [ $submission_count -gt 5 ]; then
-      echo "  ... and $((submission_count - 5)) more"
-    fi
+    done < <(find "$PROJECT_ROOT/submissions/$BENCHMARK" -maxdepth 1 -type d ! -path "$PROJECT_ROOT/submissions/$BENCHMARK" -print0)
   else
     echo "  (none)"
   fi

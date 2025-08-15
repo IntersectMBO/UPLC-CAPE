@@ -1,0 +1,14 @@
+Usage:
+  cape submission new <scenario> <language> <version> <github-handle>
+
+Examples:
+  cape submission new fibonacci Aiken 1.1.17 KtorZ
+  cape submission new fibonacci Plinth 1.49.0.0 Unisay
+
+Notes:
+  - All arguments are required; if any are missing, the command fails.
+  - Folder name will be <language>_<version>_<github-handle>.
+  - Scenario must exist as scenarios/<scenario>.md.
+  - Language: letters/digits/hyphens only (no spaces).
+  - Version: digits, dots and hyphens (e.g., 1.49.0.0 or 1.1.17).
+  - GitHub handle: 1-39 chars, alnum and hyphens, cannot start/end with '-'.

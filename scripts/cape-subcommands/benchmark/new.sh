@@ -1,23 +1,20 @@
 #!/usr/bin/env bash
-set -euo pipefail
+set -Eeuo pipefail
+IFS=$'\n\t'
+trap 'code=$?; echo "Error: ${BASH_SOURCE[0]}:${LINENO}: command \"${BASH_COMMAND}\" failed with exit code ${code}" >&2; exit ${code}' ERR
+
+# Resolve project root relative to this script (CWD-independent)
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+# shellcheck disable=SC1091
+source "$SCRIPT_DIR/../../lib/cape_common.sh"
+cape_detect_root "$SCRIPT_DIR"
 
 # Create a new benchmark scenario from template
 # Usage: cape benchmark new [benchmark-name]
 
 # Check for help flag
-if [ $# -eq 1 ] && [ "$1" = "--help" ]; then
-  echo "Usage: cape benchmark new [benchmark-name]"
-  echo "Example: cape benchmark new two-party-escrow"
-  echo "Note: If benchmark-name is not provided, you will be prompted"
-  echo ""
-  echo "Arguments:"
-  echo "  benchmark-name - Name for the new benchmark (lowercase, hyphens allowed)"
-  echo ""
-  echo "The benchmark name must:"
-  echo "  - Be lowercase"
-  echo "  - Start with a letter"
-  echo "  - Can contain hyphens"
-  echo "  - End with a letter or number"
+if cape_help_requested "$@"; then
+  cape_render_help "${BASH_SOURCE[0]}"
   exit 0
 fi
 
@@ -34,9 +31,7 @@ if [ $# -eq 0 ]; then
 elif [ $# -eq 1 ]; then
   BENCHMARK_NAME="$1"
 else
-  echo "Usage: cape benchmark new [benchmark-name]"
-  echo "Example: cape benchmark new two-party-escrow"
-  echo "Note: If benchmark-name is not provided, you will be prompted"
+  cape_render_help "${BASH_SOURCE[0]}"
   exit 1
 fi
 
@@ -49,10 +44,10 @@ if ! echo "$BENCHMARK_NAME" | grep -qE '^[a-z][a-z0-9-]*[a-z0-9]$|^[a-z]$'; then
 fi
 
 # Check if benchmark already exists
-if [ -f "scenarios/${BENCHMARK_NAME}.md" ]; then
+if [ -f "$PROJECT_ROOT/scenarios/${BENCHMARK_NAME}.md" ]; then
   echo "Error: Benchmark '${BENCHMARK_NAME}' already exists"
   echo "Available benchmarks:"
-  ls scenarios/*.md 2> /dev/null | grep -v "TEMPLATE" | sed 's/scenarios\///;s/\.md$//' | sed 's/^/  /' || echo "  (none)"
+  find "$PROJECT_ROOT/scenarios" -maxdepth 1 -type f -name '*.md' -printf '%f\n' | sed -e 's/\\.md$//' -e '/^TEMPLATE$/d' | sed 's/^/  /' || echo "  (none)"
   exit 1
 fi
 
@@ -60,7 +55,11 @@ fi
 echo "Creating new benchmark: $BENCHMARK_NAME"
 
 # Read template and replace placeholders
-template_content=$(cat scenarios/TEMPLATE/scenario-template.md)
+if [ ! -f "$PROJECT_ROOT/scenarios/TEMPLATE/scenario-template.md" ]; then
+  echo "Error: Template not found at scenarios/TEMPLATE/scenario-template.md" >&2
+  exit 1
+fi
+template_content=$(cat "$PROJECT_ROOT/scenarios/TEMPLATE/scenario-template.md")
 
 # Replace placeholders with actual benchmark name
 benchmark_content=$(echo "$template_content" | sed "s/{scenario_name}/$BENCHMARK_NAME/g")
@@ -70,10 +69,11 @@ benchmark_title=$(echo "$BENCHMARK_NAME" | sed 's/-/ /g' | sed 's/\b\w/\U&/g')
 benchmark_content=$(echo "$benchmark_content" | sed "s/{Scenario Name}/$benchmark_title/g")
 
 # Write the new benchmark file
-echo "$benchmark_content" > "scenarios/${BENCHMARK_NAME}.md"
+echo "$benchmark_content" > "$PROJECT_ROOT/scenarios/${BENCHMARK_NAME}.md"
 
 echo "✅ Benchmark '${BENCHMARK_NAME}' created successfully!"
-echo "📂 File: scenarios/${BENCHMARK_NAME}.md"
+echo "📂 File: $PROJECT_ROOT/scenarios/${BENCHMARK_NAME}.md"
+
 echo ""
 echo "Next steps:"
 echo "1. Edit scenarios/${BENCHMARK_NAME}.md to define your benchmark"

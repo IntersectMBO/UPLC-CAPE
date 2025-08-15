@@ -1,0 +1,37 @@
+CAPE Submission Measure
+
+USAGE:
+    cape submission measure [OPTIONS] ( --all | PATH | -i <file> -o <file> )
+
+DESCRIPTION:
+    Measures UPLC program performance including CPU units, memory units,
+    script size, and term size. Creates or updates metrics.json files.
+
+    You MUST explicitly choose one of the modes:
+      --all                Measure every submission under submissions/
+      PATH                 Measure all *.uplc files under a specific path
+      -i FILE -o FILE      Measure a single UPLC file to specified metrics.json
+
+OPTIONS:
+    -h, --help       Show this help message
+    -a, --all        Measure all submissions (cannot be combined with PATH or -i/-o)
+    -i, --input      Input UPLC file (requires -o/--output)
+    -o, --output     Output metrics.json file (requires -i/--input)
+    -v, --verbose    Print detailed logs and tool output
+        --no-color   Disable colored output
+
+ARGUMENTS:
+  PATH            Path to a directory containing .uplc files to measure.
+                  Use '.' to measure only the current directory.
+
+EXAMPLES:
+    cape submission measure -i fibonacci.uplc -o metrics.json
+    cape submission measure --all
+    cape submission measure submissions/fibonacci/Plinth_1.49_Unisay
+    cape submission measure .
+
+NOTES:
+    - Explicit mode selection prevents accidental measurement of all submissions.
+    - The measure tool evaluates UPLC programs and extracts performance metrics.
+    - Output metrics.json files follow the CAPE framework schema.
+    - Requires the nix development shell with the measure tool available.

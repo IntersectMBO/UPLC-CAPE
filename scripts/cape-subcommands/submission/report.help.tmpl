@@ -1,0 +1,36 @@
+Usage: cape submission report [--dry-run] [--keep-existing] <benchmark>
+       cape submission report [--dry-run] [--keep-existing] --all
+
+Generate HTML performance reports with chart images comparing submission performance.
+
+Arguments:
+  <benchmark>    Name of the benchmark to generate report for
+  --all          Generate reports for all benchmarks with submissions
+
+Options:
+  --dry-run       Show actions without writing files
+  --keep-existing Do not delete the existing report/ directory before generating
+
+The report includes:
+- Main index page (report/index.html) listing all benchmarks
+- Individual benchmark report pages (report/benchmarks/<benchmark>.html)
+- 4 PNG chart images per benchmark comparing submissions by:
+  - CPU Units: Execution cost in CPU units
+  - Memory Units: Memory consumption
+  - Script Size: Serialized UPLC script size in bytes
+  - Term Size: Number of AST nodes in UPLC term
+
+Each submission is labeled as: {language}_{version}_{user}
+
+Output:
+  report/index.html                           # Main index with all benchmarks
+  report/benchmarks/<benchmark>.html          # Individual benchmark reports
+  report/benchmarks/images/<benchmark>_*.png  # Chart image files
+
+Examples:
+  cape submission report fibonacci    # Report for fibonacci benchmark
+  cape submission report --all        # Reports for all benchmarks
+
+Requirements:
+  - gnuplot must be installed
+  - Submissions must have metrics.json files (use 'cape submission measure')
