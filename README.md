@@ -318,10 +318,10 @@ UPLC-CAPE/
 - Plutus Core target: 1.1.0.
   - Use `plcVersion110` (for code in plinth-workspace).
 - Package baselines (CHaP):
-  - plutus-core >= 1.49.0.0
-  - plutus-tx >= 1.49.0.0
-  - plutus-ledger-api >= 1.49.0.0
-  - plutus-tx-plugin >= 1.49.0.0
+  - plutus-core >= 1.52.0.0
+  - plutus-tx >= 1.52.0.0
+  - plutus-ledger-api >= 1.52.0.0
+  - plutus-tx-plugin >= 1.52.0.0
 
 ---
 
