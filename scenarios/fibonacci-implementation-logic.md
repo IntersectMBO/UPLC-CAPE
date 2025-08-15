@@ -1,8 +1,8 @@
 # Fibonacci Implementation Logic View
 
-This document provides detailed implementation specifications for the Fibonacci algorithm. It includes pseudocode for different implementation approaches that compiler teams can use as reference when implementing this benchmark.
+This document provides detailed implementation specifications and pseudocode for the Fibonacci algorithm benchmark.
 
-> **Note**: This view focuses on the algorithmic implementation details. For behavioral specifications, see [fibonacci-behavioral-scenarios.md](./fibonacci-behavioral-scenarios.md). For state management, see [fibonacci-state-machine.md](./fibonacci-state-machine.md).
+> **Main Specification**: See [fibonacci.md](./fibonacci.md) for the complete task description, requirements, and submission guidelines. This document provides detailed algorithmic guidance for implementers who need comprehensive implementation references.
 
 ## Implementation Philosophy
 
@@ -134,6 +134,6 @@ The framework measures success based on:
 
 ## Cross-References
 
-- **Behavioral Testing**: [fibonacci-behavioral-scenarios.md](./fibonacci-behavioral-scenarios.md)
-- **State Management**: [fibonacci-state-machine.md](./fibonacci-state-machine.md)
-- **Complete Specification**: [fibonacci.md](./fibonacci.md)
+- **Main Specification**: [fibonacci.md](./fibonacci.md) - Complete task description and requirements
+- **Behavioral Testing**: [fibonacci-behavioral-scenarios.md](./fibonacci-behavioral-scenarios.md) - Gherkin test scenarios
+- **State Management**: [fibonacci-state-machine.md](./fibonacci-state-machine.md) - Execution flow diagrams

@@ -1,105 +1,146 @@
 # Fibonacci Benchmark Scenario
 
-## Overview
+## TL;DR
 
-The Fibonacci benchmark is a **synthetic computational scenario** designed to measure the performance characteristics of recursive algorithms implemented as UPLC programs. This benchmark tests a compiler's ability to optimize recursive function calls, manage stack depth, and handle integer arithmetic operations efficiently.
+Implement a Fibonacci function that computes **fibonacci(25) = 75025** and compile it as a fully-applied UPLC program.
 
-**Purpose**: This scenario serves as a standardized test for measuring:
+**Required Files**: Submit `fibonacci.uplc`, `metadata.json`, `metrics.json` to `submissions/fibonacci/{Compiler}_{Version}_{Handle}/`
 
-- CPU unit consumption for recursive computations
-- Memory unit usage during stack-intensive operations
-- Script size optimization for mathematical algorithms
-- Term size efficiency in recursive function encoding
-
-**Key Constraint**: The UPLC program must be **fully-applied** before benchmarking, meaning the Fibonacci number to compute is baked into the script itself rather than passed as a parameter. This ensures consistent measurement across all compiler implementations and prevents variations based on different argument values.
-
-**Target Computation**: `fibonacci(25) = 75025`
-
-- This value is chosen to be computationally significant enough to measure performance differences
-- It fits comfortably within the CEK machine execution budget limits
-- It provides sufficient recursive depth to test optimization capabilities
-
-**Success Criteria**: The program must successfully compute the 25th Fibonacci number (75025) within the execution budget constraints.
+**Target**: `fibonacci(25)` → Expected result: `75025`  
+**Metrics**: CPU units, Memory units, Script size (bytes), Term size  
+**Constraints**: Plutus Core 1.1.0, Plutus V3 recommended, CEK machine budget limits  
+**Implementation**: Choose recursive, iterative, or memoized approach
 
 ---
 
-## Detailed Views
+## Exact Task
 
-This benchmark is documented across multiple specialized views for better organization and readability:
+Implement a Fibonacci function and compile it as a **fully-applied UPLC program** that computes the 25th Fibonacci number.
+
+### Core Requirements
+
+1. **Function Implementation**: Create a function that computes Fibonacci numbers using the mathematical definition:
+   - `fibonacci(1) = 1`
+   - `fibonacci(2) = 1`  
+   - `fibonacci(n) = fibonacci(n-1) + fibonacci(n-2)` for n > 2
+
+2. **Full Application**: The UPLC program must be fully-applied with the target value (25) baked in during compilation, not passed as a parameter.
+
+3. **Target Computation**: `fibonacci(25)` must produce exactly `75025`
+
+4. **Implementation Approach**: Choose any approach that works best for your compiler:
+   - **Recursive**: Direct translation of mathematical definition
+   - **Iterative**: Loop-based implementation for efficiency
+   - **Memoized**: Cached computation for optimization
+
+---
+
+## Acceptance Criteria
+
+Your submission passes if:
+
+- ✅ **Correctness**: Program outputs exactly `75025`
+- ✅ **Budget Compliance**: Executes within CEK machine CPU and memory limits
+- ✅ **Determinism**: Produces identical results across multiple executions
+- ✅ **Self-Contained**: No external dependencies or parameters
+- ✅ **File Format**: Valid UPLC program that can be executed by the CEK evaluator
+
+---
+
+## Metrics Recorded
+
+All submissions are measured on these standardized metrics:
+
+| Metric | Description | Purpose |
+|--------|-------------|---------|
+| **CPU Units** | Total execution units consumed | Computational efficiency |
+| **Memory Units** | Peak memory usage during execution | Memory efficiency |
+| **Script Size** | Compiled UPLC script size in bytes | Code generation efficiency |
+| **Term Size** | UPLC term representation size | Optimization effectiveness |
+
+**Measurement Environment**: Standard CEK machine evaluator with default budget limits.
+
+---
+
+## Submission Checklist
+
+Before submitting your implementation:
+
+- [ ] **Verify Result**: Program produces exactly `75025` when executed
+- [ ] **Test Budget**: Execution completes without budget exhaustion
+- [ ] **Prepare Files**:
+  - [ ] `fibonacci.uplc` - Your compiled UPLC program
+  - [ ] `metadata.json` - Compiler info, optimization settings, implementation notes
+  - [ ] `metrics.json` - Performance measurements (CPU, memory, script size, term size)
+  - [ ] `README.md` - Brief description of your approach
+- [ ] **Directory Structure**: Place in `submissions/fibonacci/{Compiler}_{Version}_{Handle}/`
+- [ ] **Schema Validation**: Ensure JSON files match required schemas
+
+### File Templates
+
+Use these templates from `submissions/TEMPLATE/`:
+- `metadata-template.json` for compiler and build information
+- `metrics-template.json` for performance measurements
+
+---
+
+## Quick Local Validation
+
+1. **Functional Test**: Execute your UPLC program and verify output is `75025`
+2. **Budget Test**: Ensure execution completes within CEK machine limits  
+3. **Consistency Test**: Run multiple times to confirm deterministic behavior
+4. **Schema Test**: Validate JSON files against schemas in `submissions/TEMPLATE/`
+
+### Example Validation Commands
+
+```bash
+# Measure your UPLC program (if using the cape tool)
+cape submission measure fibonacci.uplc
+
+# Validate submission files
+cape submission validate submissions/fibonacci/YourCompiler_1.0.0_YourHandle/
+```
+
+---
+
+## Constraints and Notes
+
+### Technical Constraints
+
+- **Plutus Core Version**: Target Plutus Core 1.1.0
+- **Plutus Version**: V3 recommended (V1, V2 acceptable)
+- **Budget Limits**: Must complete within standard CEK machine execution limits
+- **No External Dependencies**: Program must be self-contained
+- **Deterministic**: Must produce consistent results
+
+### Performance Context
+
+**Why fibonacci(25)?**
+- **Computationally Significant**: ~242,785 recursive calls in naive implementation
+- **Budget Safe**: Fits comfortably within CEK machine limits
+- **Optimization Sensitive**: Large enough to show compiler differences
+- **Manageable**: Not so large as to create measurement difficulties
+
+**Expected Performance Ranges** (approximate):
+- **Recursive**: Higher CPU usage, demonstrates optimization capabilities
+- **Iterative**: Lower CPU usage, more predictable memory patterns  
+- **Memoized**: Moderate CPU, higher memory usage
+
+---
+
+## Appendix: Deep Dives
+
+For detailed algorithmic and implementation guidance, see these specialized views:
 
 ### 📊 [State Machine View](./fibonacci-state-machine.md)
+Execution lifecycle with visual diagrams showing program flow from start to completion.
 
-Detailed state lifecycle and transitions with visual Mermaid diagrams showing the program's execution flow from start to completion.
-
-### 🎭 [Behavioral Scenarios](./fibonacci-behavioral-scenarios.md)
-
-Comprehensive Gherkin-based behavioral specifications with test scenarios covering correctness, performance, and edge cases.
+### 🎭 [Behavioral Scenarios](./fibonacci-behavioral-scenarios.md) 
+Gherkin-based test specifications covering correctness, performance, and edge cases.
 
 ### 💻 [Implementation Logic](./fibonacci-implementation-logic.md)
-
-Detailed pseudocode implementations including recursive, iterative, and memoized approaches with compiler-specific guidance.
-
----
-
-## Benchmark Metrics
-
-### Primary Metrics
-
-- **CPU Units**: Total execution units consumed during computation
-- **Memory Units**: Peak memory usage during computation
-- **Script Size**: Size of the compiled UPLC script in bytes
-- **Term Size**: Size of the UPLC term representation
-
-### Standardized Test Configuration
-
-| Benchmark Name | Target Computation | Expected Result | Purpose |
-| --- | --- | --- | --- |
-| `fibonacci_25` | fibonacci(25) | 75025 | Standard benchmark for recursive computation |
-
-**Rationale for fibonacci(25)**:
-
-- **Computationally Significant**: Requires 242,785 recursive calls in naive implementation
-- **Budget Compliant**: Fits well within CEK machine execution limits
-- **Optimization Sensitive**: Large enough to show meaningful differences between optimized and unoptimized code
-- **Deterministic**: Always produces the same result (75025)
-
-### Metadata Requirements
-
-Each benchmark result must include:
-
-- **Compiler**: Name and version (e.g., "Aiken 1.0.8", "Plutus 1.2.0")
-- **Optimization Level**: Compiler optimization settings used
-- **Implementation Approach**: "recursive" or "iterative" or "memoized"
-- **Plutus Version**: Target Plutus version (V1, V2, V3)
-- **Target Value**: Always 25 (for consistency verification)
-- **Expected Result**: Always 75025 (for correctness verification)
-- **Execution Environment**: Local simulation vs actual on-chain execution
+Detailed pseudocode for recursive, iterative, and memoized approaches with compiler guidance.
 
 ---
 
-## Implementation Notes
-
-### For Compiler Authors
-
-1. **Full Application Required**: The program must be compiled with the target value (25) baked in, not parameterized
-2. **Choose Your Approach**: Implement recursive, iterative, or memoized version based on your compiler's strengths
-3. **Optimization Opportunities**: This benchmark tests recursive function optimization, tail-call optimization, and arithmetic operation efficiency
-4. **Budget Awareness**: Ensure the implementation fits within standard CEK machine execution budgets
-5. **Deterministic Execution**: The computation must be deterministic across all executions
-
-### Expected Performance Characteristics
-
-- **Recursive Implementation**: Exponential resource usage - approximately O(φ^n) where φ ≈ 1.618
-- **Iterative Implementation**: Linear resource usage - O(n)
-- **Memoized Implementation**: Linear resource usage with higher memory overhead - O(n)
-- **Compiler Optimization**: Significant differences expected between optimization levels
-
-### Budget Considerations
-
-The choice of fibonacci(25) ensures:
-
-- **Recursive**: ~242K function calls, should complete within budget
-- **Iterative**: 24 iterations, minimal resource usage
-- **Memoized**: 25 memoization entries, moderate memory usage
-
-This benchmark serves as both a correctness test and a performance comparison tool, allowing compiler authors to validate their recursive function handling while providing standardized metrics for community comparison.
+*This benchmark serves as both a correctness test and performance comparison tool, enabling compiler authors to validate their recursive function handling while providing standardized metrics for community comparison.*

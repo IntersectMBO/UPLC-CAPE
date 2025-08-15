@@ -1,6 +1,8 @@
 # Fibonacci Algorithm - State Machine View
 
-This view represents the execution lifecycle of the Fibonacci algorithm as a state machine diagram. The diagram shows the general computational flow independent of the specific input value.
+This view represents the execution lifecycle of the Fibonacci algorithm as a state machine diagram.
+
+> **Main Specification**: See [fibonacci.md](./fibonacci.md) for the complete task description, requirements, and submission guidelines. This document provides detailed state transition diagrams for implementers who need comprehensive execution flow visualization.
 
 ## State Diagram
 

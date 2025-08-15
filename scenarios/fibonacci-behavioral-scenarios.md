@@ -1,6 +1,8 @@
 # Fibonacci Algorithm - Behavioral Scenarios
 
-This view defines the behavioral scenarios for testing the Fibonacci algorithm using Gherkin syntax.
+This is a detailed view that provides comprehensive Gherkin-based behavioral specifications for the Fibonacci benchmark. 
+
+> **Main Specification**: See [fibonacci.md](./fibonacci.md) for the complete task description, requirements, and submission guidelines. This document provides detailed behavioral test scenarios for implementers who need comprehensive testing specifications.
 
 ## Feature: Fibonacci Computation
 
