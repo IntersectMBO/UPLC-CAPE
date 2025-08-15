@@ -21,6 +21,15 @@ jobs:
           extra_nix_config: |
             accept-flake-config = true
 
+      - name: Warm up Nix dev shell
+        run: |
+          # Ensure the dev shell is instantiated and dependencies are downloaded
+          nix develop --accept-flake-config --command cape --help > /dev/null
+
       - name: Validate all submissions
         run: |
           nix develop --accept-flake-config --command cape submission validate --all
+
+      - name: Run test suite
+        run: |
+          nix develop --accept-flake-config --command cape test
