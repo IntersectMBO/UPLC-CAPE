@@ -157,12 +157,6 @@ See USAGE.md at the project root for the full CLI reference.
 
 ## Verification Points
 
-### Correctness Verification
-
-1. **Base Case**: `factorial(0) = 1`
-2. **Small Values**: `factorial(1) = 1`, `factorial(2) = 2`, `factorial(3) = 6`, `factorial(4) = 24`
-3. **Target Value**: `factorial(10) = 3628800`
-
 ### Performance Verification
 
 1. **CPU Budget Compliance**: Must execute within CEK machine limits
