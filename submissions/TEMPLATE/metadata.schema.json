@@ -17,7 +17,7 @@
         "version": {
           "type": "string",
           "description": "Version of the compiler",
-          "examples": ["1.0.8", "1.49.0.0", "0.7.1"]
+          "examples": ["1.0.8", "1.52.0.0", "0.7.1"]
         },
         "commit_hash": {
           "type": "string",

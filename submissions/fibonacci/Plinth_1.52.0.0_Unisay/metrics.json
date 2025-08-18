@@ -8,7 +8,7 @@
     "script_size_bytes": 45,
     "term_size": 38
   },
-  "notes": "Generated using UPLC-CAPE measure tool",
+  "notes": "<optional notes>",
   "scenario": "fibonacci",
   "timestamp": "2025-08-15T15:13:19Z",
   "version": "1.0.0"

@@ -63,7 +63,7 @@ is_valid_handle() { [[ $1 =~ ^[A-Za-z0-9]([A-Za-z0-9-]*[A-Za-z0-9])?$ ]] && [[ $
 if [ $# -eq 0 ]; then
   SCENARIO=$(prompt_for_arg "Scenario" "Enter benchmark/scenario name:")
   LANGUAGE=$(prompt_for_arg "Language" "Enter compiler/language name (e.g., Aiken, Plinth, Plutarch):")
-  VERSION=$(prompt_for_arg "Version" "Enter compiler version (e.g., 1.1.17 or 1.49.0.0):")
+  VERSION=$(prompt_for_arg "Version" "Enter compiler version (e.g., 1.1.17 or 1.52.0.0):")
   GITHUB_HANDLE=$(prompt_for_arg "GitHub handle" "Enter your GitHub handle:")
 elif [ $# -eq 1 ]; then
   SCENARIO="$1"
@@ -73,7 +73,7 @@ elif [ $# -eq 1 ]; then
 elif [ $# -eq 2 ]; then
   SCENARIO="$1"
   LANGUAGE="$2"
-  VERSION=$(prompt_for_arg "Version" "Enter compiler version (e.g., 1.1.17 or 1.49.0.0):")
+  VERSION=$(prompt_for_arg "Version" "Enter compiler version (e.g., 1.1.17 or 1.52.0.0):")
   GITHUB_HANDLE=$(prompt_for_arg "GitHub handle" "Enter your GitHub handle:")
 elif [ $# -eq 3 ]; then
   SCENARIO="$1"
