@@ -5,7 +5,7 @@ import Prelude
 import PlutusCore qualified as PLC
 import PlutusCore.Annotation (SrcSpans (..))
 import PlutusTx.Code (CompiledCodeIn (..))
-import qualified System.Exit as Exit
+import System.Exit qualified as Exit
 import UntypedPlutusCore qualified as UPLC
 import UntypedPlutusCore.DeBruijn (deBruijnTerm)
 
@@ -31,7 +31,7 @@ applyPrograms ::
   IO (CompiledCodeIn PLC.DefaultUni PLC.DefaultFun ())
 applyPrograms fProg xProg = do
   let UPLC.Program _ verF fTermNamed = fProg
-      UPLC.Program _ _    xTermNamed = xProg
+      UPLC.Program _ _ xTermNamed = xProg
   case (deBruijnTerm fTermNamed, deBruijnTerm xTermNamed) of
     (Right fTerm, Right xTerm) -> do
       let ann = SrcSpans mempty

@@ -2,7 +2,7 @@ module Main (main) where
 
 import Prelude
 
-import qualified Control.Exception as E
+import Control.Exception qualified as E
 import Data.Aeson (ToJSON, (.=))
 import Data.Aeson qualified as Json
 import Data.Aeson.Encode.Pretty qualified as AesonPretty
@@ -19,14 +19,14 @@ import PlutusTx.Code (countAstNodes)
 import PlutusTx.Eval (EvalResult (..), displayEvalResult, evaluateCompiledCode)
 import System.Directory (doesFileExist)
 import System.Exit (ExitCode (..))
-import qualified System.Exit as Exit
+import System.Exit qualified as Exit
 import System.Process (readProcess)
 import UntypedPlutusCore qualified as UPLC
 import UntypedPlutusCore.Parser qualified as UPLCParser
 
 import App.Compile (applyPrograms, compileProgram)
 import App.Verify (isBuiltinUnit)
-import qualified Data.Text.Encoding as TE
+import Data.Text.Encoding qualified as TE
 
 -- CLI options
 -- -i: input UPLC file
