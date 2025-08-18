@@ -1,0 +1,15 @@
+{
+  "execution_environment": {
+    "evaluator": "PlutusTx.Eval-1.52.0.0"
+  },
+  "measurements": {
+    "cpu_units": 5859917,
+    "memory_units": 21751,
+    "script_size_bytes": 37,
+    "term_size": 29
+  },
+  "notes": "<optional notes>",
+  "scenario": "factorial",
+  "timestamp": "2025-08-18T08:00:10Z",
+  "version": "1.0.0"
+}
