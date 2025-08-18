@@ -89,7 +89,7 @@
         };
 
         # Measure tool executable
-        measureTool = measureProject.tool "measure" "exe:measure";
+        measureTool = measureProject.hsPkgs.measure.components.exes.measure;
 
         # UPLC CLI from Plutus repository (musl build)
         uplcMusl = plutus.packages.${system}.musl64-uplc;
@@ -190,8 +190,12 @@
 
             # CAPE project management tool
             (writeShellScriptBin "cape" ''
-              # Use the current working directory as the project root when in Nix shell
-              exec ${./scripts/cape.sh} --project-root "$PWD" "$@"
+              # Prefer repo-local cape.sh when available; fallback to store copy
+              if [ -x "$PWD/scripts/cape.sh" ]; then
+                exec "$PWD/scripts/cape.sh" --project-root "$PWD" "$@"
+              else
+                exec ${./scripts/cape.sh} --project-root "$PWD" "$@"
+              fi
             '')
 
             # --- Additive Plinth / Cardano tooling below (new) ---
