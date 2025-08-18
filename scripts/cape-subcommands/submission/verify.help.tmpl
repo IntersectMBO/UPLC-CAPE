@@ -1,0 +1,27 @@
+Usage: cape submission verify [OPTIONS] PATH
+
+Verify a submission by running correctness (CEK + optional verifier) and
+schema validation. This wrapper auto-discovers the scenario and verifier based
+on repository layout. No explicit scenario or verifier flags are supported.
+
+Options:
+  -a, --all              Verify all submissions under submissions/
+      --no-color         Disable colored output
+      --verbose          Verbose output
+  -h, --help             Show this help and exit
+
+Behavior:
+- Scenario is inferred from path: submissions/<scenario>/<submission>/...
+- If scenarios/<scenario>/verifier.uplc exists, it is passed to the measure tool
+  as the verifier (-v). If missing and the program does not reduce to unit, the
+  measure tool exits with code 2 and verification fails.
+- metrics.json is created/updated from measurement output.
+- metrics.json and metadata.json are validated against schemas in
+  submissions/TEMPLATE/.
+
+Examples:
+- Verify one submission folder:
+    cape submission verify submissions/fibonacci/Plinth_1.52.0.0_User
+
+- Verify all submissions:
+    cape submission verify --all

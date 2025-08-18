@@ -32,9 +32,9 @@ jobs:
           # Ensure the dev shell is instantiated and dependencies are downloaded
           nix develop --accept-flake-config --command cape --help > /dev/null
 
-      - name: Validate all submissions
+      - name: Verify all submissions
         run: |
-          nix develop --accept-flake-config --command cape submission validate --all
+          nix develop --accept-flake-config --command cape submission verify --all
 
       - name: Run test suite
         run: |

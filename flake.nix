@@ -70,26 +70,16 @@
           inputMap = {
             "https://chap.intersectmbo.org/" = CHaP;
           };
-          modules = [
-            {
-              packages = { };
-            }
-          ];
         };
 
         # Measure project configuration
         measureProject = pkgs.haskell-nix.cabalProject' {
-          name = "uplc-measure";
+          name = "measure";
           compiler-nix-name = "ghc966";
           src = ./measure;
           inputMap = {
             "https://chap.intersectmbo.org/" = CHaP;
           };
-          modules = [
-            {
-              packages = { };
-            }
-          ];
         };
 
         # Plinth development tools
@@ -99,7 +89,7 @@
         };
 
         # Measure tool executable
-        measureTool = measureProject.flake'.packages."uplc-measure:exe:measure";
+        measureTool = measureProject.tool "measure" "exe:measure";
 
         # UPLC CLI from Plutus repository (musl build)
         uplcMusl = plutus.packages.${system}.musl64-uplc;
@@ -224,7 +214,18 @@
 
           shellHook = ''
             # Display banner using glow for better markdown rendering
-            glow BANNER.md
+            # Resolve repo root so this works when entering the shell from subdirectories
+            if command -v git >/dev/null 2>&1; then
+              REPO_ROOT="$(git rev-parse --show-toplevel 2>/dev/null || true)"
+            else
+              REPO_ROOT=""
+            fi
+            if [ -n "$REPO_ROOT" ] && [ -f "$REPO_ROOT/BANNER.md" ]; then
+              glow "$REPO_ROOT/BANNER.md" || true
+            else
+              # Fallback to the flake's BANNER in the Nix store
+              glow "${./BANNER.md}" || true
+            fi
             echo ""
 
             # Install log4brains via npx when needed

@@ -299,7 +299,9 @@ The CAPE framework uses the following top-level directory organization:
 
 ## Framework Tools
 
-The CAPE framework provides command-line tools for managing benchmarks and submissions:
+The CAPE framework provides command-line tools for managing benchmarks and submissions.
+
+See USAGE.md at the project root for the full CLI command reference.
 
 ### Benchmark Management
 
@@ -322,14 +324,4 @@ cape submission list [benchmark]
 
 # Create a new submission
 cape submission new <benchmark> <compiler> <version> <contributor>
-```
-
-### Legacy Commands
-
-```bash
-# Equivalent to: cape benchmark list
-cape benchmark
-
-# Equivalent to: cape benchmark list <benchmark-name>
-cape benchmark <benchmark-name>
 ```

@@ -35,6 +35,12 @@ direnv allow # Or use direnv (recommended)
 - `plutus` - Plutus CLI for debugging and optimization
 - JSON schema validation tools with comprehensive error reporting
 
+### VS Code terminal and agent note
+
+- In the VS Code integrated terminal (zsh), do not run commands that modify global shell options like `set -euo pipefail`. This is known to cause hangs due to a VS Code/zsh integration issue and can break the terminal session.
+- Keep `set -euo pipefail` inside project shell scripts where appropriate, but omit it from interactive commands and agent-issued terminal commands in VS Code.
+- When giving interactive instructions, prefer plain commands without altering shell options (e.g., use `nix develop` and then run the needed tools).
+
 ## Version Requirements
 
 **Plutus Core Target:** 1.1.0 (mandatory)
@@ -199,6 +205,7 @@ myScript _ = unitval  -- Success condition
 - Haskell: fourmolu (project-specific configuration)
 - Cabal files: cabal-fmt (consistent dependency formatting)
 - Nix files: nixfmt (RFC 166 style for consistency)
+- Run `treefmt` after modifications to ensure all formatters are applied automatically
 
 **Code Quality Enforcement:**
 
@@ -250,7 +257,7 @@ cape benchmark fibonacci     # View specific benchmark
 cape benchmark new <name>    # Create new benchmark
 cape submission list         # List submissions
 cape submission new <benchmark> <compiler> <version> <handle>
-cape submission validate     # Validate against schemas
+cape submission verify       # Verify correctness and schemas
 
 # Development
 cabal build                 # Build Haskell code
@@ -261,6 +268,16 @@ test/test-scripts.sh       # Run test suite
 adr new "Decision Title"    # Create Architecture Decision Record
 adr preview                # Preview ADRs
 ```
+
+### Measuring performance (CLI)
+
+Preferred (repo-aware):
+
+- Use `cape submission measure` to measure a submission directory or a single `.uplc` file via wrapper flags. This command understands the repository layout, infers the scenario, and passes the correct verifier when available. See "CLI boundaries and flag stability" for supported flags.
+
+Low-level (single files):
+
+- Use the `measure` executable inside the Nix shell for file-level metrics: `measure -i <program.uplc> -o <metrics.json> [-v <verifier.uplc>]`. This tool is submission-agnostic and is ideal for ad‑hoc measurements or external inputs.
 
 ## Contribution Workflow
 
@@ -343,8 +360,8 @@ measurePerformance compiled = do
   putStrLn $ "Script size (bytes): " <> show (BS.length serialized)
   putStrLn $ "Term size (AST nodes): " <> show (countAstNodes compiled)
 
-  -- Additional measurements via CAPE tooling
-  -- Use `measure` CLI tool for comprehensive metrics
+  -- Preferred CLI for repo-aware measurement: `cape submission measure`
+  -- Low-level tool (in nix shell) for single files: `measure -i <uplc> -o <metrics.json> [-v <verifier.uplc>]`
 ```
 
 ## Documentation Structure
@@ -414,6 +431,7 @@ measurePerformance compiled = do
 - Document architectural decisions in ADRs for significant changes
 - Test all submissions with comprehensive `cape test` suite before PR submission
 - Validate UPLC execution with realistic budget constraints
+- Always run `treefmt` after modifications to keep formatting consistent
 
 **Code Quality:**
 
@@ -430,3 +448,52 @@ measurePerformance compiled = do
 - Document performance characteristics and trade-offs
 - Ensure deterministic execution across different environments
 - Measure and optimize for on-chain resource consumption
+
+## Haskell Code Style: Language Extensions
+
+- Prefer enabling standard and safe language extensions in the Cabal file via `default-extensions` for each component (library/executable/test).
+- Avoid per-file `{-# LANGUAGE ... #-}` pragmas for these common extensions unless there is a compelling, file-local reason.
+- Examples of safe/common extensions to keep in Cabal (already used in this repo):
+  - ImportQualifiedPost, NamedFieldPuns, OverloadedStrings, ScopedTypeVariables,
+    TypeApplications, DerivingStrategies, DeriveAnyClass, DeriveGeneric,
+    DataKinds, GeneralizedNewtypeDeriving, MultiParamTypeClasses, ViewPatterns,
+    TemplateHaskell, FlexibleContexts, FlexibleInstances, UndecidableInstances
+- If a file needs a non-standard or risky extension (e.g., `TemplateHaskellQuotes`, `NoImplicitPrelude` overrides), document the rationale inline and consider moving it to Cabal only if it is broadly applicable.
+- Keep warnings strict (`-Wall` etc.) and fix warnings rather than suppressing them with pragmas.
+
+## Haskell Import Style
+
+- Prefer using Prelude from Relude mixin without hiding common names. Avoid `import Prelude hiding (...)` unless strictly necessary.
+- When name conflicts occur, prefer qualifying the conflicting module rather than hiding Prelude. Example:
+  - Use `import qualified System.Exit as Exit` and call `Exit.exitWith`, while importing `ExitCode(..)` unqualified if convenient.
+- Remove unnecessary dedicated imports created only due to hidden Prelude (e.g., avoid importing `exitWith` directly by qualifying `System.Exit`).
+- Keep imports minimal and consistent; prefer qualified imports for large namespaces (e.g., PlutusCore qualified as PLC).
+
+## CLI boundaries and flag stability
+
+To avoid churn and keep tooling predictable, respect these boundaries:
+
+- Wrapper (repo-aware): `cape submission measure`
+  - Purpose: operates on submissions and directories, aware of repository layout and scenarios.
+  - Stable interface: do not add or remove flags. Supported options are:
+    - `-a, --all` — measure every submission under `submissions/`
+    - `-i, --input FILE` and `-o, --output FILE` — single-file mode (both required)
+    - Positional `PATH` — measure all `.uplc` files under the given directory (e.g., a submission folder)
+    - `--verbose`, `--no-color`
+  - No scenario/verifier override flags are exposed in the wrapper; it auto-infers the scenario from the path and, if present, passes the scenario verifier to the low-level tool.
+
+- Wrapper (repo-aware): `cape submission verify`
+  - Purpose: correctness verification (via `measure`) + schema validation; aware of repository layout and scenarios.
+  - Stable interface: do not add or remove flags. Supported options are:
+    - `-a, --all` — verify every submission under `submissions/`
+    - Positional `PATH` — verify a specific submission directory
+    - `--verbose`, `--no-color`
+  - No scenario/verifier override flags; wrapper auto-infers and passes the scenario verifier to `measure` when available. No `--single` flag; providing a `PATH` implies single-target verification.
+
+- Core tool (low-level): `measure` (Haskell executable)
+  - Purpose: file-level measurement and verification; NOT aware of submissions.
+  - Knows nothing about repository layout or submissions; it only processes UPLC programs.
+  - Accepts `-i/--input <uplc>`, `-o/--output <metrics.json>`, and optional `-v/--verifier <verifier.uplc>`.
+  - Emits standardized exit codes and writes raw measurements; wrapper composes final `metrics.json` with scenario and environment.
+
+Guideline: keep the wrappers stable and submission-aware; keep the Haskell tool small, focused, and submission-agnostic. Do not introduce new wrapper flags or remove existing ones.

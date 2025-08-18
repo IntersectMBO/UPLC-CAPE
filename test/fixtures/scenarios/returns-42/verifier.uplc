@@ -1,0 +1,1 @@
+(program 1.1.0 (lam actual (case [ (builtin equalsInteger) actual (con integer 42) ] (error) (con unit ()))))

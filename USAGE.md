@@ -2,7 +2,7 @@
 
 Quick reference for UPLC-CAPE commands and workflows.
 
-> 💡 **Tip**: Type `usage` in the UPLC-CAPE shell to view this cheat sheet anytime!
+> 💡 Tip: Type `usage` in the UPLC-CAPE shell to view this cheat sheet anytime!
 
 ## 📊 CAPE Commands
 
@@ -16,7 +16,7 @@ cape benchmark new my-benchmark        # Create new benchmark
 cape submission list                   # List all submissions
 cape submission list fibonacci         # Show benchmark submissions
 cape submission new fibonacci Aiken 1.0.8 myhandle  # Create submission
-cape submission validate               # Validate submission files
+cape submission verify                 # Verify correctness and validate schemas
 cape submission measure                # Measure UPLC performance
 cape submission aggregate              # Generate CSV report
 cape submission report fibonacci       # Generate HTML report with charts for benchmark
@@ -31,12 +31,13 @@ cape submission new --help            # Subcommand help
 ## 📝 Quick Workflow
 
 ```bash
-# 1. List benchmarks → 2. Create submission → 3. Fill files → 4. Commit
+# 1. List benchmarks → 2. Create submission → 3. Fill files → 4. Verify → 5. Commit
 cape benchmark list
 cape submission new fibonacci MyCompiler 1.0.0 myhandle
 # Edit: submissions/fibonacci/MyCompiler_1.0.0_myhandle/fibonacci.uplc
 # Edit: submissions/fibonacci/MyCompiler_1.0.0_myhandle/metrics.json
 # Edit: submissions/fibonacci/MyCompiler_1.0.0_myhandle/metadata.json
+cape submission verify submissions/fibonacci/MyCompiler_1.0.0_myhandle
 git add . && git commit -m "Add MyCompiler fibonacci submission"
 ```
 
@@ -124,4 +125,77 @@ treefmt.toml                         # treefmt main configuration
 
 ---
 
-💡 **Tip**: All CAPE commands support interactive prompts if you omit arguments.
+💡 Tip: All CAPE commands support interactive prompts if you omit arguments.
+
+## Correctness Verification and Fixtures
+
+Preferred entrypoint:
+
+- Use `cape submission verify` for correctness and schema validation. The `measure` command exposes a lower-level interface used by the wrapper internally.
+
+### Verifier programs (scenarios/{benchmark}/verifier.uplc)
+
+- Optional per-benchmark verifier can be provided at `scenarios/{benchmark}/verifier.uplc`.
+- Wrappers auto-discover the verifier based on the submission path (submissions/{benchmark}/...); no wrapper flags exist to override the scenario or verifier.
+
+Exit codes from the `measure` tool:
+
+- 0: success
+- 2: Verifier required but not provided/found
+- 3: Verification failed (non-unit result or CEK error after applying verifier)
+- 4: Malformed/invalid UPLC file
+
+Verification control:
+
+- Low-level tool: `measure` accepts a verifier via `-v/--verifier <verifier.uplc>`.
+
+```bash
+measure -i <input.uplc> [-v <verifier.uplc>] -o <metrics.json>
+```
+
+- Wrapper: `cape submission measure` infers the benchmark from the submissions path and, if `scenarios/{benchmark}/verifier.uplc` exists, passes that file to `measure` as `--verifier (-v)` automatically.
+- For testing, provide full mock submissions in `test/fixtures/submissions/{benchmark}/...` and place the verifier at `scenarios/{benchmark}/verifier.uplc`. Do not rely on CLI override flags.
+
+### Fixtures for negative tests
+
+Store negative fixture submissions under:
+
+```text
+test/fixtures/submissions/{benchmark}/{Compiler}_{version}_{contributor}/
+```
+
+These are ignored by normal workflows and reports.
+
+### Running verification
+
+- All submissions:
+
+```sh
+cape submission verify --all
+```
+
+- Specific path:
+
+```sh
+cape submission verify submissions/<benchmark>/<Compiler>_<version>_<contributor>
+```
+
+### Running measurements
+
+- All submissions:
+
+```sh
+cape submission measure --all
+```
+
+- Specific path (measure all .uplc files under a directory, e.g., a submission):
+
+```sh
+cape submission measure submissions/<benchmark>/<Compiler>_<version>_<contributor>
+```
+
+- Single file explicitly (write to a specific output):
+
+```sh
+cape submission measure -i path/to/script.uplc -o path/to/metrics.json
+```

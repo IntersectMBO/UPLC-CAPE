@@ -110,6 +110,8 @@ Latest benchmark reports: [UPLC-CAPE Reports](https://intersectmbo.github.io/UPL
 
 ## Usage (CLI)
 
+For the full and up-to-date command reference, see USAGE.md at the project root.
+
 ### Core commands
 
 ```zsh
@@ -122,9 +124,7 @@ cape benchmark new <name>        # Create a new benchmark from template
 cape submission list             # List all submissions
 cape submission list <name>      # List submissions for a benchmark
 cape submission new <benchmark> <compiler> <version> <handle>
-cape submission validate         # Validate current directory (or provide a path)
-cape submission validate --all   # Validate all submissions
-cape submission validate --single <file>  # Validate specific file
+cape submission verify           # Verify correctness and validate schemas
 cape submission measure          # Measure UPLC performance
 cape submission aggregate        # Generate CSV performance report
 cape submission report <name>    # Generate HTML report for a benchmark
@@ -164,17 +164,19 @@ cape submission new fibonacci    # Prompts for compiler, version, handle
      - submissions/fibonacci/MyCompiler_1.0.0_myhandle/fibonacci.uplc
    - The program should compute the scenario’s required result deterministically within budget.
 
-1. Capture metrics automatically
+1. Verify and measure
 
-   Use the automated measurement command to generate schema-compliant metrics.json files.
+   Use the unified verification command to ensure your submission is correct and schema-compliant, then measure performance.
 
-   - Modes:
+   - Verify correctness and JSON schemas (all submissions or a path):
 
-     - Measure a single file and write to a specific output:
+     ```zsh
+     cape submission verify submissions/fibonacci/MyCompiler_1.0.0_myhandle
+     # or, verify everything
+     cape submission verify --all
+     ```
 
-       ```zsh
-       cape submission measure -i submissions/fibonacci/MyCompiler_1.0.0_myhandle/fibonacci.uplc -o submissions/fibonacci/MyCompiler_1.0.0_myhandle/metrics.json
-       ```
+   - Measure and write metrics.json automatically:
 
      - Measure all .uplc files under a path (e.g., your submission directory):
 
@@ -190,7 +192,13 @@ cape submission new fibonacci    # Prompts for compiler, version, handle
        cape submission measure --all
        ```
 
-   - What it does automatically:
+   - What verification does:
+
+     - Evaluates your UPLC program; if it reduces to BuiltinUnit, correctness passes
+     - Otherwise, applies the scenario verifier at `scenarios/{benchmark}/verifier.uplc` to the result and expects BuiltinUnit
+     - Validates your `metrics.json` and `metadata.json` against schemas
+
+   - What measure does automatically:
 
      - Measures CPU units, memory units, script size, and term size for your .uplc file(s)
      - Generates or updates a `metrics.json` with scenario, measurements, evaluator, and timestamp
@@ -242,20 +250,6 @@ cape submission new fibonacci    # Prompts for compiler, version, handle
        "implementation_notes": "Brief explanation of approach."
      }
    }
-   ```
-
-1. Validate
-
-   ```zsh
-   # From the submission directory
-   cape submission validate
-
-   # Or from project root
-   cape submission validate submissions/fibonacci/MyCompiler_1.0.0_myhandle/
-
-   # Validate specific files
-   cape submission validate --single metrics.json
-   cape submission validate --single metadata.json
    ```
 
 1. Document

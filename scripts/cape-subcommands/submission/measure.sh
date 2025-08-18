@@ -12,6 +12,7 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source "$SCRIPT_DIR/../../lib/cape_common.sh"
 cape_detect_root "$SCRIPT_DIR"
 SUBMISSIONS_ROOT="$PROJECT_ROOT/submissions"
+SCENARIOS_ROOT="$PROJECT_ROOT/scenarios"
 # Enable shared tmp cleanup trap
 cape_enable_tmp_cleanup
 
@@ -30,7 +31,34 @@ fi
 check_measure_tool() {
   cape_require_cmd measure
   if [[ "${VERBOSE:-0}" -eq 1 ]]; then
-    measure --version 2> /dev/null || true
+    measure --help 2> /dev/null || true
+  fi
+}
+
+# Derive scenario name from a path under submissions/*
+# Echoes scenario name or empty string if unknown
+infer_scenario_from_path() {
+  local path="$1"
+  case "$path" in
+    *"/submissions/"*)
+      local tail
+      tail="${path#*'/submissions/'}"
+      echo "${tail%%/*}"
+      ;;
+    *)
+      echo ""
+      ;;
+  esac
+}
+
+# Resolve verifier path for a scenario
+resolve_verifier_for_scenario() {
+  local scen="$1"
+  local preferred="$SCENARIOS_ROOT/$scen/verifier.uplc"
+  if [[ -f "$preferred" ]]; then
+    echo "$preferred"
+  else
+    echo ""
   fi
 }
 
@@ -59,17 +87,45 @@ measure_uplc_file() {
   cape_info "Measuring UPLC program: $rel_uplc"
   echo ""
 
+  # Auto-determine verifier to pass to measure (-v <file>)
+  local scenario
+  scenario="$(infer_scenario_from_path "$uplc_file")"
+
+  local checker_flag=()
+  # Prefer a submission-local verifier when available
+  local submission_dir
+  submission_dir="$(dirname "$uplc_file")"
+  local submission_verifier="$submission_dir/verifier.uplc"
+  if [[ -f "$submission_verifier" ]]; then
+    cape_debug "Using submission verifier: $(cape_relpath "$submission_verifier")"
+    checker_flag+=("-v" "$submission_verifier")
+  else
+    if [[ -n "$scenario" ]]; then
+      local verifier
+      verifier="$(resolve_verifier_for_scenario "$scenario")"
+      if [[ -n "$verifier" ]]; then
+        cape_debug "Using scenario verifier: $(cape_relpath "$verifier")"
+        checker_flag+=("-v" "$verifier")
+      else
+        cape_warn "No verifier found for scenario '$scenario' (scenarios/$scenario/verifier.uplc). If the program doesn't reduce to unit, measure will fail with exit 2."
+      fi
+    else
+      cape_warn "Unable to infer scenario for $rel_uplc; no verifier will be provided."
+    fi
+  fi
+
   local tmp_raw stdout_tmp
   tmp_raw="$(cape_mktemp)"
   stdout_tmp="$(cape_mktemp)"
+
   if [[ $VERBOSE -eq 1 ]]; then
-    if ! measure -i "$uplc_file" -o "$tmp_raw" | tee "$stdout_tmp"; then
+    if ! measure -i "$uplc_file" "${checker_flag[@]}" -o "$tmp_raw" | tee "$stdout_tmp"; then
       cape_error "✗ Failed to measure UPLC program ($rel_uplc)"
       rm -f "$tmp_raw" "$stdout_tmp" || true
       return 1
     fi
   else
-    if ! measure -i "$uplc_file" -o "$tmp_raw" > "$stdout_tmp"; then
+    if ! measure -i "$uplc_file" "${checker_flag[@]}" -o "$tmp_raw" > "$stdout_tmp"; then
       cape_error "✗ Failed to measure UPLC program ($rel_uplc)"
       rm -f "$tmp_raw" "$stdout_tmp" || true
       return 1
@@ -84,20 +140,13 @@ measure_uplc_file() {
     cape_debug "Evaluator detected: $evaluator"
   fi
 
-  local submission_dir scenario
-  submission_dir="$(dirname "$uplc_file")"
-  scenario=""
-  case "$submission_dir" in
-    *"/submissions/"*)
-      scenario="${submission_dir#*'/submissions/'}"
-      scenario="${scenario%%/*}"
-      ;;
-  esac
+  # Preserve existing metadata (notes, version) if metrics.json exists
+  local submission_dir_out
+  submission_dir_out="$(dirname "$uplc_file")"
   if [[ -z "$scenario" ]]; then
     scenario="unknown"
   fi
 
-  # Preserve existing metadata (notes, version) if metrics.json exists
   if [[ $was_existing -eq 1 ]]; then
     existing_notes=$(jq -r '.notes // empty' "$output_file" 2> /dev/null || echo "") || true
     existing_version=$(jq -r '.version // empty' "$output_file" 2> /dev/null || echo "") || true
@@ -227,7 +276,7 @@ while [[ $# -gt 0 ]]; do
       output_file="$2"
       shift 2
       ;;
-    -v | --verbose)
+    --verbose)
       VERBOSE=1
       export CAPE_VERBOSE=1
       shift

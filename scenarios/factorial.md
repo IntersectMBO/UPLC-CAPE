@@ -135,11 +135,13 @@ Use these templates from `submissions/TEMPLATE/`:
 
 ```bash
 # Measure your UPLC program (if using the cape tool)
-cape submission measure factorial.uplc
+cape submission measure .
 
-# Validate submission files
-cape submission validate submissions/factorial/YourCompiler_1.0.0_YourHandle/
+# Verify correctness and validate submission files
+cape submission verify submissions/factorial/YourCompiler_1.0.0_YourHandle/
 ```
+
+See USAGE.md at the project root for the full CLI reference.
 
 ---
 

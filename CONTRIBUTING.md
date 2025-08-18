@@ -1,20 +1,19 @@
 # Contributing to UPLC-CAPE
 
-Thank you for your interest in contributing benchmarks to UPLC-CAPE.  
-This guide explains how to submit your compiled UPLC program and associated metrics.
+Thank you for your interest in contributing benchmarks to UPLC-CAPE. This guide explains how to submit your compiled UPLC program and associated metrics.
+
+For the full, up-to-date CLI reference and workflows, see USAGE.md at the project root.
 
 ## Directory Structure for Submissions
 
-Each scenario has its own folder under `submissions/`.  
-Inside `submissions/<benchmark>/`, create a submission folder using the standardized naming convention:
+Each scenario has its own folder under `submissions/`. Inside `submissions/<benchmark>/`, create a submission folder using the standardized naming convention:
 
 **Folder Name Template**: `<Language>_<Version>_<GitHubHandle>`
 
 Examples:
 
-- `Aiken_1.0.8_Unisay`
-- `Plutarch_1.3.0_johndoe`
-- `Helios_0.16.7_alice`
+- `Aiken_1.1.17_KtorZ`
+- `Plinth_1.52.0.0_Unisay`
 
 The submission folder **must** contain:
 
@@ -24,12 +23,14 @@ The submission folder **must** contain:
 
 2. **`metrics.json`**
 
-   - Performance measurements following the schema in `submissions/TEMPLATE/metrics-template.json`.
+   - Performance measurements. Validate this file against `submissions/<template-name>/metrics.schema.json`.
+   - The initial file is scaffolded from `submissions/<template-name>/metrics-template.json`.
 
 3. **`metadata.json`**
 
-   - Compiler metadata following the schema in `submissions/TEMPLATE/metadata-template.json`.
-   - For baseline scenarios, use `"compiler": { "name": "plinth", ... }`.
+   - Compiler metadata. Validate this file against `submissions/<template-name>/metadata.schema.json`.
+   - The initial file is scaffolded from `submissions/<template-name>/metadata-template.json`.
+   - For baseline scenarios, use `"compiler": { "name": "Plinth", ... }`.
 
 4. _(Optional)_ **`source/`**
 
@@ -40,7 +41,9 @@ The submission folder **must** contain:
    - Compilation parameters (flags, optimization levels) that affect the generated UPLC.
 
 6. **`README.md`**
-   - Implementation notes using the template from `submissions/TEMPLATE/benchmark-README-template.md`.
+   - Implementation notes using the template from `submissions/<template-name>/benchmark-README-template.md`.
+
+> Note: Templates are starting points for files you edit. Schemas are used by tooling to validate your JSON files.
 
 ## Submission Process
 
@@ -52,46 +55,52 @@ All submissions start with the same basic setup:
 
 The recommended (though not mandatory) approach for contributing implementations:
 
-2. **Add required compiler pipeline and tools to the nix shell** by modifying `flake.nix` to include your compiler's dependencies.
-3. **Use available compiler in the shell** to write and evaluate a benchmark implementation:
+1. **Add required compiler pipeline and tools to the nix shell** by modifying `flake.nix` to include your compiler's dependencies.
+2. **Use available compiler in the shell** to write and evaluate a benchmark implementation:
+
    ```bash
    nix develop
    # Your compiler tools are now available in the shell
    # Write, compile, and test your implementation
    ```
-4. **Prepare the submission as a PR**, honoring the submission structure and producing all expected files (metrics, source, etc.).
+
+3. **Prepare the submission as a PR**, honoring the submission structure and producing all expected files (metrics, source, etc.).
 
 ### Standard Process
 
 For those who prefer not to modify the nix environment:
 
-2. Use the provided initialization script to create your submission folder:
+1. Use the provided initialization script to create your submission folder:
+
    ```bash
    nix develop  # Enter the development environment
    cape submission new <scenario> <language> <version> <github-handle>
-   # Example: cape submission new fibonacci Aiken 1.0.8 Unisay
+   # Example: cape submission new fibonacci Aiken 1.1.17 KtorZ
    ```
+
    This will create: `submissions/<benchmark>/<Language>_<Version>_<GitHubHandle>/`
-3. Copy your UPLC program and fill in the generated template files:
+
+2. Copy your UPLC program and fill in the generated template files:
+
    ```bash
    cd submissions/<benchmark>/<Language>_<Version>_<GitHubHandle>
    cp path/to/your-program.uplc <scenario>.uplc
    # Edit metrics.json, metadata.json, and README.md with your data
    ```
-4. **Validate your submission** before committing:
+
+3. **Verify your submission** before committing:
 
    ```bash
-   # Validate all files in your submission directory
-   cape submission validate
+   # Verify correctness and validate schemas in your submission directory
+   cape submission verify .
 
-   # Or validate specific files
-   cape submission validate --single path/to/metrics.json
-   cape submission validate --single path/to/metadata.json
+   # Or verify all submissions
+   cape submission verify --all
    ```
 
-5. (Optional) Add `source/` and `config.json` if you wish to share your source or compilation parameters.
-6. Commit and push to your fork.
-7. Open a pull request against the `main` branch.
+4. (Optional) Add `source/` and `config.json` if you wish to share your source or compilation parameters.
+5. Commit and push to your fork.
+6. Open a pull request against the `main` branch.
 
 ## Creating New Benchmarks
 
@@ -143,12 +152,9 @@ All benchmarks must define:
 
 - **Metrics Template**: `submissions/TEMPLATE/metrics-template.json`
 - **Metadata Template**: `submissions/TEMPLATE/metadata-template.json`
+- **Metrics Schema**: `submissions/TEMPLATE/metrics.schema.json`
+- **Metadata Schema**: `submissions/TEMPLATE/metadata.schema.json`
 - **Benchmark README**: `submissions/TEMPLATE/benchmark-README-template.md`
-
-## Future Automation
-
-Eventually, automated tooling in `tools/` will help validate and measure UPLC programs.  
-For now, please follow this manual process and template schemas to ensure consistency.
 
 ## Quick Start
 
@@ -159,8 +165,8 @@ To quickly initialize a new submission:
 nix develop
 
 # Initialize your submission folder
-cape submission new fibonacci Aiken 1.0.8 Unisay
+cape submission new fibonacci Aiken 1.1.17 KtorZ
 
-# This creates: submissions/fibonacci/Aiken_1.0.8_Unisay/
+# This creates: submissions/fibonacci/Aiken_1.1.17_KtorZ/
 # with all required template files ready to fill in
 ```
