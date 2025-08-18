@@ -1,0 +1,29 @@
+{
+  "compiler": {
+    "name": "Plinth",
+    "version": "1.52.0.0",
+    "commit_hash": "800c67d38d01177fd0a36d01aa23ff7fea7bd1ba"
+  },
+  "compilation_config": {
+    "optimization_level": "Plinth",
+    "target": "uplc",
+    "flags": ["Plinth"],
+    "environment": {
+      "dependencies": {
+        "plutus-tx": "1.52.0.0",
+        "plutus-core": "1.52.0.0",
+        "plutus-ledger-api": "1.52.0.0"
+      }
+    }
+  },
+  "contributor": {
+    "name": "Unisay",
+    "organization": "UPLC-CAPE Project"
+  },
+  "submission": {
+    "date": "2025-08-18T08:00:00Z",
+    "source_available": true,
+    "source_repository": "https://github.com/IntersectMBO/UPLC-CAPE",
+    "implementation_notes": "Factorial implementation using Plinth (PlutusTx) with parameter 10, targeting Plutus Core 1.1.0. Recursive approach computing factorial(10) = 3628800."
+  }
+}

@@ -60,7 +60,9 @@ common common-language
 
 library
   import:          common-language
-  exposed-modules: Fibonacci
+  exposed-modules:
+    Factorial
+    Fibonacci
 
   -- Future benchmark modules:
   -- TwoPartyEscrow
