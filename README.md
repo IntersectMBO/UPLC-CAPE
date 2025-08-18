@@ -16,7 +16,7 @@ A standardized benchmarking framework for measuring and comparing the on-chain p
   - [Setup](#setup)
   - [Your first benchmark](#your-first-benchmark)
 - [Live Performance Reports](#live-performance-reports)
-- [Available Benchmarks](#available-benchmarks)
+- [Available benchmark scenarios](#available-benchmark-scenarios)
 - [Usage (CLI)](#usage-cli)
   - [Core commands](#core-commands)
   - [Interactive prompts](#interactive-prompts)
@@ -96,11 +96,12 @@ Latest benchmark reports: [UPLC-CAPE Reports](https://intersectmbo.github.io/UPL
 
 ---
 
-## Available Benchmarks
+## Available benchmark scenarios
 
 | Benchmark | Type | Description | Status |
 | --- | --- | --- | --- |
 | [Fibonacci](scenarios/fibonacci.md) | Synthetic | Recursive algorithm performance | Ready |
+| [Factorial](scenarios/factorial.md) | Synthetic | Recursive algorithm performance | Ready |
 | Two-Party Escrow | Real-world | Smart contract scenario | Planned |
 | Streaming Payments | Real-world | Payment channel implementation | Planned |
 | Simple DAO Voting | Real-world | Governance mechanism | Planned |
@@ -110,7 +111,7 @@ Latest benchmark reports: [UPLC-CAPE Reports](https://intersectmbo.github.io/UPL
 
 ## Usage (CLI)
 
-For the full and up-to-date command reference, see USAGE.md at the project root.
+For the full and up-to-date command reference, see [USAGE.md](USAGE.md).
 
 ### Core commands
 
