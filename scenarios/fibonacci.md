@@ -22,8 +22,9 @@ Implement a Fibonacci function and compile it as a **fully-applied UPLC program*
 ### Core Requirements
 
 1. **Function Implementation**: Create a function that computes Fibonacci numbers using the mathematical definition:
+
    - `fibonacci(1) = 1`
-   - `fibonacci(2) = 1`  
+   - `fibonacci(2) = 1`
    - `fibonacci(n) = fibonacci(n-1) + fibonacci(n-2)` for n > 2
 
 2. **Full Application**: The UPLC program must be fully-applied with the target value (25) baked in during compilation, not passed as a parameter.
@@ -35,6 +36,7 @@ Implement a Fibonacci function and compile it as a **fully-applied UPLC program*
 Choose the approach that works best for your compiler:
 
 #### Recursive Implementation (Most Direct)
+
 ```pseudocode
 function fibonacci_recursive(n):
     if n == 1 OR n == 2:
@@ -43,19 +45,20 @@ function fibonacci_recursive(n):
 ```
 
 #### Iterative Implementation (More Efficient)
+
 ```pseudocode
 function fibonacci_iterative(n):
     if n == 1 OR n == 2:
         return 1
-    
+
     prev1 = 1  // fib(1)
     prev2 = 1  // fib(2)
-    
+
     for i in range(3, n + 1):
         current = prev1 + prev2
         prev1 = prev2
         prev2 = current
-    
+
     return prev2
 ```
 
@@ -78,7 +81,7 @@ Your submission passes if:
 All submissions are measured on these standardized metrics:
 
 | Metric | Description | Purpose |
-|--------|-------------|---------|
+| --- | --- | --- |
 | **CPU Units** | Total execution units consumed | Computational efficiency |
 | **Memory Units** | Peak memory usage during execution | Memory efficiency |
 | **Script Size** | Compiled UPLC script size in bytes | Code generation efficiency |
@@ -89,14 +92,16 @@ All submissions are measured on these standardized metrics:
 ### Performance Context
 
 **Why fibonacci(25)?**
+
 - **Computationally Significant**: ~242,785 recursive calls in naive implementation
 - **Budget Safe**: Fits comfortably within CEK machine limits
 - **Optimization Sensitive**: Large enough to show compiler differences
 - **Manageable**: Not so large as to create measurement difficulties
 
 **Expected Performance Ranges** (approximate):
+
 - **Recursive**: Higher CPU usage, demonstrates optimization capabilities
-- **Iterative**: Lower CPU usage, more predictable memory patterns  
+- **Iterative**: Lower CPU usage, more predictable memory patterns
 - **Memoized**: Moderate CPU, higher memory usage
 
 ---
@@ -118,6 +123,7 @@ Before submitting your implementation:
 ### File Templates
 
 Use these templates from `submissions/TEMPLATE/`:
+
 - `metadata-template.json` for compiler and build information
 - `metrics-template.json` for performance measurements
 
@@ -126,7 +132,7 @@ Use these templates from `submissions/TEMPLATE/`:
 ## Local Validation
 
 1. **Functional Test**: Execute your UPLC program and verify output is `75025`
-2. **Budget Test**: Ensure execution completes within CEK machine limits  
+2. **Budget Test**: Ensure execution completes within CEK machine limits
 3. **Consistency Test**: Run multiple times to confirm deterministic behavior
 4. **Schema Test**: Validate JSON files against schemas in `submissions/TEMPLATE/`
 
@@ -134,11 +140,13 @@ Use these templates from `submissions/TEMPLATE/`:
 
 ```bash
 # Measure your UPLC program (if using the cape tool)
-cape submission measure fibonacci.uplc
+cape submission measure .
 
-# Validate submission files
-cape submission validate submissions/fibonacci/YourCompiler_1.0.0_YourHandle/
+# Verify correctness and validate submission files
+cape submission verify submissions/fibonacci/YourCompiler_1.0.0_YourHandle/
 ```
+
+See USAGE.md at the project root for the full CLI reference.
 
 ---
 
@@ -155,11 +163,13 @@ cape submission validate submissions/fibonacci/YourCompiler_1.0.0_YourHandle/
 ## Verification Points
 
 ### Correctness Verification
+
 1. **Base Cases**: `fibonacci(1) = 1` and `fibonacci(2) = 1`
 2. **Small Values**: `fibonacci(3) = 2`, `fibonacci(4) = 3`, `fibonacci(5) = 5`
 3. **Target Value**: `fibonacci(25) = 75025`
 
 ### Performance Verification
+
 1. **CPU Budget Compliance**: Must execute within CEK machine limits
 2. **Memory Budget Compliance**: Must not exceed memory allocation limits
 3. **Script Size**: Should be reasonably compact for the computation performed
@@ -167,4 +177,4 @@ cape submission validate submissions/fibonacci/YourCompiler_1.0.0_YourHandle/
 
 ---
 
-*This benchmark serves as both a correctness test and performance comparison tool, enabling compiler authors to validate their recursive function handling while providing standardized metrics for community comparison.*
+_This benchmark serves as both a correctness test and performance comparison tool, enabling compiler authors to validate their recursive function handling while providing standardized metrics for community comparison._

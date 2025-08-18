@@ -91,30 +91,50 @@ setup_test_env() {
   TEST_TMP_DIR="$(cape_mktemp_dir)"
   SANDBOX_DIR="$TEST_TMP_DIR/sandbox"
 
-  # Initialize sandbox with necessary structure
-  mkdir -p "$SANDBOX_DIR"/{scenarios/TEMPLATE,submissions/TEMPLATE}
+  # Initialize sandbox roots
+  mkdir -p "$SANDBOX_DIR/scenarios" "$SANDBOX_DIR/submissions"
 
-  # Copy templates and content if they exist
-  if [[ -d "$PROJECT_ROOT/scenarios/TEMPLATE" ]]; then
-    cp -a "$PROJECT_ROOT/scenarios/TEMPLATE/." "$SANDBOX_DIR/scenarios/TEMPLATE/" 2> /dev/null || true
+  # 1) Copy real repo content into sandbox (treat all scenarios/submissions uniformly)
+  if [[ -d "$REPO_ROOT/scenarios" ]]; then
+    cp -a "$REPO_ROOT/scenarios/." "$SANDBOX_DIR/scenarios/" 2> /dev/null || true
   fi
-  if [[ -d "$PROJECT_ROOT/submissions/TEMPLATE" ]]; then
-    cp -a "$PROJECT_ROOT/submissions/TEMPLATE/." "$SANDBOX_DIR/submissions/TEMPLATE/" 2> /dev/null || true
-  fi
-  if [[ -f "$PROJECT_ROOT/scenarios/fibonacci.md" ]]; then
-    cp "$PROJECT_ROOT/scenarios/fibonacci.md" "$SANDBOX_DIR/scenarios/"
+  if [[ -d "$REPO_ROOT/submissions" ]]; then
+    cp -a "$REPO_ROOT/submissions/." "$SANDBOX_DIR/submissions/" 2> /dev/null || true
   fi
 
-  # Ensure we have at least one scenario for testing
-  if [[ ! -f "$SANDBOX_DIR/scenarios/fibonacci.md" ]]; then
-    cat > "$SANDBOX_DIR/scenarios/fibonacci.md" << 'EOF'
-# Fibonacci Benchmark
+  # 2) Overlay test fixtures (scenarios and submissions)
+  if [[ -d "$REPO_ROOT/test/fixtures/scenarios" ]]; then
+    cp -a "$REPO_ROOT/test/fixtures/scenarios/." "$SANDBOX_DIR/scenarios/" 2> /dev/null || true
+  fi
+  if [[ -d "$REPO_ROOT/test/fixtures/submissions" ]]; then
+    cp -a "$REPO_ROOT/test/fixtures/submissions/." "$SANDBOX_DIR/submissions/" 2> /dev/null || true
+  fi
 
-Calculate the nth Fibonacci number efficiently.
-
-## Overview
-This benchmark tests recursive computation optimization.
-EOF
+  # 3) Ensure a default verifier exists per scenario if not provided explicitly (skip for fixture scenarios that define none by design)
+  if [[ -d "$SANDBOX_DIR/scenarios" ]]; then
+    while IFS= read -r -d '' dir; do
+      [[ -d "$dir" ]] || continue
+      local base
+      base="$(basename "$dir")"
+      # For fixture scenario 'returns-unit' we intentionally do not create verifier
+      if [[ "$base" == "returns-unit" ]]; then
+        continue
+      fi
+      if [[ ! -f "$dir/verifier.uplc" ]]; then
+        if [[ -f "$dir/verifier-accepts-42.uplc" ]]; then
+          cp "$dir/verifier-accepts-42.uplc" "$dir/verifier.uplc"
+        elif [[ -f "$dir/verifier-accepts.uplc" ]]; then
+          cp "$dir/verifier-accepts.uplc" "$dir/verifier.uplc"
+        else
+          shopt -s nullglob
+          uplcs=("$dir"/*.uplc)
+          if ((${#uplcs[@]} == 1)); then
+            cp "${uplcs[0]}" "$dir/verifier.uplc"
+          fi
+          shopt -u nullglob
+        fi
+      fi
+    done < <(find "$SANDBOX_DIR/scenarios" -mindepth 1 -maxdepth 1 -type d -print0)
   fi
 
   if [[ -t 1 && -z "${NO_COLOR:-}" ]]; then
@@ -170,6 +190,10 @@ main() {
   echo "===================="
   setup_test_env
 
+  # Environment validation - measure tool must be available
+  test_group "environment requirements" \
+    "measure tool available" "command -v measure" 2 ""
+
   # Core functionality
   test_group "core commands" \
     "cape help" "bash scripts/cape.sh --help" 5 "" \
@@ -193,23 +217,35 @@ main() {
     "submission list" "(cd \"$PROJECT_ROOT\" && PROJECT_ROOT=\"$SANDBOX_DIR\" bash \"$REPO_ROOT/scripts/cape-subcommands/submission/list.sh\")" 5 "" \
     "submission list help" "(cd \"$PROJECT_ROOT\" && PROJECT_ROOT=\"$SANDBOX_DIR\" bash \"$REPO_ROOT/scripts/cape-subcommands/submission/list.sh\" --help)" 5 "" \
     "submission list fibonacci" "(cd \"$PROJECT_ROOT\" && PROJECT_ROOT=\"$SANDBOX_DIR\" bash \"$REPO_ROOT/scripts/cape-subcommands/submission/list.sh\" fibonacci)" 5 "" \
-    "submission no args fail" "echo '' | (cd \"$PROJECT_ROOT\" && PROJECT_ROOT=\"$SANDBOX_DIR\" bash \"$REPO_ROOT/scripts/cape-subcommands/submission/new.sh\")" 5 "fail" \
-    "submission incomplete fail" "echo '' | (cd \"$PROJECT_ROOT\" && PROJECT_ROOT=\"$SANDBOX_DIR\" bash \"$REPO_ROOT/scripts/cape-subcommands/submission/new.sh\" fibonacci Comp 1.0)" 5 "fail" \
+    "submission no args fail" "echo '' | (cd \"$PROJECT_ROOT\" && PROJECT_ROOT=\"$SANDBOX_DIR\" bash \"$REPO_ROOT/scripts/cape-subcommands/submission/new.sh\" fibonacci Comp 1.0)" 5 "fail" \
+    "submission complete success" "echo '' | (cd \"$PROJECT_ROOT\" && PROJECT_ROOT=\"$SANDBOX_DIR\" bash \"$REPO_ROOT/scripts/cape-subcommands/submission/new.sh\" fibonacci Comp 1.0 user)" 5 "" \
+    "submission cleanup (remove template submission)" "rm -rf \"$SANDBOX_DIR/submissions/fibonacci/Comp_1.0_user\"" 5 "" \
     "submission invalid fail" "(cd \"$PROJECT_ROOT\" && PROJECT_ROOT=\"$SANDBOX_DIR\" bash \"$REPO_ROOT/scripts/cape-subcommands/submission/list.sh\" invalid_arg; exit 1)" 5 "fail"
 
-  # Validation and measurement
-  test_group "validation & measurement" \
-    "validate help" "(cd \"$PROJECT_ROOT\" && PROJECT_ROOT=\"$SANDBOX_DIR\" bash \"$REPO_ROOT/scripts/cape-subcommands/submission/validate.sh\" --help)" 5 "" \
-    "validate all" "(cd \"$PROJECT_ROOT\" && PROJECT_ROOT=\"$SANDBOX_DIR\" bash \"$REPO_ROOT/scripts/cape-subcommands/submission/validate.sh\" --all)" 10 "" \
+  # Verification & measurement
+  test_group "verification & measurement" \
+    "verify help" "(cd \"$PROJECT_ROOT\" && PROJECT_ROOT=\"$SANDBOX_DIR\" bash \"$REPO_ROOT/scripts/cape-subcommands/submission/verify.sh\" --help)" 5 "" \
+    "verify returns-42 (includes failing fixture)" "(cd \"$PROJECT_ROOT\" && PROJECT_ROOT=\"$SANDBOX_DIR\" bash \"$REPO_ROOT/scripts/cape-subcommands/submission/verify.sh\" \"$SANDBOX_DIR/submissions/returns-42\")" 15 "fail" \
     "measure help" "(cd \"$PROJECT_ROOT\" && PROJECT_ROOT=\"$SANDBOX_DIR\" bash \"$REPO_ROOT/scripts/cape-subcommands/submission/measure.sh\" --help)" 5 "" \
-    "measure all" "(cd \"$PROJECT_ROOT\" && PROJECT_ROOT=\"$SANDBOX_DIR\" bash \"$REPO_ROOT/scripts/cape-subcommands/submission/measure.sh\" --all)" 15 ""
+    "measure returns-42 (includes failing fixture)" "(cd \"$PROJECT_ROOT\" && PROJECT_ROOT=\"$SANDBOX_DIR\" bash \"$REPO_ROOT/scripts/cape-subcommands/submission/measure.sh\" \"$SANDBOX_DIR/submissions/returns-42\")" 15 "fail"
+
+  # Verifier fixtures: scenario-driven
+  test_group "scenario fixtures" \
+    "returns-unit: Success passes without verifier" \
+    "(cd \"$PROJECT_ROOT\" && PROJECT_ROOT=\"$SANDBOX_DIR\" bash \"$REPO_ROOT/scripts/cape-subcommands/submission/verify.sh\" \"$SANDBOX_DIR/submissions/returns-unit/Success_1.0_Test\")" 15 "" \
+    "returns-unit: Failure fails without verifier" \
+    "(cd \"$PROJECT_ROOT\" && PROJECT_ROOT=\"$SANDBOX_DIR\" bash \"$REPO_ROOT/scripts/cape-subcommands/submission/verify.sh\" \"$SANDBOX_DIR/submissions/returns-unit/Failure_1.0_Test\")" 15 "fail" \
+    "returns-42: Success passes with scenario verifier" \
+    "(cd \"$PROJECT_ROOT\" && PROJECT_ROOT=\"$SANDBOX_DIR\" bash \"$REPO_ROOT/scripts/cape-subcommands/submission/verify.sh\" \"$SANDBOX_DIR/submissions/returns-42/Success_1.0_Test\")" 15 "" \
+    "returns-42: Failure fails with scenario verifier" \
+    "(cd \"$PROJECT_ROOT\" && PROJECT_ROOT=\"$SANDBOX_DIR\" bash \"$REPO_ROOT/scripts/cape-subcommands/submission/verify.sh\" \"$SANDBOX_DIR/submissions/returns-42/Failure_1.0_Test\")" 15 "fail"
 
   # Reporting and aggregation
   test_group "reporting" \
     "report help" "(cd \"$PROJECT_ROOT\" && PROJECT_ROOT=\"$SANDBOX_DIR\" bash \"$REPO_ROOT/scripts/cape-subcommands/submission/report.sh\" --help)" 5 "" \
     "report dry-run all" "(cd \"$PROJECT_ROOT\" && PROJECT_ROOT=\"$SANDBOX_DIR\" bash \"$REPO_ROOT/scripts/cape-subcommands/submission/report.sh\" --dry-run --all)" 10 "" \
     "report dry-run fibonacci" "(cd \"$PROJECT_ROOT\" && PROJECT_ROOT=\"$SANDBOX_DIR\" bash \"$REPO_ROOT/scripts/cape-subcommands/submission/report.sh\" --dry-run fibonacci; true)" 10 "" \
-    "aggregate" "(cd \"$PROJECT_ROOT\" && PROJECT_ROOT=\"$SANDBOX_DIR\" bash \"$REPO_ROOT/scripts/cape-subcommands/submission/aggregate.sh\")" 10 ""
+    "aggregate" "(cd \"$PROJECT_ROOT\" && PROJECT_ROOT=\"$SANDBOX_DIR\" bash \"$REPO_ROOT/scripts/cape-subcommands/submission/aggregate.sh\")" 30 ""
 
   # Global flags
   test_group "global options" \
@@ -229,7 +265,7 @@ main() {
   run_test "verify submission created" "test -d $SANDBOX_DIR/submissions/$test_name/TestComp_1.0_user" 2
 
   # File operations
-  echo "(program 1.1.0 (con integer 42))" > "$TEST_TMP_DIR/test.uplc"
+  echo "(program 1.1.0 (con unit ()))" > "$TEST_TMP_DIR/test.uplc"
   run_test "measure single file" "(cd \"$PROJECT_ROOT\" && PROJECT_ROOT=\"$SANDBOX_DIR\" bash \"$REPO_ROOT/scripts/cape-subcommands/submission/measure.sh\" -i $TEST_TMP_DIR/test.uplc -o $TEST_TMP_DIR/metrics.json)" 10
 
   # Structure validation

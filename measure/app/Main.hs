@@ -2,7 +2,7 @@ module Main (main) where
 
 import Prelude
 
-import Control.Exception (try)
+import Control.Exception qualified as E
 import Data.Aeson (ToJSON, (.=))
 import Data.Aeson qualified as Json
 import Data.Aeson.Encode.Pretty qualified as AesonPretty
@@ -10,82 +10,160 @@ import Data.ByteString qualified as BS
 import Data.ByteString.Lazy qualified as LBS
 import Data.ByteString.Short qualified as SBS
 import Data.SatInt (unSatInt)
-import Data.Text qualified as Text
-import Data.Text.IO qualified as T
+import Options.Applicative
 import PlutusCore qualified as PLC
-import PlutusCore.Annotation (SrcSpans (..))
-import PlutusCore.Error (ParserErrorBundle (..))
 import PlutusCore.Evaluation.Machine.ExBudget (ExBudget (..))
 import PlutusCore.Evaluation.Machine.ExMemory (ExCPU (..), ExMemory (..))
 import PlutusLedgerApi.Common (serialiseCompiledCode)
-import PlutusTx.Code (CompiledCodeIn (..), countAstNodes)
+import PlutusTx.Code (countAstNodes)
 import PlutusTx.Eval (EvalResult (..), displayEvalResult, evaluateCompiledCode)
-import System.Environment qualified as Env
+import System.Directory (doesFileExist)
+import System.Exit (ExitCode (..))
 import System.Exit qualified as Exit
 import System.Process (readProcess)
-import Text.Megaparsec (errorBundlePretty)
 import UntypedPlutusCore qualified as UPLC
-import UntypedPlutusCore.DeBruijn (deBruijnTerm)
-import UntypedPlutusCore.Parser qualified as UPLC (parseProgram)
+import UntypedPlutusCore.Parser qualified as UPLCParser
+
+import App.Compile (applyPrograms, compileProgram)
+import App.Verify (isBuiltinUnit)
+import Data.Text.Encoding qualified as TE
+
+-- CLI options
+-- -i: input UPLC file
+-- -o: output metrics.json file
+-- -v: optional verifier UPLC file (applied as (verifier submissionResult))
+data Options = Options
+  { optInput :: FilePath
+  , optOutput :: FilePath
+  , optVerifier :: Maybe FilePath
+  }
+
+optionsParser :: Parser Options
+optionsParser =
+  Options
+    <$> strOption
+      (long "input" <> short 'i' <> metavar "FILE" <> help "UPLC input file")
+    <*> strOption
+      ( long "output" <> short 'o' <> metavar "FILE" <> help "metrics.json output file"
+      )
+    <*> optional
+      ( strOption
+          ( long "verifier"
+              <> short 'v'
+              <> metavar "VERIFIER.uplc"
+              <> help
+                "Verifier UPLC file applied as (verifier submissionResult) for correctness verification"
+          )
+      )
+
+optsInfo :: ParserInfo Options
+optsInfo =
+  info
+    (optionsParser <**> helper)
+    ( fullDesc
+        <> progDesc
+          "Measure a UPLC program and optionally verify correctness using a provided verifier UPLC file"
+        <> header "uplc-measure"
+    )
 
 main :: IO ()
 main = do
-  args <- Env.getArgs
-  case parseArgs args of
-    Just (inputFile, outputFile) -> measureUplcFile inputFile outputFile
-    Nothing -> Exit.die "Usage: measure -i <uplc-file> -o <metrics-file>"
+  Options {optInput, optOutput, optVerifier} <- execParser optsInfo
+  measureUplcFile optVerifier optInput optOutput
 
-parseArgs :: [String] -> Maybe (FilePath, FilePath)
-parseArgs ["-i", inputFile, "-o", outputFile] = Just (inputFile, outputFile)
-parseArgs _ = Nothing
+-- Helper: strict UTF-8 file reader with graceful failure
+readTextUtf8 :: FilePath -> IO Text
+readTextUtf8 fp = do
+  bs <- readFileBS fp
+  case TE.decodeUtf8' bs of
+    Left _ -> do
+      putTextLn $ "Failed to decode UTF-8 text: " <> toText fp
+      Exit.exitWith (ExitFailure 4)
+    Right t -> pure t
 
-measureUplcFile :: FilePath -> FilePath -> IO ()
-measureUplcFile uplcFile metricsFile = do
+measureUplcFile :: Maybe FilePath -> FilePath -> FilePath -> IO ()
+measureUplcFile mVerifier uplcFile metricsFile = do
   -- 1. Read pretty-printed UPLC text
-  uplcText <- T.readFile uplcFile
+  uplcText <- readTextUtf8 uplcFile
 
   -- 2. Parse the UPLC text getting a value of type 'UPLC.Program'
-
-  program <-
-    case PLC.runQuoteT (UPLC.parseProgram uplcText) of
-      Left (ParseErrorB err) -> error (Text.pack (errorBundlePretty err))
+  program <- do
+    let parsed = runExceptT (UPLCParser.parseProgram uplcText)
+    case PLC.runQuote parsed of
+      Left err -> do
+        putTextLn $ "Malformed/invalid UPLC file: " <> toText uplcFile
+        putTextLn $ toText @String (show err)
+        exitWith (ExitFailure 4)
       Right prog -> pure prog
 
-  -- 3. Convert UPLC Program to a value of type 'CompiledCode'
+  -- Convert UPLC Program to a value of type 'CompiledCode'
+  code <- compileProgram program
 
-  -- Convert names to NamedDeBruijn indices for CompiledCode
-  code <- case deBruijnTerm (UPLC._progTerm program) of
-    Right termWithDeBruijn -> do
-      let -- Convert annotation from SrcSpan to SrcSpans
-          termWithSrcSpans = (\_ -> SrcSpans mempty) <$> termWithDeBruijn
-          programWithDeBruijn =
-            UPLC.Program
-              (SrcSpans mempty)
-              (UPLC._progVer program)
-              termWithSrcSpans
-      pure $ DeserializedCode programWithDeBruijn Nothing mempty
-    Left err ->
-      error $
-        "Failed to convert names to DeBruijn indices: "
-          <> show err
-
-  -- 4. Measure compiled code using CEK machine
+  -- Evaluate submission with CEK machine (same settings used for measurement)
   let evalRes = evaluateCompiledCode code
-      EvalResult
+  case evalResult evalRes of
+    Left _ -> do
+      putTextLn $
+        "Verification/evaluation failed while evaluating submission: "
+          <> displayEvalResult evalRes
+      Exit.exitWith (ExitFailure 3)
+    Right valueTerm -> do
+      if isBuiltinUnit valueTerm
+        then putTextLn "Submission result is BuiltinUnit; verifier not required."
+        else case mVerifier of
+          Nothing -> do
+            putTextLn
+              "Verifier required: submission result is not BuiltinUnit. Provide -v/--verifier <verifier.uplc>."
+            Exit.exitWith (ExitFailure 2)
+          Just verifierPath -> do
+            exists <- doesFileExist verifierPath
+            if not exists
+              then do
+                putTextLn $ "Verifier file not found: " <> toText verifierPath
+                Exit.exitWith (ExitFailure 2)
+              else do
+                verifierText <- readTextUtf8 verifierPath
+                let parsedVerifier = runExceptT (UPLCParser.parseProgram verifierText)
+                verifierProg <-
+                  case PLC.runQuote parsedVerifier of
+                    Left err -> do
+                      putTextLn $ "Malformed/invalid verifier UPLC file: " <> toText verifierPath
+                      putTextLn $ toText @String (show err)
+                      Exit.exitWith (ExitFailure 4)
+                    Right p -> pure p
+                -- Build application: (verifierProg submissionProgram)
+                appCode <- applyPrograms verifierProg program
+                let testRes = evaluateCompiledCode appCode
+                case evalResult testRes of
+                  Right term' | isBuiltinUnit term' -> do
+                    putTextLn "Verification passed."
+                    putTextLn ("Verifier evaluation summary: " <> displayEvalResult testRes)
+                  _ -> do
+                    putTextLn
+                      "Verification failed: (verifier submissionResult) did not reduce to BuiltinUnit."
+                    putTextLn ("Verifier evaluation summary: " <> displayEvalResult testRes)
+                    Exit.exitWith (ExitFailure 3)
+
+  -- At this point verification has passed or was not required; proceed to metrics
+  let EvalResult
         { evalResultBudget =
           ExBudget {exBudgetCPU = ExCPU cpu, exBudgetMemory = ExMemory mem}
         } = evalRes
       scriptBytes = SBS.fromShort (serialiseCompiledCode code)
       scriptSize = BS.length scriptBytes
-      PLC.Version major minor patch = UPLC._progVer program
-      plutusCoreVersion :: Text =
-        show major <> "." <> show minor <> "." <> show patch
+      -- Extract version via pattern matching to avoid using internal accessors
+      verStr :: String
+      verStr = case program of
+        UPLC.Program _ (PLC.Version major minor patch) _ -> show major ++ "." ++ show minor ++ "." ++ show patch
 
-  -- Determine evaluator version using gitAwareVersionInfo on this package's version
+      plutusCoreVersion :: Text
+      plutusCoreVersion = toText @String verStr
+
   evaluatorVersion <- getEvaluatorVersion
-  let evaluatorString = "PlutusTx.Eval-" <> Text.unpack evaluatorVersion
+  let evaluatorString :: Text
+      evaluatorString = "PlutusTx.Eval-" <> evaluatorVersion
 
-  -- 5. Write metrics to JSON file
+  -- Write metrics to JSON file
   LBS.writeFile metricsFile $
     AesonPretty.encodePretty
       Metrics
@@ -94,17 +172,15 @@ measureUplcFile uplcFile metricsFile = do
         , script_size_bytes = fromIntegral scriptSize
         , term_size = countAstNodes code
         }
-  putTextLn $ "Metrics written to " <> Text.pack metricsFile
-  -- Use displayEvalResult for a human-readable evaluation summary
+  putTextLn $ "Metrics written to " <> toText metricsFile
   putTextLn "Evaluation summary:"
   putTextLn (displayEvalResult evalRes)
-  -- Additional concise metric lines (retain for tooling)
-  putTextLn $ "Script size: " <> Text.pack (show scriptSize) <> " bytes"
-  putTextLn $ "CPU units: " <> Text.pack (show cpu)
-  putTextLn $ "Memory units: " <> Text.pack (show mem)
-  putTextLn $ "Term size: " <> Text.pack (show (countAstNodes code))
+  putTextLn $ "Script size: " <> toText @String (show scriptSize) <> " bytes"
+  putTextLn $ "CPU units: " <> toText @String (show cpu)
+  putTextLn $ "Memory units: " <> toText @String (show mem)
+  putTextLn $ "Term size: " <> toText @String (show (countAstNodes code))
   putTextLn $ "Plutus Core version: " <> plutusCoreVersion
-  putTextLn $ "Evaluator: " <> Text.pack evaluatorString
+  putTextLn $ "Evaluator: " <> evaluatorString
 
 -- | Metrics data structure matching the schema
 data Metrics = Metrics
@@ -125,9 +201,9 @@ instance ToJSON Metrics where
 
 getEvaluatorVersion :: IO Text
 getEvaluatorVersion = do
-  eres <- try (readProcess "uplc" ["--version"] "")
+  eres <- E.try (readProcess "uplc" ["--version"] "")
   pure $ case eres of
     Right out ->
       let verTok = takeWhile (\c -> c /= ' ' && c /= '\n') out
-       in if null verTok then "unknown" else Text.pack verTok
-    Left (_ :: SomeException) -> "unknown"
+       in if null verTok then "unknown" else toText verTok
+    Left (_ :: E.SomeException) -> "unknown"

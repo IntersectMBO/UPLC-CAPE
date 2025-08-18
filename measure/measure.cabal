@@ -1,5 +1,5 @@
 cabal-version: 3.4
-name:          uplc-measure
+name:          measure
 version:       1.0.0
 synopsis:      UPLC measurement tool for CAPE framework
 description:
@@ -25,6 +25,7 @@ common common-deps
     , plutus-tx-plugin   >=1.52
     , relude             ^>=1.2.2
     , serialise
+    , some
     , text
     , time
 
@@ -49,7 +50,9 @@ common common-language
     FlexibleInstances
     GeneralizedNewtypeDeriving
     ImportQualifiedPost
+    LambdaCase
     MultiParamTypeClasses
+    NamedFieldPuns
     OverloadedStrings
     ScopedTypeVariables
     TemplateHaskell
@@ -61,10 +64,18 @@ common common-language
 executable measure
   import:         common-language
   main-is:        Main.hs
+  other-modules:
+    App.Compile
+    App.Verify
+
   build-depends:
     , base
     , bytestring
+    , directory
+    , filepath
     , megaparsec
+    , mtl
+    , optparse-applicative
     , plutus-core
     , plutus-core:plutus-core-testlib
     , plutus-ledger-api
@@ -73,6 +84,20 @@ executable measure
     , plutus-tx:plutus-tx-testlib
     , process
     , serialise
+    , text
+
+  hs-source-dirs: app
+
+-- Verifier generator tool
+executable generate-verifiers
+  import:         common-language
+  main-is:        GenerateVerifiers.hs
+
+  build-depends:
+    , base
+    , plutus-core
+    , plutus-tx
+    , plutus-tx-plugin
     , text
 
   hs-source-dirs: app

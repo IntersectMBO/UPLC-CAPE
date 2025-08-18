@@ -8,7 +8,11 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # Source shared helpers
 # shellcheck disable=SC1091
 source "$SCRIPT_DIR/../../lib/cape_common.sh"
-cape_detect_root "$SCRIPT_DIR"
+
+# Only detect root if PROJECT_ROOT is not already set (e.g., by test environment)
+if [[ -z "${PROJECT_ROOT:-}" ]]; then
+  cape_detect_root "$SCRIPT_DIR"
+fi
 
 # Cape Submission Aggregate - Generates CSV report of all benchmark submissions
 # Usage: cape submission aggregate
@@ -47,22 +51,22 @@ while IFS= read -r -d '' metadata_file; do
   # Extract actual submission directory name
   actual_submission_dir="$(basename "$submission_dir")"
 
-  # Extract data from metadata.json using basic JSON parsing
-  compiler_name=$(grep -o '"name"[[:space:]]*:[[:space:]]*"[^"]*"' "$metadata_file" | head -1 | cut -d '"' -f4)
-  compiler_version=$(grep -o '"version"[[:space:]]*:[[:space:]]*"[^"]*"' "$metadata_file" | head -1 | cut -d '"' -f4)
-  contributor_name=$(grep -o '"name"[[:space:]]*:[[:space:]]*"[^"]*"' "$metadata_file" | tail -1 | cut -d '"' -f4)
+  # Extract data from metadata.json using basic JSON parsing (be tolerant to missing fields)
+  compiler_name=$(grep -o '"name"[[:space:]]*:[[:space:]]*"[^"]*"' "$metadata_file" | head -1 | cut -d '"' -f4 || true)
+  compiler_version=$(grep -o '"version"[[:space:]]*:[[:space:]]*"[^"]*"' "$metadata_file" | head -1 | cut -d '"' -f4 || true)
+  contributor_name=$(grep -o '"name"[[:space:]]*:[[:space:]]*"[^"]*"' "$metadata_file" | tail -1 | cut -d '"' -f4 || true)
 
   # If contributor name is the same as compiler name, it means contributor.name wasn't found
-  if [ "$contributor_name" = "$compiler_name" ]; then
+  if [ "${contributor_name:-}" = "${compiler_name:-}" ]; then
     contributor_name=""
   fi
 
-  # Extract data from metrics.json
-  timestamp=$(grep -o '"timestamp"[[:space:]]*:[[:space:]]*"[^"]*"' "$metrics_file" | cut -d '"' -f4)
-  cpu_units=$(grep -o '"cpu_units"[[:space:]]*:[[:space:]]*[0-9]*' "$metrics_file" | grep -o '[0-9]*$')
-  memory_units=$(grep -o '"memory_units"[[:space:]]*:[[:space:]]*[0-9]*' "$metrics_file" | grep -o '[0-9]*$')
-  script_size_bytes=$(grep -o '"script_size_bytes"[[:space:]]*:[[:space:]]*[0-9]*' "$metrics_file" | grep -o '[0-9]*$')
-  term_size=$(grep -o '"term_size"[[:space:]]*:[[:space:]]*[0-9]*' "$metrics_file" | grep -o '[0-9]*$')
+  # Extract data from metrics.json (allow empty when template placeholders present)
+  timestamp=$(grep -o '"timestamp"[[:space:]]*:[[:space:]]*"[^"]*"' "$metrics_file" | cut -d '"' -f4 || true)
+  cpu_units=$(grep -o '"cpu_units"[[:space:]]*:[[:space:]]*[0-9]*' "$metrics_file" | grep -o '[0-9]*$' || true)
+  memory_units=$(grep -o '"memory_units"[[:space:]]*:[[:space:]]*[0-9]*' "$metrics_file" | grep -o '[0-9]*$' || true)
+  script_size_bytes=$(grep -o '"script_size_bytes"[[:space:]]*:[[:space:]]*[0-9]*' "$metrics_file" | grep -o '[0-9]*$' || true)
+  term_size=$(grep -o '"term_size"[[:space:]]*:[[:space:]]*[0-9]*' "$metrics_file" | grep -o '[0-9]*$' || true)
 
   # Escape any commas in string fields and output CSV row
   benchmark=$(echo "$benchmark" | sed 's/,/\\,/g')

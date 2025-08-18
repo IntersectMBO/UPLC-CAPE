@@ -27,7 +27,7 @@ The {Scenario Name} benchmark is a **{synthetic/real-world} {type}** designed to
 
 The {Scenario Name} program operates as a **{description of execution model}**:
 
-```
+```text
 [Start] --{operation}()--> [{Result State}: {expected_result}]
 ```
 
@@ -53,7 +53,7 @@ The {Scenario Name} program operates as a **{description of execution model}**:
 
 ### Core Algorithm
 
-```
+```text
 {pseudo_code_or_algorithm_description}
 ```
 

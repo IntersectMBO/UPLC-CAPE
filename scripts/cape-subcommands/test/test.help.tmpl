@@ -2,9 +2,9 @@ Usage:
   cape test [options]
 
 Description:
-  Runs the complete UPLC CAPE test suite to verify all CLI commands and 
-  scripts work correctly. This includes testing benchmark creation, 
-  submission management, file validation, and integration workflows.
+  Runs the complete UPLC CAPE test suite to verify CLI commands and scripts.
+  This includes testing benchmark creation, submission management,
+  verification (correctness + schemas), measurement, and reports.
 
 Options:
   -h, --help    Show this help message
@@ -17,8 +17,7 @@ The test suite runs in a sandboxed environment and does not modify your
 actual project files. It tests:
 - CAPE CLI functionality (benchmark, submission commands)
 - Template-based file creation
-- Input validation and error conditions
-- Integration workflows
+- Verification and measurement workflows
 - Directory structure validation
 
-Note: This command must be run from within the nix development shell.
+Note: Run from within the nix development shell.

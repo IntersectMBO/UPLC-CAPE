@@ -54,18 +54,14 @@ Validates the structure of submission metadata files that contain information ab
 
 ### With CAPE Command Line Tools (Recommended)
 
-The easiest way to validate your submissions is using the built-in CAPE validation commands:
+The easiest way to verify your submissions is using the unified CAPE command:
 
 ```bash
-# Validate all submissions in the project
-cape submission validate --all
+# Verify all submissions in the project (correctness + schema validation)
+cape submission verify --all
 
-# Validate a specific submission directory
-cape submission validate submissions/fibonacci/Aiken_1.0.8_myhandle/
-
-# Validate a specific file
-cape submission validate --single metrics.json
-cape submission validate --single metadata.json
+# Verify a specific submission directory
+cape submission verify submissions/fibonacci/Aiken_1.0.8_myhandle/
 ```
 
 ### With check-jsonschema (Manual)

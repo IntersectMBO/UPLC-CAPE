@@ -70,26 +70,16 @@
           inputMap = {
             "https://chap.intersectmbo.org/" = CHaP;
           };
-          modules = [
-            {
-              packages = { };
-            }
-          ];
         };
 
         # Measure project configuration
         measureProject = pkgs.haskell-nix.cabalProject' {
-          name = "uplc-measure";
+          name = "measure";
           compiler-nix-name = "ghc966";
           src = ./measure;
           inputMap = {
             "https://chap.intersectmbo.org/" = CHaP;
           };
-          modules = [
-            {
-              packages = { };
-            }
-          ];
         };
 
         # Plinth development tools
@@ -99,7 +89,7 @@
         };
 
         # Measure tool executable
-        measureTool = measureProject.flake'.packages."uplc-measure:exe:measure";
+        measureTool = measureProject.hsPkgs.measure.components.exes.measure;
 
         # UPLC CLI from Plutus repository (musl build)
         uplcMusl = plutus.packages.${system}.musl64-uplc;
@@ -200,8 +190,12 @@
 
             # CAPE project management tool
             (writeShellScriptBin "cape" ''
-              # Use the current working directory as the project root when in Nix shell
-              exec ${./scripts/cape.sh} --project-root "$PWD" "$@"
+              # Prefer repo-local cape.sh when available; fallback to store copy
+              if [ -x "$PWD/scripts/cape.sh" ]; then
+                exec "$PWD/scripts/cape.sh" --project-root "$PWD" "$@"
+              else
+                exec ${./scripts/cape.sh} --project-root "$PWD" "$@"
+              fi
             '')
 
             # --- Additive Plinth / Cardano tooling below (new) ---
@@ -224,7 +218,18 @@
 
           shellHook = ''
             # Display banner using glow for better markdown rendering
-            glow BANNER.md
+            # Resolve repo root so this works when entering the shell from subdirectories
+            if command -v git >/dev/null 2>&1; then
+              REPO_ROOT="$(git rev-parse --show-toplevel 2>/dev/null || true)"
+            else
+              REPO_ROOT=""
+            fi
+            if [ -n "$REPO_ROOT" ] && [ -f "$REPO_ROOT/BANNER.md" ]; then
+              glow "$REPO_ROOT/BANNER.md" || true
+            else
+              # Fallback to the flake's BANNER in the Nix store
+              glow "${./BANNER.md}" || true
+            fi
             echo ""
 
             # Install log4brains via npx when needed

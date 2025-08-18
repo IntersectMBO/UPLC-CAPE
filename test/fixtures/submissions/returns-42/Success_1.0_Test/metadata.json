@@ -1,0 +1,9 @@
+{
+  "compiler": { "name": "test", "version": "1.0.0" },
+  "compilation_config": { "target": "uplc" },
+  "submission": {
+    "date": "2025-01-01T00:00:00Z",
+    "source_available": false,
+    "implementation_notes": "Fixture: returns 42, passes with scenario verifier"
+  }
+}

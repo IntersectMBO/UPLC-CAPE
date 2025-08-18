@@ -16,7 +16,7 @@
 - `cape benchmark <scenario>`: Show scenario details
 - `cape submission new <scenario> <language> <version> <handle>`  
   Example: `cape submission new fibonacci Aiken 1.0.8 Unisay`
-- `cape submission validate`: Validate submission files against JSON schemas
+- `cape submission verify`: Verify correctness and validate schemas
 - `cape submission measure`: Measure UPLC program performance and generate metrics.json
 - `cape submission aggregate`: Generate CSV report of benchmark submissions
 - `cape submission report <benchmark>`: Generate HTML performance reports with charts
