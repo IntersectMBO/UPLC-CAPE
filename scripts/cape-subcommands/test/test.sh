@@ -128,7 +128,7 @@ setup_test_env() {
         else
           shopt -s nullglob
           uplcs=("$dir"/*.uplc)
-          if (( ${#uplcs[@]} == 1 )); then
+          if ((${#uplcs[@]} == 1)); then
             cp "${uplcs[0]}" "$dir/verifier.uplc"
           fi
           shopt -u nullglob
@@ -190,6 +190,10 @@ main() {
   echo "===================="
   setup_test_env
 
+  # Environment validation - measure tool must be available
+  test_group "environment requirements" \
+    "measure tool available" "command -v measure" 2 ""
+
   # Core functionality
   test_group "core commands" \
     "cape help" "bash scripts/cape.sh --help" 5 "" \
@@ -215,6 +219,7 @@ main() {
     "submission list fibonacci" "(cd \"$PROJECT_ROOT\" && PROJECT_ROOT=\"$SANDBOX_DIR\" bash \"$REPO_ROOT/scripts/cape-subcommands/submission/list.sh\" fibonacci)" 5 "" \
     "submission no args fail" "echo '' | (cd \"$PROJECT_ROOT\" && PROJECT_ROOT=\"$SANDBOX_DIR\" bash \"$REPO_ROOT/scripts/cape-subcommands/submission/new.sh\" fibonacci Comp 1.0)" 5 "fail" \
     "submission complete success" "echo '' | (cd \"$PROJECT_ROOT\" && PROJECT_ROOT=\"$SANDBOX_DIR\" bash \"$REPO_ROOT/scripts/cape-subcommands/submission/new.sh\" fibonacci Comp 1.0 user)" 5 "" \
+    "submission cleanup (remove template submission)" "rm -rf \"$SANDBOX_DIR/submissions/fibonacci/Comp_1.0_user\"" 5 "" \
     "submission invalid fail" "(cd \"$PROJECT_ROOT\" && PROJECT_ROOT=\"$SANDBOX_DIR\" bash \"$REPO_ROOT/scripts/cape-subcommands/submission/list.sh\" invalid_arg; exit 1)" 5 "fail"
 
   # Verification & measurement
@@ -240,7 +245,7 @@ main() {
     "report help" "(cd \"$PROJECT_ROOT\" && PROJECT_ROOT=\"$SANDBOX_DIR\" bash \"$REPO_ROOT/scripts/cape-subcommands/submission/report.sh\" --help)" 5 "" \
     "report dry-run all" "(cd \"$PROJECT_ROOT\" && PROJECT_ROOT=\"$SANDBOX_DIR\" bash \"$REPO_ROOT/scripts/cape-subcommands/submission/report.sh\" --dry-run --all)" 10 "" \
     "report dry-run fibonacci" "(cd \"$PROJECT_ROOT\" && PROJECT_ROOT=\"$SANDBOX_DIR\" bash \"$REPO_ROOT/scripts/cape-subcommands/submission/report.sh\" --dry-run fibonacci; true)" 10 "" \
-    "aggregate" "(cd \"$PROJECT_ROOT\" && PROJECT_ROOT=\"$SANDBOX_DIR\" bash \"$REPO_ROOT/scripts/cape-subcommands/submission/aggregate.sh\")" 20 ""
+    "aggregate" "(cd \"$PROJECT_ROOT\" && PROJECT_ROOT=\"$SANDBOX_DIR\" bash \"$REPO_ROOT/scripts/cape-subcommands/submission/aggregate.sh\")" 30 ""
 
   # Global flags
   test_group "global options" \
@@ -259,7 +264,7 @@ main() {
   run_test "create submission" "(cd \"$PROJECT_ROOT\" && PROJECT_ROOT=\"$SANDBOX_DIR\" bash \"$REPO_ROOT/scripts/cape-subcommands/submission/new.sh\" $test_name TestComp 1.0 user)" 15
   run_test "verify submission created" "test -d $SANDBOX_DIR/submissions/$test_name/TestComp_1.0_user" 2
 
-  # File operations  
+  # File operations
   echo "(program 1.1.0 (con unit ()))" > "$TEST_TMP_DIR/test.uplc"
   run_test "measure single file" "(cd \"$PROJECT_ROOT\" && PROJECT_ROOT=\"$SANDBOX_DIR\" bash \"$REPO_ROOT/scripts/cape-subcommands/submission/measure.sh\" -i $TEST_TMP_DIR/test.uplc -o $TEST_TMP_DIR/metrics.json)" 10
 

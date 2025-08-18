@@ -216,7 +216,7 @@ VERIFY_ALL=false
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
-    -a|--all)
+    -a | --all)
       VERIFY_ALL=true
       shift
       ;;

@@ -192,14 +192,22 @@ case "$COMMAND" in
         script_path="$CAPE_DIR/$COMMAND/list.sh"
         if [ -f "$script_path" ]; then
           cd "$PROJECT_ROOT"
-          exec "$script_path" "$@"
+          if [[ -x "$script_path" ]]; then
+            exec "$script_path" "$@"
+          else
+            exec bash "$script_path" "$@"
+          fi
         fi
       # For test command, run the test script directly
       elif [ "$COMMAND" = "test" ]; then
         script_path="$CAPE_DIR/$COMMAND/test.sh"
         if [ -f "$script_path" ]; then
           cd "$PROJECT_ROOT"
-          exec "$script_path" "$@"
+          if [[ -x "$script_path" ]]; then
+            exec "$script_path" "$@"
+          else
+            exec bash "$script_path" "$@"
+          fi
         fi
       fi
 
@@ -312,7 +320,11 @@ case "$COMMAND" in
 
         # Change to project root before executing subcommand
         cd "$PROJECT_ROOT"
-        exec "$script_path" "$@"
+        if [[ -x "$script_path" ]]; then
+          exec "$script_path" "$@"
+        else
+          exec bash "$script_path" "$@"
+        fi
         ;;
     esac
     ;;
