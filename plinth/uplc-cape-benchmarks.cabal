@@ -91,25 +91,6 @@ executable fibonacci
 
   hs-source-dirs: app
 
--- Factorial benchmark scenario
-executable factorial
-  import:         common-language
-  main-is:        FactorialMain.hs
-  build-depends:
-    , base
-    , bytestring
-    , mtl
-    , plutus-core
-    , plutus-core:plutus-core-testlib
-    , plutus-ledger-api
-    , plutus-tx
-    , plutus-tx-plugin
-    , plutus-tx:plutus-tx-testlib
-    , text
-    , uplc-cape-benchmarks
-
-  hs-source-dirs: app
-
 -- Template for future benchmark executables:
 --
 -- executable two-party-escrow

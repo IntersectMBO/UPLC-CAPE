@@ -2,6 +2,7 @@ module Main (main) where
 
 import Prelude
 
+import Factorial (factorial10Code)
 import Fibonacci (fibonacci25Code)
 import PlutusCore.Pretty qualified as PP
 import PlutusCore.Quote (runQuoteT)
@@ -12,6 +13,7 @@ import UntypedPlutusCore.DeBruijn (unDeBruijnTerm)
 main :: IO ()
 main = do
   writeCodeToFile "fibonacci.uplc" fibonacci25Code
+  writeCodeToFile "factorial.uplc" factorial10Code
 
 writeCodeToFile :: FilePath -> CompiledCode a -> IO ()
 writeCodeToFile filePath code = do
