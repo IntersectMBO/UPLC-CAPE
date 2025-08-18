@@ -10,7 +10,7 @@ Relude is a modern, safe, minimal alternative to the standard Prelude focused on
 - Type-driven design (e.g., preferring NonEmpty where emptiness is invalid)
 - Performance defaults (Text/ByteString over String; space-leak-free folds)
 - Convenience without large dependency footprints
-- Clear module structure with optional Extra.* modules
+- Clear module structure with optional Extra.\* modules
 
 ## Key differences vs stock Prelude
 
