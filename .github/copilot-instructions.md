@@ -454,10 +454,7 @@ measurePerformance compiled = do
 - Prefer enabling standard and safe language extensions in the Cabal file via `default-extensions` for each component (library/executable/test).
 - Avoid per-file `{-# LANGUAGE ... #-}` pragmas for these common extensions unless there is a compelling, file-local reason.
 - Examples of safe/common extensions to keep in Cabal (already used in this repo):
-  - ImportQualifiedPost, NamedFieldPuns, OverloadedStrings, ScopedTypeVariables,
-    TypeApplications, DerivingStrategies, DeriveAnyClass, DeriveGeneric,
-    DataKinds, GeneralizedNewtypeDeriving, MultiParamTypeClasses, ViewPatterns,
-    TemplateHaskell, FlexibleContexts, FlexibleInstances, UndecidableInstances
+  - ImportQualifiedPost, NamedFieldPuns, OverloadedStrings, ScopedTypeVariables, TypeApplications, DerivingStrategies, DeriveAnyClass, DeriveGeneric, DataKinds, GeneralizedNewtypeDeriving, MultiParamTypeClasses, ViewPatterns, TemplateHaskell, FlexibleContexts, FlexibleInstances, UndecidableInstances
 - If a file needs a non-standard or risky extension (e.g., `TemplateHaskellQuotes`, `NoImplicitPrelude` overrides), document the rationale inline and consider moving it to Cabal only if it is broadly applicable.
 - Keep warnings strict (`-Wall` etc.) and fix warnings rather than suppressing them with pragmas.
 
@@ -474,6 +471,7 @@ measurePerformance compiled = do
 To avoid churn and keep tooling predictable, respect these boundaries:
 
 - Wrapper (repo-aware): `cape submission measure`
+
   - Purpose: operates on submissions and directories, aware of repository layout and scenarios.
   - Stable interface: do not add or remove flags. Supported options are:
     - `-a, --all` — measure every submission under `submissions/`
@@ -483,6 +481,7 @@ To avoid churn and keep tooling predictable, respect these boundaries:
   - No scenario/verifier override flags are exposed in the wrapper; it auto-infers the scenario from the path and, if present, passes the scenario verifier to the low-level tool.
 
 - Wrapper (repo-aware): `cape submission verify`
+
   - Purpose: correctness verification (via `measure`) + schema validation; aware of repository layout and scenarios.
   - Stable interface: do not add or remove flags. Supported options are:
     - `-a, --all` — verify every submission under `submissions/`
