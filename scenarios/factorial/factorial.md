@@ -1,5 +1,7 @@
 # Factorial Benchmark Scenario
 
+## Overview
+
 The Factorial benchmark is a **synthetic computational scenario** designed to measure the performance characteristics of iterative and recursive algorithms implemented as UPLC programs. This benchmark tests a compiler's ability to optimize mathematical computations, manage stack operations, and handle integer arithmetic efficiently.
 
 ## TL;DR
