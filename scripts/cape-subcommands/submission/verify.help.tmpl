@@ -1,8 +1,8 @@
 Usage: cape submission verify [OPTIONS] PATH
 
-Verify a submission by running correctness (CEK + optional verifier) and
-schema validation. This wrapper auto-discovers the scenario and verifier based
-on repository layout. No explicit scenario or verifier flags are supported.
+Verify a submission by running correctness (CEK + optional cape-tests.json) and
+schema validation. This wrapper auto-discovers the scenario and test suite based
+on repository layout. No explicit scenario or test flags are supported.
 
 Options:
   -a, --all              Verify all submissions under submissions/
@@ -12,9 +12,8 @@ Options:
 
 Behavior:
 - Scenario is inferred from path: submissions/<scenario>/<submission>/...
-- If scenarios/<scenario>/verifier.uplc exists, it is passed to the measure tool
-  as the verifier (-v). If missing and the program does not reduce to unit, the
-  measure tool exits with code 2 and verification fails.
+- Cape-tests.json is REQUIRED at scenarios/<scenario>/cape-tests.json
+- Test suite is passed to measure tool for comprehensive validation (-t)
 - metrics.json is created/updated from measurement output.
 - metrics.json and metadata.json are validated against schemas in
   submissions/TEMPLATE/.
