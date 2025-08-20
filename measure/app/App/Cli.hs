@@ -9,39 +9,35 @@ import Prelude
 -- | CLI options
 -- -i: input UPLC file
 -- -o: output metrics.json file
--- -v: optional verifier UPLC file (applied as (verifier submissionResult))
--- -d: optional driver UPLC file for validator testing with overhead calculation
+-- -t: optional cape-tests.json file for unified test execution
 data Options = Options
   { optInput :: FilePath
   , optOutput :: FilePath
-  , optVerifier :: Maybe FilePath
-  , optDriver :: Maybe FilePath
+  , optTests :: Maybe FilePath
   }
 
 optionsParser :: Parser Options
 optionsParser =
   Options
     <$> strOption
-      (long "input" <> short 'i' <> metavar "FILE" <> help "UPLC input file")
+      ( long "input"
+          <> short 'i'
+          <> metavar "FILE"
+          <> help "UPLC input file"
+      )
     <*> strOption
-      ( long "output" <> short 'o' <> metavar "FILE" <> help "metrics.json output file"
+      ( long "output"
+          <> short 'o'
+          <> metavar "FILE"
+          <> help "metrics.json output file"
       )
     <*> optional
       ( strOption
-          ( long "verifier"
-              <> short 'v'
-              <> metavar "VERIFIER.uplc"
+          ( long "tests"
+              <> short 't'
+              <> metavar "TESTS.json"
               <> help
-                "Verifier UPLC file applied as (verifier submissionResult) for correctness verification"
-          )
-      )
-    <*> optional
-      ( strOption
-          ( long "driver"
-              <> short 'd'
-              <> metavar "DRIVER.uplc"
-              <> help
-                "Driver UPLC file for validator testing with overhead calculation"
+                "Test specification file (cape-tests.json) for unified test execution"
           )
       )
 
@@ -51,7 +47,7 @@ optsInfo =
     (optionsParser <**> helper)
     ( fullDesc
         <> progDesc
-          "Measure a UPLC program and optionally verify correctness using a provided verifier UPLC file or test validators using a driver UPLC file"
+          "Measure a UPLC program and optionally run comprehensive tests using cape-tests.json"
         <> header "uplc-measure"
     )
 
