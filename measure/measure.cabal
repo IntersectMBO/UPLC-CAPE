@@ -42,18 +42,24 @@ common common-language
     relude (Relude as Prelude)
 
   default-extensions:
+    BangPatterns
+    BlockArguments
     DataKinds
     DeriveAnyClass
     DeriveGeneric
     DerivingStrategies
     FlexibleContexts
     FlexibleInstances
+    GADTs
     GeneralizedNewtypeDeriving
     ImportQualifiedPost
     LambdaCase
     MultiParamTypeClasses
+    MultiWayIf
     NamedFieldPuns
+    NoImplicitPrelude
     OverloadedStrings
+    PatternSynonyms
     ScopedTypeVariables
     TemplateHaskell
     TypeApplications
@@ -65,7 +71,10 @@ executable measure
   import:         common-language
   main-is:        Main.hs
   other-modules:
+    App.Cli
     App.Compile
+    App.Error
+    App.Fixture
     App.Verify
 
   build-depends:
@@ -92,7 +101,6 @@ executable measure
 executable generate-verifiers
   import:         common-language
   main-is:        GenerateVerifiers.hs
-
   build-depends:
     , base
     , plutus-core

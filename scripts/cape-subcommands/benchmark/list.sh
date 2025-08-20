@@ -73,37 +73,34 @@ extract_overview() {
     | sed '/./,$!d'
 }
 
-# Build grouped benchmark set
+# Build benchmark list - look for directories with scenario files
 discover_benchmarks() {
-  declare -gA MAIN_FILES=()
-  declare -gA HAS_SUPPLEMENTARY=()
+  declare -gA BENCHMARK_FILES=()
   if [ -d "$PROJECT_ROOT/scenarios" ]; then
-    for f in "$PROJECT_ROOT"/scenarios/*.md; do
-      [ -f "$f" ] || continue
+    for d in "$PROJECT_ROOT"/scenarios/*/; do
+      [ -d "$d" ] || continue
       local base
-      base=$(basename "$f" .md)
+      base=$(basename "$d")
       [ "$base" = "TEMPLATE" ] && continue
-      if [[ "$base" == *-* ]]; then
-        local root=${base%%-*}
-        HAS_SUPPLEMENTARY[$root]=1
+
+      # Look for scenario file: prefer scenario_name.md, fallback to README.md
+      local scenario_file=""
+      if [ -f "$d/$base.md" ]; then
+        scenario_file="$d/$base.md"
+      elif [ -f "$d/README.md" ]; then
+        scenario_file="$d/README.md"
       else
-        # First main wins; ignore duplicates but warn
-        if [ -n "${MAIN_FILES[$base]:-}" ]; then
-          echo "Warning: duplicate main benchmark file for '$base' -> $f (ignored)" >&2
-        else
-          MAIN_FILES[$base]="$f"
-        fi
+        continue # Skip directories without scenario files
       fi
+
+      BENCHMARK_FILES[$base]="$scenario_file"
     done
   fi
 }
 
-# Return sorted unique benchmark names
+# Return sorted benchmark names
 sorted_benchmark_names() {
-  {
-    for k in "${!MAIN_FILES[@]}"; do echo "$k"; done
-    for k in "${!HAS_SUPPLEMENTARY[@]}"; do echo "$k"; done
-  } | sort -u
+  for k in "${!BENCHMARK_FILES[@]}"; do echo "$k"; done | sort
 }
 
 # Determine benchmark positional (if any)
@@ -127,19 +124,8 @@ render_markdown() {
 
 if [ -n "$BENCHMARK" ]; then
   # Detailed view
-  local_file="$PROJECT_ROOT/scenarios/$BENCHMARK.md"
-  if [ -f "$local_file" ]; then
-    canonical="$local_file"
-  else
-    # fallback: first supplementary
-    for f in "$PROJECT_ROOT"/scenarios/$BENCHMARK-*.md; do
-      if [ -f "$f" ]; then
-        canonical="$f"
-        break
-      fi
-    done
-  fi
-  if [ -z "${canonical:-}" ]; then
+  canonical="${BENCHMARK_FILES[$BENCHMARK]:-}"
+  if [ -z "$canonical" ]; then
     echo "Error: Benchmark '$BENCHMARK' not found" >&2
     sorted_benchmark_names | sed 's/^/  /' >&2
     exit 1

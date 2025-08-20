@@ -1,16 +1,4 @@
-{-# LANGUAGE BangPatterns #-}
-{-# LANGUAGE BlockArguments #-}
-{-# LANGUAGE DataKinds #-}
-{-# LANGUAGE LambdaCase #-}
-{-# LANGUAGE MultiParamTypeClasses #-}
-{-# LANGUAGE MultiWayIf #-}
-{-# LANGUAGE NamedFieldPuns #-}
-{-# LANGUAGE OverloadedStrings #-}
-{-# LANGUAGE PatternSynonyms #-}
 {-# LANGUAGE Strict #-}
-{-# LANGUAGE TemplateHaskell #-}
-{-# LANGUAGE ViewPatterns #-}
-{-# LANGUAGE NoImplicitPrelude #-}
 --
 {-# OPTIONS_GHC -fno-full-laziness #-}
 {-# OPTIONS_GHC -fno-ignore-interface-pragmas #-}
@@ -26,7 +14,7 @@
 {-# OPTIONS_GHC -fplugin-opt PlutusTx.Plugin:remove-trace #-}
 {-# OPTIONS_GHC -fplugin-opt PlutusTx.Plugin:target-version=1.1.0 #-}
 
-module Main where
+module Main (main) where
 
 import Data.Text (Text)
 import Data.Text qualified as Text
@@ -34,6 +22,7 @@ import Data.Text.IO qualified as Text
 import PlutusCore.Pretty qualified as PP
 import PlutusCore.Quote (runQuoteT)
 import PlutusTx qualified as Tx
+import PlutusTx.Builtins.Internal (unitval)
 import PlutusTx.Prelude
 import System.Environment (getArgs)
 import System.Exit (exitFailure)
@@ -50,11 +39,36 @@ verifyEquals42 n = check (n == 42)
 verifyEquals42Compiled :: Tx.CompiledCode (Integer -> BuiltinUnit)
 verifyEquals42Compiled = $$(Tx.compile [||verifyEquals42||])
 
--- | Generate UPLC text for the verifier
-generateVerifierUPLC :: IO Text
-generateVerifierUPLC = do
-  let compiled = verifyEquals42Compiled
-      uplcProgramWithDeBruijn = Tx.getPlcNoAnn compiled
+-- | Dummy validator that always returns unit regardless of input
+dummyValidator :: BuiltinData -> BuiltinUnit
+dummyValidator _ = unitval
+
+-- | Compile the dummy validator to UPLC
+dummyValidatorCompiled :: Tx.CompiledCode (BuiltinData -> BuiltinUnit)
+dummyValidatorCompiled = $$(Tx.compile [||dummyValidator||])
+
+-- | Test validator for integration testing (accepts integer 42 as BuiltinData)
+testValidator :: BuiltinData -> BuiltinUnit
+testValidator input =
+  case Tx.fromBuiltinData input of
+    Just (42 :: Integer) -> unitval
+    _ -> traceError "Invalid input: expected 42"
+
+-- | Compile the test validator to UPLC
+testValidatorCompiled :: Tx.CompiledCode (BuiltinData -> BuiltinUnit)
+testValidatorCompiled = $$(Tx.compile [||testValidator||])
+
+-- | Generate UPLC text for the specified subject
+generateUPLC :: Text -> IO Text
+generateUPLC subject = do
+  uplcProgramWithDeBruijn <- case subject of
+    "equals42" -> return $ Tx.getPlcNoAnn verifyEquals42Compiled
+    "dummy-validator" -> return $ Tx.getPlcNoAnn dummyValidatorCompiled
+    "test-validator" -> return $ Tx.getPlcNoAnn testValidatorCompiled
+    _ -> do
+      putStrLn $ "Error: Unknown subject '" ++ Text.unpack subject ++ "'"
+      putStrLn "Available subjects: equals42, dummy-validator, test-validator"
+      exitFailure
 
   -- Convert DeBruijn names to regular names to be able to parse it
   -- using stock parser from the UntypedPlutusCore library.
@@ -74,23 +88,27 @@ generateVerifierUPLC = do
     P.Right prettyUplc ->
       P.return P.$ Text.pack P.$ show prettyUplc
 
--- | Write the verifier UPLC to a file
-writeVerifierToFile :: FilePath -> IO ()
-writeVerifierToFile filepath = do
-  uplcText <- generateVerifierUPLC
+-- | Write the UPLC program to a file
+writeUPLCToFile :: Text -> FilePath -> IO ()
+writeUPLCToFile subject filepath = do
+  uplcText <- generateUPLC subject
   Text.writeFile filepath uplcText
-  putStrLn P.$ "Verifier UPLC written to: " ++ filepath
+  putStrLn $ "UPLC program ("
+    ++ Text.unpack subject
+    ++ ") written to: "
+    ++ filepath
 
 main :: IO ()
 main = do
   args <- getArgs
   case args of
-    [filepath] -> writeVerifierToFile filepath
-    [] -> do
-      uplcText <- generateVerifierUPLC
+    [subject, filepath] -> writeUPLCToFile (Text.pack subject) filepath
+    [subject] -> do
+      uplcText <- generateUPLC (Text.pack subject)
       Text.putStrLn uplcText
     _ -> do
-      putStrLn "Usage: generate-verifiers [output-file]"
+      putStrLn "Usage: generate-verifiers <subject> [output-file]"
+      putStrLn "  subject: equals42, dummy-validator, test-validator"
       putStrLn "  Without output-file: prints UPLC to stdout"
-      putStrLn "  With output-file: writes UPLC to file"
+      putStrLn "  Subject parameter is required"
       exitFailure

@@ -83,9 +83,14 @@ cape benchmark list
 
 # View a specific benchmark
 cape benchmark fibonacci
+cape benchmark two-party-escrow
+
+# Generate JSON statistics for all benchmarks
+cape benchmark stats
 
 # Create a submission for your compiler
 cape submission new fibonacci MyCompiler 1.0.0 myhandle
+cape submission new two-party-escrow MyCompiler 1.0.0 myhandle
 ```
 
 ---
@@ -102,7 +107,7 @@ Latest benchmark reports: [UPLC-CAPE Reports](https://intersectmbo.github.io/UPL
 | --- | --- | --- | --- |
 | [Fibonacci](scenarios/fibonacci.md) | Synthetic | Recursive algorithm performance | Ready |
 | [Factorial](scenarios/factorial.md) | Synthetic | Recursive algorithm performance | Ready |
-| Two-Party Escrow | Real-world | Smart contract scenario | Planned |
+| [Two-Party Escrow](scenarios/two-party-escrow.md) | Real-world | Smart contract escrow validator | Ready |
 | Streaming Payments | Real-world | Payment channel implementation | Planned |
 | Simple DAO Voting | Real-world | Governance mechanism | Planned |
 | Time-locked Staking | Real-world | Staking protocol | Planned |
@@ -119,6 +124,7 @@ For the full and up-to-date command reference, see [USAGE.md](USAGE.md).
 # Benchmarks
 cape benchmark list              # List all benchmarks
 cape benchmark <name>            # Show benchmark details
+cape benchmark stats             # Generate JSON statistics for all benchmarks
 cape benchmark new <name>        # Create a new benchmark from template
 
 # Submissions
@@ -131,6 +137,23 @@ cape submission aggregate        # Generate CSV performance report
 cape submission report <name>    # Generate HTML report for a benchmark
 cape submission report --all     # Generate HTML reports for all benchmarks
 ```
+
+### JSON Statistics
+
+The `cape benchmark stats` command generates comprehensive JSON data for all benchmarks:
+
+```zsh
+# Output JSON statistics to console
+cape benchmark stats
+
+# Save to file
+cape benchmark stats > stats.json
+
+# Use with jq for filtering
+cape benchmark stats | jq '.benchmarks[] | select(.submission_count > 0)'
+```
+
+The output includes formatted metrics, best value indicators, and submission metadata, making it ideal for generating custom reports or integrating with external tools.
 
 ### Interactive prompts
 
@@ -275,14 +298,18 @@ cape submission new fibonacci    # Prompts for compiler, version, handle
 UPLC-CAPE/
 ├── scenarios/                    # Benchmark specifications
 │   ├── TEMPLATE/                 # Template for new scenarios
-│   └── fibonacci.md
+│   ├── fibonacci.md
+│   ├── factorial.md
+│   └── two-party-escrow.md
 ├── submissions/                  # Compiler submissions (per scenario)
 │   ├── TEMPLATE/                 # Templates and schemas
 │   │   ├── metadata.schema.json
 │   │   ├── metadata-template.json
 │   │   ├── metrics.schema.json
 │   │   └── metrics-template.json
-│   └── fibonacci/
+│   ├── fibonacci/
+│   │   └── MyCompiler_1.0.0_handle/
+│   └── two-party-escrow/
 │       └── MyCompiler_1.0.0_handle/
 ├── scripts/                      # Project CLI tooling
 │   ├── cape.sh                   # Main CLI

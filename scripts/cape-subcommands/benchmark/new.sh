@@ -44,39 +44,54 @@ if ! echo "$BENCHMARK_NAME" | grep -qE '^[a-z][a-z0-9-]*[a-z0-9]$|^[a-z]$'; then
 fi
 
 # Check if benchmark already exists
-if [ -f "$PROJECT_ROOT/scenarios/${BENCHMARK_NAME}.md" ]; then
+if [ -d "$PROJECT_ROOT/scenarios/${BENCHMARK_NAME}" ]; then
   echo "Error: Benchmark '${BENCHMARK_NAME}' already exists"
   echo "Available benchmarks:"
-  find "$PROJECT_ROOT/scenarios" -maxdepth 1 -type f -name '*.md' -printf '%f\n' | sed -e 's/\\.md$//' -e '/^TEMPLATE$/d' | sed 's/^/  /' || echo "  (none)"
+  find "$PROJECT_ROOT/scenarios" -mindepth 1 -maxdepth 1 -type d ! -name TEMPLATE -exec basename {} \; | sed 's/^/  /' || echo "  (none)"
   exit 1
 fi
 
-# Create benchmark file from template
+# Create benchmark directory from template
 echo "Creating new benchmark: $BENCHMARK_NAME"
 
-# Read template and replace placeholders
-if [ ! -f "$PROJECT_ROOT/scenarios/TEMPLATE/scenario-template.md" ]; then
-  echo "Error: Template not found at scenarios/TEMPLATE/scenario-template.md" >&2
+# Copy template directory
+if [ ! -d "$PROJECT_ROOT/scenarios/TEMPLATE" ]; then
+  echo "Error: Template directory not found at scenarios/TEMPLATE/" >&2
   exit 1
 fi
-template_content=$(cat "$PROJECT_ROOT/scenarios/TEMPLATE/scenario-template.md")
 
-# Replace placeholders with actual benchmark name
-benchmark_content=$(echo "$template_content" | sed "s/{scenario_name}/$BENCHMARK_NAME/g")
+# Create benchmark directory
+mkdir -p "$PROJECT_ROOT/scenarios/${BENCHMARK_NAME}"
 
-# Convert benchmark name to title case for display
-benchmark_title=$(echo "$BENCHMARK_NAME" | sed 's/-/ /g' | sed 's/\b\w/\U&/g')
-benchmark_content=$(echo "$benchmark_content" | sed "s/{Scenario Name}/$benchmark_title/g")
+# Copy template files and replace placeholders
+for template_file in "$PROJECT_ROOT/scenarios/TEMPLATE"/*; do
+  if [ -f "$template_file" ]; then
+    filename=$(basename "$template_file")
+    # Replace template filename if needed
+    target_filename="$filename"
+    if [[ "$filename" == *"template"* ]]; then
+      target_filename=$(echo "$filename" | sed "s/template/${BENCHMARK_NAME}/g")
+    fi
 
-# Write the new benchmark file
-echo "$benchmark_content" > "$PROJECT_ROOT/scenarios/${BENCHMARK_NAME}.md"
+    # Read template and replace placeholders
+    template_content=$(cat "$template_file")
+    benchmark_content=$(echo "$template_content" | sed "s/{scenario_name}/$BENCHMARK_NAME/g")
+
+    # Convert benchmark name to title case for display
+    benchmark_title=$(echo "$BENCHMARK_NAME" | sed 's/-/ /g' | sed 's/\b\w/\U&/g')
+    benchmark_content=$(echo "$benchmark_content" | sed "s/{Scenario Name}/$benchmark_title/g")
+
+    # Write the new benchmark file
+    echo "$benchmark_content" > "$PROJECT_ROOT/scenarios/${BENCHMARK_NAME}/${target_filename}"
+  fi
+done
 
 echo "✅ Benchmark '${BENCHMARK_NAME}' created successfully!"
-echo "📂 File: $PROJECT_ROOT/scenarios/${BENCHMARK_NAME}.md"
+echo "📂 Directory: $PROJECT_ROOT/scenarios/${BENCHMARK_NAME}/"
 
 echo ""
 echo "Next steps:"
-echo "1. Edit scenarios/${BENCHMARK_NAME}.md to define your benchmark"
+echo "1. Edit files in scenarios/${BENCHMARK_NAME}/ to define your benchmark"
 echo "2. Replace all {placeholder} values with actual content"
 echo "3. Define the target computation and expected results"
 echo "4. Specify measurement guidelines and constraints"

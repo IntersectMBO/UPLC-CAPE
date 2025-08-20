@@ -113,13 +113,13 @@ fi
 SUBMISSION_FOLDER="${LANGUAGE}_${VERSION}_${GITHUB_HANDLE}"
 SUBMISSION_PATH="$PROJECT_ROOT/submissions/${SCENARIO}/${SUBMISSION_FOLDER}"
 
-# Check if scenario exists (primary file only)
-SCENARIO_FILE="$PROJECT_ROOT/scenarios/${SCENARIO}.md"
-if [ ! -f "$SCENARIO_FILE" ]; then
+# Check if scenario exists (as directory)
+SCENARIO_DIR="$PROJECT_ROOT/scenarios/${SCENARIO}"
+if [ ! -d "$SCENARIO_DIR" ]; then
   echo "Error: Benchmark '${SCENARIO}' not found in scenarios/" >&2
   echo "Available benchmarks:" >&2
-  find "$PROJECT_ROOT/scenarios" -maxdepth 1 -type f -name '*.md' \
-    -printf '%f\n' | sed -e 's/\.md$//' -e '/^TEMPLATE$/d' | sed 's/^/  /' >&2 || echo "  (none)" >&2
+  find "$PROJECT_ROOT/scenarios" -mindepth 1 -maxdepth 1 -type d ! -name TEMPLATE \
+    -exec basename {} \; 2> /dev/null | sed 's/^/  /' >&2 || echo "  (none)" >&2
   exit 1
 fi
 

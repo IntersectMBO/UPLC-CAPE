@@ -268,11 +268,13 @@ case "$COMMAND" in
         # For benchmark command, check if this might be a benchmark name
         if [ "$COMMAND" = "benchmark" ]; then
           # Check if this is a benchmark name instead of a subcommand
-          if [ -f "scenarios/$SUBCOMMAND.md" ]; then
-            script_path="$CAPE_DIR/$COMMAND/list.sh"
-            if [ -f "$script_path" ]; then
-              cd "$PROJECT_ROOT"
-              exec "$script_path" "$SUBCOMMAND" "$@"
+          if [ -d "scenarios/$SUBCOMMAND" ]; then
+            if [ -f "scenarios/$SUBCOMMAND/$SUBCOMMAND.md" ] || [ -f "scenarios/$SUBCOMMAND/README.md" ]; then
+              script_path="$CAPE_DIR/$COMMAND/list.sh"
+              if [ -f "$script_path" ]; then
+                cd "$PROJECT_ROOT"
+                exec "$script_path" "$SUBCOMMAND" "$@"
+              fi
             fi
           fi
         fi
@@ -292,14 +294,17 @@ case "$COMMAND" in
             echo ""
             echo "Available benchmarks:"
             if [ -d "scenarios" ]; then
-              for benchmark_file in scenarios/*.md; do
-                if [ -f "$benchmark_file" ]; then
-                  benchmark_name=$(basename "$benchmark_file" .md)
+              for benchmark_dir in scenarios/*/; do
+                if [ -d "$benchmark_dir" ]; then
+                  benchmark_name=$(basename "$benchmark_dir")
                   # Skip the TEMPLATE directory
                   if [ "$benchmark_name" = "TEMPLATE" ]; then
                     continue
                   fi
-                  echo "  $benchmark_name"
+                  # Check if scenario file exists
+                  if [ -f "$benchmark_dir/$benchmark_name.md" ] || [ -f "$benchmark_dir/README.md" ]; then
+                    echo "  $benchmark_name"
+                  fi
                 fi
               done
             fi

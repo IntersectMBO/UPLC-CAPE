@@ -1,5 +1,7 @@
 # Fibonacci Benchmark Scenario
 
+## Overview
+
 The Fibonacci benchmark is a **synthetic computational scenario** designed to measure the performance characteristics of recursive algorithms implemented as UPLC programs. This benchmark tests a compiler's ability to optimize recursive function calls, manage stack depth, and handle integer arithmetic operations efficiently.
 
 ## TL;DR
