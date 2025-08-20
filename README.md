@@ -85,6 +85,9 @@ cape benchmark list
 cape benchmark fibonacci
 cape benchmark two-party-escrow
 
+# Generate JSON statistics for all benchmarks
+cape benchmark stats
+
 # Create a submission for your compiler
 cape submission new fibonacci MyCompiler 1.0.0 myhandle
 cape submission new two-party-escrow MyCompiler 1.0.0 myhandle
@@ -121,6 +124,7 @@ For the full and up-to-date command reference, see [USAGE.md](USAGE.md).
 # Benchmarks
 cape benchmark list              # List all benchmarks
 cape benchmark <name>            # Show benchmark details
+cape benchmark stats             # Generate JSON statistics for all benchmarks
 cape benchmark new <name>        # Create a new benchmark from template
 
 # Submissions
@@ -133,6 +137,23 @@ cape submission aggregate        # Generate CSV performance report
 cape submission report <name>    # Generate HTML report for a benchmark
 cape submission report --all     # Generate HTML reports for all benchmarks
 ```
+
+### JSON Statistics
+
+The `cape benchmark stats` command generates comprehensive JSON data for all benchmarks:
+
+```zsh
+# Output JSON statistics to console
+cape benchmark stats
+
+# Save to file
+cape benchmark stats > stats.json
+
+# Use with jq for filtering
+cape benchmark stats | jq '.benchmarks[] | select(.submission_count > 0)'
+```
+
+The output includes formatted metrics, best value indicators, and submission metadata, making it ideal for generating custom reports or integrating with external tools.
 
 ### Interactive prompts
 
