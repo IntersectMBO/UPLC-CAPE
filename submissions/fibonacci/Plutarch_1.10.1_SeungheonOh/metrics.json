@@ -1,6 +1,6 @@
 {
   "execution_environment": {
-    "evaluator": "PlutusTx.Eval-unknown"
+    "evaluator": "PlutusTx.Eval-1.52.0.0"
   },
   "measurements": {
     "cpu_units": 159193455218,
@@ -10,6 +10,6 @@
   },
   "notes": "<optional notes>",
   "scenario": "fibonacci",
-  "timestamp": "2025-08-20T05:56:42Z",
+  "timestamp": "2025-08-20T09:47:54Z",
   "version": "1.0.0"
 }
