@@ -1,0 +1,6 @@
+{
+  "comment": "Optional: Include compilation parameters that affect UPLC output",
+  "optimization_flags": [],
+  "compiler_settings": {},
+  "build_environment": {}
+}
