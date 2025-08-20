@@ -559,8 +559,22 @@ generate_index_report() {
   local benchmark_list="$2"
 
   # Create JSON data for template
-  local temp_json
+  local temp_json temp_stats
   temp_json="/tmp/cape_index_report_$$_$(date +%s).json"
+  temp_stats="/tmp/cape_stats_$$_$(date +%s).json"
+
+  # Get benchmark stats
+  if [[ $DRY_RUN -eq 1 ]]; then
+    log_info "[dry-run] Would generate benchmark stats"
+    echo '{"benchmarks":[]}' > "$temp_stats"
+  else
+    if ! "$CAPE_CMD" benchmark stats > "$temp_stats"; then
+      echo "ERROR: Failed to generate benchmark stats" >&2
+      rm -f "$temp_stats"
+      exit 1
+    fi
+  fi
+
   cat > "$temp_json" << EOF
 {
   "timestamp": "$(date '+%Y-%m-%d %H:%M:%S %Z')",
@@ -581,9 +595,13 @@ EOF
 
   cat >> "$temp_json" << EOF
 
-  ]
+  ],
+  "stats": $(cat "$temp_stats")
 }
 EOF
+
+  # Clean up temp stats file
+  rm -f "$temp_stats"
 
   # Render template with gomplate
   if [[ $DRY_RUN -eq 1 ]]; then
@@ -591,6 +609,52 @@ EOF
   else
     if ! gomplate -f "$SCRIPT_DIR/index.html.tmpl" -c .="$temp_json" > "$output_dir/index.html"; then
       echo "ERROR: Index template rendering failed" >&2
+      rm -f "$temp_json"
+      exit 1
+    fi
+  fi
+
+  # Clean up temp file
+  rm -f "$temp_json"
+}
+
+generate_no_submissions_report() {
+  local benchmark="$1"
+  local output_dir="$2"
+
+  # Create JSON data for template with empty submissions
+  local temp_json
+  temp_json="/tmp/cape_no_submissions_$$_$(date +%s).json"
+  cat > "$temp_json" << EOF
+{
+  "benchmark": "$benchmark",
+  "timestamp": "$(date '+%Y-%m-%d %H:%M:%S %Z')",
+  "charts": {
+    "cpu_units": "",
+    "memory_units": "",
+    "script_size": "",
+    "term_size": ""
+  },
+  "submissions": [],
+  "has_submissions": false
+}
+EOF
+
+  # Template & output paths
+  local abs_template_path="$SCRIPT_DIR/benchmark-no-submissions.html.tmpl"
+  local abs_output_path="$output_dir/benchmarks/${benchmark}.html"
+
+  # Check if we have a specific template for no submissions, otherwise use the regular template
+  if [ ! -f "$abs_template_path" ]; then
+    abs_template_path="$SCRIPT_DIR/benchmark.html.tmpl"
+  fi
+
+  # Render template
+  if [[ $DRY_RUN -eq 1 ]]; then
+    log_info "[dry-run] Would render $abs_output_path using template $abs_template_path"
+  else
+    if ! gomplate -f "$abs_template_path" -c .="$temp_json" > "$abs_output_path"; then
+      echo "ERROR: Template rendering failed for no-submissions report" >&2
       rm -f "$temp_json"
       exit 1
     fi
@@ -608,36 +672,48 @@ if [ $# -eq 0 ]; then
 fi
 
 if [ "$1" = "--all" ]; then
-  # Generate reports for all benchmarks
-  all_csv=$($CAPE_CMD submission aggregate)
-  if [ -z "$all_csv" ] || [ "$all_csv" = "benchmark,timestamp,language,version,user,cpu_units,memory_units,script_size_bytes,term_size,submission_dir" ]; then
-    echo "No submissions found in any benchmark" >&2
-    exit 1
-  fi
-
-  # Extract unique benchmark names (skip header)
-  benchmarks=$(echo "$all_csv" | tail -n +2 | cut -d, -f1 | sort -u)
-
   echo "🚀 Generating HTML Performance Reports - All Benchmarks"
   echo "========================================================="
 
+  # Get all benchmarks from scenarios directory (not just those with submissions)
+  all_benchmarks=$(find "$PROJECT_ROOT/scenarios" -mindepth 1 -maxdepth 1 -type d ! -name "TEMPLATE" -exec basename {} \; 2> /dev/null | sort)
+
+  if [ -z "$all_benchmarks" ]; then
+    echo "No benchmark scenarios found" >&2
+    exit 1
+  fi
+
   # Generate charts and individual reports for each benchmark
   generated_benchmarks=""
-  for benchmark in $benchmarks; do
+  for benchmark in $all_benchmarks; do
     # Validate benchmark names as we iterate
     if ! valid_benchmark_name "$benchmark"; then
       log_warn "Skipping invalid benchmark name: $benchmark"
       continue
     fi
     echo "Processing benchmark: $benchmark"
-    chart_files=$(generate_benchmark_report "$benchmark" "$report_dir") || true
-    if [ -n "$chart_files" ]; then
-      generate_individual_benchmark_report "$benchmark" "$report_dir" "$chart_files"
-      if [ -n "$generated_benchmarks" ]; then
-        generated_benchmarks="${generated_benchmarks}\n"
+
+    # Check if benchmark has submissions
+    if [ -d "$PROJECT_ROOT/submissions/$benchmark" ] && [ "$(find "$PROJECT_ROOT/submissions/$benchmark" -mindepth 1 -maxdepth 1 -type d ! -name "TEMPLATE" 2> /dev/null | wc -l)" -gt 0 ]; then
+      # Generate charts for benchmark with submissions
+      chart_files=$(generate_benchmark_report "$benchmark" "$report_dir") || true
+      if [ -n "$chart_files" ]; then
+        generate_individual_benchmark_report "$benchmark" "$report_dir" "$chart_files"
+      else
+        log_warn "Failed to generate charts for benchmark: $benchmark"
+        continue
       fi
-      generated_benchmarks="${generated_benchmarks}${benchmark}"
+    else
+      # Generate placeholder page for benchmark without submissions
+      echo "No submissions found for benchmark: $benchmark. Creating placeholder page."
+      generate_no_submissions_report "$benchmark" "$report_dir"
     fi
+
+    # Add to generated benchmarks list
+    if [ -n "$generated_benchmarks" ]; then
+      generated_benchmarks="${generated_benchmarks}\n"
+    fi
+    generated_benchmarks="${generated_benchmarks}${benchmark}"
   done
 
   # Generate index page with links to all benchmarks
@@ -663,11 +739,11 @@ else
     exit 1
   fi
 
-  # Validate benchmark exists
-  if [ ! -d "$PROJECT_ROOT/submissions/$benchmark" ]; then
-    echo "Error: Benchmark '$benchmark' not found" >&2
+  # Validate benchmark exists in scenarios (allow benchmarks without submissions yet)
+  if [ ! -d "$PROJECT_ROOT/scenarios/$benchmark" ]; then
+    echo "Error: Benchmark scenario '$benchmark' not found" >&2
     echo "Available benchmarks:" >&2
-    find "$PROJECT_ROOT/submissions" -mindepth 1 -maxdepth 1 -type d \
+    find "$PROJECT_ROOT/scenarios" -mindepth 1 -maxdepth 1 -type d \
       -printf '%f\n' | grep -v '^TEMPLATE$' | sort >&2 || true
     exit 1
   fi
@@ -675,23 +751,30 @@ else
   echo "🚀 Generating HTML Performance Report - $benchmark"
   echo "================================================="
 
-  # Generate charts for the benchmark
-  chart_files=$(generate_benchmark_report "$benchmark" "$report_dir") || true
-  if [ -n "$chart_files" ]; then
-    # Generate individual benchmark report page
-    generate_individual_benchmark_report "$benchmark" "$report_dir" "$chart_files"
-
-    # Generate index page with just this benchmark
-    generate_index_report "$report_dir" "$benchmark"
-    echo ""
-    echo "✅ HTML reports generated:"
-    echo "   📄 $report_dir/index.html (main index)"
-    echo "   📊 Individual benchmark report: $report_dir/benchmarks/${benchmark}.html"
-    echo "   🖼️  Chart images in $report_dir/benchmarks/images/"
-    echo ""
-    echo "Open the main report with: xdg-open $report_dir/index.html 2>/dev/null || echo \"Open: $report_dir/index.html\""
+  # Check if benchmark has submissions
+  if [ -d "$PROJECT_ROOT/submissions/$benchmark" ] && [ "$(find "$PROJECT_ROOT/submissions/$benchmark" -mindepth 1 -maxdepth 1 -type d ! -name "TEMPLATE" 2> /dev/null | wc -l)" -gt 0 ]; then
+    # Generate charts for the benchmark with submissions
+    chart_files=$(generate_benchmark_report "$benchmark" "$report_dir") || true
+    if [ -n "$chart_files" ]; then
+      # Generate individual benchmark report page with charts
+      generate_individual_benchmark_report "$benchmark" "$report_dir" "$chart_files"
+    else
+      echo "Error: Failed to generate report for benchmark '$benchmark'" >&2
+      exit 1
+    fi
   else
-    echo "Error: Failed to generate report for benchmark '$benchmark'" >&2
-    exit 1
+    # Generate placeholder page for benchmark without submissions
+    echo "No submissions found for benchmark: $benchmark. Creating placeholder page."
+    generate_no_submissions_report "$benchmark" "$report_dir"
   fi
+
+  # Generate index page with just this benchmark
+  generate_index_report "$report_dir" "$benchmark"
+  echo ""
+  echo "✅ HTML reports generated:"
+  echo "   📄 $report_dir/index.html (main index)"
+  echo "   📊 Individual benchmark report: $report_dir/benchmarks/${benchmark}.html"
+  echo "   🖼️  Chart images in $report_dir/benchmarks/images/"
+  echo ""
+  echo "Open the main report with: xdg-open $report_dir/index.html 2>/dev/null || echo \"Open: $report_dir/index.html\""
 fi
