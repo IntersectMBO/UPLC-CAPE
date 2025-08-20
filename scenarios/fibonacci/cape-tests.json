@@ -1,0 +1,14 @@
+{
+  "version": "1.0.0",
+  "description": "Test cases for pre-applied fibonacci(25) computation",
+  "tests": [
+    {
+      "name": "fibonacci_25_computation",
+      "description": "Pre-applied fibonacci(25) should return 75025 with no input required",
+      "expected": {
+        "type": "value",
+        "content": "(con integer 75025)"
+      }
+    }
+  ]
+}
