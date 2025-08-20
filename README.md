@@ -219,7 +219,7 @@ cape submission new fibonacci    # Prompts for compiler, version, handle
    - What verification does:
 
      - Evaluates your UPLC program; if it reduces to BuiltinUnit, correctness passes
-     - Otherwise, applies the scenario verifier at `scenarios/{benchmark}/verifier.uplc` to the result and expects BuiltinUnit
+     - Otherwise, runs the comprehensive test suite defined in `scenarios/{benchmark}/cape-tests.json`
      - Validates your `metrics.json` and `metadata.json` against schemas
 
    - What measure does automatically:

@@ -4,3 +4,4 @@
 node_modules/
 dist-newstyle/
 plinth/*.uplc
+measure/.hspec-failures
