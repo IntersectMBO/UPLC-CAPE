@@ -3,13 +3,13 @@
     "evaluator": "PlutusTx.Eval-1.52.0.0"
   },
   "measurements": {
-    "cpu_units": 117422538753,
-    "memory_units": 437984037,
-    "script_size_bytes": 45,
-    "term_size": 38
+    "cpu_units": 159193455218,
+    "memory_units": 583897822,
+    "script_size_bytes": 50,
+    "term_size": 43
   },
   "notes": "<optional notes>",
   "scenario": "fibonacci",
-  "timestamp": "2025-08-20T09:47:53Z",
+  "timestamp": "2025-08-20T09:47:54Z",
   "version": "1.0.0"
 }
