@@ -83,9 +83,11 @@ cape benchmark list
 
 # View a specific benchmark
 cape benchmark fibonacci
+cape benchmark two-party-escrow
 
 # Create a submission for your compiler
 cape submission new fibonacci MyCompiler 1.0.0 myhandle
+cape submission new two-party-escrow MyCompiler 1.0.0 myhandle
 ```
 
 ---
@@ -102,7 +104,7 @@ Latest benchmark reports: [UPLC-CAPE Reports](https://intersectmbo.github.io/UPL
 | --- | --- | --- | --- |
 | [Fibonacci](scenarios/fibonacci.md) | Synthetic | Recursive algorithm performance | Ready |
 | [Factorial](scenarios/factorial.md) | Synthetic | Recursive algorithm performance | Ready |
-| Two-Party Escrow | Real-world | Smart contract scenario | Planned |
+| [Two-Party Escrow](scenarios/two-party-escrow.md) | Real-world | Smart contract escrow validator | Ready |
 | Streaming Payments | Real-world | Payment channel implementation | Planned |
 | Simple DAO Voting | Real-world | Governance mechanism | Planned |
 | Time-locked Staking | Real-world | Staking protocol | Planned |
@@ -275,14 +277,18 @@ cape submission new fibonacci    # Prompts for compiler, version, handle
 UPLC-CAPE/
 ├── scenarios/                    # Benchmark specifications
 │   ├── TEMPLATE/                 # Template for new scenarios
-│   └── fibonacci.md
+│   ├── fibonacci.md
+│   ├── factorial.md
+│   └── two-party-escrow.md
 ├── submissions/                  # Compiler submissions (per scenario)
 │   ├── TEMPLATE/                 # Templates and schemas
 │   │   ├── metadata.schema.json
 │   │   ├── metadata-template.json
 │   │   ├── metrics.schema.json
 │   │   └── metrics-template.json
-│   └── fibonacci/
+│   ├── fibonacci/
+│   │   └── MyCompiler_1.0.0_handle/
+│   └── two-party-escrow/
 │       └── MyCompiler_1.0.0_handle/
 ├── scripts/                      # Project CLI tooling
 │   ├── cape.sh                   # Main CLI
