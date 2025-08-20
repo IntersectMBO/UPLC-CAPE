@@ -1,0 +1,65 @@
+Cape Benchmark Stats - Generate JSON statistics for all benchmarks and submissions
+
+Usage:
+  cape benchmark stats
+
+Description:
+  Generates comprehensive JSON statistics for all benchmarks and their submissions.
+  The output includes performance metrics for each submission grouped by benchmark,
+  making it suitable for generating summary tables and reports.
+
+Output Format:
+  The command outputs JSON with the following structure:
+  {
+    "generated_at": "2025-08-20T12:00:00Z",
+    "benchmarks": [
+      {
+        "name": "fibonacci",
+        "submission_count": 3,
+        "submissions": [
+          {
+            "compiler": "Plinth",
+            "version": "1.52.0.0",
+            "author": "Unisay",
+            "date": "2025-08-18",
+            "timestamp": "2025-08-18T16:56:26Z",
+            "cpu_units": 117422538753,
+            "cpu_units_formatted": "117.42B",
+            "memory_units": 437984037,
+            "memory_units_formatted": "437.98M",
+            "script_size": 45,
+            "term_size": 38,
+            "submission_dir": "Plinth_1.52.0.0_Unisay"
+          }
+        ]
+      }
+    ]
+  }
+
+Fields:
+  - compiler: Name of the compiler used
+  - version: Version of the compiler
+  - author: Contributor/author of the submission
+  - date: Date of submission (YYYY-MM-DD)
+  - cpu_units: Raw CPU units consumed
+  - cpu_units_formatted: Human-readable CPU units (B=billions, M=millions, K=thousands)
+  - memory_units: Raw memory units consumed
+  - memory_units_formatted: Human-readable memory units
+  - script_size: Size of the UPLC script in bytes
+  - term_size: Size of the term
+  - submission_dir: Directory name of the submission
+
+Examples:
+  # Generate stats for all benchmarks
+  cape benchmark stats
+
+  # Save stats to a file
+  cape benchmark stats > benchmark-stats.json
+
+  # Use with jq to extract specific data
+  cape benchmark stats | jq '.benchmarks[] | select(.name=="fibonacci")'
+
+Notes:
+  - Benchmarks without submissions will have an empty submissions array
+  - Numbers are formatted for display (e.g., 117.42B for billions)
+  - Raw values are also included for programmatic use
