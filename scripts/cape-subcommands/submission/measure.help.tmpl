@@ -6,8 +6,8 @@ USAGE:
 
 DESCRIPTION:
     Measure UPLC program(s) and generate metrics.json. This wrapper auto-discovers the
-    scenario and verifier based on repository layout. No explicit scenario or verifier
-    flags are supported here. Single-file mode via -i/-o is not supported in the wrapper.
+    scenario and cape-tests.json based on repository layout. No explicit scenario or test
+    flags are supported here.
 
 OPTIONS:
     -h, --help            Show this help message
@@ -17,9 +17,8 @@ OPTIONS:
 
 BEHAVIOR:
     - Scenario is inferred from the path: submissions/<scenario>/<submission>/...
-    - If scenarios/<scenario>/verifier.uplc exists, it is passed to the measure tool
-      as the verifier (-v). If missing and the program does not reduce to unit, the
-      measure tool exits with code 2.
+    - Cape-tests.json is REQUIRED at scenarios/<scenario>/cape-tests.json
+    - Test suite is passed to measure tool for comprehensive validation (-t)
     - metrics.json is created/updated alongside each .uplc file measured.
 
 EXAMPLES:

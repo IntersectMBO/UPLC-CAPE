@@ -2,6 +2,7 @@
 
 # CAPE Submission Verify Script
 # Performs correctness verification (via measure) and schema validation
+# Requires cape-tests.json for all scenarios - no simple measurement mode
 
 set -Eeuo pipefail
 IFS=$'\n\t'
@@ -34,9 +35,13 @@ cape_require_cmd measure
 infer_scenario_from_path() {
   local path="$1"
   case "$path" in
-    *"/submissions/"*)
+    *"/submissions/"* | "submissions/"*)
       local tail
-      tail="${path#*'/submissions/'}"
+      if [[ "$path" == "submissions/"* ]]; then
+        tail="${path#'submissions/'}"
+      else
+        tail="${path#*'/submissions/'}"
+      fi
       echo "${tail%%/*}"
       ;;
     *)
@@ -45,9 +50,9 @@ infer_scenario_from_path() {
   esac
 }
 
-resolve_verifier_for_scenario() {
+resolve_tests_for_scenario() {
   local scen="$1"
-  local preferred="$SCENARIOS_ROOT/$scen/verifier.uplc"
+  local preferred="$SCENARIOS_ROOT/$scen/cape-tests.json"
   if [[ -f "$preferred" ]]; then
     echo "$preferred"
   else
@@ -76,24 +81,29 @@ verify_submission_dir() {
   local scenario
   scenario="$(infer_scenario_from_path "$submission_dir")"
 
-  local checker_flag=()
-  # Prefer a submission-local verifier when available
-  local submission_verifier="$submission_dir/verifier.uplc"
-  if [[ -f "$submission_verifier" ]]; then
-    cape_debug "Using submission verifier: $(cape_relpath "$submission_verifier")"
-    checker_flag+=("-v" "$submission_verifier")
+  local tests_flag=()
+
+  # Prefer a submission-local cape-tests.json when available
+  local submission_tests="$submission_dir/cape-tests.json"
+  if [[ -f "$submission_tests" ]]; then
+    cape_debug "Using submission tests: $(cape_relpath "$submission_tests")"
+    tests_flag+=("-t" "$submission_tests")
   else
     if [[ -n "$scenario" ]]; then
-      local verifier
-      verifier="$(resolve_verifier_for_scenario "$scenario")"
-      if [[ -n "$verifier" ]]; then
-        cape_debug "Using scenario verifier: $(cape_relpath "$verifier")"
-        checker_flag+=("-v" "$verifier")
+      local tests_file
+      tests_file="$(resolve_tests_for_scenario "$scenario")"
+      if [[ -n "$tests_file" ]]; then
+        cape_debug "Using scenario tests: $(cape_relpath "$tests_file")"
+        tests_flag+=("-t" "$tests_file")
       else
-        cape_warn "No verifier found for scenario '$scenario'. If the program doesn't reduce to unit, verification will fail with exit 2."
+        cape_error "No cape-tests.json found for scenario '$scenario'. Test specification is required."
+        cape_error "Create scenarios/$scenario/cape-tests.json with test cases."
+        return 1
       fi
     else
-      cape_warn "Unable to infer scenario for $rel_dir; no verifier will be provided."
+      cape_error "Unable to infer scenario for $rel_dir. Test specification is required."
+      cape_error "Ensure submission follows the correct directory structure."
+      return 1
     fi
   fi
 
@@ -103,11 +113,11 @@ verify_submission_dir() {
 
   local measure_rc=0
   if [[ $VERBOSE -eq 1 ]]; then
-    if ! measure -i "$uplc_file" "${checker_flag[@]}" -o "$tmp_metrics" | tee "$tmp_stdout"; then
+    if ! measure -i "$uplc_file" "${tests_flag[@]}" -o "$tmp_metrics" | tee "$tmp_stdout"; then
       measure_rc=$?
     fi
   else
-    if ! measure -i "$uplc_file" "${checker_flag[@]}" -o "$tmp_metrics" > "$tmp_stdout"; then
+    if ! measure -i "$uplc_file" "${tests_flag[@]}" -o "$tmp_metrics" > "$tmp_stdout"; then
       measure_rc=$?
     fi
   fi
@@ -116,16 +126,12 @@ verify_submission_dir() {
     0)
       cape_success "✓ Correctness verified via CEK"
       ;;
+    1)
+      cape_error "Test suite failed - some test cases did not pass"
+      return 1
+      ;;
     2)
-      cape_error "Verifier required but missing for scenario '$scenario'"
-      return 1
-      ;;
-    3)
-      cape_error "Verification failed (CEK error or verifier returned failure)"
-      return 1
-      ;;
-    4)
-      cape_error "Malformed input (UPLC parse or structure error)"
+      cape_error "UPLC parse error or malformed input"
       return 1
       ;;
     *)

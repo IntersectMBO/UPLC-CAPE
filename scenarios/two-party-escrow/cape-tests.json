@@ -1,0 +1,97 @@
+{
+  "version": "1.0.0",
+  "description": "Test cases for two-party escrow smart contract validator",
+  "tests": [
+    {
+      "name": "valid_deposit_buyer_signature",
+      "description": "Valid deposit with buyer signature should succeed",
+      "input": {
+        "type": "builtin_data",
+        "value": "0(#a1b2c3d4e5f6789012345678abcdef0123456789abcdef0123456789abcdef01 1000 0())"
+      },
+      "expected": {
+        "type": "value",
+        "content": "(con unit ())"
+      }
+    },
+    {
+      "name": "valid_deposit_seller_signature",
+      "description": "Valid deposit with seller signature should succeed",
+      "input": {
+        "type": "builtin_data",
+        "value": "0(#fedcba9876543210fedcba9876543210fedcba9876543210fedcba9876543210 1000 1())"
+      },
+      "expected": {
+        "type": "value",
+        "content": "(con unit ())"
+      }
+    },
+    {
+      "name": "valid_refund_after_deadline",
+      "description": "Valid refund after deadline should succeed",
+      "input": {
+        "type": "builtin_data",
+        "value": "1(1609459200000 2())"
+      },
+      "expected": {
+        "type": "value",
+        "content": "(con unit ())"
+      }
+    },
+    {
+      "name": "deposit_missing_signature",
+      "description": "Deposit without required signature should error",
+      "input": {
+        "type": "builtin_data",
+        "value": "0(#0000000000000000000000000000000000000000000000000000000000000000 1000 0())"
+      },
+      "expected": {
+        "type": "error"
+      }
+    },
+    {
+      "name": "deposit_wrong_amount",
+      "description": "Deposit with wrong amount should error",
+      "input": {
+        "type": "builtin_data",
+        "value": "0(#a1b2c3d4e5f6789012345678abcdef0123456789abcdef0123456789abcdef01 500 0())"
+      },
+      "expected": {
+        "type": "error"
+      }
+    },
+    {
+      "name": "refund_before_deadline",
+      "description": "Refund before deadline should error",
+      "input": {
+        "type": "builtin_data",
+        "value": "1(1609459200000 2())"
+      },
+      "expected": {
+        "type": "error"
+      }
+    },
+    {
+      "name": "invalid_redeemer_value",
+      "description": "Invalid redeemer constructor should error",
+      "input": {
+        "type": "builtin_data",
+        "value": "99()"
+      },
+      "expected": {
+        "type": "error"
+      }
+    },
+    {
+      "name": "malformed_redeemer_data",
+      "description": "Malformed redeemer data should error",
+      "input": {
+        "type": "builtin_data",
+        "value": "42"
+      },
+      "expected": {
+        "type": "error"
+      }
+    }
+  ]
+}

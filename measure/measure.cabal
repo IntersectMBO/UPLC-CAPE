@@ -71,10 +71,13 @@ executable measure
   import:         common-language
   main-is:        Main.hs
   other-modules:
+    App.BuiltinDataParser
     App.Cli
     App.Compile
     App.Error
     App.Fixture
+    App.PrettyResult
+    App.Tests
     App.Verify
 
   build-depends:
@@ -97,15 +100,23 @@ executable measure
 
   hs-source-dirs: app
 
--- Verifier generator tool
-executable generate-verifiers
-  import:         common-language
-  main-is:        GenerateVerifiers.hs
+-- Test suite
+test-suite measure-tests
+  import:             common-language
+  type:               exitcode-stdio-1.0
+  main-is:            Spec.hs
+  other-modules:
+    App.BuiltinDataParser
+    App.BuiltinDataParserSpec
+
   build-depends:
     , base
+    , bytestring
+    , hspec
+    , megaparsec
     , plutus-core
-    , plutus-tx
-    , plutus-tx-plugin
     , text
 
-  hs-source-dirs: app
+  hs-source-dirs:     app test
+  ghc-options:        -threaded -rtsopts -with-rtsopts=-N
+  build-tool-depends: hspec-discover:hspec-discover

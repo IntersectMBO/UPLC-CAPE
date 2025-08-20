@@ -1,1 +1,0 @@
-(program 1.1.0 (lam validator [ validator (con data (I 42)) ]))

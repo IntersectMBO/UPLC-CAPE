@@ -1,0 +1,131 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://github.com/IntersectMBO/UPLC-CAPE/schemas/cape-tests.schema.json",
+  "title": "CAPE Test Specification",
+  "description": "Schema for cape-tests.json files that define test cases for UPLC program evaluation",
+  "type": "object",
+  "properties": {
+    "version": {
+      "type": "string",
+      "description": "Schema version",
+      "enum": ["1.0.0"]
+    },
+    "description": {
+      "type": "string",
+      "description": "Human-readable description of the test suite"
+    },
+    "tests": {
+      "type": "array",
+      "description": "Array of test cases to execute",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/test_case"
+      }
+    }
+  },
+  "required": ["version", "tests"],
+  "additionalProperties": false,
+  "$defs": {
+    "test_case": {
+      "type": "object",
+      "description": "Individual test case specification",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Unique identifier for the test case",
+          "pattern": "^[a-zA-Z0-9_-]+$"
+        },
+        "description": {
+          "type": "string",
+          "description": "Human-readable description of what the test verifies"
+        },
+        "input": {
+          "oneOf": [
+            {
+              "type": "null",
+              "description": "No input - for parameterless programs"
+            },
+            {
+              "$ref": "#/$defs/test_input"
+            }
+          ]
+        },
+        "expected": {
+          "$ref": "#/$defs/expected_result"
+        }
+      },
+      "required": ["name", "input", "expected"],
+      "additionalProperties": false
+    },
+    "test_input": {
+      "type": "object",
+      "description": "Input specification for program evaluation",
+      "properties": {
+        "type": {
+          "type": "string",
+          "description": "Type of input data",
+          "enum": ["builtin_data", "raw_uplc"]
+        },
+        "value": {
+          "type": "string",
+          "description": "Inline input value in the specified format. For builtin_data type, uses custom compact syntax: integers (42, -123), bytestrings (#deadbeef), constructors (0(42 #cafe)), lists ([1 2 3]), and maps ({1:42}). See ADR for full grammar specification."
+        },
+        "file": {
+          "type": "string",
+          "description": "Path to file containing input value (relative to cape-tests.json)"
+        }
+      },
+      "required": ["type"],
+      "additionalProperties": false,
+      "oneOf": [
+        {
+          "required": ["value"]
+        },
+        {
+          "required": ["file"]
+        }
+      ]
+    },
+    "expected_result": {
+      "type": "object",
+      "description": "Expected evaluation result",
+      "properties": {
+        "type": {
+          "type": "string",
+          "description": "Type of expected result",
+          "enum": ["value", "error"]
+        },
+        "content": {
+          "type": "string",
+          "description": "Inline expected pretty-printed UPLC term"
+        },
+        "file": {
+          "type": "string",
+          "description": "Path to file containing expected result (relative to cape-tests.json)"
+        }
+      },
+      "required": ["type"],
+      "additionalProperties": false,
+      "if": {
+        "properties": {
+          "type": { "const": "value" }
+        }
+      },
+      "then": {
+        "oneOf": [
+          {
+            "required": ["content"]
+          },
+          {
+            "required": ["file"]
+          }
+        ]
+      },
+      "else": {
+        "not": {
+          "anyOf": [{ "required": ["content"] }, { "required": ["file"] }]
+        }
+      }
+    }
+  }
+}

@@ -102,40 +102,7 @@ setup_test_env() {
     cp -a "$REPO_ROOT/submissions/." "$SANDBOX_DIR/submissions/" 2> /dev/null || true
   fi
 
-  # 2) Overlay test fixtures (scenarios and submissions)
-  if [[ -d "$REPO_ROOT/test/fixtures/scenarios" ]]; then
-    cp -a "$REPO_ROOT/test/fixtures/scenarios/." "$SANDBOX_DIR/scenarios/" 2> /dev/null || true
-  fi
-  if [[ -d "$REPO_ROOT/test/fixtures/submissions" ]]; then
-    cp -a "$REPO_ROOT/test/fixtures/submissions/." "$SANDBOX_DIR/submissions/" 2> /dev/null || true
-  fi
-
-  # 3) Ensure a default verifier exists per scenario if not provided explicitly (skip for fixture scenarios that define none by design)
-  if [[ -d "$SANDBOX_DIR/scenarios" ]]; then
-    while IFS= read -r -d '' dir; do
-      [[ -d "$dir" ]] || continue
-      local base
-      base="$(basename "$dir")"
-      # For fixture scenario 'returns-unit' we intentionally do not create verifier
-      if [[ "$base" == "returns-unit" ]]; then
-        continue
-      fi
-      if [[ ! -f "$dir/verifier.uplc" ]]; then
-        if [[ -f "$dir/verifier-accepts-42.uplc" ]]; then
-          cp "$dir/verifier-accepts-42.uplc" "$dir/verifier.uplc"
-        elif [[ -f "$dir/verifier-accepts.uplc" ]]; then
-          cp "$dir/verifier-accepts.uplc" "$dir/verifier.uplc"
-        else
-          shopt -s nullglob
-          uplcs=("$dir"/*.uplc)
-          if ((${#uplcs[@]} == 1)); then
-            cp "${uplcs[0]}" "$dir/verifier.uplc"
-          fi
-          shopt -u nullglob
-        fi
-      fi
-    done < <(find "$SANDBOX_DIR/scenarios" -mindepth 1 -maxdepth 1 -type d -print0)
-  fi
+  # No test fixtures or verifier files needed - using real scenarios with cape-tests.json only
 
   if [[ -t 1 && -z "${NO_COLOR:-}" ]]; then
     echo -e "\033[0;34mINFO:\033[0m Test environment initialized at: $SANDBOX_DIR"
@@ -225,20 +192,9 @@ main() {
   # Verification & measurement
   test_group "verification & measurement" \
     "verify help" "(cd \"$PROJECT_ROOT\" && PROJECT_ROOT=\"$SANDBOX_DIR\" bash \"$REPO_ROOT/scripts/cape-subcommands/submission/verify.sh\" --help)" 5 "" \
-    "verify returns-42 (includes failing fixture)" "(cd \"$PROJECT_ROOT\" && PROJECT_ROOT=\"$SANDBOX_DIR\" bash \"$REPO_ROOT/scripts/cape-subcommands/submission/verify.sh\" \"$SANDBOX_DIR/submissions/returns-42\")" 15 "fail" \
-    "measure help" "(cd \"$PROJECT_ROOT\" && PROJECT_ROOT=\"$SANDBOX_DIR\" bash \"$REPO_ROOT/scripts/cape-subcommands/submission/measure.sh\" --help)" 5 "" \
-    "measure returns-42 (includes failing fixture)" "(cd \"$PROJECT_ROOT\" && PROJECT_ROOT=\"$SANDBOX_DIR\" bash \"$REPO_ROOT/scripts/cape-subcommands/submission/measure.sh\" \"$SANDBOX_DIR/submissions/returns-42\")" 15 "fail"
+    "measure help" "(cd \"$PROJECT_ROOT\" && PROJECT_ROOT=\"$SANDBOX_DIR\" bash \"$REPO_ROOT/scripts/cape-subcommands/submission/measure.sh\" --help)" 5 ""
 
-  # Verifier fixtures: scenario-driven
-  test_group "scenario fixtures" \
-    "returns-unit: Success passes without verifier" \
-    "(cd \"$PROJECT_ROOT\" && PROJECT_ROOT=\"$SANDBOX_DIR\" bash \"$REPO_ROOT/scripts/cape-subcommands/submission/verify.sh\" \"$SANDBOX_DIR/submissions/returns-unit/Success_1.0_Test\")" 15 "" \
-    "returns-unit: Failure fails without verifier" \
-    "(cd \"$PROJECT_ROOT\" && PROJECT_ROOT=\"$SANDBOX_DIR\" bash \"$REPO_ROOT/scripts/cape-subcommands/submission/verify.sh\" \"$SANDBOX_DIR/submissions/returns-unit/Failure_1.0_Test\")" 15 "fail" \
-    "returns-42: Success passes with scenario verifier" \
-    "(cd \"$PROJECT_ROOT\" && PROJECT_ROOT=\"$SANDBOX_DIR\" bash \"$REPO_ROOT/scripts/cape-subcommands/submission/verify.sh\" \"$SANDBOX_DIR/submissions/returns-42/Success_1.0_Test\")" 15 "" \
-    "returns-42: Failure fails with scenario verifier" \
-    "(cd \"$PROJECT_ROOT\" && PROJECT_ROOT=\"$SANDBOX_DIR\" bash \"$REPO_ROOT/scripts/cape-subcommands/submission/verify.sh\" \"$SANDBOX_DIR/submissions/returns-42/Failure_1.0_Test\")" 15 "fail"
+  # NOTE: Test fixture scenarios removed - using real scenarios only
 
   # Reporting and aggregation
   test_group "reporting" \
@@ -264,9 +220,7 @@ main() {
   run_test "create submission" "(cd \"$PROJECT_ROOT\" && PROJECT_ROOT=\"$SANDBOX_DIR\" bash \"$REPO_ROOT/scripts/cape-subcommands/submission/new.sh\" $test_name TestComp 1.0 user)" 15
   run_test "verify submission created" "test -d $SANDBOX_DIR/submissions/$test_name/TestComp_1.0_user" 2
 
-  # File operations
-  echo "(program 1.1.0 (con unit ()))" > "$TEST_TMP_DIR/test.uplc"
-  run_test "measure single file" "(cd \"$PROJECT_ROOT\" && PROJECT_ROOT=\"$SANDBOX_DIR\" bash \"$REPO_ROOT/scripts/cape-subcommands/submission/measure.sh\" -i $TEST_TMP_DIR/test.uplc -o $TEST_TMP_DIR/metrics.json)" 10
+  # No single file measurements - all measurements must be part of submission structure
 
   # Structure validation
   test_group "directory structure" \

@@ -1,0 +1,14 @@
+{
+  "version": "1.0.0",
+  "description": "Test cases for pre-applied factorial(10) computation",
+  "tests": [
+    {
+      "name": "factorial_10_computation",
+      "description": "Pre-applied factorial(10) should return 3628800 with no input required",
+      "expected": {
+        "type": "value",
+        "content": "(con integer 3628800)"
+      }
+    }
+  ]
+}

@@ -133,28 +133,27 @@ Preferred entrypoint:
 
 - Use `cape submission verify` for correctness and schema validation. The `measure` command exposes a lower-level interface used by the wrapper internally.
 
-### Verifier programs (scenarios/{benchmark}/verifier.uplc)
+### Test suites (scenarios/{benchmark}/cape-tests.json)
 
-- Optional per-benchmark verifier can be provided at `scenarios/{benchmark}/verifier.uplc`.
-- Wrappers auto-discover the verifier based on the submission path (submissions/{benchmark}/...); no wrapper flags exist to override the scenario or verifier.
+- Optional per-benchmark test suite can be provided at `scenarios/{benchmark}/cape-tests.json`.
+- Wrappers auto-discover the test suite based on the submission path (submissions/{benchmark}/...); no wrapper flags exist to override the scenario or test file.
 
 Exit codes from the `measure` tool:
 
-- 0: success
-- 2: Verifier required but not provided/found
-- 3: Verification failed (non-unit result or CEK error after applying verifier)
-- 4: Malformed/invalid UPLC file
+- 0: success (all tests passed or simple measurement completed)
+- 1: Test suite failed (one or more test cases did not pass)
+- 2: UPLC parse error or malformed input
 
 Verification control:
 
-- Low-level tool: `measure` accepts a verifier via `-v/--verifier <verifier.uplc>`.
+- Low-level tool: `measure` accepts a test suite via `-t/--tests <cape-tests.json>`.
 
 ```bash
-measure -i <input.uplc> [-v <verifier.uplc>] -o <metrics.json>
+measure -i <input.uplc> [-t <cape-tests.json>] -o <metrics.json>
 ```
 
-- Wrapper: `cape submission measure` infers the benchmark from the submissions path and, if `scenarios/{benchmark}/verifier.uplc` exists, passes that file to `measure` as `--verifier (-v)` automatically.
-- For testing, provide full mock submissions in `test/fixtures/submissions/{benchmark}/...` and place the verifier at `scenarios/{benchmark}/verifier.uplc`. Do not rely on CLI override flags.
+- Wrapper: `cape submission measure` infers the benchmark from the submissions path and, if `scenarios/{benchmark}/cape-tests.json` exists, passes that file to `measure` as `--tests (-t)` automatically.
+- For testing, provide full mock submissions in `test/fixtures/submissions/{benchmark}/...` and place the test suite at `scenarios/{benchmark}/cape-tests.json`. Do not rely on CLI override flags.
 
 ### Fixtures for negative tests
 
