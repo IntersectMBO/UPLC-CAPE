@@ -1,0 +1,15 @@
+{
+  "execution_environment": {
+    "evaluator": "PlutusTx.Eval-unknown"
+  },
+  "measurements": {
+    "cpu_units": 159193455218,
+    "memory_units": 583897822,
+    "script_size_bytes": 50,
+    "term_size": 43
+  },
+  "notes": "<optional notes>",
+  "scenario": "fibonacci",
+  "timestamp": "2025-08-20T05:56:42Z",
+  "version": "1.0.0"
+}
