@@ -92,6 +92,30 @@
       "expected": {
         "type": "error"
       }
+    },
+    {
+      "name": "dsl_buyer_signature_demo",
+      "description": "DEMO: Same as valid_deposit_buyer_signature but with readable ScriptContext DSL",
+      "input": {
+        "type": "script_context",
+        "value": "{\"baseline\": \"spending\", \"patches\": [{\"op\": \"add_signature\", \"pubkey_hash\": \"#a1b2c3d4e5f6789012345678abcdef0123456789abcdef0123456789abcdef01\"}]}"
+      },
+      "expected": {
+        "type": "value",
+        "content": "(con unit ())"
+      }
+    },
+    {
+      "name": "dsl_multi_party_escrow_demo",
+      "description": "DEMO: Complex multi-party escrow - would be 500+ unreadable characters in BuiltinData, crystal clear in DSL",
+      "input": {
+        "type": "script_context",
+        "value": "{\"baseline\": \"spending\", \"patches\": [{\"op\": \"add_signature\", \"pubkey_hash\": \"#a1b2c3d4e5f6789012345678abcdef0123456789abcdef0123456789abcdef01\"}, {\"op\": \"add_signature\", \"pubkey_hash\": \"#fedcba9876543210fedcba9876543210fedcba9876543210fedcba9876543210\"}, {\"op\": \"add_signature\", \"pubkey_hash\": \"#1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef\"}, {\"op\": \"set_spending_utxo\", \"tx_id\": \"#deadbeef12345678deadbeef12345678deadbeef12345678deadbeef12345678\", \"output_index\": 0}]}"
+      },
+      "expected": {
+        "type": "value", 
+        "content": "(con unit ())"
+      }
     }
   ]
 }
