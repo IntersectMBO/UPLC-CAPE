@@ -9,6 +9,7 @@ import App.Cli (Options (..), parseOptions)
 import App.Compile (applyPrograms, compileProgram)
 import App.Error (MeasureError (..), exitCodeForError, renderMeasureError)
 import App.PrettyResult (compareResult, extractPrettyResult)
+import App.ScriptContextBuilder (ScriptContextSpec, buildScriptContext)
 import App.Tests (
   ExpectedResult (..),
   InputType (..),
@@ -142,6 +143,19 @@ parseInputProgram inputType inputText = case inputType of
     case PLC.runQuote (runExceptT (UPLCParser.parseProgram inputText)) of
       Left err -> E.throwIO (UPLCParseError "raw_uplc_input" (show err))
       Right prog -> pure prog
+  ScriptContext -> do
+    -- Parse ScriptContext DSL JSON
+    case Json.eitherDecodeStrict (encodeUtf8 inputText) of
+      Left jsonErr -> E.throwIO (UPLCParseError "script_context_input" ("JSON parse error: " <> jsonErr))
+      Right (spec :: ScriptContextSpec) -> do
+        case buildScriptContext spec of
+          Left buildErr -> E.throwIO (UPLCParseError "script_context_input" ("ScriptContext build error: " <> Text.unpack buildErr))
+          Right builtinData -> do
+            -- Convert ScriptContext BuiltinData to UPLC constant
+            let ann = PLC.SrcSpan "" 1 1 1 1
+                dataConstant = MkPlc.mkConstant ann builtinData
+                uplcProgram = UPLC.Program ann (UPLC.Version 1 1 0) dataConstant
+            pure uplcProgram
 
 -- | Check test result against expected outcome
 checkTestResult :: EvalResult -> ExpectedResult -> FilePath -> IO Bool

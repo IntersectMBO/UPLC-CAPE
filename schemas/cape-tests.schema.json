@@ -64,11 +64,11 @@
         "type": {
           "type": "string",
           "description": "Type of input data",
-          "enum": ["builtin_data", "raw_uplc"]
+          "enum": ["builtin_data", "raw_uplc", "script_context"]
         },
         "value": {
           "type": "string",
-          "description": "Inline input value in the specified format. For builtin_data type, uses custom compact syntax: integers (42, -123), bytestrings (#deadbeef), constructors (0(42 #cafe)), lists ([1 2 3]), and maps ({1:42}). See ADR for full grammar specification."
+          "description": "Inline input value in the specified format. For builtin_data type, uses custom compact syntax: integers (42, -123), bytestrings (#deadbeef), constructors (0(42 #cafe)), lists ([1 2 3]), and maps ({1:42}). For script_context type, uses JSON DSL with baseline templates and patch operations. See ADR for full grammar specification."
         },
         "file": {
           "type": "string",

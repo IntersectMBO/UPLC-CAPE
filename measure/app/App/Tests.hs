@@ -40,6 +40,7 @@ data TestInput = TestInput
 data InputType
   = BuiltinData
   | RawUPLC
+  | ScriptContext
   deriving (Show, Generic)
 
 data ExpectedResult = ExpectedResult
@@ -81,6 +82,7 @@ instance FromJSON InputType where
   parseJSON = Json.withText "InputType" $ \t -> case t of
     "builtin_data" -> pure BuiltinData
     "raw_uplc" -> pure RawUPLC
+    "script_context" -> pure ScriptContext
     _ -> fail $ "Unknown input type: " <> Text.unpack t
 
 instance FromJSON ExpectedResult where
