@@ -1,15 +1,38 @@
 {
+  "evaluations": [
+    {
+      "cpu_units": 155308959218,
+      "description": "Pre-applied fibonacci(25) should return 75025 with no input required",
+      "execution_result": "success",
+      "memory_units": 559619722,
+      "name": "fibonacci_25_computation"
+    }
+  ],
   "execution_environment": {
     "evaluator": "PlutusTx.Eval-1.52.0.0"
   },
   "measurements": {
-    "cpu_units": 155308959218,
-    "memory_units": 559619722,
+    "cpu_units": {
+      "maximum": 155308959218,
+      "median": 155308959218,
+      "minimum": 155308959218,
+      "sum": 155308959218,
+      "sum_negative": 0,
+      "sum_positive": 155308959218
+    },
+    "memory_units": {
+      "maximum": 559619722,
+      "median": 559619722,
+      "minimum": 559619722,
+      "sum": 559619722,
+      "sum_negative": 0,
+      "sum_positive": 559619722
+    },
     "script_size_bytes": 89,
     "term_size": 81
   },
-  "notes": "Generated using UPLC-CAPE measure tool",
   "scenario": "fibonacci",
-  "timestamp": "2025-08-20T15:46:59Z",
-  "version": "1.0.0"
+  "timestamp": "2025-08-21T14:20:14Z",
+  "version": "1.0.0",
+  "notes": "Generated using UPLC-CAPE measure tool"
 }
