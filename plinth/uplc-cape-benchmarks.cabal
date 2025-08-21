@@ -63,17 +63,17 @@ library
   exposed-modules:
     Factorial
     Fibonacci
+    TwoPartyEscrow
 
   -- Future benchmark modules:
-  -- TwoPartyEscrow
   -- StreamingPayments
   -- SimpleDAOVoting
   -- TimelockedStaking
 
   hs-source-dirs:  src
 
--- Fibonacci benchmark scenario
-executable fibonacci
+-- UPLC-CAPE Plinth submissions generator
+executable plinth-submissions
   import:         common-language
   main-is:        Main.hs
   build-depends:
@@ -90,17 +90,3 @@ executable fibonacci
     , uplc-cape-benchmarks
 
   hs-source-dirs: app
-
--- Template for future benchmark executables:
---
--- executable two-party-escrow
---   import: common-language
---
---   main-is: TwoPartyEscrowMain.hs
---   other-modules:
---     TwoPartyEscrow
---
---   build-depends:
---     uplc-cape-benchmarks
---
---   hs-source-dirs: app
