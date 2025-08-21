@@ -1,4 +1,4 @@
-module App.Cli (
+module Cape.Cli (
   Options (..),
   parseOptions,
 ) where
@@ -9,11 +9,11 @@ import Prelude
 -- | CLI options
 -- -i: input UPLC file
 -- -o: output metrics.json file
--- -t: optional cape-tests.json file for unified test execution
+-- -t: required cape-tests.json file for test execution
 data Options = Options
   { optInput :: FilePath
   , optOutput :: FilePath
-  , optTests :: Maybe FilePath
+  , optTests :: FilePath
   }
 
 optionsParser :: Parser Options
@@ -31,14 +31,12 @@ optionsParser =
           <> metavar "FILE"
           <> help "metrics.json output file"
       )
-    <*> optional
-      ( strOption
-          ( long "tests"
-              <> short 't'
-              <> metavar "TESTS.json"
-              <> help
-                "Test specification file (cape-tests.json) for unified test execution"
-          )
+    <*> strOption
+      ( long "tests"
+          <> short 't'
+          <> metavar "TESTS.json"
+          <> help
+            "Test specification file (cape-tests.json) for test execution"
       )
 
 optsInfo :: ParserInfo Options
@@ -47,7 +45,7 @@ optsInfo =
     (optionsParser <**> helper)
     ( fullDesc
         <> progDesc
-          "Measure a UPLC program and optionally run comprehensive tests using cape-tests.json"
+          "Measure a UPLC program and run comprehensive tests using cape-tests.json"
         <> header "uplc-measure"
     )
 

@@ -1,4 +1,4 @@
-module App.Verify (isBuiltinUnit) where
+module Cape.Verify (isBuiltinUnit) where
 
 import Prelude
 

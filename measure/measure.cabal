@@ -66,37 +66,51 @@ common common-language
     UndecidableInstances
     ViewPatterns
 
+-- Core measurement library
+library
+  import:          common-language
+  exposed-modules:
+    Cape.Compile
+    Cape.Error
+    Cape.Fixture
+    Cape.PrettyResult
+    Cape.ScriptContextBuilder
+    Cape.Tests
+    Cape.Verify
+    PlutusCore.Data.Compact.Parser
+    PlutusCore.Data.Compact.Printer
+
+  build-depends:
+    , aeson
+    , aeson-pretty
+    , bytestring
+    , containers
+    , directory
+    , filepath
+    , flat
+    , megaparsec
+    , mtl
+    , plutus-core
+    , plutus-ledger-api
+    , plutus-tx
+    , plutus-tx-plugin
+    , process
+    , relude
+    , serialise
+    , some
+    , text
+    , time
+
+  hs-source-dirs:  lib
+
 -- UPLC measurement tool
 executable measure
   import:         common-language
   main-is:        Main.hs
-  other-modules:
-    App.BuiltinDataParser
-    App.Cli
-    App.Compile
-    App.Error
-    App.Fixture
-    App.PrettyResult
-    App.Tests
-    App.Verify
-
+  other-modules:  Cape.Cli
   build-depends:
-    , base
-    , bytestring
-    , directory
-    , filepath
-    , megaparsec
-    , mtl
+    , measure
     , optparse-applicative
-    , plutus-core
-    , plutus-core:plutus-core-testlib
-    , plutus-ledger-api
-    , plutus-tx
-    , plutus-tx-plugin
-    , plutus-tx:plutus-tx-testlib
-    , process
-    , serialise
-    , text
 
   hs-source-dirs: app
 
@@ -106,17 +120,18 @@ test-suite measure-tests
   type:               exitcode-stdio-1.0
   main-is:            Spec.hs
   other-modules:
-    App.BuiltinDataParser
-    App.BuiltinDataParserSpec
+    Cape.ScriptContextBuilderSpec
+    Cape.TestsSpec
+    PlutusCore.Data.Compact.ParserSpec
+    PlutusCore.Data.Compact.PrinterSpec
 
   build-depends:
-    , base
-    , bytestring
+    , aeson
+    , containers
     , hspec
-    , megaparsec
-    , plutus-core
-    , text
+    , measure
+    , vector
 
-  hs-source-dirs:     app test
+  hs-source-dirs:     test
   ghc-options:        -threaded -rtsopts -with-rtsopts=-N
   build-tool-depends: hspec-discover:hspec-discover

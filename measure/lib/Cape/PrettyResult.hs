@@ -1,6 +1,4 @@
-{-# LANGUAGE LambdaCase #-}
-
-module App.PrettyResult (
+module Cape.PrettyResult (
   extractPrettyResult,
   getPrettyValue,
   compareResult,
@@ -8,8 +6,7 @@ module App.PrettyResult (
 
 import Prelude
 
-import App.Tests (ResultType (..))
-import Data.Text (Text)
+import Cape.Tests (ResultType (..))
 import PlutusCore.Pretty (prettyPlcClassic, render)
 import PlutusTx.Eval (EvalResult (..), evalResult)
 

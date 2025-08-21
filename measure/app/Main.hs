@@ -1,15 +1,12 @@
-{-# LANGUAGE LambdaCase #-}
-
 module Main (main) where
 
 import Prelude
 
-import App.BuiltinDataParser (parseBuiltinDataText, renderParseError)
-import App.Cli (Options (..), parseOptions)
-import App.Compile (applyPrograms, compileProgram)
-import App.Error (MeasureError (..), exitCodeForError, renderMeasureError)
-import App.PrettyResult (compareResult, extractPrettyResult)
-import App.Tests (
+import Cape.Cli (Options (..), parseOptions)
+import Cape.Compile (applyPrograms, compileProgram)
+import Cape.Error (MeasureError (..), exitCodeForError, renderMeasureError)
+import Cape.PrettyResult (compareResult, extractPrettyResult)
+import Cape.Tests (
   ExpectedResult (..),
   InputType (..),
   TestCase (..),
@@ -21,16 +18,18 @@ import App.Tests (
   resolveTestInput,
  )
 import Control.Exception qualified as E
-import Control.Monad.Except (runExceptT)
 import Data.Aeson (ToJSON, (.=))
 import Data.Aeson qualified as Json
 import Data.Aeson.Encode.Pretty qualified as AesonPretty
 import Data.ByteString qualified as BS
 import Data.ByteString.Lazy qualified as LBS
 import Data.ByteString.Short qualified as SBS
+import Data.List (maximum, minimum, (!!))
 import Data.SatInt (unSatInt)
 import Data.Text.Encoding qualified as TE
+import Data.Time (defaultTimeLocale, formatTime, getCurrentTime)
 import PlutusCore qualified as PLC
+import PlutusCore.Data.Compact.Parser (parseBuiltinDataText, renderParseError)
 import PlutusCore.Evaluation.Machine.ExBudget (ExBudget (..))
 import PlutusCore.Evaluation.Machine.ExMemory (ExCPU (..), ExMemory (..))
 import PlutusCore.MkPlc qualified as MkPlc
@@ -44,23 +43,14 @@ import UntypedPlutusCore.Parser qualified as UPLCParser
 main :: IO ()
 main = do
   Options {optInput, optOutput, optTests} <- parseOptions
-  case optTests of
-    Just testsFile -> do
-      -- Run unified test execution mode
-      E.try (runTestSuite optInput testsFile optOutput) >>= \case
-        Left err -> do
-          putStrLn (renderMeasureError err)
-          Exit.exitWith (exitCodeForError err)
-        Right () -> pass
-    Nothing -> do
-      -- Run simple measurement mode (no tests)
-      E.try (measureUplcFileSimple optInput optOutput) >>= \case
-        Left err -> do
-          putStrLn (renderMeasureError err)
-          Exit.exitWith (exitCodeForError err)
-        Right () -> pass
+  -- Run test execution
+  E.try (runTestSuite optInput optTests optOutput) >>= \case
+    Left err -> do
+      putStrLn (renderMeasureError err)
+      Exit.exitWith (exitCodeForError err)
+    Right () -> pass
 
--- | Run test suite in unified test execution mode
+-- | Run test suite
 runTestSuite :: FilePath -> FilePath -> FilePath -> IO ()
 runTestSuite uplcFile testsFile metricsFile = do
   putTextLn $ "Running test suite: " <> toText testsFile
@@ -76,24 +66,27 @@ runTestSuite uplcFile testsFile metricsFile = do
     Left err -> E.throwIO (UPLCParseError uplcFile (show err))
     Right prog -> pure prog
 
-  -- Run each test case
-  testResults <- forM (tsTests testSuite) $ \testCase -> do
+  -- Run each test case and collect results and metrics
+  testResultsAndMetrics <- forM (tsTests testSuite) \testCase -> do
     putTextLn $ "\nRunning test: " <> tcName testCase
-    runSingleTest program baseDir testCase
+    runSingleTest program baseDir testSuite testCase
+
+  let (testResults, evaluationMetrics) = unzip testResultsAndMetrics
 
   -- Check if all tests passed
-  let allPassed = all id testResults
-      passedCount = length (filter id testResults)
-      totalCount = length testResults
 
   putTextLn $
-    "\nTest results: " <> show passedCount <> "/" <> show totalCount <> " passed"
+    "\nTest results: "
+      <> show (length (filter id testResults))
+      <> " of "
+      <> show (length testResults)
+      <> " tests passed"
 
-  if allPassed
+  if and testResults
     then do
       putTextLn "All tests passed! ✓"
-      -- Write a simple success metrics file for now
-      writeSuccessMetrics program metricsFile
+      -- Write detailed metrics file with per-evaluation data
+      writeDetailedMetrics program evaluationMetrics metricsFile
     else do
       putTextLn "Some tests failed! ✗"
       E.throwIO (VerificationError "Test suite failed")
@@ -102,46 +95,80 @@ runTestSuite uplcFile testsFile metricsFile = do
 runSingleTest ::
   UPLC.Program UPLC.Name PLC.DefaultUni PLC.DefaultFun PLC.SrcSpan ->
   FilePath ->
+  TestSuite ->
   TestCase ->
-  IO Bool
-runSingleTest program baseDir testCase = do
-  case tcInput testCase of
+  IO (Bool, EvaluationMetrics)
+runSingleTest program baseDir testSuite testCase = do
+  (testPassed, evalRes) <- case tcInput testCase of
     Nothing -> do
       -- No input - run program directly
       code <- compileProgram program
       let evalRes = evaluateCompiledCode code
-      checkTestResult evalRes (tcExpected testCase) baseDir
+      testResult <- checkTestResult evalRes (tcExpected testCase) baseDir
+      pure (testResult, evalRes)
     Just testInput -> do
       -- Apply input to program
-      inputText <- resolveTestInput baseDir testInput
+      inputText <- resolveTestInput baseDir testSuite testInput
       inputProgram <- parseInputProgram (tiType testInput) inputText
       appliedCode <- applyPrograms program inputProgram
       let evalRes = evaluateCompiledCode appliedCode
-      checkTestResult evalRes (tcExpected testCase) baseDir
+      testResult <- checkTestResult evalRes (tcExpected testCase) baseDir
+      pure (testResult, evalRes)
+
+  -- Extract metrics from evaluation result
+  let budget = evalResultBudget evalRes
+      ExBudget {exBudgetCPU = ExCPU cpu, exBudgetMemory = ExMemory mem} = budget
+      executionResult = if testPassed then "success" else "error"
+      description = fromMaybe "" (tcDescription testCase)
+
+  let evaluationMetrics =
+        EvaluationMetrics
+          { evalName = tcName testCase
+          , evalDescription = description
+          , evalCpuUnits = fromIntegral (unSatInt cpu)
+          , evalMemoryUnits = fromIntegral (unSatInt mem)
+          , evalExecutionResult = executionResult
+          }
+
+  pure (testPassed, evaluationMetrics)
 
 -- | Parse input based on type
 parseInputProgram ::
   InputType ->
   Text ->
   IO (UPLC.Program UPLC.Name PLC.DefaultUni PLC.DefaultFun PLC.SrcSpan)
-parseInputProgram inputType inputText = case inputType of
-  BuiltinData -> do
-    -- Parse BuiltinData using custom parser
-    case parseBuiltinDataText inputText of
-      Left parseErr ->
-        E.throwIO
-          (UPLCParseError "builtin_data_input" (show (renderParseError parseErr)))
-      Right builtinData -> do
-        -- Convert Data to UPLC constant
-        let ann = PLC.SrcSpan "" 1 1 1 1
-            dataConstant = MkPlc.mkConstant ann builtinData
-            uplcProgram = UPLC.Program ann (UPLC.Version 1 1 0) dataConstant
-        pure uplcProgram
-  RawUPLC -> do
-    -- Parse as raw UPLC program
-    case PLC.runQuote (runExceptT (UPLCParser.parseProgram inputText)) of
-      Left err -> E.throwIO (UPLCParseError "raw_uplc_input" (show err))
-      Right prog -> pure prog
+parseInputProgram inputType inputText =
+  case inputType of
+    BuiltinData -> do
+      -- Parse BuiltinData using custom parser
+      case parseBuiltinDataText inputText of
+        Left parseErr ->
+          E.throwIO
+            (UPLCParseError "builtin_data_input" (show (renderParseError parseErr)))
+        Right builtinData -> do
+          -- Convert Data to UPLC constant
+          let ann = PLC.SrcSpan "" 1 1 1 1
+              dataConstant = MkPlc.mkConstant ann builtinData
+              uplcProgram = UPLC.Program ann (UPLC.Version 1 1 0) dataConstant
+          pure uplcProgram
+    RawUPLC -> do
+      -- Parse as raw UPLC program
+      case PLC.runQuote (runExceptT (UPLCParser.parseProgram inputText)) of
+        Left err -> E.throwIO (UPLCParseError "raw_uplc_input" (show err))
+        Right prog -> pure prog
+    ScriptContext -> do
+      -- Script context input is already converted to BuiltinData text representation
+      -- by resolveTestInput, so parse it as BuiltinData
+      case parseBuiltinDataText inputText of
+        Left parseErr ->
+          E.throwIO
+            (UPLCParseError "builtin_data_input" (show (renderParseError parseErr)))
+        Right builtinData -> do
+          -- Convert Data to UPLC constant
+          let ann = PLC.SrcSpan "" 1 1 1 1
+              dataConstant = MkPlc.mkConstant ann builtinData
+              uplcProgram = UPLC.Program ann (UPLC.Version 1 1 0) dataConstant
+          pure uplcProgram
 
 -- | Check test result against expected outcome
 checkTestResult :: EvalResult -> ExpectedResult -> FilePath -> IO Bool
@@ -164,90 +191,175 @@ checkTestResult evalRes expectedResult baseDir = do
         Just expected -> putTextLn $ "    Expected: " <> expected
       pure False
 
--- | Write simple success metrics
-writeSuccessMetrics ::
+-- | Write detailed metrics with per-evaluation data and aggregations
+writeDetailedMetrics ::
   UPLC.Program UPLC.Name PLC.DefaultUni PLC.DefaultFun PLC.SrcSpan ->
+  [EvaluationMetrics] ->
   FilePath ->
   IO ()
-writeSuccessMetrics program metricsFile = do
+writeDetailedMetrics program evaluations metricsFile = do
   code <- compileProgram program
-  let evalRes = evaluateCompiledCode code
-      budget = evalResultBudget evalRes
-      ExBudget {exBudgetCPU = ExCPU cpu, exBudgetMemory = ExMemory mem} = budget
-      scriptBytes = SBS.fromShort (serialiseCompiledCode code)
+  let scriptBytes = SBS.fromShort (serialiseCompiledCode code)
       scriptSize = BS.length scriptBytes
+      termSize = countAstNodes code
 
-  LBS.writeFile metricsFile $
-    AesonPretty.encodePretty
-      Metrics
-        { cpu_units = fromIntegral (unSatInt cpu)
-        , memory_units = fromIntegral (unSatInt mem)
-        , script_size_bytes = fromIntegral scriptSize
-        , term_size = countAstNodes code
-        }
-  putTextLn $ "Metrics written to " <> toText metricsFile
+  -- Extract CPU and memory data for aggregations
+  let cpuData =
+        [ (evalCpuUnits eval, evalExecutionResult eval == "success") | eval <- evaluations
+        ]
+      memoryData =
+        [ (evalMemoryUnits eval, evalExecutionResult eval == "success")
+        | eval <- evaluations
+        ]
 
--- | Simple UPLC measurement without tests
-measureUplcFileSimple :: FilePath -> FilePath -> IO ()
-measureUplcFileSimple uplcFile metricsFile = do
-  putTextLn $ "Measuring UPLC program: " <> toText uplcFile
+  -- Calculate aggregations
+  let cpuAggregations = calculateBudgetAggregations cpuData
+      memoryAggregations = calculateBudgetAggregations memoryData
 
-  -- Read and parse the UPLC program
-  uplcText <- readTextUtf8 uplcFile
-  program <- case PLC.runQuote (runExceptT (UPLCParser.parseProgram uplcText)) of
-    Left err -> E.throwIO (UPLCParseError uplcFile (show err))
-    Right prog -> pure prog
+  -- Create measurements object
+  let measurements =
+        Measurements
+          { measCpuAggregations = cpuAggregations
+          , measMemoryAggregations = memoryAggregations
+          , measScriptSizeBytes = fromIntegral scriptSize
+          , measTermSize = termSize
+          }
 
-  -- Compile and evaluate
-  code <- compileProgram program
-  let evalRes = evaluateCompiledCode code
-      budget = evalResultBudget evalRes
-      ExBudget {exBudgetCPU = ExCPU cpu, exBudgetMemory = ExMemory mem} = budget
-      scriptBytes = SBS.fromShort (serialiseCompiledCode code)
-      scriptSize = BS.length scriptBytes
+  -- Get current timestamp
+  currentTime <- getCurrentTime
+  let timestamp = toText $ formatTime defaultTimeLocale "%Y-%m-%dT%H:%M:%SZ" currentTime
 
-  -- Check if evaluation succeeded and show result
-  case extractPrettyResult evalRes of
-    Left errMsg -> putTextLn $ "Program evaluation failed: " <> errMsg
-    Right value -> putTextLn $ "Program evaluation succeeded with result: " <> value
+  -- Create execution environment info
+  let execEnv = Json.object [("evaluator", Json.String "PlutusTx.Eval-1.52.0.0")]
 
-  -- Write metrics regardless of evaluation result
-  LBS.writeFile metricsFile $
-    AesonPretty.encodePretty
-      Metrics
-        { cpu_units = fromIntegral (unSatInt cpu)
-        , memory_units = fromIntegral (unSatInt mem)
-        , script_size_bytes = fromIntegral scriptSize
-        , term_size = countAstNodes code
-        }
+  -- Create complete metrics object
+  let metrics =
+        Metrics
+          { metricsMeasurements = measurements
+          , metricsEvaluations = evaluations
+          , metricsScenario = "unknown" -- TODO: extract from test suite or CLI
+          , metricsVersion = "1.0.0"
+          , metricsExecutionEnvironment = execEnv
+          , metricsTimestamp = timestamp
+          , metricsNotes = Nothing
+          }
 
-  putTextLn $ "Metrics written to " <> toText metricsFile
-  putTextLn $ "Script size: " <> toText @String (show scriptSize) <> " bytes"
-  putTextLn $ "CPU units: " <> toText @String (show cpu)
-  putTextLn $ "Memory units: " <> toText @String (show mem)
-  putTextLn $ "Term size: " <> toText @String (show (countAstNodes code))
+  LBS.writeFile metricsFile $ AesonPretty.encodePretty metrics
+  putTextLn $ "Detailed metrics written to " <> toText metricsFile
 
--- | Metrics data structure matching the schema
-data Metrics = Metrics
-  { cpu_units :: Integer
-  , memory_units :: Integer
-  , script_size_bytes :: Integer
-  , term_size :: Integer
+-- | Individual evaluation metrics
+data EvaluationMetrics = EvaluationMetrics
+  { evalName :: Text
+  , evalDescription :: Text
+  , evalCpuUnits :: Integer
+  , evalMemoryUnits :: Integer
+  , evalExecutionResult :: Text -- "success" or "error"
   }
 
-instance ToJSON Metrics where
-  toJSON (Metrics cpu mem scriptSize termSize) =
+instance ToJSON EvaluationMetrics where
+  toJSON (EvaluationMetrics name desc cpu mem result) =
     Json.object
-      [ "cpu_units" .= cpu
+      [ "name" .= name
+      , "description" .= desc
+      , "cpu_units" .= cpu
       , "memory_units" .= mem
+      , "execution_result" .= result
+      ]
+
+-- | Aggregated budget measurements
+data BudgetAggregations = BudgetAggregations
+  { aggMaximum :: Integer
+  , aggSum :: Integer
+  , aggMinimum :: Integer
+  , aggMedian :: Integer
+  , aggSumPositive :: Integer
+  , aggSumNegative :: Integer
+  }
+
+instance ToJSON BudgetAggregations where
+  toJSON (BudgetAggregations maxVal sumVal minVal medVal sumPos sumNeg) =
+    Json.object
+      [ "maximum" .= maxVal
+      , "sum" .= sumVal
+      , "minimum" .= minVal
+      , "median" .= medVal
+      , "sum_positive" .= sumPos
+      , "sum_negative" .= sumNeg
+      ]
+
+-- | Top-level measurements with aggregations
+data Measurements = Measurements
+  { measCpuAggregations :: BudgetAggregations
+  , measMemoryAggregations :: BudgetAggregations
+  , measScriptSizeBytes :: Integer
+  , measTermSize :: Integer
+  }
+
+instance ToJSON Measurements where
+  toJSON (Measurements cpuAgg memAgg scriptSize termSize) =
+    Json.object
+      [ "cpu_units" .= cpuAgg
+      , "memory_units" .= memAgg
       , "script_size_bytes" .= scriptSize
       , "term_size" .= termSize
       ]
+
+-- | Complete metrics data structure matching the schema
+data Metrics = Metrics
+  { metricsMeasurements :: Measurements
+  , metricsEvaluations :: [EvaluationMetrics]
+  , metricsScenario :: Text
+  , metricsVersion :: Text
+  , metricsExecutionEnvironment :: Json.Value
+  , metricsTimestamp :: Text
+  , metricsNotes :: Maybe Text
+  }
+
+instance ToJSON Metrics where
+  toJSON (Metrics measurements evaluations scenario version execEnv timestamp notes) =
+    Json.object $
+      [ "measurements" .= measurements
+      , "evaluations" .= evaluations
+      , "scenario" .= scenario
+      , "version" .= version
+      , "execution_environment" .= execEnv
+      , "timestamp" .= timestamp
+      ]
+        ++ case notes of
+          Nothing -> []
+          Just n -> ["notes" .= n]
+
+-- | Calculate aggregations for a list of budget values with success/error info
+calculateBudgetAggregations :: [(Integer, Bool)] -> BudgetAggregations
+calculateBudgetAggregations budgetData =
+  let values = map fst budgetData
+      successValues = [val | (val, True) <- budgetData]
+      errorValues = [val | (val, False) <- budgetData]
+      sortedValues = sort values
+      median = calculateMedian sortedValues
+   in BudgetAggregations
+        { aggMaximum = if null values then 0 else maximum values
+        , aggSum = sum values
+        , aggMinimum = if null values then 0 else minimum values
+        , aggMedian = median
+        , aggSumPositive = sum successValues
+        , aggSumNegative = sum errorValues
+        }
+
+-- | Calculate median from a sorted list
+calculateMedian :: [Integer] -> Integer
+calculateMedian [] = 0
+calculateMedian xs =
+  let len = length xs
+      mid = len `div` 2
+   in if even len
+        then (xs !! (mid - 1) + xs !! mid) `div` 2
+        else xs !! mid
 
 -- Helper: strict UTF-8 file reader with exception handling
 readTextUtf8 :: FilePath -> IO Text
 readTextUtf8 fp = do
   bs <- readFileBS fp
-  TE.decodeUtf8' bs & \case
+  case TE.decodeUtf8' bs of
     Left _ -> E.throwIO (FileDecodeError fp)
     Right t -> pure t
