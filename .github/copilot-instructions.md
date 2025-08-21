@@ -277,7 +277,7 @@ Preferred (repo-aware):
 
 Low-level (single files):
 
-- Use the `measure` executable inside the Nix shell for file-level metrics: `measure -i <program.uplc> -o <metrics.json> [-v <verifier.uplc>]`. This tool is submission-agnostic and is ideal for ad‑hoc measurements or external inputs.
+- Use the `measure` executable inside the Nix shell for file-level metrics: `measure -i <program.uplc> -t <cape-tests.json> -o <metrics.json>`. This tool is submission-agnostic and is ideal for ad‑hoc measurements or external inputs.
 
 ## Contribution Workflow
 
@@ -361,7 +361,7 @@ measurePerformance compiled = do
   putStrLn $ "Term size (AST nodes): " <> show (countAstNodes compiled)
 
   -- Preferred CLI for repo-aware measurement: `cape submission measure`
-  -- Low-level tool (in nix shell) for single files: `measure -i <uplc> -o <metrics.json> [-v <verifier.uplc>]`
+  -- Low-level tool (in nix shell) for single files: `measure -i <uplc> -t <cape-tests.json> -o <metrics.json>`
 ```
 
 ## Documentation Structure

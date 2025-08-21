@@ -1,7 +1,7 @@
-.md
 .vscode/
 .direnv/
 node_modules/
 dist-newstyle/
 plinth/*.uplc
 measure/.hspec-failures
+*.local.md
