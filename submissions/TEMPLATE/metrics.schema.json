@@ -18,31 +18,131 @@
     },
     "measurements": {
       "type": "object",
-      "description": "Performance measurements from UPLC evaluation",
+      "description": "Aggregated performance measurements from UPLC evaluations",
       "properties": {
         "cpu_units": {
-          "type": "integer",
-          "minimum": 0,
-          "description": "CPU execution units consumed"
+          "type": "object",
+          "description": "CPU execution units aggregations",
+          "properties": {
+            "maximum": {
+              "type": "integer",
+              "minimum": 0,
+              "description": "Maximum CPU units across all evaluations"
+            },
+            "sum": {
+              "type": "integer",
+              "minimum": 0,
+              "description": "Sum of CPU units across all evaluations"
+            },
+            "minimum": {
+              "type": "integer",
+              "minimum": 0,
+              "description": "Minimum CPU units across all evaluations"
+            },
+            "median": {
+              "type": "integer",
+              "minimum": 0,
+              "description": "Median CPU units across all evaluations"
+            },
+            "sum_positive": {
+              "type": "integer",
+              "minimum": 0,
+              "description": "Sum of CPU units from successful evaluations only"
+            },
+            "sum_negative": {
+              "type": "integer",
+              "minimum": 0,
+              "description": "Sum of CPU units from failed evaluations only"
+            }
+          },
+          "required": ["maximum", "sum", "minimum", "median", "sum_positive", "sum_negative"],
+          "additionalProperties": false
         },
         "memory_units": {
-          "type": "integer",
-          "minimum": 0,
-          "description": "Memory units consumed"
+          "type": "object",
+          "description": "Memory units aggregations",
+          "properties": {
+            "maximum": {
+              "type": "integer",
+              "minimum": 0,
+              "description": "Maximum memory units across all evaluations"
+            },
+            "sum": {
+              "type": "integer",
+              "minimum": 0,
+              "description": "Sum of memory units across all evaluations"
+            },
+            "minimum": {
+              "type": "integer",
+              "minimum": 0,
+              "description": "Minimum memory units across all evaluations"
+            },
+            "median": {
+              "type": "integer",
+              "minimum": 0,
+              "description": "Median memory units across all evaluations"
+            },
+            "sum_positive": {
+              "type": "integer",
+              "minimum": 0,
+              "description": "Sum of memory units from successful evaluations only"
+            },
+            "sum_negative": {
+              "type": "integer",
+              "minimum": 0,
+              "description": "Sum of memory units from failed evaluations only"
+            }
+          },
+          "required": ["maximum", "sum", "minimum", "median", "sum_positive", "sum_negative"],
+          "additionalProperties": false
         },
         "script_size_bytes": {
           "type": "integer",
           "minimum": 1,
-          "description": "Size of serialized UPLC script in bytes"
+          "description": "Size of serialized UPLC script in bytes (constant across evaluations)"
         },
         "term_size": {
           "type": "integer",
           "minimum": 1,
-          "description": "Number of AST nodes in the UPLC term"
+          "description": "Number of AST nodes in the UPLC term (constant across evaluations)"
         }
       },
       "required": ["cpu_units", "memory_units", "script_size_bytes", "term_size"],
       "additionalProperties": false
+    },
+    "evaluations": {
+      "type": "array",
+      "description": "Per-evaluation performance measurements",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Name of the test case"
+          },
+          "description": {
+            "type": "string",
+            "description": "Description of what this evaluation tests"
+          },
+          "cpu_units": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "CPU execution units consumed for this evaluation"
+          },
+          "memory_units": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Memory units consumed for this evaluation"
+          },
+          "execution_result": {
+            "type": "string",
+            "enum": ["success", "error"],
+            "description": "Result of the evaluation execution"
+          }
+        },
+        "required": ["name", "description", "cpu_units", "memory_units", "execution_result"],
+        "additionalProperties": false
+      }
     },
     "execution_environment": {
       "type": "object",
@@ -67,6 +167,13 @@
       "description": "Optional notes about the implementation or measurements"
     }
   },
-  "required": ["scenario", "version", "measurements", "execution_environment", "timestamp"],
+  "required": [
+    "scenario",
+    "version",
+    "measurements",
+    "evaluations",
+    "execution_environment",
+    "timestamp"
+  ],
   "additionalProperties": false
 }

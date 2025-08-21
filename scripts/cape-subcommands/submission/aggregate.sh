@@ -61,12 +61,13 @@ while IFS= read -r -d '' metadata_file; do
     contributor_name=""
   fi
 
-  # Extract data from metrics.json (allow empty when template placeholders present)
-  timestamp=$(grep -o '"timestamp"[[:space:]]*:[[:space:]]*"[^"]*"' "$metrics_file" | cut -d '"' -f4 || true)
-  cpu_units=$(grep -o '"cpu_units"[[:space:]]*:[[:space:]]*[0-9]*' "$metrics_file" | grep -o '[0-9]*$' || true)
-  memory_units=$(grep -o '"memory_units"[[:space:]]*:[[:space:]]*[0-9]*' "$metrics_file" | grep -o '[0-9]*$' || true)
-  script_size_bytes=$(grep -o '"script_size_bytes"[[:space:]]*:[[:space:]]*[0-9]*' "$metrics_file" | grep -o '[0-9]*$' || true)
-  term_size=$(grep -o '"term_size"[[:space:]]*:[[:space:]]*[0-9]*' "$metrics_file" | grep -o '[0-9]*$' || true)
+  # Extract data from metrics.json using jq (new aggregated format)
+  # Use sum strategy for aggregated measurements, fallback to direct values for backwards compatibility
+  timestamp=$(jq -r '.timestamp // ""' "$metrics_file" 2> /dev/null || true)
+  cpu_units=$(jq -r '.measurements.cpu_units.sum // .measurements.cpu_units // 0' "$metrics_file" 2> /dev/null || true)
+  memory_units=$(jq -r '.measurements.memory_units.sum // .measurements.memory_units // 0' "$metrics_file" 2> /dev/null || true)
+  script_size_bytes=$(jq -r '.measurements.script_size_bytes // 0' "$metrics_file" 2> /dev/null || true)
+  term_size=$(jq -r '.measurements.term_size // 0' "$metrics_file" 2> /dev/null || true)
 
   # Escape any commas in string fields and output CSV row
   benchmark=$(echo "$benchmark" | sed 's/,/\\,/g')

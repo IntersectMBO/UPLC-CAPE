@@ -27,11 +27,15 @@ if cape_help_requested "$@"; then
   exit 0
 fi
 
-# Check if measure tool is available
+# Check if measure tool can be built
 check_measure_tool() {
-  cape_require_cmd measure
+  if ! command -v cabal > /dev/null 2>&1; then
+    cape_error "cabal is required to build the measure tool"
+    return 1
+  fi
   if [[ "${VERBOSE:-0}" -eq 1 ]]; then
-    measure --help 2> /dev/null || true
+    cape_info "Building measure tool..."
+    (cd "$PROJECT_ROOT/measure" && cabal build exe:measure) || cape_error "Failed to build measure tool"
   fi
 }
 
@@ -123,13 +127,13 @@ measure_uplc_file() {
   stdout_tmp="$(cape_mktemp)"
 
   if [[ $VERBOSE -eq 1 ]]; then
-    if ! measure -i "$uplc_file" "${tests_flag[@]}" -o "$tmp_raw" | tee "$stdout_tmp"; then
+    if ! (cd "$PROJECT_ROOT/measure" && cabal run measure -- -i "$uplc_file" "${tests_flag[@]}" -o "$tmp_raw") | tee "$stdout_tmp"; then
       cape_error "✗ Failed to measure UPLC program ($rel_uplc)"
       rm -f "$tmp_raw" "$stdout_tmp" || true
       return 1
     fi
   else
-    if ! measure -i "$uplc_file" "${tests_flag[@]}" -o "$tmp_raw" > "$stdout_tmp"; then
+    if ! (cd "$PROJECT_ROOT/measure" && cabal run measure -- -i "$uplc_file" "${tests_flag[@]}" -o "$tmp_raw") > "$stdout_tmp"; then
       cape_error "✗ Failed to measure UPLC program ($rel_uplc)"
       rm -f "$tmp_raw" "$stdout_tmp" || true
       return 1
@@ -224,11 +228,10 @@ measure_uplc_file() {
     --arg scenario "$scenario" \
     --arg version "$existing_version" \
     --arg timestamp "$timestamp" '
-    {
+    $m[0] + {
       execution_environment: {
         evaluator: $evaluator
       },
-      measurements: $m[0],
       notes: $notes,
       scenario: $scenario,
       timestamp: $timestamp,

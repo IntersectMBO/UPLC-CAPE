@@ -30,7 +30,7 @@ fi
 
 cape_require_cmd jq
 cape_require_cmd check-jsonschema
-cape_require_cmd measure
+cape_require_cmd cabal
 
 infer_scenario_from_path() {
   local path="$1"
@@ -113,21 +113,21 @@ verify_submission_dir() {
 
   local measure_rc=0
   if [[ $VERBOSE -eq 1 ]]; then
-    if ! measure -i "$uplc_file" "${tests_flag[@]}" -o "$tmp_metrics" | tee "$tmp_stdout"; then
+    if ! (cd "$PROJECT_ROOT/measure" && cabal run measure -- -i "$uplc_file" "${tests_flag[@]}" -o "$tmp_metrics") | tee "$tmp_stdout"; then
       measure_rc=$?
     fi
   else
-    if ! measure -i "$uplc_file" "${tests_flag[@]}" -o "$tmp_metrics" > "$tmp_stdout"; then
+    if ! (cd "$PROJECT_ROOT/measure" && cabal run measure -- -i "$uplc_file" "${tests_flag[@]}" -o "$tmp_metrics") > "$tmp_stdout"; then
       measure_rc=$?
     fi
   fi
 
   case "$measure_rc" in
     0)
-      cape_success "✓ Correctness verified via CEK"
+      cape_success "✓ UPLC code evaluates as expected."
       ;;
     1)
-      cape_error "Test suite failed - some test cases did not pass"
+      cape_error "✗ UPLC code evaluation failed."
       return 1
       ;;
     2)
@@ -135,7 +135,7 @@ verify_submission_dir() {
       return 1
       ;;
     *)
-      cape_error "measure exited with unexpected status $measure_rc"
+      cape_error "✗ UPLC code evaluation failed with unexpected error."
       return 1
       ;;
   esac
@@ -169,9 +169,8 @@ verify_submission_dir() {
     --arg scenario "${scenario:-unknown}" \
     --arg version "$existing_version" \
     --arg timestamp "$timestamp" '
-    {
+    $m[0] + {
       execution_environment: { evaluator: $evaluator },
-      measurements: $m[0],
       notes: $notes,
       scenario: $scenario,
       timestamp: $timestamp,
@@ -190,22 +189,34 @@ verify_submission_dir() {
   local schema_metadata="$SCHEMAS_DIR/metadata.schema.json"
 
   local ok=1
-  if ! check-jsonschema --schemafile "$schema_metrics" "$metrics_out"; then
-    cape_error "metrics.json failed schema validation"
-    ok=0
+  local result
+  result=$(check-jsonschema --output-format json --schemafile "$schema_metrics" "$metrics_out" 2> /dev/null)
+  local status
+  status=$(echo "$result" | jq -r '.status')
+
+  if [[ "$status" == "ok" ]]; then
+    cape_success "✓ metrics.json conforms to $(basename "$schema_metrics")"
   else
-    cape_success "metrics.json is valid"
+    cape_error "✗ metrics.json does not conform to $(basename "$schema_metrics")"
+    ok=0
   fi
 
   local metadata_file="$submission_dir/metadata.json"
   if [[ ! -f "$metadata_file" ]]; then
     cape_error "metadata.json not found in $rel_dir"
     ok=0
-  elif ! check-jsonschema --schemafile "$schema_metadata" "$metadata_file"; then
-    cape_error "metadata.json failed schema validation"
-    ok=0
   else
-    cape_success "metadata.json is valid"
+    local metadata_result
+    metadata_result=$(check-jsonschema --output-format json --schemafile "$schema_metadata" "$metadata_file" 2> /dev/null)
+    local metadata_status
+    metadata_status=$(echo "$metadata_result" | jq -r '.status')
+
+    if [[ "$metadata_status" == "ok" ]]; then
+      cape_success "✓ metadata.json conforms to $(basename "$schema_metadata")"
+    else
+      cape_error "✗ metadata.json does not conform to $(basename "$schema_metadata")"
+      ok=0
+    fi
   fi
 
   if [[ $ok -ne 1 ]]; then
