@@ -4,6 +4,7 @@ import Prelude
 
 import App.ScriptContextBuilder
 import Data.Aeson qualified as Json
+import Data.Map qualified as Map
 import Data.Text.Encoding (encodeUtf8)
 import Test.Hspec
 
@@ -43,3 +44,19 @@ spec = describe "ScriptContextBuilder" $ do
       case buildScriptContext spec of
         Left err -> expectationFailure $ "Build error: " <> show err
         Right _builtinData -> pass -- Success if it builds
+  
+  describe "Data structure references" $ do
+    it "resolves simple string reference" $ do
+      let dataStructures = Just $ Map.fromList [("buyer_key", Json.String "#abcdef")]
+          patch = AddSignature "@buyer_key"
+      case resolvePatchReferences dataStructures patch of
+        Left err -> expectationFailure $ "Reference resolution error: " <> show err
+        Right (AddSignature resolved) -> resolved `shouldBe` "#abcdef"
+        Right _ -> expectationFailure "Expected AddSignature after resolution"
+    
+    it "handles missing reference with error" $ do
+      let dataStructures = Just $ Map.fromList []
+          patch = AddSignature "@missing_key"
+      case resolvePatchReferences dataStructures patch of
+        Left err -> err `shouldContain` "reference not found"
+        Right _ -> expectationFailure "Expected error for missing reference"

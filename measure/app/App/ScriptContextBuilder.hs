@@ -1,4 +1,12 @@
-module App.ScriptContextBuilder where
+module App.ScriptContextBuilder 
+  ( ScriptContextSpec(..)
+  , BaselineTemplate(..)
+  , PatchOperation(..)
+  , TxOutRef(..)
+  , POSIXTimeRange(..)
+  , buildScriptContext
+  , resolvePatchReferences
+  ) where
 
 import Prelude
 
@@ -8,6 +16,7 @@ import Data.Map qualified as Map
 import Data.Text (Text)
 import Data.Text qualified as Text
 import PlutusTx.Builtins (BuiltinData, toBuiltinData)
+import Text.Read (readMaybe)
 
 -- | ScriptContext DSL specification
 data ScriptContextSpec = ScriptContextSpec
@@ -92,14 +101,16 @@ instance FromJSON TxOutRef where
       <*> o .: "output_index"
 
 -- | Build a ScriptContext from the DSL specification
--- For now, we'll build a simplified BuiltinData representation
 buildScriptContext :: ScriptContextSpec -> Either Text BuiltinData
 buildScriptContext spec = do
+  -- Resolve data structure references in patches
+  resolvedPatches <- mapM (resolvePatchReferences (scsDataStructures spec)) (scsPatches spec)
+  
   -- Start with baseline template - for now create a simple data structure
   baseData <- createBaselineData (scsBaseline spec)
   
   -- Apply patches in order (simplified for now)
-  finalData <- foldM applyPatchToData baseData (scsPatches spec)
+  finalData <- foldM applyPatchToData baseData resolvedPatches
   
   -- Return the BuiltinData
   pure finalData
@@ -170,3 +181,68 @@ jsonToBuiltinData Json.Null =
   pure $ toBuiltinData ()
 jsonToBuiltinData _ = 
   Left "Complex JSON structures not yet supported for redeemer values"
+
+-- | Resolve data structure references in patch operations
+resolvePatchReferences :: Maybe (Map.Map Text Json.Value) -> PatchOperation -> Either Text PatchOperation
+resolvePatchReferences dataStructures patch = case patch of
+  AddSignature pubkeyHash -> do
+    resolvedHash <- resolveReference dataStructures pubkeyHash
+    pure $ AddSignature resolvedHash
+    
+  SetRedeemer value -> do
+    -- For JSON values in redeemers, we don't resolve references yet
+    pure $ SetRedeemer value
+    
+  SetSpendingUtxo utxoRef -> do
+    resolvedTxId <- resolveReference dataStructures (torTxId utxoRef)
+    -- Note: output_index could also be a reference, but for simplicity keeping as integer for now
+    pure $ SetSpendingUtxo (utxoRef { torTxId = resolvedTxId })
+    
+  SetValidRange timeRange -> do
+    resolvedFrom <- case ptrFrom timeRange of
+      Nothing -> pure Nothing
+      Just fromVal -> do
+        fromText <- case fromVal of
+          -- If it's a reference (starts with @), resolve it
+          _ -> pure $ Text.pack (show fromVal)  -- For now, just convert to text
+        resolved <- resolveReferenceOptional dataStructures fromText
+        case resolved of
+          Just val -> case readMaybe (Text.unpack val) of
+            Nothing -> Left $ "Invalid timestamp value: " <> val
+            Just ts -> pure (Just ts)
+          Nothing -> pure Nothing
+          
+    resolvedTo <- case ptrTo timeRange of
+      Nothing -> pure Nothing
+      Just toVal -> do
+        toText <- pure $ Text.pack (show toVal)
+        resolved <- resolveReferenceOptional dataStructures toText
+        case resolved of
+          Just val -> case readMaybe (Text.unpack val) of
+            Nothing -> Left $ "Invalid timestamp value: " <> val
+            Just ts -> pure (Just ts)
+          Nothing -> pure Nothing
+    
+    pure $ SetValidRange (POSIXTimeRange resolvedFrom resolvedTo)
+
+-- | Resolve a single reference (handles @name syntax)
+resolveReference :: Maybe (Map.Map Text Json.Value) -> Text -> Either Text Text
+resolveReference Nothing ref = pure ref  -- No data structures defined
+resolveReference (Just dataStructures) ref = do
+  if Text.take 1 ref == "@"
+    then do
+      let refName = Text.drop 1 ref
+      case Map.lookup refName dataStructures of
+        Nothing -> Left $ "Data structure reference not found: " <> refName
+        Just (Json.String val) -> pure val
+        Just val -> Left $ "Data structure reference must be string, got: " <> Text.pack (show val)
+    else pure ref
+
+-- | Resolve optional reference
+resolveReferenceOptional :: Maybe (Map.Map Text Json.Value) -> Text -> Either Text (Maybe Text)
+resolveReferenceOptional dataStructures ref = do
+  if Text.take 1 ref == "@"
+    then do
+      resolved <- resolveReference dataStructures ref
+      pure (Just resolved)
+    else pure (Just ref)
