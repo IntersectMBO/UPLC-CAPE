@@ -149,7 +149,7 @@ Verification control:
 - Low-level tool: `measure` accepts a test suite via `-t/--tests <cape-tests.json>`.
 
 ```bash
-measure -i <input.uplc> [-t <cape-tests.json>] -o <metrics.json>
+measure -i <input.uplc> -t <cape-tests.json> -o <metrics.json>
 ```
 
 - Wrapper: `cape submission measure` infers the benchmark from the submissions path and, if `scenarios/{benchmark}/cape-tests.json` exists, passes that file to `measure` as `--tests (-t)` automatically.

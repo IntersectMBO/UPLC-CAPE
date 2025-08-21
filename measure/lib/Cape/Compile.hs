@@ -1,4 +1,4 @@
-module App.Compile (compileProgram, applyPrograms) where
+module Cape.Compile (compileProgram, applyPrograms) where
 
 import Prelude
 
@@ -18,7 +18,7 @@ compileProgram program = do
   case deBruijnTerm term of
     Right termWithDeBruijn -> do
       let ann = SrcSpans mempty
-          termWithSrcSpans = (\_ -> ann) <$> termWithDeBruijn
+          termWithSrcSpans = ann <$ termWithDeBruijn
           programWithDeBruijn = UPLC.Program ann ver termWithSrcSpans
       pure $ DeserializedCode programWithDeBruijn Nothing mempty
     Left err -> do
@@ -35,8 +35,8 @@ applyPrograms fProg xProg = do
   case (deBruijnTerm fTermNamed, deBruijnTerm xTermNamed) of
     (Right fTerm, Right xTerm) -> do
       let ann = SrcSpans mempty
-          f' = (\_ -> ann) <$> fTerm
-          x' = (\_ -> ann) <$> xTerm
+          f' = ann <$ fTerm
+          x' = ann <$ xTerm
           appTerm = UPLC.Apply ann f' x'
           appProgram = UPLC.Program ann verF appTerm
       pure $ DeserializedCode appProgram Nothing mempty

@@ -1,4 +1,4 @@
-module App.Fixture (dummyValidator) where
+module Cape.Fixture (dummyValidator) where
 
 import PlutusCore qualified as PLC
 import PlutusCore.MkPlc (mkConstant)

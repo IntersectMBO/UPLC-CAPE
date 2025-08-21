@@ -1,15 +1,38 @@
 {
+  "evaluations": [
+    {
+      "cpu_units": 7845912,
+      "description": "Pre-applied factorial(10) should return 3628800 with no input required",
+      "execution_result": "success",
+      "memory_units": 28362,
+      "name": "factorial_10_computation"
+    }
+  ],
   "execution_environment": {
     "evaluator": "PlutusTx.Eval-1.52.0.0"
   },
   "measurements": {
-    "cpu_units": 7845912,
-    "memory_units": 28362,
+    "cpu_units": {
+      "maximum": 7845912,
+      "median": 7845912,
+      "minimum": 7845912,
+      "sum": 7845912,
+      "sum_negative": 0,
+      "sum_positive": 7845912
+    },
+    "memory_units": {
+      "maximum": 28362,
+      "median": 28362,
+      "minimum": 28362,
+      "sum": 28362,
+      "sum_negative": 0,
+      "sum_positive": 28362
+    },
     "script_size_bytes": 42,
     "term_size": 35
   },
-  "notes": "<optional notes>",
   "scenario": "factorial",
-  "timestamp": "2025-08-20T15:46:58Z",
-  "version": "1.0.0"
+  "timestamp": "2025-08-21T14:20:14Z",
+  "version": "1.0.0",
+  "notes": "<optional notes>"
 }

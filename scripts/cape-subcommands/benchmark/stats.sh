@@ -112,10 +112,11 @@ for benchmark in $benchmarks; do
       compiler_version=$(jq -r '.compiler.version // ""' "$metadata_file")
       contributor_name=$(jq -r '.contributor.name // ""' "$metadata_file")
 
-      # Extract data from metrics.json using jq
+      # Extract data from metrics.json using jq (new aggregated format)
+      # Use sum strategy for aggregated measurements, fallback to direct values for backwards compatibility
       timestamp=$(jq -r '.timestamp // ""' "$metrics_file")
-      cpu_units=$(jq -r '.measurements.cpu_units // 0' "$metrics_file")
-      memory_units=$(jq -r '.measurements.memory_units // 0' "$metrics_file")
+      cpu_units=$(jq -r '.measurements.cpu_units.sum // .measurements.cpu_units // 0' "$metrics_file")
+      memory_units=$(jq -r '.measurements.memory_units.sum // .measurements.memory_units // 0' "$metrics_file")
       script_size_bytes=$(jq -r '.measurements.script_size_bytes // 0' "$metrics_file")
       term_size=$(jq -r '.measurements.term_size // 0' "$metrics_file")
 

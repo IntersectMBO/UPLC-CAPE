@@ -230,6 +230,17 @@ cape submission new fibonacci    # Prompts for compiler, version, handle
      - Works for a single file, a directory, or all submissions with `--all`
      - Produces output that validates against `submissions/TEMPLATE/metrics.schema.json`
 
+   - **Aggregation Strategies**: The `measure` tool now runs multiple test cases per program and provides several aggregation methods for CPU and memory metrics:
+
+     - `maximum`: Peak resource usage across all test cases (useful for identifying worst-case performance)
+     - `sum`: Total computational work across all test cases (useful for overall efficiency comparison)
+     - `minimum`: Best-case resource usage (useful for identifying optimal performance)
+     - `median`: Typical resource usage (useful for understanding normal performance)
+     - `sum_positive`: Total resources for successful test cases only (valid execution cost)
+     - `sum_negative`: Total resources for failed test cases only (error handling cost)
+
+     Higher-level tooling can extract the most relevant aggregation for specific analysis needs.
+
    - Resulting file example:
 
      ```json
@@ -237,11 +248,34 @@ cape submission new fibonacci    # Prompts for compiler, version, handle
        "scenario": "fibonacci",
        "version": "1.0.0",
        "measurements": {
-         "cpu_units": 185916,
-         "memory_units": 592,
+         "cpu_units": {
+           "maximum": 185916,
+           "sum": 185916,
+           "minimum": 185916,
+           "median": 185916,
+           "sum_positive": 185916,
+           "sum_negative": 0
+         },
+         "memory_units": {
+           "maximum": 592,
+           "sum": 592,
+           "minimum": 592,
+           "median": 592,
+           "sum_positive": 592,
+           "sum_negative": 0
+         },
          "script_size_bytes": 1234,
          "term_size": 45
        },
+       "evaluations": [
+         {
+           "name": "fibonacci_25_computation",
+           "description": "Pre-applied fibonacci(25) should return 75025",
+           "cpu_units": 185916,
+           "memory_units": 592,
+           "execution_result": "success"
+         }
+       ],
        "execution_environment": {
          "evaluator": "plutus-core-executable-1.52.0.0"
        },

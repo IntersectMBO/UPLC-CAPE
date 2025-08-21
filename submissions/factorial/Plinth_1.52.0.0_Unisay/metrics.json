@@ -1,15 +1,38 @@
 {
+  "evaluations": [
+    {
+      "cpu_units": 5859917,
+      "description": "Pre-applied factorial(10) should return 3628800 with no input required",
+      "execution_result": "success",
+      "memory_units": 21751,
+      "name": "factorial_10_computation"
+    }
+  ],
   "execution_environment": {
     "evaluator": "PlutusTx.Eval-1.52.0.0"
   },
   "measurements": {
-    "cpu_units": 5859917,
-    "memory_units": 21751,
+    "cpu_units": {
+      "maximum": 5859917,
+      "median": 5859917,
+      "minimum": 5859917,
+      "sum": 5859917,
+      "sum_negative": 0,
+      "sum_positive": 5859917
+    },
+    "memory_units": {
+      "maximum": 21751,
+      "median": 21751,
+      "minimum": 21751,
+      "sum": 21751,
+      "sum_negative": 0,
+      "sum_positive": 21751
+    },
     "script_size_bytes": 37,
     "term_size": 29
   },
-  "notes": "Generated using UPLC-CAPE measure tool",
   "scenario": "factorial",
-  "timestamp": "2025-08-20T15:46:58Z",
-  "version": "1.0.0"
+  "timestamp": "2025-08-21T14:20:13Z",
+  "version": "1.0.0",
+  "notes": "Generated using UPLC-CAPE measure tool"
 }

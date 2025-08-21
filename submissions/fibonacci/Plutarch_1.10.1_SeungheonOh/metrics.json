@@ -1,15 +1,38 @@
 {
+  "evaluations": [
+    {
+      "cpu_units": 159193455218,
+      "description": "Pre-applied fibonacci(25) should return 75025 with no input required",
+      "execution_result": "success",
+      "memory_units": 583897822,
+      "name": "fibonacci_25_computation"
+    }
+  ],
   "execution_environment": {
     "evaluator": "PlutusTx.Eval-1.52.0.0"
   },
   "measurements": {
-    "cpu_units": 159193455218,
-    "memory_units": 583897822,
+    "cpu_units": {
+      "maximum": 159193455218,
+      "median": 159193455218,
+      "minimum": 159193455218,
+      "sum": 159193455218,
+      "sum_negative": 0,
+      "sum_positive": 159193455218
+    },
+    "memory_units": {
+      "maximum": 583897822,
+      "median": 583897822,
+      "minimum": 583897822,
+      "sum": 583897822,
+      "sum_negative": 0,
+      "sum_positive": 583897822
+    },
     "script_size_bytes": 50,
     "term_size": 43
   },
-  "notes": "<optional notes>",
   "scenario": "fibonacci",
-  "timestamp": "2025-08-20T15:47:02Z",
-  "version": "1.0.0"
+  "timestamp": "2025-08-21T14:20:15Z",
+  "version": "1.0.0",
+  "notes": "<optional notes>"
 }

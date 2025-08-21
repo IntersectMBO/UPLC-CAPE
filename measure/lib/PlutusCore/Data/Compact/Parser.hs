@@ -1,5 +1,3 @@
-{-# LANGUAGE OverloadedStrings #-}
-
 -- | Parser for compact BuiltinData text representation
 --
 -- = Grammar (BNF)
@@ -24,7 +22,7 @@
 -- * Constructors: @0()@, @1(42 #cafe)@, @0(1(2()))@
 -- * Lists: @[]@, @[1 2 3]@, @[42 #beef 0()]@
 -- * Maps: @{}@, @{1:42}@, @{#key:0() 42:#value}@
-module App.BuiltinDataParser (
+module PlutusCore.Data.Compact.Parser (
   parseBuiltinDataText,
   parseData,
   ParseError (..),
@@ -33,15 +31,9 @@ module App.BuiltinDataParser (
 
 import Prelude hiding (many)
 
-import Control.Monad (void)
-import Data.ByteString (ByteString)
 import Data.ByteString qualified as BS
 import Data.Char (isHexDigit)
-import Data.Functor (($>))
-import Data.Text (Text)
 import Data.Text qualified as Text
-import Data.Text.Encoding qualified as Text
-import Data.Void (Void)
 import Numeric (readHex)
 import PlutusCore.Data (Data (..))
 import Text.Megaparsec hiding (ParseError)
@@ -51,13 +43,14 @@ import Text.Megaparsec.Char.Lexer qualified as L
 type Parser = Parsec Void Text
 
 newtype ParseError = ParseError (ParseErrorBundle Text Void)
-  deriving (Show, Eq)
+  deriving stock (Show, Eq)
 
 -- | Parse BuiltinData from compact text format
 parseBuiltinDataText :: Text -> Either ParseError Data
-parseBuiltinDataText input = case runParser (sc *> parseData <* eof) "" input of
-  Left err -> Left (ParseError err)
-  Right result -> Right result
+parseBuiltinDataText input =
+  case runParser (sc *> parseData <* eof) "" input of
+    Left err -> Left (ParseError err)
+    Right result -> Right result
 
 -- | Render parse error for display
 renderParseError :: ParseError -> Text
@@ -104,18 +97,19 @@ parseByteString = do
     decodeHex "" = Right BS.empty
     decodeHex hex
       | odd (length hex) = Left "Hex string must have even number of digits"
-      | otherwise = case sequence $ parseHexPair <$> pairs hex of
-          Just bytes -> Right (BS.pack bytes)
-          Nothing -> Left "Invalid hex digits"
+      | otherwise =
+          case mapM parseHexPair (pairs hex) of
+            Just bytes -> Right (BS.pack bytes)
+            Nothing -> Left "Invalid hex digits"
       where
         pairs [] = []
         pairs [_] = error "Impossible: checked for odd length"
         pairs (a : b : rest) = (a, b) : pairs rest
 
         parseHexPair (c1, c2) = do
-          let hex = [c1, c2]
-          case readHex hex of
-            [(n, "")] -> Just (fromIntegral n)
+          let hexPair = [c1, c2]
+          case readHex hexPair of
+            [(n, "")] -> Just (fromIntegral (n :: Integer))
             _ -> Nothing
 
 -- | Parse constructor: tag(args...)

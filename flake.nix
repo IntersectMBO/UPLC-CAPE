@@ -62,35 +62,6 @@
           ];
         };
 
-        # Plinth project configuration
-        plinthProject = pkgs.haskell-nix.cabalProject' {
-          name = "uplc-cape-benchmarks";
-          compiler-nix-name = "ghc966";
-          src = ./plinth;
-          inputMap = {
-            "https://chap.intersectmbo.org/" = CHaP;
-          };
-        };
-
-        # Measure project configuration
-        measureProject = pkgs.haskell-nix.cabalProject' {
-          name = "measure";
-          compiler-nix-name = "ghc966";
-          src = ./measure;
-          inputMap = {
-            "https://chap.intersectmbo.org/" = CHaP;
-          };
-        };
-
-        # Plinth development tools
-        plinthTools = {
-          cabal = plinthProject.tool "cabal" "latest";
-          haskell-language-server = plinthProject.tool "haskell-language-server" "latest";
-        };
-
-        # Measure tool executable
-        measureTool = measureProject.hsPkgs.measure.components.exes.measure;
-
         # UPLC CLI from Plutus repository (musl build)
         uplcMusl = plutus.packages.${system}.musl64-uplc;
         plcMusl = plutus.packages.${system}.musl64-plc;
@@ -203,13 +174,13 @@
             libsodium
             secp256k1
             libblst
-            plinthTools.cabal
-            plinthTools.haskell-language-server
+            cabal-install
+            haskell-language-server
             haskell.compiler.ghc966
             fourmolu
             haskellPackages.cabal-fmt
+            haskellPackages.hlint
             nixfmt-rfc-style
-            measureTool
             uplcMusl
             plcMusl
             pirMusl
@@ -217,6 +188,16 @@
           ];
 
           shellHook = ''
+            # Install log4brains via npx when needed
+            # Create node_modules directory if it doesn't exist
+            [ ! -d "node_modules" ] && mkdir -p node_modules
+
+            # Update cabal indexes and build the `measure` project
+            pushd measure
+            cabal update
+            cabal build all
+            popd
+
             # Display banner using glow for better markdown rendering
             # Resolve repo root so this works when entering the shell from subdirectories
             if command -v git >/dev/null 2>&1; then
@@ -225,16 +206,12 @@
               REPO_ROOT=""
             fi
             if [ -n "$REPO_ROOT" ] && [ -f "$REPO_ROOT/BANNER.md" ]; then
-              glow "$REPO_ROOT/BANNER.md" || true
+              glow -w0 "$REPO_ROOT/BANNER.md" || true
             else
               # Fallback to the flake's BANNER in the Nix store
-              glow "${./BANNER.md}" || true
+               glow -w0 "${./BANNER.md}" || true
             fi
             echo ""
-
-            # Install log4brains via npx when needed
-            # Create node_modules directory if it doesn't exist
-            [ ! -d "node_modules" ] && mkdir -p node_modules
           '';
         };
       }
