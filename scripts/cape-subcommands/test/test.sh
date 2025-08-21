@@ -115,10 +115,6 @@ setup_test_env() {
 cleanup() {
   cape_cleanup_tmpfiles
 
-  # Clean up any test artifacts from main project
-  rm -f "$PROJECT_ROOT/scenarios/test-"* 2> /dev/null || true
-  rm -rf "$PROJECT_ROOT/submissions/*/Test"* 2> /dev/null || true
-
   # Ensure colors are properly set for final output
   cape_apply_color_prefs
 
@@ -157,9 +153,9 @@ main() {
   echo "===================="
   setup_test_env
 
-  # Environment validation - measure tool must be available
+  # Environment validation - measure tool must be buildable via cabal
   test_group "environment requirements" \
-    "measure tool available" "command -v measure" 2 ""
+    "measure tool buildable" "(cd \"$REPO_ROOT/measure\" && cabal build exe:measure)" 30 ""
 
   # Core functionality
   test_group "core commands" \
@@ -228,6 +224,10 @@ main() {
     "submissions dir" "test -d submissions" 2 "" \
     "scripts dir" "test -d scripts" 2 "" \
     "templates exist" "test -d scenarios/TEMPLATE && test -d submissions/TEMPLATE" 2 ""
+
+  # Haskell library tests
+  test_group "Haskell library tests" \
+    "cabal test all" "(cd \"$REPO_ROOT/measure\" && cabal test all)" 60 ""
 
   if [[ -t 1 && -z "${NO_COLOR:-}" ]]; then
     echo -e "\033[0;34mINFO:\033[0m Test suite completed!"

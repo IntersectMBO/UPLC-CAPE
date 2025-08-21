@@ -62,35 +62,6 @@
           ];
         };
 
-        # Plinth project configuration
-        plinthProject = pkgs.haskell-nix.cabalProject' {
-          name = "uplc-cape-benchmarks";
-          compiler-nix-name = "ghc966";
-          src = ./plinth;
-          inputMap = {
-            "https://chap.intersectmbo.org/" = CHaP;
-          };
-        };
-
-        # Measure project configuration
-        measureProject = pkgs.haskell-nix.cabalProject' {
-          name = "measure";
-          compiler-nix-name = "ghc966";
-          src = ./measure;
-          inputMap = {
-            "https://chap.intersectmbo.org/" = CHaP;
-          };
-        };
-
-        # Plinth development tools
-        plinthTools = {
-          cabal = plinthProject.tool "cabal" "latest";
-          haskell-language-server = plinthProject.tool "haskell-language-server" "latest";
-        };
-
-        # Measure tool executable
-        measureTool = measureProject.hsPkgs.measure.components.exes.measure;
-
         # UPLC CLI from Plutus repository (musl build)
         uplcMusl = plutus.packages.${system}.musl64-uplc;
         plcMusl = plutus.packages.${system}.musl64-plc;
@@ -203,13 +174,13 @@
             libsodium
             secp256k1
             libblst
-            plinthTools.cabal
-            plinthTools.haskell-language-server
+            cabal-install
+            haskell-language-server
             haskell.compiler.ghc966
             fourmolu
             haskellPackages.cabal-fmt
+            haskellPackages.hlint
             nixfmt-rfc-style
-            measureTool
             uplcMusl
             plcMusl
             pirMusl
