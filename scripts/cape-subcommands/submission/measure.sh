@@ -35,7 +35,7 @@ check_measure_tool() {
   fi
   if [[ "${VERBOSE:-0}" -eq 1 ]]; then
     cape_info "Building measure tool..."
-    (cd "$PROJECT_ROOT/measure" && cabal build exe:measure) || cape_error "Failed to build measure tool"
+    (cd "$PROJECT_ROOT" && cabal build exe:measure) || cape_error "Failed to build measure tool"
   fi
 }
 
@@ -127,7 +127,7 @@ measure_uplc_file() {
   stdout_tmp="$(cape_mktemp)"
 
   if [[ $VERBOSE -eq 1 ]]; then
-    if ! (cd "$PROJECT_ROOT/measure" && cabal run measure -- -i "$uplc_file" "${tests_flag[@]}" -o "$tmp_raw") 2>&1 | tee "$stdout_tmp"; then
+    if ! (cd "$PROJECT_ROOT" && cabal run measure -- -i "$uplc_file" "${tests_flag[@]}" -o "$tmp_raw") 2>&1 | tee "$stdout_tmp"; then
       cape_error "✗ Failed to measure UPLC program ($rel_uplc)"
       echo ""
       cape_error "Test execution details:"
@@ -136,7 +136,7 @@ measure_uplc_file() {
       return 1
     fi
   else
-    if ! (cd "$PROJECT_ROOT/measure" && cabal run measure -- -i "$uplc_file" "${tests_flag[@]}" -o "$tmp_raw") > "$stdout_tmp" 2>&1; then
+    if ! (cd "$PROJECT_ROOT" && cabal run measure -- -i "$uplc_file" "${tests_flag[@]}" -o "$tmp_raw") > "$stdout_tmp" 2>&1; then
       cape_error "✗ Failed to measure UPLC program ($rel_uplc)"
       echo ""
       cape_error "Test execution details:"
