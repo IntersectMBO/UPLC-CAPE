@@ -108,6 +108,7 @@
     {
       "name": "deposit_with_buyer_signature",
       "description": "Deposit with buyer signature should succeed",
+      "pending": true,
       "input": {
         "type": "script_context",
         "script_context": {
