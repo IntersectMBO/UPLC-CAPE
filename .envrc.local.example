@@ -1,0 +1,16 @@
+# Example local environment configuration
+# Copy this to .envrc.local and customize as needed
+# .envrc.local is ignored by git and won't be committed
+
+# Example: Set custom environment variables
+# export CAPE_VERBOSE=1
+# export CUSTOM_VAR=value
+
+# Example: Add additional paths
+# PATH_add ~/my-custom-tools
+
+# Example: Set cachix configuration
+# export CACHIX_AUTH_TOKEN=your_token_here
+
+# Example: Override default settings
+# export CAPE_DEFAULT_SCENARIO=fibonacci

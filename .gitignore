@@ -5,3 +5,4 @@ dist-newstyle/
 plinth/*.uplc
 *.local.md
 .hspec-failures
+.envrc.local
