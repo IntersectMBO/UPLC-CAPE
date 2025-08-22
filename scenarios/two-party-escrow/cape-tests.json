@@ -3,11 +3,11 @@
   "description": "Test cases for two-party escrow smart contract validator",
   "tests": [
     {
-      "name": "redeemer_integer_0",
-      "description": "Validator fails when redeemer is integer 0 (not 1, 2, or 3)",
+      "name": "redeemer_integer_3",
+      "description": "Validator fails when redeemer is integer 3 (not 0, 1, or 2)",
       "input": {
         "type": "builtin_data",
-        "value": "0"
+        "value": "3"
       },
       "expected": {
         "type": "error"
@@ -15,7 +15,7 @@
     },
     {
       "name": "redeemer_integer_4",
-      "description": "Validator fails when redeemer is integer 4 (outside valid range)",
+      "description": "Validator fails when redeemer is integer 4 (not 0, 1, or 2)",
       "input": {
         "type": "builtin_data",
         "value": "4"
@@ -26,7 +26,7 @@
     },
     {
       "name": "redeemer_integer_99",
-      "description": "Validator fails when redeemer is integer 99 (arbitrary high number)",
+      "description": "Validator fails when redeemer is integer 99 (not 0, 1, or 2)",
       "input": {
         "type": "builtin_data",
         "value": "99"
@@ -37,7 +37,7 @@
     },
     {
       "name": "redeemer_integer_negative_1",
-      "description": "Validator fails when redeemer is negative integer -1",
+      "description": "Validator fails when redeemer is integer -1 (not 0, 1, or 2)",
       "input": {
         "type": "builtin_data",
         "value": "-1"
