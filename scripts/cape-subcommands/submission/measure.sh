@@ -126,8 +126,11 @@ measure_uplc_file() {
   tmp_raw="$(cape_mktemp)"
   stdout_tmp="$(cape_mktemp)"
 
+  local measure_cmd
+  measure_cmd="$(cape_measure_binary)"
+
   if [[ $VERBOSE -eq 1 ]]; then
-    if ! (cd "$PROJECT_ROOT" && cabal run measure -- -i "$uplc_file" "${tests_flag[@]}" -o "$tmp_raw" 2> /dev/null) 2>&1 | tee "$stdout_tmp"; then
+    if ! (cd "$PROJECT_ROOT" && $measure_cmd -i "$uplc_file" "${tests_flag[@]}" -o "$tmp_raw" 2> /dev/null) 2>&1 | tee "$stdout_tmp"; then
       cape_error "✗ Failed to measure UPLC program ($rel_uplc)"
       echo ""
       cape_error "Test execution details:"
@@ -136,7 +139,7 @@ measure_uplc_file() {
       return 1
     fi
   else
-    if ! (cd "$PROJECT_ROOT" && cabal run measure -- -i "$uplc_file" "${tests_flag[@]}" -o "$tmp_raw" 2> /dev/null) > "$stdout_tmp" 2>&1; then
+    if ! (cd "$PROJECT_ROOT" && $measure_cmd -i "$uplc_file" "${tests_flag[@]}" -o "$tmp_raw" 2> /dev/null) > "$stdout_tmp" 2>&1; then
       cape_error "✗ Failed to measure UPLC program ($rel_uplc)"
       echo ""
       cape_error "Test execution details:"

@@ -201,11 +201,9 @@
             # Create node_modules directory if it doesn't exist
             [ ! -d "node_modules" ] && mkdir -p node_modules
 
-            # Update cabal indexes and build the `measure` project
-            pushd measure
+            # Update cabal indexes and build the measure executable
             cabal update
-            cabal build all
-            popd
+            cabal build exe:measure
 
             # Display banner using glow for better markdown rendering
             # Resolve repo root so this works when entering the shell from subdirectories

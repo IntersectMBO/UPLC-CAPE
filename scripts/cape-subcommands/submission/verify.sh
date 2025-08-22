@@ -111,36 +111,62 @@ verify_submission_dir() {
   tmp_metrics="$(cape_mktemp)"
   tmp_stdout="$(cape_mktemp)"
 
-  local measure_rc=0
+  local measure_cmd
+  measure_cmd="$(cape_measure_binary)"
+
+  local measure_rc
   if [[ $VERBOSE -eq 1 ]]; then
-    if ! (cd "$PROJECT_ROOT" && cabal run measure -- -i "$uplc_file" "${tests_flag[@]}" -o "$tmp_metrics" 2> /dev/null) | tee "$tmp_stdout"; then
-      measure_rc=$?
+    if (cd "$PROJECT_ROOT" && $measure_cmd -i "$uplc_file" "${tests_flag[@]}" -o "$tmp_metrics" 2> /dev/null) | tee "$tmp_stdout"; then
+      measure_rc=0
+    else
+      measure_rc=1
     fi
   else
-    if ! (cd "$PROJECT_ROOT" && cabal run measure -- -i "$uplc_file" "${tests_flag[@]}" -o "$tmp_metrics" 2> /dev/null) > "$tmp_stdout"; then
-      measure_rc=$?
+    if (cd "$PROJECT_ROOT" && $measure_cmd -i "$uplc_file" "${tests_flag[@]}" -o "$tmp_metrics" 2> /dev/null) > "$tmp_stdout"; then
+      measure_rc=0
+    else
+      measure_rc=1
     fi
   fi
 
   case "$measure_rc" in
     0)
       cape_success "✓ UPLC code evaluates as expected."
+      # Only update metrics.json when measurement succeeds
       ;;
     1)
+      # Display detailed test failure information
+      if [[ -f "$tmp_stdout" && -s "$tmp_stdout" ]]; then
+        echo
+        cat "$tmp_stdout"
+        echo
+      fi
       cape_error "✗ UPLC code evaluation failed."
       return 1
       ;;
     2)
+      # Display detailed parse error information
+      if [[ -f "$tmp_stdout" && -s "$tmp_stdout" ]]; then
+        echo
+        cat "$tmp_stdout"
+        echo
+      fi
       cape_error "UPLC parse error or malformed input"
       return 1
       ;;
     *)
+      # Display any available output for unexpected errors
+      if [[ -f "$tmp_stdout" && -s "$tmp_stdout" ]]; then
+        echo
+        cat "$tmp_stdout"
+        echo
+      fi
       cape_error "✗ UPLC code evaluation failed with unexpected error."
       return 1
       ;;
   esac
 
-  # Write/merge metrics.json
+  # Write/merge metrics.json - only reached when measure_rc=0
   local metrics_out="$submission_dir/metrics.json"
   local evaluator
   evaluator=$(grep -E '^Evaluator:' "$tmp_stdout" | sed -E 's/^Evaluator: *//') || true
