@@ -185,6 +185,15 @@
             plcMusl
             pirMusl
             plutusMusl
+
+            # HLS wrapper scripts for GHC 9.6.6 compatibility
+            (writeShellScriptBin "haskell-language-server-wrapper" ''
+              exec ${pkgs.haskell.packages.ghc966.haskell-language-server}/bin/haskell-language-server "$@"
+            '')
+
+            (writeShellScriptBin "haskell-language-server-9.6.6" ''
+              exec ${pkgs.haskell.packages.ghc966.haskell-language-server}/bin/haskell-language-server "$@"
+            '')
           ];
 
           shellHook = ''
