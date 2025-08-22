@@ -1,0 +1,18 @@
+{
+  "comment": "PlutusTx compilation configuration for Two-Party Escrow benchmark",
+  "optimization_flags": ["conservative-optimisation", "remove-trace"],
+  "compiler_settings": {
+    "target_version": "1.1.0",
+    "strictness": false,
+    "specialise": false,
+    "spec_constr": false,
+    "unbox_strict_fields": false,
+    "unbox_small_strict_fields": false
+  },
+  "build_environment": {
+    "ghc_version": "9.6.6",
+    "cabal_version": "3.4",
+    "nix_environment": true,
+    "plutus_commit": "800c67d38d01177fd0a36d01aa23ff7fea7bd1ba"
+  }
+}

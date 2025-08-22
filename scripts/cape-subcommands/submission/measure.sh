@@ -127,14 +127,27 @@ measure_uplc_file() {
   stdout_tmp="$(cape_mktemp)"
 
   if [[ $VERBOSE -eq 1 ]]; then
-    if ! (cd "$PROJECT_ROOT/measure" && cabal run measure -- -i "$uplc_file" "${tests_flag[@]}" -o "$tmp_raw") | tee "$stdout_tmp"; then
+    if ! (cd "$PROJECT_ROOT/measure" && cabal run measure -- -i "$uplc_file" "${tests_flag[@]}" -o "$tmp_raw") 2>&1 | tee "$stdout_tmp"; then
       cape_error "✗ Failed to measure UPLC program ($rel_uplc)"
+      echo ""
+      cape_error "Test execution details:"
+      cat "$stdout_tmp" | grep -E "Running test:|✓ PASS|✗ FAIL|Error:" | sed 's/^/  /'
       rm -f "$tmp_raw" "$stdout_tmp" || true
       return 1
     fi
   else
-    if ! (cd "$PROJECT_ROOT/measure" && cabal run measure -- -i "$uplc_file" "${tests_flag[@]}" -o "$tmp_raw") > "$stdout_tmp"; then
+    if ! (cd "$PROJECT_ROOT/measure" && cabal run measure -- -i "$uplc_file" "${tests_flag[@]}" -o "$tmp_raw") > "$stdout_tmp" 2>&1; then
       cape_error "✗ Failed to measure UPLC program ($rel_uplc)"
+      echo ""
+      cape_error "Test execution details:"
+      cat "$stdout_tmp" | grep -E "Running test:|✓ PASS|✗ FAIL|Error:|Test results:" | sed 's/^/  /'
+      echo ""
+      cape_error "Hint: Check test data format if you see parse errors. BuiltinData uses:"
+      cape_error "  - Integers: 42, -123"
+      cape_error "  - ByteStrings: #deadbeef"
+      cape_error "  - Constructors: 0(), 1(42 #cafe)"
+      cape_error "  - Lists: [1 2 3]"
+      cape_error "  - Maps: {1:42}"
       rm -f "$tmp_raw" "$stdout_tmp" || true
       return 1
     fi

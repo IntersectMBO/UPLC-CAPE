@@ -188,6 +188,7 @@
                     <th class="numeric">Memory Units</th>
                     <th class="numeric">Script Size (bytes)</th>
                     <th class="numeric">Term Size (nodes)</th>
+                    <th>Source</th>
                     <th>UPLC</th>
                 </tr>
             </thead>
@@ -201,6 +202,7 @@
                     <td class="numeric">{{.memory_units}}</td>
                     <td class="numeric">{{.script_size}}</td>
                     <td class="numeric">{{.term_size}}</td>
+                    <td><a href="https://github.com/IntersectMBO/UPLC-CAPE/blob/main/submissions/{{$.benchmark}}/{{.submission_dir}}/source/README.md" target="_blank" rel="noopener">📁</a></td>
                     <td><a href="https://github.com/IntersectMBO/UPLC-CAPE/blob/main/submissions/{{$.benchmark}}/{{.submission_dir}}/{{$.benchmark}}.uplc" target="_blank" rel="noopener">🔗</a></td>
                 </tr>
 {{end}}            </tbody>
