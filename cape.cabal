@@ -1,0 +1,166 @@
+cabal-version: 3.4
+name:          cape
+version:       1.0.0
+synopsis:      UPLC-CAPE benchmark framework and measurement tools
+description:
+  The UPLC-CAPE (Untyped Plutus Core - Comparative Artifact Performance Evaluation)
+  framework provides tools for benchmarking and measuring UPLC smart contract
+  performance across different compilers. This package includes measurement tools,
+  benchmark implementations using Plinth (PlutusTx), and test suites.
+
+author:        UPLC-CAPE Project
+maintainer:    UPLC-CAPE Project
+category:      Blockchain
+license:       Apache-2.0
+
+common common-deps
+  build-depends:
+    , aeson
+    , aeson-pretty
+    , base               >=4.16
+    , bytestring
+    , flat
+    , plutus-core        >=1.52
+    , plutus-ledger-api  >=1.52
+    , plutus-tx          >=1.52
+    , plutus-tx-plugin   >=1.52
+    , relude             ^>=1.2.2
+    , serialise
+    , text
+    , time
+
+common common-language
+  import:             common-deps
+  ghc-options:
+    -Wall -Wcompat -Wincomplete-uni-patterns -Wredundant-constraints
+    -Wmissing-export-lists -Wmissing-deriving-strategies
+    -Wpartial-fields
+
+  default-language:   Haskell2010
+  mixins:
+    base hiding (Prelude),
+    relude (Relude as Prelude)
+
+  default-extensions:
+    BangPatterns
+    BlockArguments
+    DataKinds
+    DeriveAnyClass
+    DeriveGeneric
+    DerivingStrategies
+    FlexibleContexts
+    FlexibleInstances
+    GADTs
+    GeneralizedNewtypeDeriving
+    ImportQualifiedPost
+    LambdaCase
+    MultiParamTypeClasses
+    MultiWayIf
+    NamedFieldPuns
+    NoImplicitPrelude
+    OverloadedStrings
+    PatternSynonyms
+    ScopedTypeVariables
+    Strict
+    TemplateHaskell
+    TypeApplications
+    UndecidableInstances
+    ViewPatterns
+
+-- Core measurement and benchmark library
+library
+  import:          common-language
+  exposed-modules:
+    Cape.Compile
+    Cape.Error
+    Cape.Fixture
+    Cape.PrettyResult
+    Cape.ScriptContextBuilder
+    Cape.Tests
+    Cape.Verify
+    Factorial
+    Fibonacci
+    PlutusCore.Data.Compact.Parser
+    PlutusCore.Data.Compact.Printer
+    TwoPartyEscrow
+
+  build-depends:
+    , aeson
+    , aeson-pretty
+    , bytestring
+    , containers
+    , directory
+    , filepath
+    , flat
+    , megaparsec
+    , mtl
+    , plutus-core
+    , plutus-ledger-api
+    , plutus-tx
+    , plutus-tx-plugin
+    , process
+    , relude
+    , serialise
+    , some
+    , text
+    , time
+
+  hs-source-dirs:  lib
+
+-- UPLC measurement tool
+executable measure
+  import:         common-language
+  main-is:        Main.hs
+  other-modules:  Cape.Cli
+  build-depends:
+    , ansi-terminal
+    , cape
+    , optparse-applicative
+
+  hs-source-dirs: measure-app
+
+-- UPLC-CAPE Plinth submissions generator
+executable plinth-submissions
+  import:         common-language
+  main-is:        Main.hs
+  build-depends:
+    , base
+    , bytestring
+    , cape
+    , mtl
+    , plutus-core
+    , plutus-core:plutus-core-testlib
+    , plutus-ledger-api
+    , plutus-tx
+    , plutus-tx-plugin
+    , plutus-tx:plutus-tx-testlib
+    , text
+
+  hs-source-dirs: plinth-submissions-app
+
+-- Test suite
+test-suite cape-tests
+  import:             common-language
+  type:               exitcode-stdio-1.0
+  main-is:            Spec.hs
+  other-modules:
+    Cape.ScriptContextBuilderSpec
+    Cape.TestsSpec
+    PlutusCore.Data.Compact.ParserSpec
+    PlutusCore.Data.Compact.PrinterSpec
+    TwoPartyEscrowSpec
+
+  build-depends:
+    , aeson
+    , bytestring
+    , cape
+    , containers
+    , hspec
+    , megaparsec
+    , mtl
+    , plutus-tx:plutus-tx-testlib
+    , vector
+
+  hs-source-dirs:     test
+  ghc-options:        -threaded -rtsopts -with-rtsopts=-N
+  build-tool-depends: hspec-discover:hspec-discover
