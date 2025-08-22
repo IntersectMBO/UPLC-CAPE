@@ -228,12 +228,20 @@
     extra-substituters = [
       "https://cache.iog.io"
       "https://cache.zw3rk.com"
+      "https://haskell-language-server.cachix.org"
     ];
     extra-trusted-public-keys = [
       "hydra.iohk.io:f/Ea+s+dFdN+3Y/G+FDgSq+a5NEWhJGzdjvKNGv0/EQ="
       "loony-tools:pr9m4BkM/5/eSTZlkQyRt57Jz7OMBxNSUiMC4FkcNfk="
+      "haskell-language-server.cachix.org-1:juFfHrwkOxqIOZShtC4YC1uT1bBcq2RSvC7OMKx0Nz8="
     ];
     allow-import-from-derivation = true;
     accept-flake-config = true;
+    # Optimize for disk usage in CI environments
+    keep-derivations = false;
+    keep-outputs = false;
+    # Prefer substitutes over building to save disk space
+    substitute = true;
+    builders-use-substitutes = true;
   };
 }
