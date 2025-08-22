@@ -37,8 +37,6 @@ import PlutusTx
 import PlutusTx.Builtins.HasOpaque (stringToBuiltinByteStringHex)
 import PlutusTx.Builtins.Internal (unitval)
 import PlutusTx.Builtins.Internal qualified as BI
-import PlutusTx.Data.List qualified as List
-import PlutusTx.Show (show)
 
 -- | Redeemer constants for documentation
 -- Deposit = 0, Accept = 1, Refund = 2
@@ -57,18 +55,10 @@ twoPartyEscrowValidator scriptContextData =
           case redeemerInt of
             0 ->
               -- Deposit: buyer deposits exactly 75 ADA
-              -- In a real validator, this would check:
-              -- - Buyer signature present
-              -- - Exactly 75 ADA deposited to script
-              -- - Datum updated with deposit timestamp
-              -- check (txSignedBy (scriptContextTxInfo ctx) buyerKeyHash)
-              -- Debug signature information
-              let txInfo = scriptContextTxInfo ctx
-                  signatures = txInfoSignatories txInfo
-                  sigCount = List.length signatures
-               in trace
-                    (show sigCount)
-                    (traceError "Buyer signature missing or invalid")
+              -- Check buyer signature is present
+              if txSignedBy (scriptContextTxInfo ctx) buyerKeyHash
+                then unitval -- Buyer signature present, deposit succeeds
+                else traceError "Buyer signature missing"
             1 ->
               -- Accept: seller accepts payment
               -- In a real validator, this would check:

@@ -113,11 +113,11 @@ verify_submission_dir() {
 
   local measure_rc=0
   if [[ $VERBOSE -eq 1 ]]; then
-    if ! (cd "$PROJECT_ROOT" && cabal run measure -- -i "$uplc_file" "${tests_flag[@]}" -o "$tmp_metrics") | tee "$tmp_stdout"; then
+    if ! (cd "$PROJECT_ROOT" && cabal run measure -- -i "$uplc_file" "${tests_flag[@]}" -o "$tmp_metrics" 2> /dev/null) | tee "$tmp_stdout"; then
       measure_rc=$?
     fi
   else
-    if ! (cd "$PROJECT_ROOT" && cabal run measure -- -i "$uplc_file" "${tests_flag[@]}" -o "$tmp_metrics") > "$tmp_stdout"; then
+    if ! (cd "$PROJECT_ROOT" && cabal run measure -- -i "$uplc_file" "${tests_flag[@]}" -o "$tmp_metrics" 2> /dev/null) > "$tmp_stdout"; then
       measure_rc=$?
     fi
   fi
