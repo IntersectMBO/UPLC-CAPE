@@ -227,7 +227,7 @@ main() {
 
   # Haskell library tests
   test_group "Haskell library tests" \
-    "cabal test all" "(cd \"$REPO_ROOT/measure\" && cabal test all)" 60 ""
+    "cabal test cape-tests" "(cd \"$REPO_ROOT\" && cabal test cape-tests)" 60 ""
 
   if [[ -t 1 && -z "${NO_COLOR:-}" ]]; then
     echo -e "\033[0;34mINFO:\033[0m Test suite completed!"
