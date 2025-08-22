@@ -5,7 +5,7 @@ import Prelude
 import Cape.Cli (Options (..), parseOptions)
 import Cape.Compile (applyPrograms, compileProgram)
 import Cape.Error (MeasureError (..), exitCodeForError, renderMeasureError)
-import Cape.PrettyResult (compareResult, extractPrettyResult)
+import Cape.PrettyResult (compareResult)
 import Cape.Tests (
   ExpectedResult (..),
   InputType (..),
@@ -36,9 +36,42 @@ import PlutusCore.MkPlc qualified as MkPlc
 import PlutusLedgerApi.Common (serialiseCompiledCode)
 import PlutusTx.Code (countAstNodes)
 import PlutusTx.Eval (EvalResult (..), evaluateCompiledCode)
+import System.Console.ANSI (
+  Color (..),
+  ColorIntensity (..),
+  ConsoleLayer (..),
+  SGR (..),
+  hSupportsANSI,
+  setSGR,
+ )
 import System.Exit qualified as Exit
+import System.IO (putChar, stdout)
 import UntypedPlutusCore qualified as UPLC
 import UntypedPlutusCore.Parser qualified as UPLCParser
+
+-- | Colorize text with green for PASS results
+colorizePass :: Text -> IO ()
+colorizePass text = do
+  supportsColor <- hSupportsANSI stdout
+  if supportsColor
+    then do
+      setSGR [SetColor Foreground Vivid Green]
+      putText text
+      setSGR [Reset]
+      putChar '\n'
+    else putTextLn text
+
+-- | Colorize text with red for FAIL results
+colorizeFail :: Text -> IO ()
+colorizeFail text = do
+  supportsColor <- hSupportsANSI stdout
+  if supportsColor
+    then do
+      setSGR [SetColor Foreground Vivid Red]
+      putText text
+      setSGR [Reset]
+      putChar '\n'
+    else putTextLn text
 
 main :: IO ()
 main = do
@@ -53,9 +86,6 @@ main = do
 -- | Run test suite
 runTestSuite :: FilePath -> FilePath -> FilePath -> IO ()
 runTestSuite uplcFile testsFile metricsFile = do
-  putTextLn $ "Running test suite: " <> toText testsFile
-  putTextLn $ "Testing program: " <> toText uplcFile
-
   -- Load test suite
   testSuite <- loadTestSuite testsFile
   let baseDir = getTestBaseDir testsFile
@@ -68,7 +98,6 @@ runTestSuite uplcFile testsFile metricsFile = do
 
   -- Run each test case and collect results and metrics
   testResultsAndMetrics <- forM (tsTests testSuite) \testCase -> do
-    putTextLn $ "\nRunning test: " <> tcName testCase
     runSingleTest program baseDir testSuite testCase
 
   let (testResults, evaluationMetrics) = unzip testResultsAndMetrics
@@ -104,7 +133,8 @@ runSingleTest program baseDir testSuite testCase = do
       -- No input - run program directly
       code <- compileProgram program
       let evalRes = evaluateCompiledCode code
-      testResult <- checkTestResult evalRes (tcExpected testCase) baseDir
+      testResult <-
+        checkTestResult evalRes (tcExpected testCase) baseDir (tcName testCase)
       pure (testResult, evalRes)
     Just testInput -> do
       -- Apply input to program
@@ -112,7 +142,8 @@ runSingleTest program baseDir testSuite testCase = do
       inputProgram <- parseInputProgram (tiType testInput) inputText
       appliedCode <- applyPrograms program inputProgram
       let evalRes = evaluateCompiledCode appliedCode
-      testResult <- checkTestResult evalRes (tcExpected testCase) baseDir
+      testResult <-
+        checkTestResult evalRes (tcExpected testCase) baseDir (tcName testCase)
       pure (testResult, evalRes)
 
   -- Extract metrics from evaluation result
@@ -171,24 +202,18 @@ parseInputProgram inputType inputText =
           pure uplcProgram
 
 -- | Check test result against expected outcome
-checkTestResult :: EvalResult -> ExpectedResult -> FilePath -> IO Bool
-checkTestResult evalRes expectedResult baseDir = do
+checkTestResult :: EvalResult -> ExpectedResult -> FilePath -> Text -> IO Bool
+checkTestResult evalRes expectedResult baseDir testName = do
   expectedContent <- resolveExpectedResult baseDir expectedResult
   let resultType = erType expectedResult
       matches = compareResult evalRes resultType expectedContent
 
   if matches
     then do
-      putTextLn "  ✓ PASS"
+      colorizePass $ "✓ PASS " <> testName
       pure True
     else do
-      putTextLn "  ✗ FAIL"
-      case extractPrettyResult evalRes of
-        Left errMsg -> putTextLn $ "    Actual: ERROR - " <> errMsg
-        Right value -> putTextLn $ "    Actual: " <> value
-      case expectedContent of
-        Nothing -> putTextLn "    Expected: ERROR"
-        Just expected -> putTextLn $ "    Expected: " <> expected
+      colorizeFail $ "✗ FAIL " <> testName
       pure False
 
 -- | Write detailed metrics with per-evaluation data and aggregations

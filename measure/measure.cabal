@@ -109,6 +109,7 @@ executable measure
   main-is:        Main.hs
   other-modules:  Cape.Cli
   build-depends:
+    , ansi-terminal
     , measure
     , optparse-applicative
 
