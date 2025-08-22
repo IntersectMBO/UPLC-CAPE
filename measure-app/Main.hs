@@ -11,6 +11,7 @@ import Cape.Tests (
   TestCase (..),
   TestSuite (..),
   getTestBaseDir,
+  isPendingTest,
   loadTestSuite,
   resolveExpectedResult,
   resolveTestInput,
@@ -71,6 +72,30 @@ colorizeFail text = do
       putChar '\n'
     else putTextLn text
 
+-- | Colorize text with yellow for PENDING results
+colorizePending :: Text -> IO ()
+colorizePending text = do
+  supportsColor <- hSupportsANSI stdout
+  if supportsColor
+    then do
+      setSGR [SetColor Foreground Vivid Yellow]
+      putText text
+      setSGR [Reset]
+      putChar '\n'
+    else putTextLn text
+
+-- | Colorize text with red for PENDING PASSING results (error case)
+colorizePendingPassing :: Text -> IO ()
+colorizePendingPassing text = do
+  supportsColor <- hSupportsANSI stdout
+  if supportsColor
+    then do
+      setSGR [SetColor Foreground Vivid Red]
+      putText text
+      setSGR [Reset]
+      putChar '\n'
+    else putTextLn text
+
 main :: IO ()
 main = do
   Options {optInput, optOutput, optTests} <- parseOptions
@@ -100,23 +125,44 @@ runTestSuite uplcFile testsFile metricsFile = do
 
   let (testResults, evaluationMetrics) = unzip testResultsAndMetrics
 
-  -- Check if all tests passed
+  -- Evaluate test suite with pending support
+  evaluateTestSuite testResults
+
+  -- Write detailed metrics file with per-evaluation data
+  writeDetailedMetrics program evaluationMetrics metricsFile
+
+-- | Evaluate test suite results with pending support
+evaluateTestSuite :: [TestResult] -> IO ()
+evaluateTestSuite results = do
+  let nonPendingTests = filter (not . trPending) results
+      passedNonPending = filter trPassed nonPendingTests
+      pendingTests = filter trPending results
+      pendingPassingTests = filter (\r -> trPending r && trPassed r) results
 
   putTextLn $
     "\nTest results: "
-      <> show (length (filter id testResults))
+      <> show (length passedNonPending)
       <> " of "
-      <> show (length testResults)
+      <> show (length nonPendingTests)
       <> " tests passed"
 
-  if and testResults
+  when (length pendingTests > 0) $
+    putTextLn $
+      "Pending tests: " <> show (length pendingTests) <> " (expected failures)"
+
+  if length pendingPassingTests > 0
     then do
-      putTextLn "All tests passed! ✓"
-      -- Write detailed metrics file with per-evaluation data
-      writeDetailedMetrics program evaluationMetrics metricsFile
-    else do
-      putTextLn "Some tests failed! ✗"
-      E.throwIO (VerificationError "Test suite failed")
+      putTextLn
+        "❌ Some pending tests are now passing! Please remove 'pending: true' from:"
+      forM_ pendingPassingTests $ \r ->
+        putTextLn $ "  - " <> trName r
+      E.throwIO (VerificationError "Pending tests are passing")
+    else
+      if length passedNonPending == length nonPendingTests
+        then
+          putTextLn "✓ All non-pending tests passed!"
+        else
+          E.throwIO (VerificationError "Some tests failed")
 
 -- | Run a single test case
 runSingleTest ::
@@ -124,15 +170,14 @@ runSingleTest ::
   FilePath ->
   TestSuite ->
   TestCase ->
-  IO (Bool, EvaluationMetrics)
+  IO (TestResult, EvaluationMetrics)
 runSingleTest program baseDir testSuite testCase = do
-  (testPassed, evalRes) <- case tcInput testCase of
+  (testResult, evalRes) <- case tcInput testCase of
     Nothing -> do
       -- No input - run program directly
       code <- compileProgram program Nothing
       let evalRes = evaluateCompiledCode code
-      testResult <-
-        checkTestResult evalRes (tcExpected testCase) baseDir (tcName testCase)
+      testResult <- checkTestResult evalRes testCase baseDir
       pure (testResult, evalRes)
     Just testInput -> do
       -- Apply input to validator
@@ -140,14 +185,13 @@ runSingleTest program baseDir testSuite testCase = do
       builtinData <- parseBuiltinDataFromText inputText
       appliedCode <- compileProgram program (Just builtinData)
       let evalRes = evaluateCompiledCode appliedCode
-      testResult <-
-        checkTestResult evalRes (tcExpected testCase) baseDir (tcName testCase)
+      testResult <- checkTestResult evalRes testCase baseDir
       pure (testResult, evalRes)
 
   -- Extract metrics from evaluation result
   let budget = evalResultBudget evalRes
       ExBudget {exBudgetCPU = ExCPU cpu, exBudgetMemory = ExMemory mem} = budget
-      executionResult = if testPassed then "success" else "error"
+      executionResult = if trPassed testResult then "success" else "error"
       description = fromMaybe "" (tcDescription testCase)
 
   let evaluationMetrics =
@@ -159,7 +203,7 @@ runSingleTest program baseDir testSuite testCase = do
           , evalExecutionResult = executionResult
           }
 
-  pure (testPassed, evaluationMetrics)
+  pure (testResult, evaluationMetrics)
 
 -- | Parse BuiltinData from text representation
 parseBuiltinDataFromText :: Text -> IO V3.BuiltinData
@@ -171,18 +215,27 @@ parseBuiltinDataFromText inputText = do
     Right builtinData ->
       pure $ V3.BuiltinData builtinData
 
--- | Check test result against expected outcome
-checkTestResult :: EvalResult -> ExpectedResult -> FilePath -> Text -> IO Bool
-checkTestResult evalRes expectedResult baseDir testName = do
-  expectedContent <- resolveExpectedResult baseDir expectedResult
-  let resultType = erType expectedResult
+-- | Check test result against expected outcome with pending support
+checkTestResult :: EvalResult -> TestCase -> FilePath -> IO TestResult
+checkTestResult evalRes testCase baseDir = do
+  let testName = tcName testCase
+      isPending = isPendingTest testCase
+
+  expectedContent <- resolveExpectedResult baseDir (tcExpected testCase)
+  let resultType = erType (tcExpected testCase)
       matches = compareResult evalRes resultType expectedContent
 
-  if matches
-    then do
+  case (isPending, matches) of
+    (True, False) -> do
+      colorizePending $ "⏳ PENDING " <> testName <> " (expected failure)"
+      pure $ TestResult False True testName
+    (True, True) -> do
+      colorizePendingPassing $ "❌ PENDING PASSING " <> testName
+      pure $ TestResult True True testName -- This will cause suite failure
+    (False, True) -> do
       colorizePass $ "✓ PASS " <> testName
-      pure True
-    else do
+      pure $ TestResult True False testName
+    (False, False) -> do
       colorizeFail $ "✗ FAIL " <> testName
       -- Show evaluation result for debugging
       case extractPrettyResult evalRes of
@@ -191,7 +244,7 @@ checkTestResult evalRes expectedResult baseDir testName = do
       case expectedContent of
         Nothing -> putTextLn "    Expected: ERROR"
         Just expected -> putTextLn $ "    Expected: " <> expected
-      pure False
+      pure $ TestResult False False testName
 
 -- | Write detailed metrics with per-evaluation data and aggregations
 writeDetailedMetrics ::
@@ -248,6 +301,13 @@ writeDetailedMetrics program evaluations metricsFile = do
 
   LBS.writeFile metricsFile $ AesonPretty.encodePretty metrics
   putTextLn $ "Detailed metrics written to " <> toText metricsFile
+
+-- | Test result including pending status
+data TestResult = TestResult
+  { trPassed :: Bool
+  , trPending :: Bool
+  , trName :: Text
+  }
 
 -- | Individual evaluation metrics
 data EvaluationMetrics = EvaluationMetrics

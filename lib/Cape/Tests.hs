@@ -12,6 +12,7 @@ module Cape.Tests (
   resolveTestInput,
   resolveExpectedResult,
   getTestBaseDir,
+  isPendingTest,
 ) where
 
 import Prelude
@@ -44,6 +45,7 @@ data TestSuite = TestSuite
 data TestCase = TestCase
   { tcName :: Text
   , tcDescription :: Maybe Text
+  , tcPending :: Maybe Bool
   , tcInput :: Maybe TestInput
   , tcExpected :: ExpectedResult
   }
@@ -102,6 +104,7 @@ instance FromJSON TestCase where
     TestCase
       <$> o .: "name"
       <*> o .:? "description"
+      <*> o .:? "pending"
       <*> o .:? "input"
       <*> o .: "expected"
 
@@ -200,6 +203,10 @@ resolveExpectedResult _ _ =
 -- | Get base directory for resolving relative file paths
 getTestBaseDir :: FilePath -> FilePath
 getTestBaseDir = takeDirectory
+
+-- | Check if a test case is marked as pending
+isPendingTest :: TestCase -> Bool
+isPendingTest tc = fromMaybe False (tcPending tc)
 
 -- | Resolve @name references in text using data structures map
 resolveReferences :: Map Text Value -> Text -> Text
