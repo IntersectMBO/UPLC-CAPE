@@ -31,11 +31,14 @@ module TwoPartyEscrow (twoPartyEscrowValidatorCode, twoPartyEscrowAcceptCode) wh
 import PlutusTx.Prelude
 
 import PlutusCore.Data qualified as PLC
-import PlutusLedgerApi.V3.Data.Contexts (ScriptContext (..), getRedeemer)
+import PlutusLedgerApi.Data.V3
+import PlutusLedgerApi.V3.Data.Contexts (txSignedBy)
 import PlutusTx
-import PlutusTx.Builtins (unsafeDataAsI)
+import PlutusTx.Builtins.HasOpaque (stringToBuiltinByteStringHex)
 import PlutusTx.Builtins.Internal (unitval)
 import PlutusTx.Builtins.Internal qualified as BI
+import PlutusTx.Data.List qualified as List
+import PlutusTx.Show (show)
 
 -- | Redeemer constants for documentation
 -- Deposit = 0, Accept = 1, Refund = 2
@@ -48,31 +51,42 @@ twoPartyEscrowValidator scriptContextData =
   case fromBuiltinData scriptContextData of
     Nothing -> traceError "Failed to parse ScriptContext"
     Just ctx ->
-      case fromBuiltinData (getRedeemer (scriptContextRedeemer ctx)) of
+      case redeemer ctx of
         Nothing -> traceError "Failed to parse Redeemer"
-        Just redeemerInt -> case redeemerInt of
-          0 ->
-            -- Deposit: buyer deposits exactly 75 ADA
-            -- In a real validator, this would check:
-            -- - Buyer signature present
-            -- - Exactly 75 ADA deposited to script
-            -- - Datum updated with deposit timestamp
-            unitval
-          1 ->
-            -- Accept: seller accepts payment
-            -- In a real validator, this would check:
-            -- - Seller signature present
-            -- - Funds transferred from script to seller
-            -- - Deadline not passed
-            unitval
-          2 ->
-            -- Refund: buyer reclaims after deadline
-            -- In a real validator, this would check:
-            -- - Buyer signature present
-            -- - Deadline has passed
-            -- - Funds returned to buyer
-            unitval
-          _ -> traceError "Invalid redeemer"
+        Just redeemerInt ->
+          case redeemerInt of
+            0 ->
+              -- Deposit: buyer deposits exactly 75 ADA
+              -- In a real validator, this would check:
+              -- - Buyer signature present
+              -- - Exactly 75 ADA deposited to script
+              -- - Datum updated with deposit timestamp
+              -- check (txSignedBy (scriptContextTxInfo ctx) buyerKeyHash)
+              -- Debug signature information
+              let txInfo = scriptContextTxInfo ctx
+                  signatures = txInfoSignatories txInfo
+                  sigCount = List.length signatures
+               in trace
+                    (show sigCount)
+                    (traceError "Buyer signature missing or invalid")
+            1 ->
+              -- Accept: seller accepts payment
+              -- In a real validator, this would check:
+              -- - Seller signature present
+              -- - Funds transferred from script to seller
+              -- - Deadline not passed
+              unitval
+            2 ->
+              -- Refund: buyer reclaims after deadline
+              -- In a real validator, this would check:
+              -- - Buyer signature present
+              -- - Deadline has passed
+              -- - Funds returned to buyer
+              unitval
+            _ -> traceError "Invalid redeemer"
+  where
+    redeemer :: ScriptContext -> Maybe Integer
+    redeemer ctx = fromBuiltinData (getRedeemer (scriptContextRedeemer ctx))
 
 -- | Compiled validator code
 twoPartyEscrowValidatorCode :: CompiledCode (BuiltinData -> BuiltinUnit)
@@ -97,11 +111,12 @@ escrowPrice = 75000000 -- 75 ADA in lovelace
 escrowDeadlineSeconds :: Integer
 escrowDeadlineSeconds = 1800 -- 30 minutes
 
--- | Fixed buyer address
-buyerAddress :: BuiltinByteString
-buyerAddress =
-  stringToBuiltinByteStringHex
-    "a1b2c3d4e5f6789012345678abcdef0123456789abcdef0123456789abcdef01"
+buyerKeyHash :: PubKeyHash
+buyerKeyHash =
+  PubKeyHash
+    ( stringToBuiltinByteStringHex
+        "a1b2c3d4e5f6789012345678abcdef0123456789abcdef0123456789abcdef01"
+    )
 
 -- | Fixed seller address
 sellerAddress :: BuiltinByteString

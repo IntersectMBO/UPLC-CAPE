@@ -3,14 +3,12 @@ module Main (main) where
 import Prelude
 
 import Cape.Cli (Options (..), parseOptions)
-import Cape.Compile (applyPrograms, compileProgram)
+import Cape.Compile (compileProgram)
 import Cape.Error (MeasureError (..), exitCodeForError, renderMeasureError)
-import Cape.PrettyResult (compareResult)
+import Cape.PrettyResult (compareResult, extractPrettyResult)
 import Cape.Tests (
   ExpectedResult (..),
-  InputType (..),
   TestCase (..),
-  TestInput (..),
   TestSuite (..),
   getTestBaseDir,
   loadTestSuite,
@@ -32,8 +30,8 @@ import PlutusCore qualified as PLC
 import PlutusCore.Data.Compact.Parser (parseBuiltinDataText, renderParseError)
 import PlutusCore.Evaluation.Machine.ExBudget (ExBudget (..))
 import PlutusCore.Evaluation.Machine.ExMemory (ExCPU (..), ExMemory (..))
-import PlutusCore.MkPlc qualified as MkPlc
 import PlutusLedgerApi.Common (serialiseCompiledCode)
+import PlutusLedgerApi.V3 qualified as V3
 import PlutusTx.Code (countAstNodes)
 import PlutusTx.Eval (EvalResult (..), evaluateCompiledCode)
 import System.Console.ANSI (
@@ -45,7 +43,7 @@ import System.Console.ANSI (
   setSGR,
  )
 import System.Exit qualified as Exit
-import System.IO (putChar, stdout)
+import System.IO (putChar)
 import UntypedPlutusCore qualified as UPLC
 import UntypedPlutusCore.Parser qualified as UPLCParser
 
@@ -131,16 +129,16 @@ runSingleTest program baseDir testSuite testCase = do
   (testPassed, evalRes) <- case tcInput testCase of
     Nothing -> do
       -- No input - run program directly
-      code <- compileProgram program
+      code <- compileProgram program Nothing
       let evalRes = evaluateCompiledCode code
       testResult <-
         checkTestResult evalRes (tcExpected testCase) baseDir (tcName testCase)
       pure (testResult, evalRes)
     Just testInput -> do
-      -- Apply input to program
+      -- Apply input to validator
       inputText <- resolveTestInput baseDir testSuite testInput
-      inputProgram <- parseInputProgram (tiType testInput) inputText
-      appliedCode <- applyPrograms program inputProgram
+      builtinData <- parseBuiltinDataFromText inputText
+      appliedCode <- compileProgram program (Just builtinData)
       let evalRes = evaluateCompiledCode appliedCode
       testResult <-
         checkTestResult evalRes (tcExpected testCase) baseDir (tcName testCase)
@@ -163,43 +161,15 @@ runSingleTest program baseDir testSuite testCase = do
 
   pure (testPassed, evaluationMetrics)
 
--- | Parse input based on type
-parseInputProgram ::
-  InputType ->
-  Text ->
-  IO (UPLC.Program UPLC.Name PLC.DefaultUni PLC.DefaultFun PLC.SrcSpan)
-parseInputProgram inputType inputText =
-  case inputType of
-    BuiltinData -> do
-      -- Parse BuiltinData using custom parser
-      case parseBuiltinDataText inputText of
-        Left parseErr ->
-          E.throwIO
-            (UPLCParseError "builtin_data_input" (show (renderParseError parseErr)))
-        Right builtinData -> do
-          -- Convert Data to UPLC constant
-          let ann = PLC.SrcSpan "" 1 1 1 1
-              dataConstant = MkPlc.mkConstant ann builtinData
-              uplcProgram = UPLC.Program ann (UPLC.Version 1 1 0) dataConstant
-          pure uplcProgram
-    RawUPLC -> do
-      -- Parse as raw UPLC program
-      case PLC.runQuote (runExceptT (UPLCParser.parseProgram inputText)) of
-        Left err -> E.throwIO (UPLCParseError "raw_uplc_input" (show err))
-        Right prog -> pure prog
-    ScriptContext -> do
-      -- Script context input is already converted to BuiltinData text representation
-      -- by resolveTestInput, so parse it as BuiltinData
-      case parseBuiltinDataText inputText of
-        Left parseErr ->
-          E.throwIO
-            (UPLCParseError "builtin_data_input" (show (renderParseError parseErr)))
-        Right builtinData -> do
-          -- Convert Data to UPLC constant
-          let ann = PLC.SrcSpan "" 1 1 1 1
-              dataConstant = MkPlc.mkConstant ann builtinData
-              uplcProgram = UPLC.Program ann (UPLC.Version 1 1 0) dataConstant
-          pure uplcProgram
+-- | Parse BuiltinData from text representation
+parseBuiltinDataFromText :: Text -> IO V3.BuiltinData
+parseBuiltinDataFromText inputText = do
+  case parseBuiltinDataText inputText of
+    Left parseErr ->
+      E.throwIO
+        (UPLCParseError "builtin_data_input" (show (renderParseError parseErr)))
+    Right builtinData ->
+      pure $ V3.BuiltinData builtinData
 
 -- | Check test result against expected outcome
 checkTestResult :: EvalResult -> ExpectedResult -> FilePath -> Text -> IO Bool
@@ -214,6 +184,13 @@ checkTestResult evalRes expectedResult baseDir testName = do
       pure True
     else do
       colorizeFail $ "✗ FAIL " <> testName
+      -- Show evaluation result for debugging
+      case extractPrettyResult evalRes of
+        Left errMsg -> putTextLn $ "    Error: " <> errMsg
+        Right value -> putTextLn $ "    Actual: " <> value
+      case expectedContent of
+        Nothing -> putTextLn "    Expected: ERROR"
+        Just expected -> putTextLn $ "    Expected: " <> expected
       pure False
 
 -- | Write detailed metrics with per-evaluation data and aggregations
@@ -223,7 +200,7 @@ writeDetailedMetrics ::
   FilePath ->
   IO ()
 writeDetailedMetrics program evaluations metricsFile = do
-  code <- compileProgram program
+  code <- compileProgram program Nothing
   let scriptBytes = SBS.fromShort (serialiseCompiledCode code)
       scriptSize = BS.length scriptBytes
       termSize = countAstNodes code

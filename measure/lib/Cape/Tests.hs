@@ -17,7 +17,6 @@ module Cape.Tests (
 import Prelude
 
 import Cape.ScriptContextBuilder
-import Control.Exception (throwIO)
 import Data.Aeson (FromJSON (..), withObject, (.:), (.:?))
 import Data.Aeson qualified as Json
 import Data.Aeson.Types (Value)
@@ -25,12 +24,13 @@ import Data.ByteString.Lazy qualified as LBS
 import Data.Map qualified as Map
 import Data.Text qualified as Text
 import Data.Text.Encoding qualified as TE
+import PlutusCore.Data.Compact.Parser (parseBuiltinDataText, renderParseError)
 import PlutusCore.Data.Compact.Printer (dataToCompactText)
 import PlutusLedgerApi.V3 qualified as V3
 import PlutusTx.Builtins qualified as Builtins
+import PlutusTx.Builtins.Internal qualified as BI
 import System.Directory (doesFileExist)
 import System.FilePath (takeDirectory, (</>))
-import System.IO.Error (userError)
 
 -- | Test specification data types
 data TestSuite = TestSuite
@@ -154,7 +154,7 @@ loadTestSuite :: FilePath -> IO TestSuite
 loadTestSuite testFile = do
   content <- LBS.readFile testFile
   case Json.eitherDecode content of
-    Left err -> throwIO (userError $ "Failed to parse test file: " <> err)
+    Left err -> die ("Failed to parse test file: " <> err)
     Right suite -> pure suite
 
 -- | Resolve test input with support for script_context type
@@ -165,22 +165,20 @@ resolveTestInput baseDir testSuite testInput =
       let dataStructures = fromMaybe Map.empty (tsDataStructures testSuite)
       resolveScriptContextInput dataStructures spec
     TestInput {tiType = ScriptContext, tiScriptContext = Nothing} ->
-      throwIO
-        (userError "ScriptContext input type requires script_context specification")
+      die "ScriptContext input type requires script_context specification"
     TestInput {tiValue = Just val} -> pure val
     TestInput {tiFile = Just file} -> do
       let fullPath = baseDir </> file
       exists <- doesFileExist fullPath
       if not exists
-        then throwIO (userError $ "Input file not found: " <> fullPath)
+        then die ("Input file not found: " <> fullPath)
         else do
           bs <- readFileBS fullPath
           case decodeUtf8' bs of
-            Left _ -> throwIO (userError $ "Invalid UTF-8 in file: " <> fullPath)
+            Left _ -> die ("Invalid UTF-8 in file: " <> fullPath)
             Right t -> pure t
     _ ->
-      throwIO
-        (userError "Test input must have either 'value', 'file', or 'script_context'")
+      die "Test input must have either 'value', 'file', or 'script_context'"
 
 -- | Resolve file references in expected result
 resolveExpectedResult :: FilePath -> ExpectedResult -> IO (Maybe Text)
@@ -190,48 +188,67 @@ resolveExpectedResult baseDir ExpectedResult {erFile = Just file} = do
   let fullPath = baseDir </> file
   exists <- doesFileExist fullPath
   if not exists
-    then throwIO (userError $ "Expected result file not found: " <> fullPath)
+    then die ("Expected result file not found: " <> fullPath)
     else do
       bs <- readFileBS fullPath
       case decodeUtf8' bs of
-        Left _ -> throwIO (userError $ "Invalid UTF-8 in file: " <> fullPath)
+        Left _ -> die ("Invalid UTF-8 in file: " <> fullPath)
         Right t -> pure (Just t)
 resolveExpectedResult _ _ =
-  throwIO
-    ( userError "Expected result of type 'value' must have either 'content' or 'file'"
-    )
+  die "Expected result of type 'value' must have either 'content' or 'file'"
 
 -- | Get base directory for resolving relative file paths
 getTestBaseDir :: FilePath -> FilePath
 getTestBaseDir = takeDirectory
 
 -- | Resolve @name references in text using data structures map
-resolveReferences :: Map.Map Text.Text Value -> Text.Text -> Text.Text
+resolveReferences :: Map Text Value -> Text -> Text
 resolveReferences dataStructures text
   | Text.isPrefixOf "@" text && Text.length text > 1 =
       let refName = Text.drop 1 text
        in case Map.lookup refName dataStructures of
             Just (Json.String val) -> val
-            Just _val -> error (toText ("Reference @" <> Text.unpack refName <> " is not a string"))
+            Just _val ->
+              error
+                ( toText
+                    ( "Reference @"
+                        <> Text.unpack refName
+                        <> " is not a string"
+                    )
+                )
             Nothing ->
               error
-                ( toText ("Reference @" <> Text.unpack refName <> " not found in data_structures")
+                ( toText
+                    ( "Reference @"
+                        <> Text.unpack refName
+                        <> " not found in data_structures"
+                    )
                 )
   | otherwise = text
 
 -- | Convert PatchOperationSpec to PatchOperation with reference resolution
 convertPatchOperation ::
-  Map.Map Text.Text Value -> PatchOperationSpec -> IO PatchOperation
+  Map Text Value -> PatchOperationSpec -> IO PatchOperation
 convertPatchOperation dataStructures spec =
   case spec of
     AddSignatureSpec pubKeyHashText -> do
       let resolvedText = resolveReferences dataStructures pubKeyHashText
           pubKeyHashBytes = Builtins.toBuiltin (TE.encodeUtf8 resolvedText)
       pure $ AddSignature (V3.PubKeyHash pubKeyHashBytes)
-    SetRedeemerSpec _redeemerValue -> do
-      -- Convert JSON Value to Redeemer - for now just use unit as placeholder
-      -- TODO: Implement proper JSON Value to BuiltinData conversion
-      pure $ SetRedeemer (V3.Redeemer (V3.toBuiltinData ()))
+    SetRedeemerSpec redeemerValue -> do
+      -- Convert JSON Value to BuiltinData (expects string with builtin data encoding)
+      case redeemerValue of
+        Json.String dataText ->
+          case parseBuiltinDataText dataText of
+            Left parseErr ->
+              die
+                ( "Failed to parse redeemer BuiltinData: "
+                    <> show (renderParseError parseErr)
+                )
+            Right builtinData ->
+              pure $ SetRedeemer (V3.Redeemer (BI.BuiltinData builtinData))
+        other ->
+          die ("Redeemer must be a string with BuiltinData encoding, got: " <> show other)
     SetSpendingUTXOSpec txIdText txIndex -> do
       let resolvedTxId = resolveReferences dataStructures txIdText
           txIdBytes = Builtins.toBuiltin (TE.encodeUtf8 resolvedTxId)
@@ -243,18 +260,17 @@ convertPatchOperation dataStructures spec =
 
 -- | Convert ScriptContextSpec to ScriptContextBuilder with reference resolution
 convertScriptContextSpec ::
-  Map.Map Text.Text Value -> ScriptContextSpec -> IO ScriptContextBuilder
+  Map Text Value -> ScriptContextSpec -> IO ScriptContextBuilder
 convertScriptContextSpec dataStructures ScriptContextSpec {scsBaseline, scsPatches} = do
   convertedPatches <- mapM (convertPatchOperation dataStructures) scsPatches
   pure $ ScriptContextBuilder scsBaseline convertedPatches
 
 -- | Resolve script context input and convert to BuiltinData text
-resolveScriptContextInput ::
-  Map.Map Text.Text Value -> ScriptContextSpec -> IO Text.Text
+resolveScriptContextInput :: Map Text Value -> ScriptContextSpec -> IO Text
 resolveScriptContextInput dataStructures spec = do
   builder <- convertScriptContextSpec dataStructures spec
   case buildScriptContext builder of
-    Left err -> throwIO (userError $ "Failed to build ScriptContext: " <> show err)
+    Left err -> die ("Failed to build ScriptContext: " <> show err)
     Right scriptContext -> do
       let builtinData = V3.toBuiltinData scriptContext
           -- Convert BuiltinData to PlutusCore.Data

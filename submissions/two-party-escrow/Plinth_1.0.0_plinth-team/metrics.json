@@ -1,6 +1,86 @@
 {
-  "cpu_units": 541510,
-  "memory_units": 2734,
-  "script_size_bytes": 46,
-  "term_size": 36
+  "evaluations": [
+    {
+      "cpu_units": 125510,
+      "description": "Validator fails when redeemer is integer 3 (not 0, 1, or 2)",
+      "execution_result": "success",
+      "memory_units": 134,
+      "name": "redeemer_integer_3"
+    },
+    {
+      "cpu_units": 125510,
+      "description": "Validator fails when redeemer is integer 4 (not 0, 1, or 2)",
+      "execution_result": "success",
+      "memory_units": 134,
+      "name": "redeemer_integer_4"
+    },
+    {
+      "cpu_units": 125510,
+      "description": "Validator fails when redeemer is integer 99 (not 0, 1, or 2)",
+      "execution_result": "success",
+      "memory_units": 134,
+      "name": "redeemer_integer_99"
+    },
+    {
+      "cpu_units": 125510,
+      "description": "Validator fails when redeemer is integer -1 (not 0, 1, or 2)",
+      "execution_result": "success",
+      "memory_units": 134,
+      "name": "redeemer_integer_negative_1"
+    },
+    {
+      "cpu_units": 125510,
+      "description": "Validator fails when redeemer is constructor instead of integer",
+      "execution_result": "success",
+      "memory_units": 134,
+      "name": "redeemer_constructor_0"
+    },
+    {
+      "cpu_units": 125510,
+      "description": "Validator fails when redeemer is bytestring instead of integer",
+      "execution_result": "success",
+      "memory_units": 134,
+      "name": "redeemer_bytestring"
+    },
+    {
+      "cpu_units": 125510,
+      "description": "Validator fails when redeemer is list [1,2,3] instead of integer",
+      "execution_result": "success",
+      "memory_units": 134,
+      "name": "redeemer_list_with_integers"
+    },
+    {
+      "cpu_units": 125510,
+      "description": "Validator fails when redeemer is map instead of integer",
+      "execution_result": "success",
+      "memory_units": 134,
+      "name": "redeemer_map_with_data"
+    }
+  ],
+  "execution_environment": {
+    "evaluator": "PlutusTx.Eval-1.52.0.0"
+  },
+  "measurements": {
+    "cpu_units": {
+      "maximum": 125510,
+      "median": 125510,
+      "minimum": 125510,
+      "sum": 1004080,
+      "sum_negative": 0,
+      "sum_positive": 1004080
+    },
+    "memory_units": {
+      "maximum": 134,
+      "median": 134,
+      "minimum": 134,
+      "sum": 1072,
+      "sum_negative": 0,
+      "sum_positive": 1072
+    },
+    "script_size_bytes": 46,
+    "term_size": 36
+  },
+  "scenario": "unknown",
+  "timestamp": "2025-08-22T13:22:45Z",
+  "version": "1.0.0"
 }
