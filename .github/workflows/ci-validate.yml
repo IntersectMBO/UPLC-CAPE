@@ -37,24 +37,32 @@ jobs:
           echo "Available space for /nix: $(df /nix | tail -1 | awk '{print $4}')"
 
       - name: Build Nix dev shell
+        env:
+          GITHUB_ACTIONS: "true"
         run: |
           echo "=== Building dev shell derivation ==="
-          nix build --accept-flake-config .#devShells.x86_64-linux.default
+          nix build --impure --accept-flake-config .#devShells.x86_64-linux.default
 
       - name: Warm up Nix dev shell (test command execution)
+        env:
+          GITHUB_ACTIONS: "true"
         run: |
           echo "=== Testing dev shell execution ==="
-          nix develop --accept-flake-config --command cape --help > /dev/null
+          nix develop --impure --accept-flake-config --command cape --help > /dev/null
 
       - name: Verify all submissions
+        env:
+          GITHUB_ACTIONS: "true"
         run: |
           echo "=== Running submission verification ==="
-          nix develop --accept-flake-config --command cape submission verify --all
+          nix develop --impure --accept-flake-config --command cape submission verify --all
 
       - name: Run test suite
+        env:
+          GITHUB_ACTIONS: "true"
         run: |
           echo "=== Running test suite ==="
-          nix develop --accept-flake-config --command cape test
+          nix develop --impure --accept-flake-config --command cape test
 
       - name: Final disk space check
         if: always()

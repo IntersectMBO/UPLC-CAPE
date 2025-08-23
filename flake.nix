@@ -62,139 +62,147 @@
           ];
         };
 
+        # Check if we're in CI environment to exclude heavy dependencies
+        isCI = builtins.getEnv "GITHUB_ACTIONS" == "true";
+
         # UPLC CLI from Plutus repository (musl build)
         uplcMusl = plutus.packages.${system}.musl64-uplc;
         plcMusl = plutus.packages.${system}.musl64-plc;
         pirMusl = plutus.packages.${system}.musl64-pir;
         plutusMusl = plutus.packages.${system}.musl64-plutus;
-      in
-      {
-        devShells.default = pkgs.mkShell {
-          buildInputs = with pkgs; [
-            # Core development tools
-            git
 
-            # Formatting tools
-            treefmt
-            shfmt # Shell script formatter
-            nodePackages.prettier # YAML, Markdown, and more
+        # Base shell with all development tools
+        baseShell = pkgs.mkShell {
+          buildInputs =
+            with pkgs;
+            [
+              # Core development tools
+              git
 
-            # Documentation and ADR tools
-            nodejs_20 # Required for log4brains
+              # Formatting tools
+              treefmt
+              shfmt # Shell script formatter
+              nodePackages.prettier # YAML, Markdown, and more
 
-            # ADR command wrapper
-            (writeShellScriptBin "adr" ''
-              case "$1" in
-                "new"|"n")
-                  shift
-                  npx log4brains adr new "$@"
-                  ;;
-                "preview"|"p")
-                  shift
-                  npx log4brains preview "$@"
-                  ;;
-                "build"|"b")
-                  shift
-                  npx log4brains build "$@"
-                  ;;
-                "init"|"i")
-                  shift
-                  npx log4brains init "$@"
-                  ;;
-                "help"|"h"|"--help"|"-h")
-                  echo "ADR (Architecture Decision Records) Tool"
-                  echo ""
-                  echo "Usage: adr <command> [options]"
-                  echo ""
-                  echo "Commands:"
-                  echo "  new, n        Create a new ADR"
-                  echo "  preview, p    Preview ADRs in browser"
-                  echo "  build, b      Build static documentation site"
-                  echo "  init, i       Initialize log4brains project"
-                  echo "  help, h       Show this help message"
-                  echo ""
-                  echo "Examples:"
-                  echo "  adr new \"My Decision Title\""
-                  echo "  adr preview"
-                  echo "  adr build --out ./docs"
-                  echo ""
-                  echo "For more options, use: npx log4brains <command> --help"
-                  ;;
-                "")
-                  echo "Error: No command specified"
-                  echo "Run 'adr help' for usage information"
-                  exit 1
-                  ;;
-                *)
-                  echo "Error: Unknown command '$1'"
-                  echo "Run 'adr help' for available commands"
-                  exit 1
-                  ;;
-              esac
-            '')
+              # Documentation and ADR tools
+              nodejs_20 # Required for log4brains
 
-            # Essential utilities
-            just
-            jq
-            tree
+              # ADR command wrapper
+              (writeShellScriptBin "adr" ''
+                case "$1" in
+                  "new"|"n")
+                    shift
+                    npx log4brains adr new "$@"
+                    ;;
+                  "preview"|"p")
+                    shift
+                    npx log4brains preview "$@"
+                    ;;
+                  "build"|"b")
+                    shift
+                    npx log4brains build "$@"
+                    ;;
+                  "init"|"i")
+                    shift
+                    npx log4brains init "$@"
+                    ;;
+                  "help"|"h"|"--help"|"-h")
+                    echo "ADR (Architecture Decision Records) Tool"
+                    echo ""
+                    echo "Usage: adr <command> [options]"
+                    echo ""
+                    echo "Commands:"
+                    echo "  new, n        Create a new ADR"
+                    echo "  preview, p    Preview ADRs in browser"
+                    echo "  build, b      Build static documentation site"
+                    echo "  init, i       Initialize log4brains project"
+                    echo "  help, h       Show this help message"
+                    echo ""
+                    echo "Examples:"
+                    echo "  adr new \"My Decision Title\""
+                    echo "  adr preview"
+                    echo "  adr build --out ./docs"
+                    echo ""
+                    echo "For more options, use: npx log4brains <command> --help"
+                    ;;
+                  "")
+                    echo "Error: No command specified"
+                    echo "Run 'adr help' for usage information"
+                    exit 1
+                    ;;
+                  *)
+                    echo "Error: Unknown command '$1'"
+                    echo "Run 'adr help' for available commands"
+                    exit 1
+                    ;;
+                esac
+              '')
 
-            # Plotting utilities
-            gnuplot
-            bc # Calculator for mathematical operations in shell scripts
+              # Essential utilities
+              just
+              jq
+              tree
 
-            # Template rendering
-            gomplate
+              # Plotting utilities
+              gnuplot
+              bc # Calculator for mathematical operations in shell scripts
 
-            # Markdown rendering in terminal
-            glow
+              # Template rendering
+              gomplate
 
-            # Convenience alias for viewing usage documentation
-            (writeShellScriptBin "usage" ''
-              exec glow USAGE.md
-            '')
+              # Markdown rendering in terminal
+              glow
 
-            # Mermaid CLI for diagram generation
-            mermaid-cli
+              # Convenience alias for viewing usage documentation
+              (writeShellScriptBin "usage" ''
+                exec glow USAGE.md
+              '')
 
-            # JSON Schema validation (required by submission validation script)
-            check-jsonschema
+              # Mermaid CLI for diagram generation
+              mermaid-cli
 
-            # CAPE project management tool
-            (writeShellScriptBin "cape" ''
-              # Prefer repo-local cape.sh when available; fallback to store copy
-              if [ -x "$PWD/scripts/cape.sh" ]; then
-                exec "$PWD/scripts/cape.sh" --project-root "$PWD" "$@"
-              else
-                exec ${./scripts/cape.sh} --project-root "$PWD" "$@"
-              fi
-            '')
+              # JSON Schema validation (required by submission validation script)
+              check-jsonschema
 
-            # --- Additive Plinth / Cardano tooling below (new) ---
-            pkg-config
-            libsodium
-            secp256k1
-            libblst
-            cabal-install
-            haskell-language-server
-            haskell.compiler.ghc966
-            fourmolu
-            haskellPackages.cabal-fmt
-            haskellPackages.hlint
-            nixfmt-rfc-style
-            uplcMusl
-            plcMusl
-            pirMusl
-            plutusMusl
+              # CAPE project management tool
+              (writeShellScriptBin "cape" ''
+                # Prefer repo-local cape.sh when available; fallback to store copy
+                if [ -x "$PWD/scripts/cape.sh" ]; then
+                  exec "$PWD/scripts/cape.sh" --project-root "$PWD" "$@"
+                else
+                  exec ${./scripts/cape.sh} --project-root "$PWD" "$@"
+                fi
+              '')
 
-            # HLS wrapper scripts for GHC 9.6.6 compatibility
-            (writeShellScriptBin "haskell-language-server-wrapper" ''
-              exec ${pkgs.haskell.packages.ghc966.haskell-language-server}/bin/haskell-language-server "$@"
-            '')
+              # --- Additive Plinth / Cardano tooling below (new) ---
+              pkg-config
+              libsodium
+              secp256k1
+              libblst
+              cabal-install
+              haskell.compiler.ghc966
+              fourmolu
+              haskellPackages.cabal-fmt
+              haskellPackages.hlint
+              nixfmt-rfc-style
+              uplcMusl
+              plcMusl
+              pirMusl
+              plutusMusl
+            ]
+            # Include HLS only when not in CI (to avoid disk space exhaustion)
+            ++ pkgs.lib.optionals (!isCI) [
+              haskell-language-server
 
-            (writeShellScriptBin "haskell-language-server-9.6.6" ''
-              exec ${pkgs.haskell.packages.ghc966.haskell-language-server}/bin/haskell-language-server "$@"
-            '')
-          ];
+              # HLS wrapper scripts for GHC 9.6.6 compatibility
+              (writeShellScriptBin "haskell-language-server-wrapper" ''
+                exec ${pkgs.haskell.packages.ghc966.haskell-language-server}/bin/haskell-language-server "$@"
+              '')
+
+              (writeShellScriptBin "haskell-language-server-9.6.6" ''
+                exec ${pkgs.haskell.packages.ghc966.haskell-language-server}/bin/haskell-language-server "$@"
+              '')
+            ];
 
           shellHook = ''
             # Install log4brains via npx when needed
@@ -219,10 +227,18 @@
                glow -w0 "${./BANNER.md}" || true
             fi
 
-            echo "💻 Development Environment: Full toolchain including HLS"
+            # Show environment info (check at runtime)
+            if [ "$GITHUB_ACTIONS" = "true" ]; then
+              echo "🤖 CI Environment: HLS excluded to conserve disk space"
+            else
+              echo "💻 Development Environment: Full toolchain including HLS"
+            fi
             echo ""
           '';
         };
+      in
+      {
+        devShells.default = baseShell;
       }
     );
 
