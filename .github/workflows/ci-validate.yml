@@ -34,19 +34,23 @@ jobs:
           echo "Available space: $(df / | tail -1 | awk '{print $4}')"
 
       - name: Build Nix dev shell (separate from execution)
+        env:
+          # Set environment variables to exclude HLS in CI
+          CI: "true"
+          GITHUB_ACTIONS: "true"
         run: |
           echo "=== Building dev shell derivation ==="
           # Build just the shell first to populate cache, with retries
           for attempt in 1 2 3; do
             echo "Build attempt $attempt..."
-            if nix build --accept-flake-config .#devShells.x86_64-linux.default; then
+            if nix build --impure --accept-flake-config .#devShells.x86_64-linux.default; then
               echo "Build successful on attempt $attempt"
               break
             else
               echo "Build failed on attempt $attempt"
               if [ $attempt -lt 3 ]; then
                 echo "Cleaning up and retrying..."
-                nix store gc --max-freed 2G || true
+                nix store gc || true
                 df -h
                 sleep 5
               else
@@ -63,20 +67,29 @@ jobs:
           echo "Available space: $(df / | tail -1 | awk '{print $4}')"
 
       - name: Warm up Nix dev shell (test command execution)
+        env:
+          CI: "true"
+          GITHUB_ACTIONS: "true"
         run: |
           echo "=== Testing dev shell execution ==="
           # Now test that the built shell works
-          nix develop --accept-flake-config --command cape --help > /dev/null
+          nix develop --impure --accept-flake-config --command cape --help > /dev/null
 
       - name: Verify all submissions
+        env:
+          CI: "true"
+          GITHUB_ACTIONS: "true"
         run: |
           echo "=== Running submission verification ==="
-          nix develop --accept-flake-config --command cape submission verify --all
+          nix develop --impure --accept-flake-config --command cape submission verify --all
 
       - name: Run test suite
+        env:
+          CI: "true"
+          GITHUB_ACTIONS: "true"
         run: |
           echo "=== Running test suite ==="
-          nix develop --accept-flake-config --command cape test
+          nix develop --impure --accept-flake-config --command cape test
 
       - name: Final cleanup and disk space check
         if: always()

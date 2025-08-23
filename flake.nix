@@ -62,6 +62,10 @@
           ];
         };
 
+        # Check if we're in CI environment to exclude heavy dependencies
+        # Note: builtins.getEnv requires --impure flag to access environment variables
+        isCI = builtins.getEnv "CI" == "true" || builtins.getEnv "GITHUB_ACTIONS" == "true";
+
         # UPLC CLI from Plutus repository (musl build)
         uplcMusl = plutus.packages.${system}.musl64-uplc;
         plcMusl = plutus.packages.${system}.musl64-plc;
@@ -70,131 +74,136 @@
       in
       {
         devShells.default = pkgs.mkShell {
-          buildInputs = with pkgs; [
-            # Core development tools
-            git
+          buildInputs =
+            with pkgs;
+            [
+              # Core development tools
+              git
 
-            # Formatting tools
-            treefmt
-            shfmt # Shell script formatter
-            nodePackages.prettier # YAML, Markdown, and more
+              # Formatting tools
+              treefmt
+              shfmt # Shell script formatter
+              nodePackages.prettier # YAML, Markdown, and more
 
-            # Documentation and ADR tools
-            nodejs_20 # Required for log4brains
+              # Documentation and ADR tools
+              nodejs_20 # Required for log4brains
 
-            # ADR command wrapper
-            (writeShellScriptBin "adr" ''
-              case "$1" in
-                "new"|"n")
-                  shift
-                  npx log4brains adr new "$@"
-                  ;;
-                "preview"|"p")
-                  shift
-                  npx log4brains preview "$@"
-                  ;;
-                "build"|"b")
-                  shift
-                  npx log4brains build "$@"
-                  ;;
-                "init"|"i")
-                  shift
-                  npx log4brains init "$@"
-                  ;;
-                "help"|"h"|"--help"|"-h")
-                  echo "ADR (Architecture Decision Records) Tool"
-                  echo ""
-                  echo "Usage: adr <command> [options]"
-                  echo ""
-                  echo "Commands:"
-                  echo "  new, n        Create a new ADR"
-                  echo "  preview, p    Preview ADRs in browser"
-                  echo "  build, b      Build static documentation site"
-                  echo "  init, i       Initialize log4brains project"
-                  echo "  help, h       Show this help message"
-                  echo ""
-                  echo "Examples:"
-                  echo "  adr new \"My Decision Title\""
-                  echo "  adr preview"
-                  echo "  adr build --out ./docs"
-                  echo ""
-                  echo "For more options, use: npx log4brains <command> --help"
-                  ;;
-                "")
-                  echo "Error: No command specified"
-                  echo "Run 'adr help' for usage information"
-                  exit 1
-                  ;;
-                *)
-                  echo "Error: Unknown command '$1'"
-                  echo "Run 'adr help' for available commands"
-                  exit 1
-                  ;;
-              esac
-            '')
+              # ADR command wrapper
+              (writeShellScriptBin "adr" ''
+                case "$1" in
+                  "new"|"n")
+                    shift
+                    npx log4brains adr new "$@"
+                    ;;
+                  "preview"|"p")
+                    shift
+                    npx log4brains preview "$@"
+                    ;;
+                  "build"|"b")
+                    shift
+                    npx log4brains build "$@"
+                    ;;
+                  "init"|"i")
+                    shift
+                    npx log4brains init "$@"
+                    ;;
+                  "help"|"h"|"--help"|"-h")
+                    echo "ADR (Architecture Decision Records) Tool"
+                    echo ""
+                    echo "Usage: adr <command> [options]"
+                    echo ""
+                    echo "Commands:"
+                    echo "  new, n        Create a new ADR"
+                    echo "  preview, p    Preview ADRs in browser"
+                    echo "  build, b      Build static documentation site"
+                    echo "  init, i       Initialize log4brains project"
+                    echo "  help, h       Show this help message"
+                    echo ""
+                    echo "Examples:"
+                    echo "  adr new \"My Decision Title\""
+                    echo "  adr preview"
+                    echo "  adr build --out ./docs"
+                    echo ""
+                    echo "For more options, use: npx log4brains <command> --help"
+                    ;;
+                  "")
+                    echo "Error: No command specified"
+                    echo "Run 'adr help' for usage information"
+                    exit 1
+                    ;;
+                  *)
+                    echo "Error: Unknown command '$1'"
+                    echo "Run 'adr help' for available commands"
+                    exit 1
+                    ;;
+                esac
+              '')
 
-            # Essential utilities
-            just
-            jq
-            tree
+              # Essential utilities
+              just
+              jq
+              tree
 
-            # Plotting utilities
-            gnuplot
-            bc # Calculator for mathematical operations in shell scripts
+              # Plotting utilities
+              gnuplot
+              bc # Calculator for mathematical operations in shell scripts
 
-            # Template rendering
-            gomplate
+              # Template rendering
+              gomplate
 
-            # Markdown rendering in terminal
-            glow
+              # Markdown rendering in terminal
+              glow
 
-            # Convenience alias for viewing usage documentation
-            (writeShellScriptBin "usage" ''
-              exec glow USAGE.md
-            '')
+              # Convenience alias for viewing usage documentation
+              (writeShellScriptBin "usage" ''
+                exec glow USAGE.md
+              '')
 
-            # Mermaid CLI for diagram generation
-            mermaid-cli
+              # Mermaid CLI for diagram generation
+              mermaid-cli
 
-            # JSON Schema validation (required by submission validation script)
-            check-jsonschema
+              # JSON Schema validation (required by submission validation script)
+              check-jsonschema
 
-            # CAPE project management tool
-            (writeShellScriptBin "cape" ''
-              # Prefer repo-local cape.sh when available; fallback to store copy
-              if [ -x "$PWD/scripts/cape.sh" ]; then
-                exec "$PWD/scripts/cape.sh" --project-root "$PWD" "$@"
-              else
-                exec ${./scripts/cape.sh} --project-root "$PWD" "$@"
-              fi
-            '')
+              # CAPE project management tool
+              (writeShellScriptBin "cape" ''
+                # Prefer repo-local cape.sh when available; fallback to store copy
+                if [ -x "$PWD/scripts/cape.sh" ]; then
+                  exec "$PWD/scripts/cape.sh" --project-root "$PWD" "$@"
+                else
+                  exec ${./scripts/cape.sh} --project-root "$PWD" "$@"
+                fi
+              '')
 
-            # --- Additive Plinth / Cardano tooling below (new) ---
-            pkg-config
-            libsodium
-            secp256k1
-            libblst
-            cabal-install
-            haskell-language-server
-            haskell.compiler.ghc966
-            fourmolu
-            haskellPackages.cabal-fmt
-            haskellPackages.hlint
-            nixfmt-rfc-style
-            uplcMusl
-            plcMusl
-            pirMusl
-            plutusMusl
+              # --- Additive Plinth / Cardano tooling below (new) ---
+              pkg-config
+              libsodium
+              secp256k1
+              libblst
+              cabal-install
+              haskell.compiler.ghc966
+              fourmolu
+              haskellPackages.cabal-fmt
+              haskellPackages.hlint
+              nixfmt-rfc-style
+              uplcMusl
+              plcMusl
+              pirMusl
+              plutusMusl
+            ]
+            # Include HLS only when not in CI (to avoid disk space exhaustion)
+            ++ pkgs.lib.optionals (!isCI) [
+              haskell-language-server
 
-            # HLS wrapper scripts for GHC 9.6.6 compatibility
-            (writeShellScriptBin "haskell-language-server-wrapper" ''
-              exec ${pkgs.haskell.packages.ghc966.haskell-language-server}/bin/haskell-language-server "$@"
-            '')
+              # HLS wrapper scripts for GHC 9.6.6 compatibility
+              (writeShellScriptBin "haskell-language-server-wrapper" ''
+                exec ${pkgs.haskell.packages.ghc966.haskell-language-server}/bin/haskell-language-server "$@"
+              '')
 
-            (writeShellScriptBin "haskell-language-server-9.6.6" ''
-              exec ${pkgs.haskell.packages.ghc966.haskell-language-server}/bin/haskell-language-server "$@"
-            '')
-          ];
+              (writeShellScriptBin "haskell-language-server-9.6.6" ''
+                exec ${pkgs.haskell.packages.ghc966.haskell-language-server}/bin/haskell-language-server "$@"
+              '')
+            ];
 
           shellHook = ''
             # Install log4brains via npx when needed
@@ -217,6 +226,13 @@
             else
               # Fallback to the flake's BANNER in the Nix store
                glow -w0 "${./BANNER.md}" || true
+            fi
+
+            # Show environment info (check at runtime)
+            if [ "$CI" = "true" ] || [ "$GITHUB_ACTIONS" = "true" ]; then
+              echo "🤖 CI Environment: HLS excluded to conserve disk space"
+            else
+              echo "💻 Development Environment: Full toolchain including HLS"
             fi
             echo ""
           '';
