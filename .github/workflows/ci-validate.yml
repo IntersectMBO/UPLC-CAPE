@@ -15,6 +15,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Nothing but Nix (reclaim 65-130GB disk space)
+        uses: wimpysworld/nothing-but-nix@main
+
       - name: Install Nix
         uses: cachix/install-nix-action@v27
         with:
@@ -27,74 +30,35 @@ jobs:
           name: uplc-cape
           authToken: ${{ secrets.CACHIX_AUTH_TOKEN }}
 
-      - name: Check initial disk space
+      - name: Check available disk space
         run: |
-          echo "=== Initial Disk Space ==="
+          echo "=== Disk Space After Nothing but Nix ==="
           df -h
-          echo "Available space: $(df / | tail -1 | awk '{print $4}')"
+          echo "Available space for /nix: $(df /nix | tail -1 | awk '{print $4}')"
 
-      - name: Build Nix dev shell (separate from execution)
-        env:
-          # Set environment variables to exclude HLS in CI
-          CI: "true"
-          GITHUB_ACTIONS: "true"
+      - name: Build Nix dev shell
         run: |
           echo "=== Building dev shell derivation ==="
-          # Build just the shell first to populate cache, with retries
-          for attempt in 1 2 3; do
-            echo "Build attempt $attempt..."
-            if nix build --impure --accept-flake-config .#devShells.x86_64-linux.default; then
-              echo "Build successful on attempt $attempt"
-              break
-            else
-              echo "Build failed on attempt $attempt"
-              if [ $attempt -lt 3 ]; then
-                echo "Cleaning up and retrying..."
-                nix store gc || true
-                df -h
-                sleep 5
-              else
-                echo "All build attempts failed"
-                exit 1
-              fi
-            fi
-          done
-
-      - name: Check disk space after build
-        run: |
-          echo "=== Disk Space After Build ==="
-          df -h
-          echo "Available space: $(df / | tail -1 | awk '{print $4}')"
+          nix build --accept-flake-config .#devShells.x86_64-linux.default
 
       - name: Warm up Nix dev shell (test command execution)
-        env:
-          CI: "true"
-          GITHUB_ACTIONS: "true"
         run: |
           echo "=== Testing dev shell execution ==="
-          # Now test that the built shell works
-          nix develop --impure --accept-flake-config --command cape --help > /dev/null
+          nix develop --accept-flake-config --command cape --help > /dev/null
 
       - name: Verify all submissions
-        env:
-          CI: "true"
-          GITHUB_ACTIONS: "true"
         run: |
           echo "=== Running submission verification ==="
-          nix develop --impure --accept-flake-config --command cape submission verify --all
+          nix develop --accept-flake-config --command cape submission verify --all
 
       - name: Run test suite
-        env:
-          CI: "true"
-          GITHUB_ACTIONS: "true"
         run: |
           echo "=== Running test suite ==="
-          nix develop --impure --accept-flake-config --command cape test
+          nix develop --accept-flake-config --command cape test
 
-      - name: Final cleanup and disk space check
+      - name: Final disk space check
         if: always()
         run: |
-          echo "=== Final Cleanup ==="
-          nix store gc || true
           echo "=== Final Disk Space ==="
-          df -h
+          df -h /nix
+          echo "Nix store usage: $(du -sh /nix/store 2>/dev/null || echo 'N/A')"

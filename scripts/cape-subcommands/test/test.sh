@@ -155,7 +155,7 @@ main() {
 
   # Environment validation - measure tool must be buildable via cabal
   test_group "environment requirements" \
-    "measure tool buildable" "(cd \"$REPO_ROOT/measure\" && cabal build exe:measure)" 30 ""
+    "measure tool buildable" "(cd \"$REPO_ROOT\" && cabal build exe:measure)" 30 ""
 
   # Core functionality
   test_group "core commands" \
