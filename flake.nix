@@ -10,6 +10,9 @@
     nixpkgs.follows = "haskell-nix/nixpkgs";
     flake-utils.url = "github:numtide/flake-utils";
 
+    # IOHK devx for pre-cached development environments
+    devx.url = "github:input-output-hk/devx";
+
     # Plutus and Cardano tooling
     hackage = {
       url = "github:input-output-hk/hackage.nix";
@@ -41,6 +44,7 @@
       nixpkgs,
       flake-utils,
       haskell-nix,
+      devx,
       hackage,
       CHaP,
       plutus,
@@ -62,20 +66,17 @@
           ];
         };
 
-        # Check if we're in CI environment to exclude heavy dependencies
-        isCI = builtins.getEnv "GITHUB_ACTIONS" == "true";
-
         # UPLC CLI from Plutus repository (musl build)
         uplcMusl = plutus.packages.${system}.musl64-uplc;
         plcMusl = plutus.packages.${system}.musl64-plc;
         pirMusl = plutus.packages.${system}.musl64-pir;
         plutusMusl = plutus.packages.${system}.musl64-plutus;
 
-        # Base shell with all development tools
-        baseShell = pkgs.mkShell {
+        # Development shell extending devx with UPLC-CAPE specific tools
+        baseShell = devx.devShells.${system}.ghc96-iog-full.overrideAttrs (old: {
           buildInputs =
-            with pkgs;
-            [
+            (old.buildInputs or [ ])
+            ++ (with pkgs; [
               # Core development tools
               git
 
@@ -189,53 +190,38 @@
               plcMusl
               pirMusl
               plutusMusl
-            ]
-            # Include HLS only when not in CI (to avoid disk space exhaustion)
-            ++ pkgs.lib.optionals (!isCI) [
-              haskell-language-server
+            ]);
 
-              # HLS wrapper scripts for GHC 9.6.6 compatibility
-              (writeShellScriptBin "haskell-language-server-wrapper" ''
-                exec ${pkgs.haskell.packages.ghc966.haskell-language-server}/bin/haskell-language-server "$@"
-              '')
+          shellHook =
+            (old.shellHook or "")
+            + ''
+              # Install log4brains via npx when needed
+              # Create node_modules directory if it doesn't exist
+              [ ! -d "node_modules" ] && mkdir -p node_modules
 
-              (writeShellScriptBin "haskell-language-server-9.6.6" ''
-                exec ${pkgs.haskell.packages.ghc966.haskell-language-server}/bin/haskell-language-server "$@"
-              '')
-            ];
+              # Update cabal indexes and build the measure executable
+              cabal update
+              cabal build exe:measure
 
-          shellHook = ''
-            # Install log4brains via npx when needed
-            # Create node_modules directory if it doesn't exist
-            [ ! -d "node_modules" ] && mkdir -p node_modules
+              # Display banner using glow for better markdown rendering
+              # Resolve repo root so this works when entering the shell from subdirectories
+              if command -v git >/dev/null 2>&1; then
+                REPO_ROOT="$(git rev-parse --show-toplevel 2>/dev/null || true)"
+              else
+                REPO_ROOT=""
+              fi
+              if [ -n "$REPO_ROOT" ] && [ -f "$REPO_ROOT/BANNER.md" ]; then
+                glow -w0 "$REPO_ROOT/BANNER.md" || true
+              else
+                # Fallback to the flake's BANNER in the Nix store
+                 glow -w0 "${./BANNER.md}" || true
+              fi
 
-            # Update cabal indexes and build the measure executable
-            cabal update
-            cabal build exe:measure
-
-            # Display banner using glow for better markdown rendering
-            # Resolve repo root so this works when entering the shell from subdirectories
-            if command -v git >/dev/null 2>&1; then
-              REPO_ROOT="$(git rev-parse --show-toplevel 2>/dev/null || true)"
-            else
-              REPO_ROOT=""
-            fi
-            if [ -n "$REPO_ROOT" ] && [ -f "$REPO_ROOT/BANNER.md" ]; then
-              glow -w0 "$REPO_ROOT/BANNER.md" || true
-            else
-              # Fallback to the flake's BANNER in the Nix store
-               glow -w0 "${./BANNER.md}" || true
-            fi
-
-            # Show environment info (check at runtime)
-            if [ "$GITHUB_ACTIONS" = "true" ]; then
-              echo "🤖 CI Environment: HLS excluded to conserve disk space"
-            else
-              echo "💻 Development Environment: Full toolchain including HLS"
-            fi
-            echo ""
-          '';
-        };
+              # Show environment info
+              echo "💻 Development Environment: Full toolchain with devx pre-cached HLS"
+              echo ""
+            '';
+        });
       in
       {
         devShells.default = baseShell;
