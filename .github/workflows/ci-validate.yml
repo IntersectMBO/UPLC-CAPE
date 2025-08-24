@@ -1,4 +1,4 @@
-name: Verify dev tooling and validate submissions
+name: CI
 
 on:
   pull_request:
@@ -9,7 +9,7 @@ permissions:
 
 jobs:
   check:
-    name: Verify dev tooling and validate submissions
+    name: Build and Test
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -27,22 +27,8 @@ jobs:
           name: uplc-cape
           authToken: ${{ secrets.CACHIX_AUTH_TOKEN }}
 
-      - name: Build Nix dev shell
-        run: |
-          echo "=== Building dev shell derivation ==="
-          nix build --impure --accept-flake-config .#devShells.x86_64-linux.default
-
-      - name: Warm up Nix dev shell (test command execution)
-        run: |
-          echo "=== Testing dev shell execution ==="
-          nix develop --impure --accept-flake-config --command cape --help > /dev/null
+      - name: Run test suite
+        run: nix develop --accept-flake-config --command cape test
 
       - name: Verify all submissions
-        run: |
-          echo "=== Running submission verification ==="
-          nix develop --impure --accept-flake-config --command cape submission verify --all
-
-      - name: Run test suite
-        run: |
-          echo "=== Running test suite ==="
-          nix develop --impure --accept-flake-config --command cape test
+        run: nix develop --accept-flake-config --command cape submission verify --all
