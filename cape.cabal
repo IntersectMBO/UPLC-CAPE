@@ -1,11 +1,12 @@
 cabal-version: 3.4
-name:          measure
+name:          cape
 version:       1.0.0
-synopsis:      UPLC measurement tool for CAPE framework
+synopsis:      UPLC-CAPE benchmark framework and measurement tools
 description:
-  A tool for measuring UPLC program performance metrics including
-  CPU units, memory units, script size, and term size for the
-  UPLC-CAPE framework.
+  The UPLC-CAPE (Untyped Plutus Core - Comparative Artifact Performance Evaluation)
+  framework provides tools for benchmarking and measuring UPLC smart contract
+  performance across different compilers. This package includes measurement tools,
+  benchmark implementations using Plinth (PlutusTx), and test suites.
 
 author:        UPLC-CAPE Project
 maintainer:    UPLC-CAPE Project
@@ -25,7 +26,6 @@ common common-deps
     , plutus-tx-plugin   >=1.52
     , relude             ^>=1.2.2
     , serialise
-    , some
     , text
     , time
 
@@ -61,12 +61,13 @@ common common-language
     OverloadedStrings
     PatternSynonyms
     ScopedTypeVariables
+    Strict
     TemplateHaskell
     TypeApplications
     UndecidableInstances
     ViewPatterns
 
--- Core measurement library
+-- Core measurement and benchmark library
 library
   import:          common-language
   exposed-modules:
@@ -77,8 +78,11 @@ library
     Cape.ScriptContextBuilder
     Cape.Tests
     Cape.Verify
+    Factorial
+    Fibonacci
     PlutusCore.Data.Compact.Parser
     PlutusCore.Data.Compact.Printer
+    TwoPartyEscrow
 
   build-depends:
     , aeson
@@ -110,13 +114,32 @@ executable measure
   other-modules:  Cape.Cli
   build-depends:
     , ansi-terminal
-    , measure
+    , cape
     , optparse-applicative
 
-  hs-source-dirs: app
+  hs-source-dirs: measure-app
+
+-- UPLC-CAPE Plinth submissions generator
+executable plinth-submissions
+  import:         common-language
+  main-is:        Main.hs
+  build-depends:
+    , base
+    , bytestring
+    , cape
+    , mtl
+    , plutus-core
+    , plutus-core:plutus-core-testlib
+    , plutus-ledger-api
+    , plutus-tx
+    , plutus-tx-plugin
+    , plutus-tx:plutus-tx-testlib
+    , text
+
+  hs-source-dirs: plinth-submissions-app
 
 -- Test suite
-test-suite measure-tests
+test-suite cape-tests
   import:             common-language
   type:               exitcode-stdio-1.0
   main-is:            Spec.hs
@@ -125,12 +148,17 @@ test-suite measure-tests
     Cape.TestsSpec
     PlutusCore.Data.Compact.ParserSpec
     PlutusCore.Data.Compact.PrinterSpec
+    TwoPartyEscrowSpec
 
   build-depends:
     , aeson
+    , bytestring
+    , cape
     , containers
     , hspec
-    , measure
+    , megaparsec
+    , mtl
+    , plutus-tx:plutus-tx-testlib
     , vector
 
   hs-source-dirs:     test

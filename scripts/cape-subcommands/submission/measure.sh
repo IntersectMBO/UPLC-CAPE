@@ -35,7 +35,7 @@ check_measure_tool() {
   fi
   if [[ "${VERBOSE:-0}" -eq 1 ]]; then
     cape_info "Building measure tool..."
-    (cd "$PROJECT_ROOT/measure" && cabal build exe:measure) || cape_error "Failed to build measure tool"
+    (cd "$PROJECT_ROOT" && cabal build exe:measure 2> /dev/null) || cape_error "Failed to build measure tool"
   fi
 }
 
@@ -126,15 +126,31 @@ measure_uplc_file() {
   tmp_raw="$(cape_mktemp)"
   stdout_tmp="$(cape_mktemp)"
 
+  local measure_cmd
+  measure_cmd="$(cape_measure_binary)"
+
   if [[ $VERBOSE -eq 1 ]]; then
-    if ! (cd "$PROJECT_ROOT/measure" && cabal run measure -- -i "$uplc_file" "${tests_flag[@]}" -o "$tmp_raw") | tee "$stdout_tmp"; then
+    if ! (cd "$PROJECT_ROOT" && $measure_cmd -i "$uplc_file" "${tests_flag[@]}" -o "$tmp_raw" 2> /dev/null) 2>&1 | tee "$stdout_tmp"; then
       cape_error "✗ Failed to measure UPLC program ($rel_uplc)"
+      echo ""
+      cape_error "Test execution details:"
+      cat "$stdout_tmp" | grep -E "Running test:|✓ PASS|✗ FAIL|Error:" | sed 's/^/  /'
       rm -f "$tmp_raw" "$stdout_tmp" || true
       return 1
     fi
   else
-    if ! (cd "$PROJECT_ROOT/measure" && cabal run measure -- -i "$uplc_file" "${tests_flag[@]}" -o "$tmp_raw") > "$stdout_tmp"; then
+    if ! (cd "$PROJECT_ROOT" && $measure_cmd -i "$uplc_file" "${tests_flag[@]}" -o "$tmp_raw" 2> /dev/null) > "$stdout_tmp" 2>&1; then
       cape_error "✗ Failed to measure UPLC program ($rel_uplc)"
+      echo ""
+      cape_error "Test execution details:"
+      cat "$stdout_tmp" | grep -E "Running test:|✓ PASS|✗ FAIL|Error:|Test results:" | sed 's/^/  /'
+      echo ""
+      cape_error "Hint: Check test data format if you see parse errors. BuiltinData uses:"
+      cape_error "  - Integers: 42, -123"
+      cape_error "  - ByteStrings: #deadbeef"
+      cape_error "  - Constructors: 0(), 1(42 #cafe)"
+      cape_error "  - Lists: [1 2 3]"
+      cape_error "  - Maps: {1:42}"
       rm -f "$tmp_raw" "$stdout_tmp" || true
       return 1
     fi

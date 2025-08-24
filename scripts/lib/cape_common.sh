@@ -170,3 +170,16 @@ cape_each_submission_dir() {
     done
   done
 }
+
+# Get the measure binary path or fallback to cabal run
+# Returns either a direct binary path or "cabal run measure --"
+cape_measure_binary() {
+  local binary_path
+  # Try to get the binary path from cabal
+  if binary_path=$(cd "$PROJECT_ROOT" && cabal list-bin measure 2> /dev/null) && [[ -x "$binary_path" ]]; then
+    echo "$binary_path"
+  else
+    # Fallback to cabal run if binary detection fails
+    echo "cabal run measure --"
+  fi
+}

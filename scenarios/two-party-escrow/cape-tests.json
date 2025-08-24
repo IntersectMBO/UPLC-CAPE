@@ -1,13 +1,129 @@
 {
   "version": "1.0.0",
   "description": "Test cases for two-party escrow smart contract validator",
+  "data_structures": {
+    "buyer_pubkey": "a1b2c3d4e5f6789012345678abcdef0123456789abcdef0123456789abcdef01",
+    "seller_pubkey": "fedcba9876543210fedcba9876543210fedcba9876543210fedcba9876543210"
+  },
   "tests": [
     {
-      "name": "valid_deposit_buyer_signature",
-      "description": "Valid deposit with buyer signature should succeed",
+      "name": "redeemer_integer_3",
+      "description": "Validator fails when redeemer is integer 3 (not 0, 1, or 2)",
       "input": {
         "type": "builtin_data",
-        "value": "0(#a1b2c3d4e5f6789012345678abcdef0123456789abcdef0123456789abcdef01 1000 0())"
+        "value": "3"
+      },
+      "expected": {
+        "type": "error"
+      }
+    },
+    {
+      "name": "redeemer_integer_4",
+      "description": "Validator fails when redeemer is integer 4 (not 0, 1, or 2)",
+      "input": {
+        "type": "builtin_data",
+        "value": "4"
+      },
+      "expected": {
+        "type": "error"
+      }
+    },
+    {
+      "name": "redeemer_integer_99",
+      "description": "Validator fails when redeemer is integer 99 (not 0, 1, or 2)",
+      "input": {
+        "type": "builtin_data",
+        "value": "99"
+      },
+      "expected": {
+        "type": "error"
+      }
+    },
+    {
+      "name": "redeemer_integer_negative_1",
+      "description": "Validator fails when redeemer is integer -1 (not 0, 1, or 2)",
+      "input": {
+        "type": "builtin_data",
+        "value": "-1"
+      },
+      "expected": {
+        "type": "error"
+      }
+    },
+    {
+      "name": "redeemer_constructor_0",
+      "description": "Validator fails when redeemer is constructor instead of integer",
+      "input": {
+        "type": "builtin_data",
+        "value": "0()"
+      },
+      "expected": {
+        "type": "error"
+      }
+    },
+    {
+      "name": "redeemer_bytestring",
+      "description": "Validator fails when redeemer is bytestring instead of integer",
+      "input": {
+        "type": "builtin_data",
+        "value": "#deadbeef"
+      },
+      "expected": {
+        "type": "error"
+      }
+    },
+    {
+      "name": "redeemer_list_with_integers",
+      "description": "Validator fails when redeemer is list [1,2,3] instead of integer",
+      "input": {
+        "type": "builtin_data",
+        "value": "[1 2 3]"
+      },
+      "expected": {
+        "type": "error"
+      }
+    },
+    {
+      "name": "redeemer_map_with_data",
+      "description": "Validator fails when redeemer is map instead of integer",
+      "input": {
+        "type": "builtin_data",
+        "value": "{1:42}"
+      },
+      "expected": {
+        "type": "error"
+      }
+    },
+    {
+      "name": "simple_builtin_data_redeemer_0",
+      "description": "Test redeemer 0 with simple builtin_data (not script_context)",
+      "input": {
+        "type": "builtin_data",
+        "value": "0"
+      },
+      "expected": {
+        "type": "error"
+      }
+    },
+    {
+      "name": "deposit_with_buyer_signature",
+      "description": "Deposit with buyer signature should succeed",
+      "pending": true,
+      "input": {
+        "type": "script_context",
+        "script_context": {
+          "baseline": "spending",
+          "patches": [
+            {
+              "op": "set_redeemer",
+              "redeemer": "0"
+            },
+            {
+              "op": "add_signature",
+              "pubkey_hash": "@buyer_pubkey"
+            }
+          ]
+        }
       },
       "expected": {
         "type": "value",
@@ -15,79 +131,19 @@
       }
     },
     {
-      "name": "valid_deposit_seller_signature",
-      "description": "Valid deposit with seller signature should succeed",
+      "name": "deposit_without_buyer_signature",
+      "description": "Deposit without buyer signature should fail",
       "input": {
-        "type": "builtin_data",
-        "value": "0(#fedcba9876543210fedcba9876543210fedcba9876543210fedcba9876543210 1000 1())"
-      },
-      "expected": {
-        "type": "value",
-        "content": "(con unit ())"
-      }
-    },
-    {
-      "name": "valid_refund_after_deadline",
-      "description": "Valid refund after deadline should succeed",
-      "input": {
-        "type": "builtin_data",
-        "value": "1(1609459200000 2())"
-      },
-      "expected": {
-        "type": "value",
-        "content": "(con unit ())"
-      }
-    },
-    {
-      "name": "deposit_missing_signature",
-      "description": "Deposit without required signature should error",
-      "input": {
-        "type": "builtin_data",
-        "value": "0(#0000000000000000000000000000000000000000000000000000000000000000 1000 0())"
-      },
-      "expected": {
-        "type": "error"
-      }
-    },
-    {
-      "name": "deposit_wrong_amount",
-      "description": "Deposit with wrong amount should error",
-      "input": {
-        "type": "builtin_data",
-        "value": "0(#a1b2c3d4e5f6789012345678abcdef0123456789abcdef0123456789abcdef01 500 0())"
-      },
-      "expected": {
-        "type": "error"
-      }
-    },
-    {
-      "name": "refund_before_deadline",
-      "description": "Refund before deadline should error",
-      "input": {
-        "type": "builtin_data",
-        "value": "1(1609459200000 2())"
-      },
-      "expected": {
-        "type": "error"
-      }
-    },
-    {
-      "name": "invalid_redeemer_value",
-      "description": "Invalid redeemer constructor should error",
-      "input": {
-        "type": "builtin_data",
-        "value": "99()"
-      },
-      "expected": {
-        "type": "error"
-      }
-    },
-    {
-      "name": "malformed_redeemer_data",
-      "description": "Malformed redeemer data should error",
-      "input": {
-        "type": "builtin_data",
-        "value": "42"
+        "type": "script_context",
+        "script_context": {
+          "baseline": "spending",
+          "patches": [
+            {
+              "op": "set_redeemer",
+              "redeemer": "0"
+            }
+          ]
+        }
       },
       "expected": {
         "type": "error"

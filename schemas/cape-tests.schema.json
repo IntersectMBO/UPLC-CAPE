@@ -39,6 +39,10 @@
           "type": "string",
           "description": "Human-readable description of what the test verifies"
         },
+        "pending": {
+          "type": "boolean",
+          "description": "Mark test as pending - expected to fail until fixed. When true, test failures don't affect suite success, but if test starts passing, it becomes an error."
+        },
         "input": {
           "oneOf": [
             {

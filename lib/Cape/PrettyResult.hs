@@ -8,14 +8,15 @@ import Prelude
 
 import Cape.Tests (ResultType (..))
 import PlutusCore.Pretty (prettyPlcClassic, render)
-import PlutusTx.Eval (EvalResult (..), evalResult)
+import PlutusTx.Eval (EvalResult (..), displayEvalResult, evalResult)
 
--- | Extract pretty-printed result from EvalResult using prettyPlcClassic
+-- | Extract pretty-printed result from EvalResult using displayEvalResult
 extractPrettyResult :: EvalResult -> Either Text Text
-extractPrettyResult EvalResult {evalResult} =
-  case evalResult of
-    Left err -> Left (render (prettyPlcClassic err))
-    Right term -> Right (render (prettyPlcClassic term))
+extractPrettyResult evalRes =
+  bimap displayText displayText (evalResult evalRes)
+  where
+    displayText :: forall a. a -> Text
+    displayText _ = displayEvalResult evalRes
 
 -- | Get success value as pretty-printed text (fails if result is error)
 getPrettyValue :: EvalResult -> Maybe Text

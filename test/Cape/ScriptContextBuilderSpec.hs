@@ -3,8 +3,11 @@ module Cape.ScriptContextBuilderSpec (spec) where
 import Prelude
 
 import Cape.ScriptContextBuilder
+import PlutusCore.Data.Compact.Parser (parseBuiltinDataText)
+import PlutusCore.Data.Compact.Printer (dataToCompactText)
 import PlutusLedgerApi.V3 qualified as V3
 import PlutusTx.AssocMap qualified as Map
+import PlutusTx.Builtins qualified as Builtins
 import Test.Hspec
 
 spec :: Spec
@@ -295,3 +298,187 @@ spec = describe "ScriptContextBuilder" do
     it "shows error details for IncompatiblePatches" do
       let err = IncompatiblePatches "Cannot apply both patches"
       show err `shouldContain` "Cannot apply both patches"
+
+  describe "ScriptContext Data Roundtrip" do
+    describe "Integer redeemer roundtrip" do
+      it "roundtrips redeemer 0 through BuiltinData" do
+        let redeemerValue = 0 :: Integer
+            redeemer = V3.Redeemer (V3.toBuiltinData redeemerValue)
+            builder = ScriptContextBuilder Spending [SetRedeemer redeemer]
+
+        case buildScriptContext builder of
+          Right originalContext -> do
+            -- Convert to BuiltinData and back through compact text
+            let builtinData = V3.toBuiltinData originalContext
+                coreData = Builtins.builtinDataToData builtinData
+                compactText = dataToCompactText coreData
+
+            -- Parse back from text
+            case parseBuiltinDataText compactText of
+              Right parsedData -> do
+                case V3.fromBuiltinData (V3.BuiltinData parsedData) of
+                  Just (parsedContext :: V3.ScriptContext) -> do
+                    -- Verify redeemer extraction works correctly
+                    let V3.Redeemer redeemerBuiltinData = V3.scriptContextRedeemer parsedContext
+                    case V3.fromBuiltinData redeemerBuiltinData of
+                      Just (extractedRedeemer :: Integer) ->
+                        extractedRedeemer `shouldBe` redeemerValue
+                      Nothing -> expectationFailure "Failed to extract redeemer from parsed ScriptContext"
+                  Nothing -> expectationFailure "Failed to parse ScriptContext from BuiltinData"
+              Left parseErr -> expectationFailure $ "Failed to parse compact text: " <> show parseErr
+          Left err -> expectationFailure $ "Failed to build ScriptContext: " <> show err
+
+      it "roundtrips redeemer 1 through BuiltinData" do
+        let redeemerValue = 1 :: Integer
+            redeemer = V3.Redeemer (V3.toBuiltinData redeemerValue)
+            builder = ScriptContextBuilder Spending [SetRedeemer redeemer]
+
+        case buildScriptContext builder of
+          Right originalContext -> do
+            let builtinData = V3.toBuiltinData originalContext
+                coreData = Builtins.builtinDataToData builtinData
+                compactText = dataToCompactText coreData
+
+            case parseBuiltinDataText compactText of
+              Right parsedData -> do
+                case V3.fromBuiltinData (V3.BuiltinData parsedData) of
+                  Just (parsedContext :: V3.ScriptContext) -> do
+                    let V3.Redeemer redeemerBuiltinData = V3.scriptContextRedeemer parsedContext
+                    case V3.fromBuiltinData redeemerBuiltinData of
+                      Just (extractedRedeemer :: Integer) ->
+                        extractedRedeemer `shouldBe` redeemerValue
+                      Nothing -> expectationFailure "Failed to extract redeemer from parsed ScriptContext"
+                  Nothing -> expectationFailure "Failed to parse ScriptContext from BuiltinData"
+              Left parseErr -> expectationFailure $ "Failed to parse compact text: " <> show parseErr
+          Left err -> expectationFailure $ "Failed to build ScriptContext: " <> show err
+
+      it "roundtrips redeemer 2 through BuiltinData" do
+        let redeemerValue = 2 :: Integer
+            redeemer = V3.Redeemer (V3.toBuiltinData redeemerValue)
+            builder = ScriptContextBuilder Spending [SetRedeemer redeemer]
+
+        case buildScriptContext builder of
+          Right originalContext -> do
+            let builtinData = V3.toBuiltinData originalContext
+                coreData = Builtins.builtinDataToData builtinData
+                compactText = dataToCompactText coreData
+
+            case parseBuiltinDataText compactText of
+              Right parsedData -> do
+                case V3.fromBuiltinData (V3.BuiltinData parsedData) of
+                  Just (parsedContext :: V3.ScriptContext) -> do
+                    let V3.Redeemer redeemerBuiltinData = V3.scriptContextRedeemer parsedContext
+                    case V3.fromBuiltinData redeemerBuiltinData of
+                      Just (extractedRedeemer :: Integer) ->
+                        extractedRedeemer `shouldBe` redeemerValue
+                      Nothing -> expectationFailure "Failed to extract redeemer from parsed ScriptContext"
+                  Nothing -> expectationFailure "Failed to parse ScriptContext from BuiltinData"
+              Left parseErr -> expectationFailure $ "Failed to parse compact text: " <> show parseErr
+          Left err -> expectationFailure $ "Failed to build ScriptContext: " <> show err
+
+    describe "Complete ScriptContext structure preservation" do
+      it "preserves signatures and redeemer through roundtrip" do
+        let redeemerValue = 0 :: Integer
+            redeemer = V3.Redeemer (V3.toBuiltinData redeemerValue)
+            pubKeyHash =
+              V3.PubKeyHash "a1b2c3d4e5f6789012345678abcdef0123456789abcdef0123456789abcdef01"
+            builder = ScriptContextBuilder Spending [SetRedeemer redeemer, AddSignature pubKeyHash]
+
+        case buildScriptContext builder of
+          Right originalContext -> do
+            let builtinData = V3.toBuiltinData originalContext
+                coreData = Builtins.builtinDataToData builtinData
+                compactText = dataToCompactText coreData
+
+            case parseBuiltinDataText compactText of
+              Right parsedData -> do
+                case V3.fromBuiltinData (V3.BuiltinData parsedData) of
+                  Just (parsedContext :: V3.ScriptContext) -> do
+                    -- Verify redeemer
+                    let V3.Redeemer redeemerBuiltinData = V3.scriptContextRedeemer parsedContext
+                    case V3.fromBuiltinData redeemerBuiltinData of
+                      Just (extractedRedeemer :: Integer) ->
+                        extractedRedeemer `shouldBe` redeemerValue
+                      Nothing -> expectationFailure "Failed to extract redeemer from parsed ScriptContext"
+
+                    -- Verify signatures
+                    let signatures = V3.txInfoSignatories (V3.scriptContextTxInfo parsedContext)
+                    signatures `shouldBe` [pubKeyHash]
+                  Nothing -> expectationFailure "Failed to parse ScriptContext from BuiltinData"
+              Left parseErr -> expectationFailure $ "Failed to parse compact text: " <> show parseErr
+          Left err -> expectationFailure $ "Failed to build ScriptContext: " <> show err
+
+    describe "Debugging redeemer extraction logic" do
+      it "matches two-party escrow validator redeemer extraction pattern" do
+        let redeemerValue = 0 :: Integer
+            redeemer = V3.Redeemer (V3.toBuiltinData redeemerValue)
+            builder = ScriptContextBuilder Spending [SetRedeemer redeemer]
+
+        case buildScriptContext builder of
+          Right originalContext -> do
+            -- Test the exact redeemer extraction pattern used in two-party escrow validator
+            let V3.Redeemer redeemerBuiltinData = V3.scriptContextRedeemer originalContext
+                extractedRedeemer = V3.fromBuiltinData redeemerBuiltinData :: Maybe Integer
+
+            case extractedRedeemer of
+              Just actualValue -> actualValue `shouldBe` redeemerValue
+              Nothing -> expectationFailure "Failed to extract redeemer using validator pattern"
+          Left err -> expectationFailure $ "Failed to build ScriptContext: " <> show err
+
+      it "shows debug info for redeemer structure" do
+        let redeemerValue = 1 :: Integer
+            redeemer = V3.Redeemer (V3.toBuiltinData redeemerValue)
+            builder = ScriptContextBuilder Spending [SetRedeemer redeemer]
+
+        case buildScriptContext builder of
+          Right originalContext -> do
+            let V3.Redeemer (V3.BuiltinData redeemerData) = V3.scriptContextRedeemer originalContext
+                coreData = Builtins.builtinDataToData (V3.BuiltinData redeemerData)
+                compactText = dataToCompactText coreData
+
+            -- This should show us exactly what the redeemer looks like
+            putStrLn $ "DEBUG: Redeemer data structure: " <> toString compactText
+            putStrLn $ "DEBUG: Raw redeemer BuiltinData: " <> show redeemerData
+
+            -- Verify it matches expected value
+            case V3.fromBuiltinData (V3.BuiltinData redeemerData) of
+              Just (extractedValue :: Integer) -> extractedValue `shouldBe` redeemerValue
+              Nothing -> expectationFailure "Failed to extract redeemer value"
+          Left err -> expectationFailure $ "Failed to build ScriptContext: " <> show err
+
+      it "mimics exact measurement workflow for redeemer 0" do
+        -- This test mimics the exact workflow used in the measure tool
+        let redeemerValue = 0 :: Integer
+            redeemer = V3.Redeemer (V3.toBuiltinData redeemerValue)
+            pubKeyHash =
+              V3.PubKeyHash "a1b2c3d4e5f6789012345678abcdef0123456789abcdef0123456789abcdef01"
+            builder = ScriptContextBuilder Spending [SetRedeemer redeemer, AddSignature pubKeyHash]
+
+        case buildScriptContext builder of
+          Right originalContext -> do
+            -- Follow the exact steps from resolveScriptContextInput
+            let builtinData = V3.toBuiltinData originalContext
+                coreData = Builtins.builtinDataToData builtinData
+                compactText = dataToCompactText coreData
+
+            putStrLn $ "DEBUG: Complete ScriptContext compact: " <> toString compactText
+
+            -- Parse back exactly like parseBuiltinDataFromText does
+            case parseBuiltinDataText compactText of
+              Right parsedData -> do
+                let finalBuiltinData = V3.BuiltinData parsedData
+
+                putStrLn $ "DEBUG: Parsed back to BuiltinData: " <> show parsedData
+
+                -- Verify we can extract the ScriptContext and redeemer
+                case V3.fromBuiltinData finalBuiltinData of
+                  Just (parsedContext :: V3.ScriptContext) -> do
+                    let V3.Redeemer redeemerBuiltinData = V3.scriptContextRedeemer parsedContext
+                    case V3.fromBuiltinData redeemerBuiltinData of
+                      Just (extractedRedeemer :: Integer) -> do
+                        putStrLn $ "DEBUG: Successfully extracted redeemer: " <> show extractedRedeemer
+                        extractedRedeemer `shouldBe` redeemerValue
+                      Nothing -> expectationFailure "Failed to extract redeemer from final ScriptContext"
+                  Nothing -> expectationFailure "Failed to parse final ScriptContext from BuiltinData"
+              Left parseErr -> expectationFailure $ "Failed to parse compact text: " <> show parseErr
+          Left err -> expectationFailure $ "Failed to build ScriptContext: " <> show err
