@@ -2,7 +2,7 @@
   "$schema": "http://json-schema.org/draft-07/schema#",
   "$id": "https://github.com/IntersectMBO/UPLC-CAPE/schemas/cape-tests.schema.json",
   "title": "CAPE Test Specification",
-  "description": "Schema for cape-tests.json files that define test cases for UPLC program evaluation",
+  "description": "Schema for cape-tests.json files that define test cases for UPLC program evaluation with ScriptContext support",
   "type": "object",
   "properties": {
     "version": {
@@ -13,6 +13,16 @@
     "description": {
       "type": "string",
       "description": "Human-readable description of the test suite"
+    },
+    "data_structures": {
+      "type": "object",
+      "description": "Shared data structures that can be referenced by tests using @name syntax",
+      "patternProperties": {
+        "^[a-zA-Z_][a-zA-Z0-9_]*$": {
+          "$ref": "#/$defs/data_structure_entry"
+        }
+      },
+      "additionalProperties": false
     },
     "tests": {
       "type": "array",
@@ -26,6 +36,44 @@
   "required": ["version", "tests"],
   "additionalProperties": false,
   "$defs": {
+    "data_structure_entry": {
+      "type": "object",
+      "description": "Shared data structure definition",
+      "discriminator": {
+        "propertyName": "type"
+      },
+      "oneOf": [
+        {
+          "type": "object",
+          "description": "BuiltinData entry",
+          "properties": {
+            "type": {
+              "const": "builtin_data"
+            },
+            "value": {
+              "type": "string",
+              "description": "BuiltinData in compact format: integers (42), bytestrings (#deadbeef), constructors (0(42)), lists ([1 2]), maps ({1:2})"
+            }
+          },
+          "required": ["type", "value"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "description": "ScriptContext entry",
+          "properties": {
+            "type": {
+              "const": "script_context"
+            },
+            "script_context": {
+              "$ref": "#/$defs/script_context_spec"
+            }
+          },
+          "required": ["type", "script_context"],
+          "additionalProperties": false
+        }
+      ]
+    },
     "test_case": {
       "type": "object",
       "description": "Individual test case specification",
@@ -64,29 +112,256 @@
     "test_input": {
       "type": "object",
       "description": "Input specification for program evaluation",
-      "properties": {
-        "type": {
-          "type": "string",
-          "description": "Type of input data",
-          "enum": ["builtin_data", "raw_uplc"]
-        },
-        "value": {
-          "type": "string",
-          "description": "Inline input value in the specified format. For builtin_data type, uses custom compact syntax: integers (42, -123), bytestrings (#deadbeef), constructors (0(42 #cafe)), lists ([1 2 3]), and maps ({1:42}). See ADR for full grammar specification."
-        },
-        "file": {
-          "type": "string",
-          "description": "Path to file containing input value (relative to cape-tests.json)"
-        }
+      "discriminator": {
+        "propertyName": "type"
       },
-      "required": ["type"],
-      "additionalProperties": false,
       "oneOf": [
         {
-          "required": ["value"]
+          "type": "object",
+          "description": "BuiltinData input",
+          "properties": {
+            "type": {
+              "const": "builtin_data"
+            },
+            "value": {
+              "type": "string",
+              "description": "Inline BuiltinData value in compact format or @reference"
+            },
+            "file": {
+              "type": "string",
+              "description": "Path to file containing BuiltinData (relative to cape-tests.json)"
+            }
+          },
+          "required": ["type"],
+          "additionalProperties": false,
+          "oneOf": [{ "required": ["value"] }, { "required": ["file"] }]
         },
         {
-          "required": ["file"]
+          "type": "object",
+          "description": "Raw UPLC input",
+          "properties": {
+            "type": {
+              "const": "raw_uplc"
+            },
+            "value": {
+              "type": "string",
+              "description": "Inline UPLC program text"
+            },
+            "file": {
+              "type": "string",
+              "description": "Path to file containing UPLC program (relative to cape-tests.json)"
+            }
+          },
+          "required": ["type"],
+          "additionalProperties": false,
+          "oneOf": [{ "required": ["value"] }, { "required": ["file"] }]
+        },
+        {
+          "type": "object",
+          "description": "ScriptContext input",
+          "properties": {
+            "type": {
+              "const": "script_context"
+            },
+            "script_context": {
+              "$ref": "#/$defs/script_context_spec"
+            }
+          },
+          "required": ["type", "script_context"],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "script_context_spec": {
+      "type": "object",
+      "description": "ScriptContext construction specification",
+      "properties": {
+        "baseline": {
+          "description": "Baseline context to start from",
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": ["spending", "minting", "rewarding", "certifying"],
+              "description": "Direct baseline type"
+            },
+            {
+              "type": "string",
+              "pattern": "^@[a-zA-Z_][a-zA-Z0-9_]*$",
+              "description": "Reference to shared ScriptContext (@name)"
+            }
+          ]
+        },
+        "patches": {
+          "type": "array",
+          "description": "Patch operations to apply to the baseline",
+          "items": {
+            "$ref": "#/$defs/patch_operation"
+          }
+        }
+      },
+      "required": ["baseline", "patches"],
+      "additionalProperties": false
+    },
+    "patch_operation": {
+      "type": "object",
+      "description": "ScriptContext modification operation",
+      "discriminator": {
+        "propertyName": "op"
+      },
+      "oneOf": [
+        {
+          "type": "object",
+          "description": "Add signature to transaction",
+          "properties": {
+            "op": { "const": "add_signature" },
+            "pubkey_hash": {
+              "type": "string",
+              "description": "PubKey hash as hex string or @reference"
+            }
+          },
+          "required": ["op", "pubkey_hash"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "description": "Remove signature from transaction",
+          "properties": {
+            "op": { "const": "remove_signature" },
+            "pubkey_hash": {
+              "type": "string",
+              "description": "PubKey hash as hex string or @reference"
+            }
+          },
+          "required": ["op", "pubkey_hash"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "description": "Set transaction redeemer",
+          "properties": {
+            "op": { "const": "set_redeemer" },
+            "redeemer": {
+              "type": "string",
+              "description": "Redeemer as BuiltinData in compact format"
+            }
+          },
+          "required": ["op", "redeemer"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "description": "Add input UTXO to transaction",
+          "properties": {
+            "op": { "const": "add_input_utxo" },
+            "utxo_ref": {
+              "type": "string",
+              "description": "UTXO reference as 'txid:index'"
+            },
+            "lovelace": {
+              "type": "integer",
+              "description": "Lovelace amount",
+              "minimum": 0
+            },
+            "is_own_input": {
+              "type": "boolean",
+              "description": "Whether this is the UTXO being spent by the script"
+            }
+          },
+          "required": ["op", "utxo_ref", "lovelace", "is_own_input"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "description": "Add output UTXO to transaction",
+          "properties": {
+            "op": { "const": "add_output_utxo" },
+            "address": {
+              "$ref": "#/$defs/address_spec"
+            },
+            "lovelace": {
+              "type": "integer",
+              "description": "Lovelace amount",
+              "minimum": 0
+            }
+          },
+          "required": ["op", "address", "lovelace"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "description": "Remove output UTXO by index",
+          "properties": {
+            "op": { "const": "remove_output_utxo" },
+            "index": {
+              "type": "integer",
+              "description": "Zero-based index of output to remove",
+              "minimum": 0
+            }
+          },
+          "required": ["op", "index"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "description": "Set transaction validity time range",
+          "properties": {
+            "op": { "const": "set_valid_range" },
+            "from_time": {
+              "type": "integer",
+              "description": "Start time in POSIX seconds (optional)",
+              "minimum": 0
+            },
+            "to_time": {
+              "type": "integer",
+              "description": "End time in POSIX seconds (optional)",
+              "minimum": 0
+            }
+          },
+          "required": ["op"],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "address_spec": {
+      "type": "object",
+      "description": "Cardano address specification with structural format",
+      "discriminator": {
+        "propertyName": "type"
+      },
+      "oneOf": [
+        {
+          "type": "object",
+          "description": "Script address with script hash",
+          "properties": {
+            "type": { "const": "script" },
+            "script_hash": {
+              "type": "string",
+              "description": "Script hash as 56-character hex string or 'standard' for all-1s hash",
+              "oneOf": [
+                {
+                  "pattern": "^[0-9a-fA-F]{56}$"
+                },
+                {
+                  "const": "standard"
+                }
+              ]
+            }
+          },
+          "required": ["type"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "description": "Public key address with pubkey hash",
+          "properties": {
+            "type": { "const": "pubkey" },
+            "pubkey_hash": {
+              "type": "string",
+              "description": "Public key hash as 64-character hex string or @reference"
+            }
+          },
+          "required": ["type", "pubkey_hash"],
+          "additionalProperties": false
         }
       ]
     },
@@ -116,14 +391,7 @@
         }
       },
       "then": {
-        "oneOf": [
-          {
-            "required": ["content"]
-          },
-          {
-            "required": ["file"]
-          }
-        ]
+        "oneOf": [{ "required": ["content"] }, { "required": ["file"] }]
       },
       "else": {
         "not": {
