@@ -86,7 +86,7 @@ The parser is implemented in `measure/app/App/BuiltinDataParser.hs` using Megapa
 ```json
 {
   "type": "builtin_data",
-  "value": "0(#a1b2c3d4e5f6789012345678abcdef0123456789abcdef0123456789abcdef01 1000 0())"
+  "value": "0(#aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa 1000 0())"
 }
 ```
 
