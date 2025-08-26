@@ -171,6 +171,48 @@ spec = do
               "Failed to parse ScriptContext result: " <> show parseErr
           Right _ -> pass
 
+      it "resolves ScriptContext for Accept operation with seller signature" do
+        let scriptContextSpec =
+              ScriptContextSpec
+                { scsBaseline = DirectBaseline Spending
+                , scsPatches =
+                    [ SetRedeemerSpec (Json.String "1") -- Accept redeemer
+                    , AddSignatureSpec
+                        "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb" -- Seller signature
+                    , AddInputUTXOSpec
+                        "4444444444444444444444444444444444444444444444444444444444444444:0"
+                        75000000
+                        True
+                    , AddOutputUTXOSpec
+                        ( PubkeyAddressSpec
+                            "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+                        )
+                        75000000
+                    ]
+                }
+            testInput =
+              TestInput
+                { tiType = ScriptContext
+                , tiValue = Nothing
+                , tiFile = Nothing
+                , tiScriptContext = Just scriptContextSpec
+                }
+            testSuite =
+              TestSuite
+                { tsVersion = "1.0.0"
+                , tsDescription = Just "Accept operation test"
+                , tsTests = []
+                , tsDataStructures = Nothing
+                }
+
+        result <- resolveTestInput "" testSuite testInput
+
+        -- The result should be a valid BuiltinData text representation
+        case parseBuiltinDataText result of
+          Left parseErr ->
+            expectationFailure $
+              "Failed to parse resolved Accept ScriptContext: " <> show parseErr
+          Right _ -> pass -- Success - it's valid BuiltinData for Accept
       it "resolves ScriptContext with RemoveSignature patch" do
         let scriptContextSpec =
               ScriptContextSpec

@@ -33,7 +33,11 @@ import PlutusTx
 import PlutusTx.Prelude
 
 import PlutusLedgerApi.V1.Data.Value (lovelaceValueOf)
-import PlutusLedgerApi.V3.Data.Contexts (getContinuingOutputs, txSignedBy)
+import PlutusLedgerApi.V3.Data.Contexts (
+  getContinuingOutputs,
+  txSignedBy,
+  valuePaidTo,
+ )
 import PlutusTx.Builtins.Internal (unitval)
 import PlutusTx.Data.List qualified as List
 import TwoPartyEscrow.Fixture qualified as Fixed
@@ -63,8 +67,16 @@ twoPartyEscrowValidator scriptContextData =
                in lovelaceValueOf (txOutValue onlyOut) /= Fixed.escrowPrice ->
                 traceError "Wrong continuing output amount"
             | otherwise -> unitval
-    1 -> unitval
-    2 -> unitval
+    1 ->
+      -- Accept: seller accepts payment (75 ADA should go to seller)
+      if
+        | not (txSignedBy (scriptContextTxInfo ctx) Fixed.sellerKeyHash) ->
+            traceError "Seller signature missing"
+        | lovelaceValueOf (valuePaidTo (scriptContextTxInfo ctx) Fixed.sellerKeyHash)
+            /= Fixed.escrowPrice ->
+            traceError "Incorrect payment to seller"
+        | otherwise -> unitval
+    2 -> traceError "Refund not implemented"
     _ -> traceError "Invalid redeemer"
   where
     ctx = unsafeFromBuiltinData scriptContextData
