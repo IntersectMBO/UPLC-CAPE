@@ -8,7 +8,7 @@ import PlutusCore.Data.Compact.Parser
 import Test.Hspec
 
 spec :: Spec
-spec = describe "PlutusCore.Data.Compact.Parser" do
+spec = do
   describe "parseBuiltinDataText" do
     context "integers" do
       it "parses positive integers" do
