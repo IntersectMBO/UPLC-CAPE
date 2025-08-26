@@ -44,24 +44,32 @@
         ]
       }
     },
-    "deposit_setup_no_output": {
+    "successful_accept": {
       "type": "script_context",
       "script_context": {
         "baseline": "spending",
         "patches": [
           {
             "op": "set_redeemer",
-            "redeemer": "0"
+            "redeemer": "1"
           },
           {
             "op": "add_signature",
-            "pubkey_hash": "@buyer_pubkey"
+            "pubkey_hash": "@seller_pubkey"
           },
           {
             "op": "add_input_utxo",
-            "utxo_ref": "3333333333333333333333333333333333333333333333333333333333333333:0",
+            "utxo_ref": "4444444444444444444444444444444444444444444444444444444444444444:0",
             "lovelace": 75000000,
             "is_own_input": true
+          },
+          {
+            "op": "add_output_utxo",
+            "address": {
+              "type": "pubkey",
+              "pubkey_hash": "@seller_pubkey"
+            },
+            "lovelace": 75000000
           }
         ]
       }
@@ -230,8 +238,22 @@
       "input": {
         "type": "script_context",
         "script_context": {
-          "baseline": "@deposit_setup_no_output",
+          "baseline": "spending",
           "patches": [
+            {
+              "op": "set_redeemer",
+              "redeemer": "0"
+            },
+            {
+              "op": "add_signature",
+              "pubkey_hash": "@buyer_pubkey"
+            },
+            {
+              "op": "add_input_utxo",
+              "utxo_ref": "3333333333333333333333333333333333333333333333333333333333333333:0",
+              "lovelace": 75000000,
+              "is_own_input": true
+            },
             {
               "op": "add_output_utxo",
               "address": {
@@ -245,6 +267,21 @@
       },
       "expected": {
         "type": "error"
+      }
+    },
+    {
+      "name": "accept_successful",
+      "description": "Accept with seller signature and 75 ADA to seller should succeed",
+      "input": {
+        "type": "script_context",
+        "script_context": {
+          "baseline": "@successful_accept",
+          "patches": []
+        }
+      },
+      "expected": {
+        "type": "value",
+        "content": "(con unit ())"
       }
     }
   ]

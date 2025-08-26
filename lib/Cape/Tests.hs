@@ -29,6 +29,7 @@ module Cape.Tests (
   ResultType (..),
   BaselineType (..),
   BaselineSpec (..),
+  AddressSpec (..),
   DataStructureEntry (..),
   loadTestSuite,
   resolveTestInput,
