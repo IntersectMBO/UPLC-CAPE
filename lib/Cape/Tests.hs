@@ -52,7 +52,10 @@ import PlutusCore.Data.Compact.Parser (parseBuiltinDataText, renderParseError)
 import PlutusCore.Data.Compact.Printer (dataToCompactText)
 import PlutusLedgerApi.V3 qualified as V3
 import PlutusTx.Builtins qualified as Builtins
-import PlutusTx.Builtins.HasOpaque (stringToBuiltinByteStringHex)
+import PlutusTx.Builtins.HasOpaque (
+  BuiltinByteStringHex,
+  unBuiltinByteStringHex,
+ )
 import PlutusTx.Builtins.Internal qualified as BI
 import System.Directory (doesFileExist)
 import System.FilePath (takeDirectory, (</>))
@@ -313,10 +316,10 @@ data PatchOperationSpec
     --
     --     JSON examples:
     --     @
-    --     {"op": "add_output_utxo", "address": "script", "lovelace": 75000000}
-    --     {"op": "add_output_utxo", "address": "pubkey:@buyer_pubkey", "lovelace": 50000000}
+    --     {"op": "add_output_utxo", "address": {"type": "script"}, "lovelace": 75000000}
+    --     {"op": "add_output_utxo", "address": {"type": "pubkey", "pubkey_hash": "@impostor_pubkey"}, "lovelace": 50000000}
     --     @
-    AddOutputUTXOSpec Text Integer
+    AddOutputUTXOSpec AddressSpec Integer
   | -- | Remove output UTXO by index
     --
     --     JSON example:
@@ -355,6 +358,36 @@ data ResultType
     --
     --     JSON: @"type": "error"@
     ExpectedError
+  deriving stock (Show)
+
+{- | Address specification for ScriptContext operations.
+Uses structural JSON format with proper type discrimination.
+-}
+data AddressSpec
+  = -- | Script address with explicit script hash
+    --
+    --     JSON example:
+    --     @
+    --     "address": {
+    --       "type": "script",
+    --       "script_hash": "1111111111111111111111111111111111111111111111111111111111"
+    --     }
+    --     @
+    ScriptAddressSpec Text
+  | -- | Public key address with pubkey hash
+    --
+    --     JSON examples:
+    --     @
+    --     "address": {
+    --       "type": "pubkey",
+    --       "pubkey_hash": "@impostor_pubkey"
+    --     }
+    --     "address": {
+    --       "type": "pubkey",
+    --       "pubkey_hash": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+    --     }
+    --     @
+    PubkeyAddressSpec Text
   deriving stock (Show)
 
 -- * Utility Functions
@@ -472,6 +505,14 @@ instance FromJSON PatchOperationSpec where
           <*> o .: "lovelace"
       "remove_output_utxo" -> RemoveOutputUTXOSpec <$> o .: "index"
       _ -> fail $ "Unknown patch operation: " <> toString op
+
+instance FromJSON AddressSpec where
+  parseJSON = withObject "AddressSpec" \o -> do
+    addrType :: Text <- o .: "type"
+    case addrType of
+      "script" -> ScriptAddressSpec <$> o .: "script_hash"
+      "pubkey" -> PubkeyAddressSpec <$> o .: "pubkey_hash"
+      _ -> fail $ "Unknown address type: " <> toString addrType
 
 -- * Core Functions
 
@@ -795,38 +836,55 @@ convertPatchOperation dataStructures spec =
       pure $ SetValidRange fromPosix toPosix
     AddOutputUTXOSpec addressSpec lovelaceAmount -> do
       let value = V3.singleton V3.adaSymbol V3.adaToken lovelaceAmount
-      address <- parseAddressSpec addressSpec
+      address <- parseAddressSpec dataStructures addressSpec
       pure $ AddOutputUTXO address value
     RemoveOutputUTXOSpec index -> do
       pure $ RemoveOutputUTXO index
 
-{- | Parse address specification string into V3.Address.
+{- | Parse AddressSpec into V3.Address with reference resolution.
 
-Supported formats:
-- "script": Use the default script address (script hash all 1s)
-- "pubkey:@reference": Use pubkey address with referenced pubkey hash
-- "pubkey:hexstring": Use pubkey address with literal hex pubkey hash
+Supports structural address format:
+- ScriptAddressSpec: Script address (uses standard all-1s script hash)
+- PubkeyAddressSpec: Public key address with pubkey hash (supports @references and hex literals)
 -}
-parseAddressSpec :: Text -> IO V3.Address
-parseAddressSpec addressSpec = case addressSpec of
-  "script" ->
+parseAddressSpec :: Map Text DataStructureEntry -> AddressSpec -> IO V3.Address
+parseAddressSpec dataStructures addressSpec = case addressSpec of
+  ScriptAddressSpec scriptHashText -> do
+    -- Use OverloadedStrings directly like ScriptContextBuilder does
     pure $
       V3.Address
-        ( V3.ScriptCredential
-            (V3.ScriptHash "1111111111111111111111111111111111111111111111111111111111")
-        )
+        (V3.ScriptCredential (V3.ScriptHash (fromString (toString scriptHashText))))
         Nothing
-  _ | "pubkey:" `Text.isPrefixOf` addressSpec -> do
-    let pubkeyPart = Text.drop 7 addressSpec -- Remove "pubkey:" prefix
-    pubkeyHash <-
-      if "@" `Text.isPrefixOf` pubkeyPart
-        then
-          error . toText $
-            "Address references not yet implemented: " <> toString addressSpec
-        else pure $ V3.PubKeyHash $ stringToBuiltinByteStringHex $ toString pubkeyPart
-    pure $ V3.Address (V3.PubKeyCredential pubkeyHash) Nothing
-  _ ->
-    error . toText $ "Unsupported address format: " <> toString addressSpec
+  PubkeyAddressSpec pubkeyHashText -> do
+    -- Check if this is a reference to a builtin_data type
+    if Text.isPrefixOf "@" pubkeyHashText && Text.length pubkeyHashText > 1
+      then do
+        let refName = Text.drop 1 pubkeyHashText
+        case Map.lookup refName dataStructures of
+          Just (BuiltinDataEntry _) -> do
+            -- Reference to builtin_data: resolve and use bytes directly
+            resolvedBuiltinData <-
+              resolveBuiltinDataReference dataStructures pubkeyHashText
+            let coreData = Builtins.builtinDataToData resolvedBuiltinData
+            case coreData of
+              PLC.B bytestring -> do
+                let pubKeyHashBytes = Builtins.toBuiltin bytestring
+                pure $ V3.Address (V3.PubKeyCredential (V3.PubKeyHash pubKeyHashBytes)) Nothing
+              _ ->
+                die $
+                  "Expected bytestring data for PubKeyHash in address: "
+                    <> toString pubkeyHashText
+          _ ->
+            die $
+              "Address reference @"
+                <> toString refName
+                <> " not found or not a builtin_data type"
+      else do
+        -- Literal hex string: use OverloadedStrings directly for consistency
+        pure $
+          V3.Address
+            (V3.PubKeyCredential (V3.PubKeyHash (fromString (toString pubkeyHashText))))
+            Nothing
 
 {- | Convert ScriptContextSpec to ScriptContextBuilder with reference resolution.
 
