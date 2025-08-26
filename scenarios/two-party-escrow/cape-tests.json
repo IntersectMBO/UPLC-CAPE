@@ -2,8 +2,40 @@
   "version": "1.0.0",
   "description": "Test cases for two-party escrow smart contract validator",
   "data_structures": {
-    "buyer_pubkey": "a1b2c3d4e5f6789012345678abcdef0123456789abcdef0123456789abcdef01",
-    "seller_pubkey": "fedcba9876543210fedcba9876543210fedcba9876543210fedcba9876543210"
+    "buyer_pubkey": {
+      "type": "builtin_data",
+      "value": "#a1b2c3d4e5f6789012345678abcdef0123456789abcdef0123456789abcdef01"
+    },
+    "seller_pubkey": {
+      "type": "builtin_data",
+      "value": "#fedcba9876543210fedcba9876543210fedcba9876543210fedcba9876543210"
+    },
+    "successful_deposit": {
+      "type": "script_context",
+      "script_context": {
+        "baseline": "spending",
+        "patches": [
+          {
+            "op": "set_redeemer",
+            "redeemer": "0"
+          },
+          {
+            "op": "add_signature",
+            "pubkey_hash": "@buyer_pubkey"
+          },
+          {
+            "op": "add_input_utxo",
+            "utxo_ref": "1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef:0",
+            "lovelace": 75000000,
+            "is_own_input": true
+          },
+          {
+            "op": "set_output_value",
+            "lovelace": 75000000
+          }
+        ]
+      }
+    }
   },
   "tests": [
     {
@@ -106,23 +138,13 @@
       }
     },
     {
-      "name": "deposit_with_buyer_signature",
-      "description": "Deposit with buyer signature should succeed",
-      "pending": true,
+      "name": "deposit_successful",
+      "description": "Deposit with buyer signature and exactly 75 ADA should succeed",
       "input": {
         "type": "script_context",
         "script_context": {
-          "baseline": "spending",
-          "patches": [
-            {
-              "op": "set_redeemer",
-              "redeemer": "0"
-            },
-            {
-              "op": "add_signature",
-              "pubkey_hash": "@buyer_pubkey"
-            }
-          ]
+          "baseline": "@successful_deposit",
+          "patches": []
         }
       },
       "expected": {
@@ -136,11 +158,30 @@
       "input": {
         "type": "script_context",
         "script_context": {
-          "baseline": "spending",
+          "baseline": "@successful_deposit",
           "patches": [
             {
-              "op": "set_redeemer",
-              "redeemer": "0"
+              "op": "remove_signature",
+              "pubkey_hash": "@buyer_pubkey"
+            }
+          ]
+        }
+      },
+      "expected": {
+        "type": "error"
+      }
+    },
+    {
+      "name": "deposit_with_incorrect_amount",
+      "description": "Deposit with buyer signature but wrong amount (50 ADA) should fail",
+      "input": {
+        "type": "script_context",
+        "script_context": {
+          "baseline": "@successful_deposit",
+          "patches": [
+            {
+              "op": "set_output_value",
+              "lovelace": 50000000
             }
           ]
         }
