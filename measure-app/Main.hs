@@ -387,7 +387,7 @@ instance ToJSON Metrics where
       , "execution_environment" .= execEnv
       , "timestamp" .= timestamp
       ]
-        ++ case notes of
+        <> case notes of
           Nothing -> []
           Just n -> ["notes" .= n]
 
