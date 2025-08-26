@@ -10,7 +10,7 @@ import PlutusTx qualified
 import PlutusTx.Eval (EvalResult (..), evaluateCompiledCode)
 import Test.Hspec
 import TwoPartyEscrow
-import TwoPartyEscrow.Fixture
+import TwoPartyEscrowSpec.Fixture qualified as Fixed
 
 {- | Build ScriptContext or crash with error message
 This eliminates the need for case analysis in tests
@@ -97,52 +97,84 @@ spec = do
   describe "ScriptContext validation" do
     it "deposit_successful should pass" do
       -- This matches the @successful_deposit data structure from cape-tests.json
-      let txId = V3.TxId "3333333333333333333333333333333333333333333333333333333333333333"
-          txOutRef = V3.TxOutRef txId 0
-          value = V3.singleton V3.adaSymbol V3.adaToken (case escrowPrice of Lovelace n -> n)
+      let value =
+            V3.singleton
+              V3.adaSymbol
+              V3.adaToken
+              (case Fixed.escrowPrice of Lovelace n -> n)
           contextData =
             buildContextData $
               ScriptContextBuilder
                 Spending
-                [ SetRedeemer (V3.Redeemer (V3.toBuiltinData (0 :: Integer)))
-                , AddSignature buyerKeyHash
-                , AddInputUTXO txOutRef value True
-                , SetOutputValue value
+                [ SetRedeemer Fixed.depositRedeemer
+                , AddSignature Fixed.buyerKeyHash
+                , AddInputUTXO Fixed.txOutRef value True
+                , AddOutputUTXO Fixed.scriptAddr value
                 ]
       result <- evaluateValidator contextData
       result `shouldSatisfy` isEvaluationSuccess
 
     it "deposit_without_buyer_signature should fail" do
       -- This matches the test that removes buyer signature from @successful_deposit
-      let txId = V3.TxId "3333333333333333333333333333333333333333333333333333333333333333"
-          txOutRef = V3.TxOutRef txId 0
-          value = V3.singleton V3.adaSymbol V3.adaToken (case escrowPrice of Lovelace n -> n)
+      let value =
+            V3.singleton
+              V3.adaSymbol
+              V3.adaToken
+              (case Fixed.escrowPrice of Lovelace n -> n)
           contextData =
             buildContextData $
               ScriptContextBuilder
                 Spending
-                [ SetRedeemer (V3.Redeemer (V3.toBuiltinData (0 :: Integer)))
+                [ SetRedeemer Fixed.depositRedeemer
                 , -- Note: No AddSignature (simulating removed buyer signature)
-                  AddInputUTXO txOutRef value True
-                , SetOutputValue value
+                  AddInputUTXO Fixed.txOutRef value True
+                , AddOutputUTXO Fixed.scriptAddr value
                 ]
       result <- evaluateValidator contextData
       result `shouldSatisfy` isEvaluationFailure
 
     it "deposit_with_incorrect_amount should fail" do
       -- Deposit with buyer signature but wrong amount (50 ADA instead of 75 ADA)
-      let txId = V3.TxId "3333333333333333333333333333333333333333333333333333333333333333"
-          txOutRef = V3.TxOutRef txId 0
-          correctInputValue = V3.singleton V3.adaSymbol V3.adaToken (case escrowPrice of Lovelace n -> n)
+      let correctInputValue =
+            V3.singleton
+              V3.adaSymbol
+              V3.adaToken
+              (case Fixed.escrowPrice of Lovelace n -> n)
           wrongOutputValue = V3.singleton V3.adaSymbol V3.adaToken 50000000 -- Wrong amount: 50 ADA
           contextData =
             buildContextData $
               ScriptContextBuilder
                 Spending
-                [ SetRedeemer (V3.Redeemer (V3.toBuiltinData (0 :: Integer)))
-                , AddSignature buyerKeyHash
-                , AddInputUTXO txOutRef correctInputValue True
-                , SetOutputValue wrongOutputValue -- Wrong amount: 50 ADA instead of 75 ADA
+                [ SetRedeemer Fixed.depositRedeemer
+                , AddSignature Fixed.buyerKeyHash
+                , AddInputUTXO Fixed.txOutRef correctInputValue True
+                , AddOutputUTXO Fixed.scriptAddr wrongOutputValue -- Wrong amount: 50 ADA instead of 75 ADA
+                ]
+      result <- evaluateValidator contextData
+      result `shouldSatisfy` isEvaluationFailure
+
+    it "deposit_to_wrong_address should fail" do
+      -- Deposit with buyer signature but output goes to impostor's pubkey address instead of script
+      let inputValue =
+            V3.singleton
+              V3.adaSymbol
+              V3.adaToken
+              (case Fixed.escrowPrice of Lovelace n -> n)
+          -- Use standardized impostor pubkey hash (all c's) from fixtures
+          wrongAddr = V3.Address (V3.PubKeyCredential Fixed.impostorPubkey) Nothing
+          outputValue =
+            V3.singleton
+              V3.adaSymbol
+              V3.adaToken
+              (case Fixed.escrowPrice of Lovelace n -> n)
+          contextData =
+            buildContextData $
+              ScriptContextBuilder
+                Spending
+                [ SetRedeemer Fixed.depositRedeemer
+                , AddSignature Fixed.buyerKeyHash
+                , AddInputUTXO Fixed.txOutRef inputValue True
+                , AddOutputUTXO wrongAddr outputValue -- Output to wrong address!
                 ]
       result <- evaluateValidator contextData
       result `shouldSatisfy` isEvaluationFailure

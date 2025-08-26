@@ -10,6 +10,10 @@
       "type": "builtin_data",
       "value": "#bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
     },
+    "impostor_pubkey": {
+      "type": "builtin_data",
+      "value": "#cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+    },
     "successful_deposit": {
       "type": "script_context",
       "script_context": {
@@ -30,8 +34,31 @@
             "is_own_input": true
           },
           {
-            "op": "set_output_value",
+            "op": "add_output_utxo",
+            "address": "script",
             "lovelace": 75000000
+          }
+        ]
+      }
+    },
+    "deposit_setup_no_output": {
+      "type": "script_context",
+      "script_context": {
+        "baseline": "spending",
+        "patches": [
+          {
+            "op": "set_redeemer",
+            "redeemer": "0"
+          },
+          {
+            "op": "add_signature",
+            "pubkey_hash": "@buyer_pubkey"
+          },
+          {
+            "op": "add_input_utxo",
+            "utxo_ref": "3333333333333333333333333333333333333333333333333333333333333333:0",
+            "lovelace": 75000000,
+            "is_own_input": true
           }
         ]
       }
@@ -180,8 +207,29 @@
           "baseline": "@successful_deposit",
           "patches": [
             {
-              "op": "set_output_value",
+              "op": "add_output_utxo",
+              "address": "script",
               "lovelace": 50000000
+            }
+          ]
+        }
+      },
+      "expected": {
+        "type": "error"
+      }
+    },
+    {
+      "name": "deposit_to_wrong_address",
+      "description": "Deposit fails when ADA goes to pubkey address instead of script",
+      "input": {
+        "type": "script_context",
+        "script_context": {
+          "baseline": "@deposit_setup_no_output",
+          "patches": [
+            {
+              "op": "add_output_utxo",
+              "address": "pubkey:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+              "lovelace": 75000000
             }
           ]
         }

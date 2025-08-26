@@ -31,7 +31,8 @@ data PatchOperation
   | SetRedeemer V3.Redeemer
   | AddInputUTXO V3.TxOutRef V3.Value Bool
   | SetValidRange (Maybe V3.POSIXTime) (Maybe V3.POSIXTime)
-  | SetOutputValue V3.Value
+  | AddOutputUTXO V3.Address V3.Value
+  | RemoveOutputUTXO Int
   deriving stock (Show, Eq, Generic)
 
 -- | Builder specification combining baseline and patches
@@ -162,18 +163,17 @@ applyPatch ctx patch =
               )
           updatedTxInfo = txInfo {V3.txInfoValidRange = newRange}
       pure $ ctx {V3.scriptContextTxInfo = updatedTxInfo}
-    SetOutputValue value -> do
+    AddOutputUTXO address value -> do
       let txInfo = V3.scriptContextTxInfo ctx
-          -- Use the same script address as the input being spent
-          -- This ensures validators can find continuing outputs to the same script
-          scriptAddr =
-            V3.Address
-              ( V3.ScriptCredential
-                  (V3.ScriptHash "1111111111111111111111111111111111111111111111111111111111")
-              )
-              Nothing
-          newTxOut = V3.TxOut scriptAddr value V3.NoOutputDatum Nothing
+          newTxOut = V3.TxOut address value V3.NoOutputDatum Nothing
           updatedOutputs = newTxOut : V3.txInfoOutputs txInfo
+          updatedTxInfo = txInfo {V3.txInfoOutputs = updatedOutputs}
+      pure $ ctx {V3.scriptContextTxInfo = updatedTxInfo}
+    RemoveOutputUTXO index -> do
+      let txInfo = V3.scriptContextTxInfo ctx
+          currentOutputs = V3.txInfoOutputs txInfo
+          (before, after) = splitAt index currentOutputs
+          updatedOutputs = before <> drop 1 after
           updatedTxInfo = txInfo {V3.txInfoOutputs = updatedOutputs}
       pure $ ctx {V3.scriptContextTxInfo = updatedTxInfo}
 

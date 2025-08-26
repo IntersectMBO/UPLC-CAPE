@@ -1,3 +1,6 @@
+{-# OPTIONS_GHC -fplugin PlutusTx.Plugin #-}
+{-# OPTIONS_GHC -fplugin-opt PlutusTx.Plugin:target-version=1.1.0 #-}
+
 {- | Cape test suite loading and resolution module
 
 This module provides data types and functions for loading and processing
@@ -49,6 +52,7 @@ import PlutusCore.Data.Compact.Parser (parseBuiltinDataText, renderParseError)
 import PlutusCore.Data.Compact.Printer (dataToCompactText)
 import PlutusLedgerApi.V3 qualified as V3
 import PlutusTx.Builtins qualified as Builtins
+import PlutusTx.Builtins.HasOpaque (stringToBuiltinByteStringHex)
 import PlutusTx.Builtins.Internal qualified as BI
 import System.Directory (doesFileExist)
 import System.FilePath (takeDirectory, (</>))
@@ -305,13 +309,21 @@ data PatchOperationSpec
     --     }
     --     @
     SetValidRangeSpec (Maybe Integer) (Maybe Integer)
-  | -- | Set output value in lovelace
+  | -- | Add output UTXO to specified address
+    --
+    --     JSON examples:
+    --     @
+    --     {"op": "add_output_utxo", "address": "script", "lovelace": 75000000}
+    --     {"op": "add_output_utxo", "address": "pubkey:@buyer_pubkey", "lovelace": 50000000}
+    --     @
+    AddOutputUTXOSpec Text Integer
+  | -- | Remove output UTXO by index
     --
     --     JSON example:
     --     @
-    --     {"op": "set_output_value", "lovelace": 75000000}
+    --     {"op": "remove_output_utxo", "index": 0}
     --     @
-    SetOutputValueSpec Integer
+    RemoveOutputUTXOSpec Int
   deriving stock (Show)
 
 -- | Expected result specification for test cases.
@@ -454,7 +466,11 @@ instance FromJSON PatchOperationSpec where
         SetValidRangeSpec
           <$> o .:? "from_time"
           <*> o .:? "to_time"
-      "set_output_value" -> SetOutputValueSpec <$> o .: "lovelace"
+      "add_output_utxo" ->
+        AddOutputUTXOSpec
+          <$> o .: "address"
+          <*> o .: "lovelace"
+      "remove_output_utxo" -> RemoveOutputUTXOSpec <$> o .: "index"
       _ -> fail $ "Unknown patch operation: " <> toString op
 
 -- * Core Functions
@@ -777,9 +793,40 @@ convertPatchOperation dataStructures spec =
       let fromPosix = fmap V3.POSIXTime fromTime
           toPosix = fmap V3.POSIXTime toTime
       pure $ SetValidRange fromPosix toPosix
-    SetOutputValueSpec lovelaceAmount -> do
+    AddOutputUTXOSpec addressSpec lovelaceAmount -> do
       let value = V3.singleton V3.adaSymbol V3.adaToken lovelaceAmount
-      pure $ SetOutputValue value
+      address <- parseAddressSpec addressSpec
+      pure $ AddOutputUTXO address value
+    RemoveOutputUTXOSpec index -> do
+      pure $ RemoveOutputUTXO index
+
+{- | Parse address specification string into V3.Address.
+
+Supported formats:
+- "script": Use the default script address (script hash all 1s)
+- "pubkey:@reference": Use pubkey address with referenced pubkey hash
+- "pubkey:hexstring": Use pubkey address with literal hex pubkey hash
+-}
+parseAddressSpec :: Text -> IO V3.Address
+parseAddressSpec addressSpec = case addressSpec of
+  "script" ->
+    pure $
+      V3.Address
+        ( V3.ScriptCredential
+            (V3.ScriptHash "1111111111111111111111111111111111111111111111111111111111")
+        )
+        Nothing
+  _ | "pubkey:" `Text.isPrefixOf` addressSpec -> do
+    let pubkeyPart = Text.drop 7 addressSpec -- Remove "pubkey:" prefix
+    pubkeyHash <-
+      if "@" `Text.isPrefixOf` pubkeyPart
+        then
+          error . toText $
+            "Address references not yet implemented: " <> toString addressSpec
+        else pure $ V3.PubKeyHash $ stringToBuiltinByteStringHex $ toString pubkeyPart
+    pure $ V3.Address (V3.PubKeyCredential pubkeyHash) Nothing
+  _ ->
+    error . toText $ "Unsupported address format: " <> toString addressSpec
 
 {- | Convert ScriptContextSpec to ScriptContextBuilder with reference resolution.
 
