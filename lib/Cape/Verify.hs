@@ -7,8 +7,9 @@ import PlutusCore qualified as PLC
 import UntypedPlutusCore qualified as UPLC
 import UntypedPlutusCore.DeBruijn (NamedDeBruijn)
 
--- | Heuristically detect the unit constant in an evaluated term.
--- This matches the canonical 'con unit ()' form.
+{- | Heuristically detect the unit constant in an evaluated term.
+This matches the canonical 'con unit ()' form.
+-}
 isBuiltinUnit ::
   UPLC.Term NamedDeBruijn PLC.DefaultUni PLC.DefaultFun () -> Bool
 isBuiltinUnit = \case

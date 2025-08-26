@@ -11,9 +11,10 @@ import PlutusTx.Code (CompiledCodeIn (..))
 import UntypedPlutusCore qualified as UPLC
 import UntypedPlutusCore.DeBruijn (deBruijnTerm)
 
--- | Unified program compilation with optional BuiltinData application
--- TODO: rename it to `programToCompiledCode` or similar
--- TODO: instead of passing optional builtin data, callers could use `unsafeApplyCode` with `liftCodeDef`. This makes this function simpler.
+{- | Unified program compilation with optional BuiltinData application
+TODO: rename it to `programToCompiledCode` or similar
+TODO: instead of passing optional builtin data, callers could use `unsafeApplyCode` with `liftCodeDef`. This makes this function simpler.
+-}
 compileProgram ::
   UPLC.Program UPLC.Name PLC.DefaultUni PLC.DefaultFun PLC.SrcSpan ->
   Maybe V3.BuiltinData ->

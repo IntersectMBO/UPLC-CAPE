@@ -6,10 +6,11 @@ module Cape.Cli (
 import Options.Applicative
 import Prelude
 
--- | CLI options
--- -i: input UPLC file
--- -o: output metrics.json file
--- -t: required cape-tests.json file for test execution
+{- | CLI options
+-i: input UPLC file
+-o: output metrics.json file
+-t: required cape-tests.json file for test execution
+-}
 data Options = Options
   { optInput :: FilePath
   , optOutput :: FilePath

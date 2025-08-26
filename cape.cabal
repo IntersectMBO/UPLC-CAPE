@@ -150,6 +150,7 @@ test-suite cape-tests
     PlutusCore.Data.Compact.ParserSpec
     PlutusCore.Data.Compact.PrinterSpec
     TwoPartyEscrowSpec
+    TwoPartyEscrowSpec.Fixture
 
   build-depends:
     , aeson
