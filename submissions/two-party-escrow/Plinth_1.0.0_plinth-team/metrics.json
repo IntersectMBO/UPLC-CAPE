@@ -116,7 +116,7 @@
     "term_size": 1340
   },
   "scenario": "two-party-escrow",
-  "timestamp": "2025-08-26T15:35:25Z",
+  "timestamp": "2025-08-26T17:33:17Z",
   "version": "1.0.0",
   "notes": "Manual metrics with test results - one failing test case due to validator logic"
 }
