@@ -840,8 +840,8 @@ resolveScriptContextInput dataStructures spec = do
   builder <- convertScriptContextSpec dataStructures spec
   case buildScriptContext builder of
     Left err -> die ("Failed to build ScriptContext: " <> show err)
-    Right scriptContext -> do
-      let builtinData = V3.toBuiltinData scriptContext
-
-      -- Convert PlutusCore.Data to compact text representation
-      pure $ dataToCompactText $ Builtins.builtinDataToData builtinData
+    Right scriptContext ->
+      pure $
+        dataToCompactText $
+          Builtins.builtinDataToData $
+            V3.toBuiltinData scriptContext
