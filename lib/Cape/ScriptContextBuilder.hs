@@ -15,6 +15,7 @@ import Control.Monad (foldM)
 import Data.Aeson (FromJSON (..))
 import Data.Aeson qualified as Json
 import Data.Text qualified as Text
+import GHC.Generics (Generic)
 import PlutusLedgerApi.V3 qualified as V3
 import PlutusLedgerApi.V3.MintValue (emptyMintValue)
 import PlutusTx.AssocMap qualified as Map
@@ -26,9 +27,11 @@ data BaselineType = Spending
 -- | Individual patch operations that can be applied to a ScriptContext
 data PatchOperation
   = AddSignature V3.PubKeyHash
+  | RemoveSignature V3.PubKeyHash
   | SetRedeemer V3.Redeemer
-  | SetSpendingUTXO V3.TxOutRef
+  | AddInputUTXO V3.TxOutRef V3.Value Bool
   | SetValidRange (Maybe V3.POSIXTime) (Maybe V3.POSIXTime)
+  | SetOutputValue V3.Value
   deriving stock (Show, Eq, Generic)
 
 -- | Builder specification combining baseline and patches
@@ -107,18 +110,37 @@ applyPatch ctx patch =
               { V3.txInfoSignatories = pubKeyHash : V3.txInfoSignatories txInfo
               }
       pure $ ctx {V3.scriptContextTxInfo = updatedTxInfo}
+    RemoveSignature pubKeyHash -> do
+      let txInfo = V3.scriptContextTxInfo ctx
+          currentSignatories = V3.txInfoSignatories txInfo
+          filteredSignatories = filter (/= pubKeyHash) currentSignatories
+          updatedTxInfo = txInfo {V3.txInfoSignatories = filteredSignatories}
+      pure $ ctx {V3.scriptContextTxInfo = updatedTxInfo}
     SetRedeemer redeemer -> do
       pure $ ctx {V3.scriptContextRedeemer = redeemer}
-    SetSpendingUTXO txOutRef -> do
-      case V3.scriptContextScriptInfo ctx of
-        V3.SpendingScript _ maybeDatum ->
-          pure $
-            ctx {V3.scriptContextScriptInfo = V3.SpendingScript txOutRef maybeDatum}
-        _ ->
-          Left $
-            PatchApplicationError
-              "SetSpendingUTXO can only be applied to spending scripts"
-              patch
+    AddInputUTXO txOutRef value isOwnInput -> do
+      let txInfo = V3.scriptContextTxInfo ctx
+          -- Use script address for script inputs, dummy address for regular inputs
+          inputAddr =
+            if isOwnInput
+              then V3.Address (V3.ScriptCredential (V3.ScriptHash "deadbeef")) Nothing
+              else V3.Address (V3.PubKeyCredential (V3.PubKeyHash "")) Nothing
+          newTxIn = V3.TxInInfo txOutRef (V3.TxOut inputAddr value V3.NoOutputDatum Nothing)
+          updatedInputs = newTxIn : V3.txInfoInputs txInfo
+          updatedTxInfo = txInfo {V3.txInfoInputs = updatedInputs}
+          updatedCtx = ctx {V3.scriptContextTxInfo = updatedTxInfo}
+      -- If this is the script's own input, also update the spending script info
+      if isOwnInput
+        then case V3.scriptContextScriptInfo ctx of
+          V3.SpendingScript _ maybeDatum ->
+            pure $
+              updatedCtx {V3.scriptContextScriptInfo = V3.SpendingScript txOutRef maybeDatum}
+          _ ->
+            Left $
+              PatchApplicationError
+                "AddInputUTXO with is_own_input=true can only be applied to spending scripts"
+                patch
+        else pure updatedCtx
     SetValidRange fromTime toTime -> do
       let txInfo = V3.scriptContextTxInfo ctx
           newRange =
@@ -134,6 +156,15 @@ applyPatch ctx patch =
                   toTime
               )
           updatedTxInfo = txInfo {V3.txInfoValidRange = newRange}
+      pure $ ctx {V3.scriptContextTxInfo = updatedTxInfo}
+    SetOutputValue value -> do
+      let txInfo = V3.scriptContextTxInfo ctx
+          -- Use the same script address as the input being spent
+          -- This ensures validators can find continuing outputs to the same script
+          scriptAddr = V3.Address (V3.ScriptCredential (V3.ScriptHash "deadbeef")) Nothing
+          newTxOut = V3.TxOut scriptAddr value V3.NoOutputDatum Nothing
+          updatedOutputs = newTxOut : V3.txInfoOutputs txInfo
+          updatedTxInfo = txInfo {V3.txInfoOutputs = updatedOutputs}
       pure $ ctx {V3.scriptContextTxInfo = updatedTxInfo}
 
 -- JSON instances
