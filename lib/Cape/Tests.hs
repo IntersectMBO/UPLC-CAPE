@@ -52,10 +52,6 @@ import PlutusCore.Data.Compact.Parser (parseBuiltinDataText, renderParseError)
 import PlutusCore.Data.Compact.Printer (dataToCompactText)
 import PlutusLedgerApi.V3 qualified as V3
 import PlutusTx.Builtins qualified as Builtins
-import PlutusTx.Builtins.HasOpaque (
-  BuiltinByteStringHex,
-  unBuiltinByteStringHex,
- )
 import PlutusTx.Builtins.Internal qualified as BI
 import System.Directory (doesFileExist)
 import System.FilePath (takeDirectory, (</>))
