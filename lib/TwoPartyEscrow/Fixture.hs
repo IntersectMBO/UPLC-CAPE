@@ -51,7 +51,7 @@ buyerKeyHash = PubKeyHash buyerKeyHashBytes
 buyerKeyHashBytes :: BuiltinByteString
 buyerKeyHashBytes =
   stringToBuiltinByteStringHex
-    "a1b2c3d4e5f6789012345678abcdef0123456789abcdef0123456789abcdef01"
+    "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
 
 --------------------------------------------------------------------------------
 -- Seller Fixture Data ---------------------------------------------------------
@@ -64,4 +64,4 @@ sellerKeyHash = PubKeyHash sellerKeyHashBytes
 sellerKeyHashBytes :: BuiltinByteString
 sellerKeyHashBytes =
   stringToBuiltinByteStringHex
-    "fedcba9876543210fedcba9876543210fedcba9876543210fedcba9876543210"
+    "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"

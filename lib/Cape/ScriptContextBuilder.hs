@@ -15,7 +15,7 @@ import Control.Monad (foldM)
 import Data.Aeson (FromJSON (..))
 import Data.Aeson qualified as Json
 import Data.Text qualified as Text
-import GHC.Generics (Generic)
+import GHC.Generics ()
 import PlutusLedgerApi.V3 qualified as V3
 import PlutusLedgerApi.V3.MintValue (emptyMintValue)
 import PlutusTx.AssocMap qualified as Map
@@ -123,7 +123,12 @@ applyPatch ctx patch =
           -- Use script address for script inputs, dummy address for regular inputs
           inputAddr =
             if isOwnInput
-              then V3.Address (V3.ScriptCredential (V3.ScriptHash "deadbeef")) Nothing
+              then
+                V3.Address
+                  ( V3.ScriptCredential
+                      (V3.ScriptHash "1111111111111111111111111111111111111111111111111111111111")
+                  )
+                  Nothing
               else V3.Address (V3.PubKeyCredential (V3.PubKeyHash "")) Nothing
           newTxIn = V3.TxInInfo txOutRef (V3.TxOut inputAddr value V3.NoOutputDatum Nothing)
           updatedInputs = newTxIn : V3.txInfoInputs txInfo
@@ -161,7 +166,12 @@ applyPatch ctx patch =
       let txInfo = V3.scriptContextTxInfo ctx
           -- Use the same script address as the input being spent
           -- This ensures validators can find continuing outputs to the same script
-          scriptAddr = V3.Address (V3.ScriptCredential (V3.ScriptHash "deadbeef")) Nothing
+          scriptAddr =
+            V3.Address
+              ( V3.ScriptCredential
+                  (V3.ScriptHash "1111111111111111111111111111111111111111111111111111111111")
+              )
+              Nothing
           newTxOut = V3.TxOut scriptAddr value V3.NoOutputDatum Nothing
           updatedOutputs = newTxOut : V3.txInfoOutputs txInfo
           updatedTxInfo = txInfo {V3.txInfoOutputs = updatedOutputs}

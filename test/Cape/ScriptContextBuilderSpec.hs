@@ -189,7 +189,7 @@ spec = do
         "adds input to transaction without affecting script info when is_own_input=false"
         do
           let baseline = createBaseline Spending
-              txId = V3.TxId "1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef"
+              txId = V3.TxId "3333333333333333333333333333333333333333333333333333333333333333"
               txOutRef = V3.TxOutRef txId 5
               value = V3.singleton V3.adaSymbol V3.adaToken 50000000
               result = applyPatch baseline (AddInputUTXO txOutRef value False)
@@ -207,7 +207,7 @@ spec = do
 
       it "updates spending script UTXO reference when is_own_input=true" do
         let baseline = createBaseline Spending
-            txId = V3.TxId "1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef"
+            txId = V3.TxId "3333333333333333333333333333333333333333333333333333333333333333"
             txOutRef = V3.TxOutRef txId 5
             value = V3.singleton V3.adaSymbol V3.adaToken 75000000
             result = applyPatch baseline (AddInputUTXO txOutRef value True)
@@ -225,7 +225,7 @@ spec = do
 
       it "preserves datum when updating script UTXO" do
         let baseline = createBaseline Spending
-            txId = V3.TxId "abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890"
+            txId = V3.TxId "4444444444444444444444444444444444444444444444444444444444444444"
             txOutRef = V3.TxOutRef txId 2
             value = V3.singleton V3.adaSymbol V3.adaToken 100000000
             result = applyPatch baseline (AddInputUTXO txOutRef value True)
@@ -460,7 +460,7 @@ spec = do
     it "builds complex spending context" do
       let pkh = V3.PubKeyHash "complex1"
           redeemer = V3.Redeemer (V3.toBuiltinData ([1, 2, 3] :: [Integer]))
-          txId = V3.TxId "fedcba9876543210fedcba9876543210fedcba9876543210fedcba9876543210"
+          txId = V3.TxId "5555555555555555555555555555555555555555555555555555555555555555"
           txOutRef = V3.TxOutRef txId 7
           fromTime = V3.POSIXTime 5000
           toTime = V3.POSIXTime 10000
@@ -585,7 +585,7 @@ spec = do
         let redeemerValue = 0 :: Integer
             redeemer = V3.Redeemer (V3.toBuiltinData redeemerValue)
             pubKeyHash =
-              V3.PubKeyHash "a1b2c3d4e5f6789012345678abcdef0123456789abcdef0123456789abcdef01"
+              V3.PubKeyHash "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
             builder = ScriptContextBuilder Spending [SetRedeemer redeemer, AddSignature pubKeyHash]
 
         case buildScriptContext builder of
@@ -655,7 +655,7 @@ spec = do
         let redeemerValue = 0 :: Integer
             redeemer = V3.Redeemer (V3.toBuiltinData redeemerValue)
             pubKeyHash =
-              V3.PubKeyHash "a1b2c3d4e5f6789012345678abcdef0123456789abcdef0123456789abcdef01"
+              V3.PubKeyHash "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
             builder = ScriptContextBuilder Spending [SetRedeemer redeemer, AddSignature pubKeyHash]
 
         case buildScriptContext builder of

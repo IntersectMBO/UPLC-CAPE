@@ -66,7 +66,7 @@ data DataStructureEntry
     --     @
     --     "buyer_pubkey": {
     --       "type": "builtin_data",
-    --       "value": "#a1b2c3d4e5f6789012345678abcdef0123456789abcdef0123456789abcdef01"
+    --       "value": "#aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
     --     }
     --     @
     BuiltinDataEntry Value
@@ -813,7 +813,7 @@ convertScriptContextSpec
           Nothing ->
             die $
               "Script context reference @"
-                <> refName
+                <> toString refName
                 <> " not found or not a script_context type"
 
     -- Convert patches and combine inherited with local patches
