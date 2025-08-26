@@ -11,7 +11,7 @@ import PlutusTx.Builtins qualified as Builtins
 import Test.Hspec
 
 spec :: Spec
-spec = describe "ScriptContextBuilder" do
+spec = do
   describe "createBaseline" do
     it "creates spending baseline with minimal TxInfo" do
       let baseline = createBaseline Spending
@@ -75,6 +75,94 @@ spec = describe "ScriptContextBuilder" do
               `shouldBe` [pkh2, pkh1] -- Reverse order due to prepending
           Left err -> expectationFailure $ "Unexpected error: " <> show err
 
+    context "RemoveSignature" do
+      it "removes signature from single-signature list" do
+        let baseline = createBaseline Spending
+            pubKeyHash = V3.PubKeyHash "deadbeef"
+            patches = [AddSignature pubKeyHash, RemoveSignature pubKeyHash]
+            result = applyPatches patches baseline
+        case result of
+          Right ctx ->
+            V3.txInfoSignatories (V3.scriptContextTxInfo ctx) `shouldBe` []
+          Left err -> expectationFailure $ "Unexpected error: " <> show err
+
+      it "removes signature from multi-signature list preserving order" do
+        let baseline = createBaseline Spending
+            pkh1 = V3.PubKeyHash "cafe0001"
+            pkh2 = V3.PubKeyHash "cafe0002"
+            pkh3 = V3.PubKeyHash "cafe0003"
+            patches =
+              [AddSignature pkh1, AddSignature pkh2, AddSignature pkh3, RemoveSignature pkh2]
+            result = applyPatches patches baseline
+        case result of
+          Right ctx ->
+            V3.txInfoSignatories (V3.scriptContextTxInfo ctx)
+              `shouldBe` [pkh3, pkh1] -- pkh2 removed, others preserve order
+          Left err -> expectationFailure $ "Unexpected error: " <> show err
+
+      it "removes signature from beginning of list" do
+        let baseline = createBaseline Spending
+            pkh1 = V3.PubKeyHash "dead0001"
+            pkh2 = V3.PubKeyHash "dead0002"
+            pkh3 = V3.PubKeyHash "dead0003"
+            patches =
+              [AddSignature pkh1, AddSignature pkh2, AddSignature pkh3, RemoveSignature pkh3]
+            result = applyPatches patches baseline
+        case result of
+          Right ctx ->
+            V3.txInfoSignatories (V3.scriptContextTxInfo ctx)
+              `shouldBe` [pkh2, pkh1] -- First element (pkh3) removed
+          Left err -> expectationFailure $ "Unexpected error: " <> show err
+
+      it "removes signature from end of list" do
+        let baseline = createBaseline Spending
+            pkh1 = V3.PubKeyHash "beef0001"
+            pkh2 = V3.PubKeyHash "beef0002"
+            pkh3 = V3.PubKeyHash "beef0003"
+            patches =
+              [AddSignature pkh1, AddSignature pkh2, AddSignature pkh3, RemoveSignature pkh1]
+            result = applyPatches patches baseline
+        case result of
+          Right ctx ->
+            V3.txInfoSignatories (V3.scriptContextTxInfo ctx)
+              `shouldBe` [pkh3, pkh2] -- Last element (pkh1) removed
+          Left err -> expectationFailure $ "Unexpected error: " <> show err
+
+      it "handles removing non-existent signature gracefully" do
+        let baseline = createBaseline Spending
+            pkh1 = V3.PubKeyHash "exist0001"
+            pkh2 = V3.PubKeyHash "noexist01"
+            patches = [AddSignature pkh1, RemoveSignature pkh2]
+            result = applyPatches patches baseline
+        case result of
+          Right ctx ->
+            V3.txInfoSignatories (V3.scriptContextTxInfo ctx)
+              `shouldBe` [pkh1] -- pkh1 remains, pkh2 removal is no-op
+          Left err -> expectationFailure $ "Unexpected error: " <> show err
+
+      it "handles removing from empty signatories list gracefully" do
+        let baseline = createBaseline Spending
+            pubKeyHash = V3.PubKeyHash "nonexistent"
+            result = applyPatch baseline (RemoveSignature pubKeyHash)
+        case result of
+          Right ctx ->
+            V3.txInfoSignatories (V3.scriptContextTxInfo ctx) `shouldBe` []
+          Left err -> expectationFailure $ "Unexpected error: " <> show err
+
+      it "removes all instances of duplicate signatures" do
+        let baseline = createBaseline Spending
+            pkh1 = V3.PubKeyHash "duplicate1"
+            pkh2 = V3.PubKeyHash "unique0002"
+            -- Add same signature twice
+            patches =
+              [AddSignature pkh1, AddSignature pkh2, AddSignature pkh1, RemoveSignature pkh1]
+            result = applyPatches patches baseline
+        case result of
+          Right ctx ->
+            V3.txInfoSignatories (V3.scriptContextTxInfo ctx)
+              `shouldBe` [pkh2] -- Both instances of pkh1 removed
+          Left err -> expectationFailure $ "Unexpected error: " <> show err
+
     context "SetRedeemer" do
       it "updates the redeemer value" do
         let baseline = createBaseline Spending
@@ -96,29 +184,78 @@ spec = describe "ScriptContextBuilder" do
             V3.scriptContextRedeemer ctx `shouldBe` redeemer2
           Left err -> expectationFailure $ "Unexpected error: " <> show err
 
-    context "SetSpendingUTXO" do
-      it "updates spending script UTXO reference" do
+    context "AddInputUTXO" do
+      it
+        "adds input to transaction without affecting script info when is_own_input=false"
+        do
+          let baseline = createBaseline Spending
+              txId = V3.TxId "1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef"
+              txOutRef = V3.TxOutRef txId 5
+              value = V3.singleton V3.adaSymbol V3.adaToken 50000000
+              result = applyPatch baseline (AddInputUTXO txOutRef value False)
+          case result of
+            Right ctx -> do
+              -- Should add input to transaction
+              let inputs = V3.txInfoInputs (V3.scriptContextTxInfo ctx)
+              length inputs `shouldBe` 1
+              -- Should not change script info
+              case V3.scriptContextScriptInfo ctx of
+                V3.SpendingScript originalTxOutRef _ ->
+                  originalTxOutRef `shouldNotBe` txOutRef
+                _ -> expectationFailure "Expected SpendingScript"
+            Left err -> expectationFailure $ "Unexpected error: " <> show err
+
+      it "updates spending script UTXO reference when is_own_input=true" do
         let baseline = createBaseline Spending
             txId = V3.TxId "1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef"
-            newTxOutRef = V3.TxOutRef txId 5
-            result = applyPatch baseline (SetSpendingUTXO newTxOutRef)
+            txOutRef = V3.TxOutRef txId 5
+            value = V3.singleton V3.adaSymbol V3.adaToken 75000000
+            result = applyPatch baseline (AddInputUTXO txOutRef value True)
         case result of
-          Right ctx -> case V3.scriptContextScriptInfo ctx of
-            V3.SpendingScript txOutRef _ ->
-              txOutRef `shouldBe` newTxOutRef
-            _ -> expectationFailure "Expected SpendingScript"
+          Right ctx -> do
+            -- Should add input to transaction
+            let inputs = V3.txInfoInputs (V3.scriptContextTxInfo ctx)
+            length inputs `shouldBe` 1
+            -- Should update script info
+            case V3.scriptContextScriptInfo ctx of
+              V3.SpendingScript scriptTxOutRef _ ->
+                scriptTxOutRef `shouldBe` txOutRef
+              _ -> expectationFailure "Expected SpendingScript"
           Left err -> expectationFailure $ "Unexpected error: " <> show err
 
-      it "preserves datum when updating UTXO" do
+      it "preserves datum when updating script UTXO" do
         let baseline = createBaseline Spending
             txId = V3.TxId "abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890"
-            newTxOutRef = V3.TxOutRef txId 2
-            result = applyPatch baseline (SetSpendingUTXO newTxOutRef)
+            txOutRef = V3.TxOutRef txId 2
+            value = V3.singleton V3.adaSymbol V3.adaToken 100000000
+            result = applyPatch baseline (AddInputUTXO txOutRef value True)
         case result of
           Right ctx -> case V3.scriptContextScriptInfo ctx of
             V3.SpendingScript _ maybeDatum ->
               maybeDatum `shouldBe` Just (V3.Datum (V3.toBuiltinData ()))
             _ -> expectationFailure "Expected SpendingScript"
+          Left err -> expectationFailure $ "Unexpected error: " <> show err
+
+      it "adds multiple inputs correctly" do
+        let baseline = createBaseline Spending
+            txId1 = V3.TxId "1111111111111111111111111111111111111111111111111111111111111111"
+            txId2 = V3.TxId "2222222222222222222222222222222222222222222222222222222222222222"
+            txOutRef1 = V3.TxOutRef txId1 0
+            txOutRef2 = V3.TxOutRef txId2 1
+            value1 = V3.singleton V3.adaSymbol V3.adaToken 25000000
+            value2 = V3.singleton V3.adaSymbol V3.adaToken 50000000
+            patches = [AddInputUTXO txOutRef1 value1 False, AddInputUTXO txOutRef2 value2 True]
+            result = applyPatches patches baseline
+        case result of
+          Right ctx -> do
+            -- Should have both inputs
+            let inputs = V3.txInfoInputs (V3.scriptContextTxInfo ctx)
+            length inputs `shouldBe` 2
+            -- Script info should point to second UTXO (is_own_input=true)
+            case V3.scriptContextScriptInfo ctx of
+              V3.SpendingScript scriptTxOutRef _ ->
+                scriptTxOutRef `shouldBe` txOutRef2
+              _ -> expectationFailure "Expected SpendingScript"
           Left err -> expectationFailure $ "Unexpected error: " <> show err
 
     context "SetValidRange" do
@@ -222,6 +359,73 @@ spec = describe "ScriptContextBuilder" do
             `shouldBe` [pkh3, pkh2, pkh1] -- Reverse order due to prepending
         Left err -> expectationFailure $ "Unexpected error: " <> show err
 
+    it "handles complex add/remove signature interactions" do
+      let baseline = createBaseline Spending
+          pkh1 = V3.PubKeyHash "interact01"
+          pkh2 = V3.PubKeyHash "interact02"
+          pkh3 = V3.PubKeyHash "interact03"
+          patches =
+            [ AddSignature pkh1
+            , AddSignature pkh2
+            , AddSignature pkh3
+            , RemoveSignature pkh2 -- Remove middle signature
+            , AddSignature pkh2 -- Add it back
+            , RemoveSignature pkh1 -- Remove first signature
+            ]
+          result = applyPatches patches baseline
+      case result of
+        Right ctx ->
+          V3.txInfoSignatories (V3.scriptContextTxInfo ctx)
+            `shouldBe` [pkh2, pkh3] -- Final state after all operations
+        Left err -> expectationFailure $ "Unexpected error: " <> show err
+
+    it "add then immediately remove returns to baseline" do
+      let baseline = createBaseline Spending
+          pkh1 = V3.PubKeyHash "tempkey01"
+          patches = [AddSignature pkh1, RemoveSignature pkh1]
+          result = applyPatches patches baseline
+      case result of
+        Right ctx ->
+          V3.txInfoSignatories (V3.scriptContextTxInfo ctx) `shouldBe` []
+        Left err -> expectationFailure $ "Unexpected error: " <> show err
+
+    it "remove then add ends up with signature" do
+      let baseline = createBaseline Spending
+          pkh1 = V3.PubKeyHash "addback01"
+          patches = [RemoveSignature pkh1, AddSignature pkh1] -- Remove non-existent then add
+          result = applyPatches patches baseline
+      case result of
+        Right ctx ->
+          V3.txInfoSignatories (V3.scriptContextTxInfo ctx) `shouldBe` [pkh1]
+        Left err -> expectationFailure $ "Unexpected error: " <> show err
+
+    it "combines signatures with other patch operations" do
+      let baseline = createBaseline Spending
+          pkh1 = V3.PubKeyHash "combo0001"
+          pkh2 = V3.PubKeyHash "combo0002"
+          redeemer = V3.Redeemer (V3.toBuiltinData (42 :: Integer))
+          fromTime = V3.POSIXTime 1000
+          toTime = V3.POSIXTime 2000
+          patches =
+            [ AddSignature pkh1
+            , SetRedeemer redeemer
+            , AddSignature pkh2
+            , SetValidRange (Just fromTime) (Just toTime)
+            , RemoveSignature pkh1
+            ]
+          result = applyPatches patches baseline
+      case result of
+        Right ctx -> do
+          -- Verify final signature state
+          V3.txInfoSignatories (V3.scriptContextTxInfo ctx) `shouldBe` [pkh2]
+          -- Verify other patches were applied correctly
+          V3.scriptContextRedeemer ctx `shouldBe` redeemer
+          V3.txInfoValidRange (V3.scriptContextTxInfo ctx)
+            `shouldBe` V3.Interval
+              (V3.LowerBound (V3.Finite fromTime) True)
+              (V3.UpperBound (V3.Finite toTime) True)
+        Left err -> expectationFailure $ "Unexpected error: " <> show err
+
   describe "buildScriptContext" do
     it "builds spending context with no patches" do
       let builder = ScriptContextBuilder Spending []
@@ -265,7 +469,7 @@ spec = describe "ScriptContextBuilder" do
               Spending
               [ AddSignature pkh
               , SetRedeemer redeemer
-              , SetSpendingUTXO txOutRef
+              , AddInputUTXO txOutRef (V3.singleton V3.adaSymbol V3.adaToken 75000000) True
               , SetValidRange (Just fromTime) (Just toTime)
               ]
           result = buildScriptContext builder
