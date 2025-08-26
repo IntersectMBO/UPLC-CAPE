@@ -36,7 +36,7 @@ import PlutusLedgerApi.V1.Data.Value (lovelaceValueOf)
 import PlutusLedgerApi.V3.Data.Contexts (getContinuingOutputs, txSignedBy)
 import PlutusTx.Builtins.Internal (unitval)
 import PlutusTx.Data.List qualified as List
-import TwoPartyEscrow.Fixture
+import TwoPartyEscrow.Fixture qualified as Fixed
 
 {- | Redeemer constants for documentation
 Deposit = 0, Accept = 1, Refund = 2
@@ -57,10 +57,10 @@ twoPartyEscrowValidator scriptContextData =
                 traceError "No continuing outputs found"
             | outCount > 1 ->
                 traceError "Too many continuing outputs found"
-            | not (txSignedBy (scriptContextTxInfo ctx) buyerKeyHash) ->
+            | not (txSignedBy (scriptContextTxInfo ctx) Fixed.buyerKeyHash) ->
                 traceError "Buyer signature missing"
             | let onlyOut = List.head outs
-               in lovelaceValueOf (txOutValue onlyOut) /= escrowPrice ->
+               in lovelaceValueOf (txOutValue onlyOut) /= Fixed.escrowPrice ->
                 traceError "Wrong continuing output amount"
             | otherwise -> unitval
     1 -> unitval
