@@ -31,8 +31,8 @@ Implement a two-party escrow validator and compile it as a **fully-applied UPLC 
 
 2. **Fixed Parameters**: The following parameters must be baked into the UPLC program:
 
-   - **Buyer Address**: Fixed buyer public key hash
-   - **Seller Address**: Fixed seller public key hash
+   - **Buyer Address**: `a1b2c3d4e5f6789012345678abcdef0123456789abcdef0123456789abcdef01`
+   - **Seller Address**: `fedcba9876543210fedcba9876543210fedcba9876543210fedcba9876543210`
    - **Price**: 75 ADA (75,000,000 lovelace)
    - **Deadline**: 30 minutes after deposit (1800 seconds)
 

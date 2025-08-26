@@ -5,7 +5,6 @@ import Prelude
 import Cape.Tests
 import Data.Aeson qualified as Json
 import Data.Map.Strict qualified as Map
-import Data.Vector qualified as Vector
 import PlutusCore.Data.Compact.Parser (parseBuiltinDataText)
 import Test.Hspec
 
@@ -43,7 +42,7 @@ spec = describe "App.Tests" do
               "Failed to parse resolved ScriptContext: " <> show parseErr
           Right _ -> pass -- Success - it's valid BuiltinData
       it "resolves ScriptContext with SetRedeemer patch" do
-        let redeemerValue = Json.Number 42
+        let redeemerValue = Json.String "42"
             scriptContextSpec =
               ScriptContextSpec
                 { scsBaseline = Spending
@@ -80,15 +79,7 @@ spec = describe "App.Tests" do
                 , scsPatches =
                     [ AddSignatureSpec "cafe0001"
                     , AddSignatureSpec "cafe0002"
-                    , SetRedeemerSpec
-                        ( Json.Array
-                            ( Vector.fromList
-                                [ Json.Number 1
-                                , Json.Number 2
-                                , Json.Number 3
-                                ]
-                            )
-                        )
+                    , SetRedeemerSpec (Json.String "[1 2 3]")
                     , SetValidRangeSpec (Just 1000) (Just 2000)
                     ]
                 }

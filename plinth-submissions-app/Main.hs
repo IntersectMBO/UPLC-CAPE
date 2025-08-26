@@ -7,6 +7,7 @@ import Fibonacci (fibonacci25Code)
 import PlutusCore.Pretty qualified as PP
 import PlutusCore.Quote (runQuoteT)
 import PlutusTx.Code (CompiledCode, getPlcNoAnn)
+import TwoPartyEscrow (twoPartyEscrowAcceptCode)
 import UntypedPlutusCore qualified as UPLC
 import UntypedPlutusCore.DeBruijn (unDeBruijnTerm)
 
@@ -14,6 +15,7 @@ main :: IO ()
 main = do
   writeCodeToFile "fibonacci.uplc" fibonacci25Code
   writeCodeToFile "factorial.uplc" factorial10Code
+  writeCodeToFile "two-party-escrow.uplc" twoPartyEscrowAcceptCode
 
 writeCodeToFile :: FilePath -> CompiledCode a -> IO ()
 writeCodeToFile filePath code = do

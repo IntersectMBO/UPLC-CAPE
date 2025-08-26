@@ -155,7 +155,7 @@ main() {
 
   # Environment validation - measure tool must be buildable via cabal
   test_group "environment requirements" \
-    "measure tool buildable" "(cd \"$REPO_ROOT/measure\" && cabal build exe:measure)" 30 ""
+    "measure tool buildable" "(cd \"$REPO_ROOT\" && cabal build exe:measure)" 30 ""
 
   # Core functionality
   test_group "core commands" \
@@ -227,7 +227,7 @@ main() {
 
   # Haskell library tests
   test_group "Haskell library tests" \
-    "cabal test all" "(cd \"$REPO_ROOT/measure\" && cabal test all)" 60 ""
+    "cabal test cape-tests" "(cd \"$REPO_ROOT\" && cabal test cape-tests)" 60 ""
 
   if [[ -t 1 && -z "${NO_COLOR:-}" ]]; then
     echo -e "\033[0;34mINFO:\033[0m Test suite completed!"
