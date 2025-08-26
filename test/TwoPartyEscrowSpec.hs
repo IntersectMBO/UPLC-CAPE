@@ -132,7 +132,7 @@ spec = do
     it "deposit_with_incorrect_amount should fail" do
       -- Deposit with buyer signature but wrong amount (50 ADA instead of 75 ADA)
       let correctInputValue = lovelaceValue Fixed.escrowPrice
-          wrongOutputValue = V3.singleton V3.adaSymbol V3.adaToken 50000000 -- Wrong amount: 50 ADA
+          wrongOutputValue = lovelaceValue (Lovelace 50000000) -- Wrong amount: 50 ADA
           contextData =
             buildContextData $
               ScriptContextBuilder
@@ -195,7 +195,7 @@ spec = do
     it "accept_with_incorrect_payment_amount should fail" do
       -- Accept with seller signature but wrong payment amount (50 ADA instead of 75 ADA)
       let correctInputValue = lovelaceValue Fixed.escrowPrice
-          wrongOutputValue = V3.singleton V3.adaSymbol V3.adaToken 50000000 -- Wrong amount: 50 ADA
+          wrongOutputValue = lovelaceValue (Lovelace 50000000) -- Wrong amount: 50 ADA
           contextData =
             buildContextData $
               ScriptContextBuilder
