@@ -2,7 +2,7 @@
 .direnv/
 node_modules/
 dist-newstyle/
-plinth/*.uplc
+*.uplc
 *.local.md
 .hspec-failures
 .envrc.local
