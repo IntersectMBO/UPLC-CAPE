@@ -12,8 +12,9 @@ import Test.Hspec
 import TwoPartyEscrow
 import TwoPartyEscrow.Fixture
 
--- | Build ScriptContext or crash with error message
--- This eliminates the need for case analysis in tests
+{- | Build ScriptContext or crash with error message
+This eliminates the need for case analysis in tests
+-}
 buildScriptContextOrCrash :: ScriptContextBuilder -> V3.ScriptContext
 buildScriptContextOrCrash builder =
   case buildScriptContext builder of
@@ -96,7 +97,7 @@ spec = do
   describe "ScriptContext validation" do
     it "deposit_successful should pass" do
       -- This matches the @successful_deposit data structure from cape-tests.json
-      let txId = V3.TxId "1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef"
+      let txId = V3.TxId "3333333333333333333333333333333333333333333333333333333333333333"
           txOutRef = V3.TxOutRef txId 0
           value = V3.singleton V3.adaSymbol V3.adaToken (case escrowPrice of Lovelace n -> n)
           contextData =
@@ -113,7 +114,7 @@ spec = do
 
     it "deposit_without_buyer_signature should fail" do
       -- This matches the test that removes buyer signature from @successful_deposit
-      let txId = V3.TxId "1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef"
+      let txId = V3.TxId "3333333333333333333333333333333333333333333333333333333333333333"
           txOutRef = V3.TxOutRef txId 0
           value = V3.singleton V3.adaSymbol V3.adaToken (case escrowPrice of Lovelace n -> n)
           contextData =
@@ -130,7 +131,7 @@ spec = do
 
     it "deposit_with_incorrect_amount should fail" do
       -- Deposit with buyer signature but wrong amount (50 ADA instead of 75 ADA)
-      let txId = V3.TxId "1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef"
+      let txId = V3.TxId "3333333333333333333333333333333333333333333333333333333333333333"
           txOutRef = V3.TxOutRef txId 0
           correctInputValue = V3.singleton V3.adaSymbol V3.adaToken (case escrowPrice of Lovelace n -> n)
           wrongOutputValue = V3.singleton V3.adaSymbol V3.adaToken 50000000 -- Wrong amount: 50 ADA

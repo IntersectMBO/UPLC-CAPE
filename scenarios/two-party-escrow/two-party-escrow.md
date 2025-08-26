@@ -31,8 +31,8 @@ Implement a two-party escrow validator and compile it as a **fully-applied UPLC 
 
 2. **Fixed Parameters**: The following parameters must be baked into the UPLC program:
 
-   - **Buyer Address**: `a1b2c3d4e5f6789012345678abcdef0123456789abcdef0123456789abcdef01`
-   - **Seller Address**: `fedcba9876543210fedcba9876543210fedcba9876543210fedcba9876543210`
+   - **Buyer Address**: `aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa`
+   - **Seller Address**: `bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb`
    - **Price**: 75 ADA (75,000,000 lovelace)
    - **Deadline**: 30 minutes after deposit (1800 seconds)
 
@@ -52,7 +52,7 @@ When testing this validator, the test framework uses generic dummy constants for
 
 **Script Input (UTXO Being Spent):**
 
-- **Script Hash**: `deadbeef` (generic test identifier)
+- **Script Hash**: `1111111111111111111111111111111111111111111111111111111111` (generic test identifier)
 - **Transaction ID**: `0000000000000000000000000000000000000000000000000000000000000000`
 - **Output Index**: `0`
 

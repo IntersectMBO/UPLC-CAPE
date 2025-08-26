@@ -37,11 +37,13 @@ import PlutusTx.Builtins (unsafeDataAsI)
 import PlutusTx.Builtins.Internal (unitval)
 import PlutusTx.Builtins.Internal qualified as BI
 
--- | Redeemer constants for documentation
--- Deposit = 0, Accept = 1, Refund = 2
+{- | Redeemer constants for documentation
+Deposit = 0, Accept = 1, Refund = 2
+-}
 
--- | Two-Party Escrow Validator
--- Takes BuiltinData (redeemer) and returns BuiltinUnit
+{- | Two-Party Escrow Validator
+Takes BuiltinData (redeemer) and returns BuiltinUnit
+-}
 {-# INLINEABLE twoPartyEscrowValidator #-}
 twoPartyEscrowValidator :: BuiltinData -> BuiltinUnit
 twoPartyEscrowValidator scriptContextData =
@@ -82,8 +84,9 @@ twoPartyEscrowValidatorCode = $$(PlutusTx.compile [||twoPartyEscrowValidator||])
 acceptRedeemerData :: BuiltinData
 acceptRedeemerData = BI.BuiltinData (PLC.I 1)
 
--- | The compiled two-party escrow validator for Accept sequence (redeemer = 1)
--- This is used for performance measurement according to the benchmark specification
+{- | The compiled two-party escrow validator for Accept sequence (redeemer = 1)
+This is used for performance measurement according to the benchmark specification
+-}
 twoPartyEscrowAcceptCode :: CompiledCode BuiltinUnit
 twoPartyEscrowAcceptCode =
   twoPartyEscrowValidatorCode `unsafeApplyCode` liftCodeDef acceptRedeemerData
@@ -101,10 +104,10 @@ escrowDeadlineSeconds = 1800 -- 30 minutes
 buyerAddress :: BuiltinByteString
 buyerAddress =
   stringToBuiltinByteStringHex
-    "a1b2c3d4e5f6789012345678abcdef0123456789abcdef0123456789abcdef01"
+    "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
 
 -- | Fixed seller address
 sellerAddress :: BuiltinByteString
 sellerAddress =
   stringToBuiltinByteStringHex
-    "fedcba9876543210fedcba9876543210fedcba9876543210fedcba9876543210"
+    "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
