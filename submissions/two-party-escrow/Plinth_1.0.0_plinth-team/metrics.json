@@ -29,10 +29,10 @@
       "name": "redeemer_integer_negative_1"
     },
     {
-      "cpu_units": 24688,
+      "cpu_units": 248343,
       "description": "Validator fails when redeemer is constructor instead of integer",
       "execution_result": "success",
-      "memory_units": 132,
+      "memory_units": 196,
       "name": "redeemer_constructor_0"
     },
     {
@@ -64,18 +64,25 @@
       "name": "simple_builtin_data_redeemer_0"
     },
     {
-      "cpu_units": 24688,
-      "description": "Deposit with buyer signature should succeed",
-      "execution_result": "error",
-      "memory_units": 132,
-      "name": "deposit_with_buyer_signature"
+      "cpu_units": 56789333,
+      "description": "Deposit with buyer signature and exactly 75 ADA should succeed",
+      "execution_result": "success",
+      "memory_units": 210814,
+      "name": "deposit_successful"
     },
     {
-      "cpu_units": 24688,
+      "cpu_units": 65377120,
       "description": "Deposit without buyer signature should fail",
       "execution_result": "success",
-      "memory_units": 132,
+      "memory_units": 250681,
       "name": "deposit_without_buyer_signature"
+    },
+    {
+      "cpu_units": 49834875,
+      "description": "Deposit with buyer signature but wrong amount (50 ADA) should fail",
+      "execution_result": "success",
+      "memory_units": 188225,
+      "name": "deposit_with_incorrect_amount"
     }
   ],
   "execution_environment": {
@@ -83,26 +90,26 @@
   },
   "measurements": {
     "cpu_units": {
-      "maximum": 24688,
+      "maximum": 65377120,
       "median": 24688,
       "minimum": 24688,
-      "sum": 271568,
-      "sum_negative": 24688,
-      "sum_positive": 246880
+      "sum": 172447175,
+      "sum_negative": 0,
+      "sum_positive": 172447175
     },
     "memory_units": {
-      "maximum": 132,
+      "maximum": 250681,
       "median": 132,
       "minimum": 132,
-      "sum": 1452,
-      "sum_negative": 132,
-      "sum_positive": 1320
+      "sum": 650972,
+      "sum_negative": 0,
+      "sum_positive": 650972
     },
-    "script_size_bytes": 617,
-    "term_size": 568
+    "script_size_bytes": 2083,
+    "term_size": 1870
   },
   "scenario": "two-party-escrow",
-  "timestamp": "2025-08-22T19:20:05Z",
+  "timestamp": "2025-08-26T11:17:21Z",
   "version": "1.0.0",
   "notes": "Manual metrics with test results - one failing test case due to validator logic"
 }
