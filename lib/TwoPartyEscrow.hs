@@ -48,27 +48,27 @@ Takes BuiltinData-encoded ScriptContext and returns BuiltinUnit
 {-# INLINEABLE twoPartyEscrowValidator #-}
 twoPartyEscrowValidator :: BuiltinData -> BuiltinUnit
 twoPartyEscrowValidator scriptContextData =
-  case fromBuiltinData scriptContextData of
-    Nothing -> traceError "Failed to parse ScriptContext"
-    Just ctx ->
-      case unsafeFromBuiltinData (getRedeemer (scriptContextRedeemer ctx)) of
-        (0 :: Integer) ->
-          let outs = getContinuingOutputs ctx
-              outCount = List.length outs
-           in if
-                | outCount == 0 ->
-                    traceError "No continuing outputs found"
-                | outCount > 1 ->
-                    traceError "Too many continuing outputs found"
-                | not (txSignedBy (scriptContextTxInfo ctx) buyerKeyHash) ->
-                    traceError "Buyer signature missing"
-                | let onlyOut = List.head outs
-                   in lovelaceValueOf (txOutValue onlyOut) /= escrowPrice ->
-                    traceError "Wrong continuing output amount"
-                | otherwise -> unitval
-        1 -> unitval
-        2 -> unitval
-        _ -> traceError "Invalid redeemer"
+  case red of
+    (0 :: Integer) ->
+      let outs = getContinuingOutputs ctx
+          outCount = List.length outs
+       in if
+            | outCount == 0 ->
+                traceError "No continuing outputs found"
+            | outCount > 1 ->
+                traceError "Too many continuing outputs found"
+            | not (txSignedBy (scriptContextTxInfo ctx) buyerKeyHash) ->
+                traceError "Buyer signature missing"
+            | let onlyOut = List.head outs
+               in lovelaceValueOf (txOutValue onlyOut) /= escrowPrice ->
+                traceError "Wrong continuing output amount"
+            | otherwise -> unitval
+    1 -> unitval
+    2 -> unitval
+    _ -> traceError "Invalid redeemer"
+  where
+    ctx = unsafeFromBuiltinData scriptContextData
+    red = unsafeFromBuiltinData (getRedeemer (scriptContextRedeemer ctx))
 
 -- | Compiled validator code
 twoPartyEscrowValidatorCode :: CompiledCode (BuiltinData -> BuiltinUnit)
