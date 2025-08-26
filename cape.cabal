@@ -83,6 +83,7 @@ library
     PlutusCore.Data.Compact.Parser
     PlutusCore.Data.Compact.Printer
     TwoPartyEscrow
+    TwoPartyEscrow.Fixture
 
   build-depends:
     , aeson
