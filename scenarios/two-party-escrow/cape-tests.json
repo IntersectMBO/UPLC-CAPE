@@ -35,7 +35,10 @@
           },
           {
             "op": "add_output_utxo",
-            "address": "script",
+            "address": {
+              "type": "script",
+              "script_hash": "1111111111111111111111111111111111111111111111111111111111"
+            },
             "lovelace": 75000000
           }
         ]
@@ -208,7 +211,10 @@
           "patches": [
             {
               "op": "add_output_utxo",
-              "address": "script",
+              "address": {
+                "type": "script",
+                "script_hash": "1111111111111111111111111111111111111111111111111111111111"
+              },
               "lovelace": 50000000
             }
           ]
@@ -228,7 +234,10 @@
           "patches": [
             {
               "op": "add_output_utxo",
-              "address": "pubkey:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+              "address": {
+                "type": "pubkey",
+                "pubkey_hash": "@impostor_pubkey"
+              },
               "lovelace": 75000000
             }
           ]
