@@ -64,25 +64,32 @@
       "name": "simple_builtin_data_redeemer_0"
     },
     {
-      "cpu_units": 56789333,
+      "cpu_units": 55269599,
       "description": "Deposit with buyer signature and exactly 75 ADA should succeed",
       "execution_result": "success",
-      "memory_units": 210814,
+      "memory_units": 201314,
       "name": "deposit_successful"
     },
     {
-      "cpu_units": 65377120,
+      "cpu_units": 46947213,
       "description": "Deposit without buyer signature should fail",
       "execution_result": "success",
-      "memory_units": 250681,
+      "memory_units": 168762,
       "name": "deposit_without_buyer_signature"
     },
     {
-      "cpu_units": 49834875,
+      "cpu_units": 46635407,
       "description": "Deposit with buyer signature but wrong amount (50 ADA) should fail",
       "execution_result": "success",
-      "memory_units": 188225,
+      "memory_units": 168225,
       "name": "deposit_with_incorrect_amount"
+    },
+    {
+      "cpu_units": 34415698,
+      "description": "Deposit fails when ADA goes to pubkey address instead of script",
+      "execution_result": "success",
+      "memory_units": 126322,
+      "name": "deposit_to_wrong_address"
     }
   ],
   "execution_environment": {
@@ -90,26 +97,26 @@
   },
   "measurements": {
     "cpu_units": {
-      "maximum": 65377120,
+      "maximum": 55269599,
       "median": 24688,
       "minimum": 24688,
-      "sum": 172447175,
+      "sum": 183713764,
       "sum_negative": 0,
-      "sum_positive": 172447175
+      "sum_positive": 183713764
     },
     "memory_units": {
-      "maximum": 250681,
+      "maximum": 201314,
       "median": 132,
       "minimum": 132,
-      "sum": 650972,
+      "sum": 665875,
       "sum_negative": 0,
-      "sum_positive": 650972
+      "sum_positive": 665875
     },
-    "script_size_bytes": 2083,
-    "term_size": 1870
+    "script_size_bytes": 1361,
+    "term_size": 1340
   },
   "scenario": "two-party-escrow",
-  "timestamp": "2025-08-26T11:17:21Z",
+  "timestamp": "2025-08-26T15:35:25Z",
   "version": "1.0.0",
   "notes": "Manual metrics with test results - one failing test case due to validator logic"
 }
