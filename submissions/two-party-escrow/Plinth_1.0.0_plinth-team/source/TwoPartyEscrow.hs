@@ -23,26 +23,27 @@
 {-# OPTIONS_GHC -fno-unbox-strict-fields #-}
 {-# OPTIONS_GHC -fplugin PlutusTx.Plugin #-}
 {-# OPTIONS_GHC -fplugin-opt PlutusTx.Plugin:conservative-optimisation #-}
-{-# OPTIONS_GHC -fplugin-opt PlutusTx.Plugin:remove-trace #-}
+{-# OPTIONS_GHC -fplugin-opt PlutusTx.Plugin:defer-errors #-}
 {-# OPTIONS_GHC -fplugin-opt PlutusTx.Plugin:target-version=1.1.0 #-}
 
-module TwoPartyEscrow (twoPartyEscrowValidatorCode, twoPartyEscrowAcceptCode) where
+module TwoPartyEscrow (twoPartyEscrowValidatorCode) where
 
+import PlutusLedgerApi.Data.V3
+import PlutusTx
 import PlutusTx.Prelude
 
-import PlutusCore.Data qualified as PLC
-import PlutusLedgerApi.V3.Data.Contexts (ScriptContext (..), getRedeemer)
-import PlutusTx
-import PlutusTx.Builtins (unsafeDataAsI)
+import PlutusLedgerApi.V1.Data.Value (lovelaceValueOf)
+import PlutusLedgerApi.V3.Data.Contexts (getContinuingOutputs, txSignedBy)
 import PlutusTx.Builtins.Internal (unitval)
-import PlutusTx.Builtins.Internal qualified as BI
+import PlutusTx.Data.List qualified as List
+import TwoPartyEscrow.Fixture
 
 {- | Redeemer constants for documentation
 Deposit = 0, Accept = 1, Refund = 2
 -}
 
 {- | Two-Party Escrow Validator
-Takes BuiltinData (redeemer) and returns BuiltinUnit
+Takes BuiltinData-encoded ScriptContext and returns BuiltinUnit
 -}
 {-# INLINEABLE twoPartyEscrowValidator #-}
 twoPartyEscrowValidator :: BuiltinData -> BuiltinUnit
@@ -50,64 +51,25 @@ twoPartyEscrowValidator scriptContextData =
   case fromBuiltinData scriptContextData of
     Nothing -> traceError "Failed to parse ScriptContext"
     Just ctx ->
-      case fromBuiltinData (getRedeemer (scriptContextRedeemer ctx)) of
-        Nothing -> traceError "Failed to parse Redeemer"
-        Just redeemerInt -> case redeemerInt of
-          0 ->
-            -- Deposit: buyer deposits exactly 75 ADA
-            -- In a real validator, this would check:
-            -- - Buyer signature present
-            -- - Exactly 75 ADA deposited to script
-            -- - Datum updated with deposit timestamp
-            unitval
-          1 ->
-            -- Accept: seller accepts payment
-            -- In a real validator, this would check:
-            -- - Seller signature present
-            -- - Funds transferred from script to seller
-            -- - Deadline not passed
-            unitval
-          2 ->
-            -- Refund: buyer reclaims after deadline
-            -- In a real validator, this would check:
-            -- - Buyer signature present
-            -- - Deadline has passed
-            -- - Funds returned to buyer
-            unitval
-          _ -> traceError "Invalid redeemer"
+      case unsafeFromBuiltinData (getRedeemer (scriptContextRedeemer ctx)) of
+        (0 :: Integer) ->
+          let outs = getContinuingOutputs ctx
+              outCount = List.length outs
+           in if
+                | outCount == 0 ->
+                    traceError "No continuing outputs found"
+                | outCount > 1 ->
+                    traceError "Too many continuing outputs found"
+                | not (txSignedBy (scriptContextTxInfo ctx) buyerKeyHash) ->
+                    traceError "Buyer signature missing"
+                | let onlyOut = List.head outs
+                   in lovelaceValueOf (txOutValue onlyOut) /= escrowPrice ->
+                    traceError "Wrong continuing output amount"
+                | otherwise -> unitval
+        1 -> unitval
+        2 -> unitval
+        _ -> traceError "Invalid redeemer"
 
 -- | Compiled validator code
 twoPartyEscrowValidatorCode :: CompiledCode (BuiltinData -> BuiltinUnit)
 twoPartyEscrowValidatorCode = $$(PlutusTx.compile [||twoPartyEscrowValidator||])
-
--- | Create BuiltinData for integer 1 (Accept redeemer)
-acceptRedeemerData :: BuiltinData
-acceptRedeemerData = BI.BuiltinData (PLC.I 1)
-
-{- | The compiled two-party escrow validator for Accept sequence (redeemer = 1)
-This is used for performance measurement according to the benchmark specification
--}
-twoPartyEscrowAcceptCode :: CompiledCode BuiltinUnit
-twoPartyEscrowAcceptCode =
-  twoPartyEscrowValidatorCode `unsafeApplyCode` liftCodeDef acceptRedeemerData
-
---------------------------------------------------------------------------------
--- Fixture ---------------------------------------------------------------------
-
-escrowPrice :: Integer
-escrowPrice = 75000000 -- 75 ADA in lovelace
-
-escrowDeadlineSeconds :: Integer
-escrowDeadlineSeconds = 1800 -- 30 minutes
-
--- | Fixed buyer address
-buyerAddress :: BuiltinByteString
-buyerAddress =
-  stringToBuiltinByteStringHex
-    "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
-
--- | Fixed seller address
-sellerAddress :: BuiltinByteString
-sellerAddress =
-  stringToBuiltinByteStringHex
-    "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
