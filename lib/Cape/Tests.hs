@@ -1,3 +1,20 @@
+{- | Cape test suite loading and resolution module
+
+This module provides data types and functions for loading and processing
+UPLC-CAPE test suites from JSON files. It supports:
+
+* Loading test suites with shared data structures
+* Resolving test inputs (BuiltinData, RawUPLC, ScriptContext)
+* Building ScriptContext from specifications with patches
+* Reference resolution for shared test data
+
+Example usage:
+
+@
+suite <- loadTestSuite "scenarios/fibonacci/cape-tests.json"
+input <- resolveTestInput baseDir suite (tcInput testCase)
+@
+-}
 module Cape.Tests (
   TestSuite (..),
   TestCase (..),
@@ -8,6 +25,8 @@ module Cape.Tests (
   ExpectedResult (..),
   ResultType (..),
   BaselineType (..),
+  BaselineSpec (..),
+  DataStructureEntry (..),
   loadTestSuite,
   resolveTestInput,
   resolveExpectedResult,
@@ -25,6 +44,7 @@ import Data.ByteString.Lazy qualified as LBS
 import Data.Map qualified as Map
 import Data.Text qualified as Text
 import Data.Text.Encoding qualified as TE
+import PlutusCore.Data qualified as PLC
 import PlutusCore.Data.Compact.Parser (parseBuiltinDataText, renderParseError)
 import PlutusCore.Data.Compact.Printer (dataToCompactText)
 import PlutusLedgerApi.V3 qualified as V3
@@ -32,65 +52,341 @@ import PlutusTx.Builtins qualified as Builtins
 import PlutusTx.Builtins.Internal qualified as BI
 import System.Directory (doesFileExist)
 import System.FilePath (takeDirectory, (</>))
+import Text.Read qualified as Read
 
--- | Test specification data types
+-- * Data Structure Definitions
+
+{- | Entry in the data_structures section of test configuration.
+Represents either BuiltinData or ScriptContext with their JSON values.
+-}
+data DataStructureEntry
+  = -- | BuiltinData encoded as compact text
+    --
+    --     JSON example:
+    --     @
+    --     "buyer_pubkey": {
+    --       "type": "builtin_data",
+    --       "value": "#a1b2c3d4e5f6789012345678abcdef0123456789abcdef0123456789abcdef01"
+    --     }
+    --     @
+    BuiltinDataEntry Value
+  | -- | ScriptContext specification
+    --
+    --     JSON example:
+    --     @
+    --     "successful_deposit": {
+    --       "type": "script_context",
+    --       "script_context": {
+    --         "baseline": "spending",
+    --         "patches": [
+    --           {"op": "add_signature", "pubkey_hash": "@buyer_pubkey"}
+    --         ]
+    --       }
+    --     }
+    --     @
+    ScriptContextEntry Value
+  deriving stock (Show)
+
+{- | Complete test suite loaded from cape-tests.json.
+Contains version info, shared data structures, and test cases.
+-}
 data TestSuite = TestSuite
   { tsVersion :: Text
+  -- ^ Version string
+  --
+  --     JSON: @"version": "1.0.0"@
   , tsDescription :: Maybe Text
-  , tsDataStructures :: Maybe (Map Text Value)
+  -- ^ Optional description
+  --
+  --     JSON: @"description": "Test cases for fibonacci validator"@
+  , tsDataStructures :: Maybe (Map Text DataStructureEntry)
+  -- ^ Shared test data structures
+  --
+  --     JSON example:
+  --     @
+  --     "data_structures": {
+  --       "input_42": {
+  --         "type": "builtin_data",
+  --         "value": "42"
+  --       },
+  --       "baseline_context": {
+  --         "type": "script_context",
+  --         "script_context": {
+  --           "baseline": "spending",
+  --           "patches": []
+  --         }
+  --       }
+  --     }
+  --     @
   , tsTests :: [TestCase]
+  -- ^ List of test cases
+  --
+  --     JSON: @"tests": [...]@
   }
-  deriving stock (Show, Generic)
+  deriving stock (Show)
 
+-- | Individual test case specification.
 data TestCase = TestCase
   { tcName :: Text
+  -- ^ Test case name
+  --
+  --     JSON: @"name": "deposit_successful"@
   , tcDescription :: Maybe Text
+  -- ^ Optional description
+  --
+  --     JSON: @"description": "Valid deposit with buyer signature"@
   , tcPending :: Maybe Bool
+  -- ^ Whether test is marked pending
+  --
+  --     JSON: @"pending": true@
   , tcInput :: Maybe TestInput
+  -- ^ Input specification (optional for error-only tests)
+  --
+  --     JSON example:
+  --     @
+  --     "input": {
+  --       "type": "script_context",
+  --       "script_context": {
+  --         "baseline": "@successful_deposit",
+  --         "patches": []
+  --       }
+  --     }
+  --     @
   , tcExpected :: ExpectedResult
+  -- ^ Expected result specification
+  --
+  --     JSON examples:
+  --     @
+  --     "expected": {"type": "value", "content": "(con unit ())"}
+  --     "expected": {"type": "error"}
+  --     @
   }
-  deriving stock (Show, Generic)
+  deriving stock (Show)
 
+-- | Test input specification with multiple input methods.
 data TestInput = TestInput
   { tiType :: InputType
+  -- ^ Type of input data
+  --
+  --     JSON: @"type": "builtin_data"@
   , tiValue :: Maybe Text
+  -- ^ Inline value (mutually exclusive with tiFile)
+  --
+  --     JSON examples:
+  --     @
+  --     "value": "42"
+  --     "value": "(program 1.1.0 (con integer 42))"
+  --     @
   , tiFile :: Maybe FilePath
+  -- ^ File path for input data
+  --
+  --     JSON: @"file": "complex-input.dat"@
   , tiScriptContext :: Maybe ScriptContextSpec
+  -- ^ ScriptContext specification
+  --
+  --     JSON examples:
+  --     @
+  --     "script_context": {
+  --       "baseline": "spending",
+  --       "patches": [
+  --         {"op": "add_signature", "pubkey_hash": "deadbeef"}
+  --       ]
+  --     }
+  --
+  --     "script_context": {
+  --       "baseline": "@successful_deposit",
+  --       "patches": [
+  --         {"op": "set_redeemer", "redeemer": "1"}
+  --       ]
+  --     }
+  --     @
   }
-  deriving stock (Show, Generic)
+  deriving stock (Show)
 
+{- | Supported input data types for test cases.
+Corresponds to the "type" field in JSON.
+-}
 data InputType
-  = BuiltinData
-  | RawUPLC
-  | ScriptContext
-  deriving stock (Show, Generic)
+  = -- | BuiltinData encoded as compact text
+    --
+    --     JSON: @"type": "builtin_data"@
+    BuiltinData
+  | -- | Raw UPLC program text
+    --
+    --     JSON: @"type": "raw_uplc"@
+    RawUPLC
+  | -- | Constructed ScriptContext
+    --
+    --     JSON: @"type": "script_context"@
+    ScriptContext
+  deriving stock (Show)
 
+-- | Specification for ScriptContext baseline.
+data BaselineSpec
+  = -- | Direct baseline (e.g. Spending)
+    --
+    --     JSON: @"baseline": "spending"@
+    DirectBaseline BaselineType
+  | -- | Reference to shared data (e.g. "@successful_deposit")
+    --
+    --     JSON: @"baseline": "@successful_deposit"@
+    ReferencedBaseline Text
+  deriving stock (Show)
+
+-- | Specification for constructing ScriptContext with patches.
 data ScriptContextSpec = ScriptContextSpec
-  { scsBaseline :: BaselineType
+  { scsBaseline :: BaselineSpec
+  -- ^ Starting baseline context
+  --
+  --     JSON: @"baseline": "spending"@
   , scsPatches :: [PatchOperationSpec]
+  -- ^ Patch operations to apply
+  --
+  --     JSON example:
+  --     @
+  --     "patches": [
+  --       {
+  --         "op": "add_signature",
+  --         "pubkey_hash": "@buyer_pubkey"
+  --       },
+  --       {
+  --         "op": "set_redeemer",
+  --         "redeemer": "0"
+  --       }
+  --     ]
+  --     @
   }
-  deriving stock (Show, Generic)
+  deriving stock (Show)
 
+-- | Patch operations for modifying ScriptContext.
 data PatchOperationSpec
-  = AddSignatureSpec Text
-  | SetRedeemerSpec Value
-  | SetSpendingUTXOSpec Text Integer
-  | SetValidRangeSpec (Maybe Integer) (Maybe Integer)
-  deriving stock (Show, Generic)
+  = -- | Add signature by pubkey hash
+    --
+    --     JSON examples:
+    --     @
+    --     {"op": "add_signature", "pubkey_hash": "deadbeefcafe1234567890abcdef"}
+    --     {"op": "add_signature", "pubkey_hash": "@buyer_pubkey"}
+    --     @
+    AddSignatureSpec Text
+  | -- | Remove signature by pubkey hash
+    --
+    --     JSON example:
+    --     @
+    --     {"op": "remove_signature", "pubkey_hash": "@seller_pubkey"}
+    --     @
+    RemoveSignatureSpec Text
+  | -- | Set redeemer value (BuiltinData as string)
+    --
+    --     JSON example:
+    --     @
+    --     {"op": "set_redeemer", "redeemer": "0"}
+    --     @
+    SetRedeemerSpec Value
+  | -- | Add input UTXO (ref, lovelace, is_own)
+    --
+    --     JSON example:
+    --     @
+    --     {
+    --       "op": "add_input_utxo",
+    --       "utxo_ref": "1234567890abcdef:0",
+    --       "lovelace": 75000000,
+    --       "is_own_input": true
+    --     }
+    --     @
+    AddInputUTXOSpec Text Integer Bool
+  | -- | Set validity range
+    --
+    --     JSON example:
+    --     @
+    --     {
+    --       "op": "set_valid_range",
+    --       "from_time": 1640995200,
+    --       "to_time": 1641081600
+    --     }
+    --     @
+    SetValidRangeSpec (Maybe Integer) (Maybe Integer)
+  | -- | Set output value in lovelace
+    --
+    --     JSON example:
+    --     @
+    --     {"op": "set_output_value", "lovelace": 75000000}
+    --     @
+    SetOutputValueSpec Integer
+  deriving stock (Show)
 
+-- | Expected result specification for test cases.
 data ExpectedResult = ExpectedResult
   { erType :: ResultType
+  -- ^ Type of expected result
+  --
+  --     JSON: @"type": "value"@ or @"type": "error"@
   , erContent :: Maybe Text
+  -- ^ Inline expected content
+  --
+  --     JSON: @"content": "(con unit ())"@
   , erFile :: Maybe FilePath
+  -- ^ File path for expected content
+  --
+  --     JSON: @"file": "expected-fibonacci-result.uplc"@
   }
-  deriving stock (Show, Generic)
+  deriving stock (Show)
 
+{- | Type of expected test result.
+Corresponds to JSON "type" field.
+-}
 data ResultType
-  = ExpectedValue
-  | ExpectedError
-  deriving stock (Show, Generic)
+  = -- | Test should succeed with specific value
+    --
+    --     JSON: @"type": "value"@
+    ExpectedValue
+  | -- | Test should fail with error
+    --
+    --     JSON: @"type": "error"@
+    ExpectedError
+  deriving stock (Show)
 
--- JSON instances
+-- * Utility Functions
+
+{- | Parse TxOutRef from "txid:index" format.
+
+Example:
+
+@
+parseTxOutRef "1234...cdef:0"
+-- Right (TxOutRef (TxId "1234...cdef") 0)
+@
+-}
+parseTxOutRef :: Text -> Either String V3.TxOutRef
+parseTxOutRef ref = case Text.splitOn ":" ref of
+  [txIdText, indexText] -> do
+    index <- Read.readEither (toString indexText)
+    let txIdBytes = Builtins.toBuiltin (TE.encodeUtf8 txIdText)
+    pure $ V3.TxOutRef (V3.TxId txIdBytes) index
+  _ -> Left "Invalid TxOutRef format, expected 'txid:index'"
+
+-- * JSON Parsing Instances
+
+instance FromJSON BaselineSpec where
+  parseJSON = \case
+    Json.String text
+      | Text.isPrefixOf "@" text -> pure $ ReferencedBaseline text
+      | otherwise -> DirectBaseline <$> Json.parseJSON (Json.String text)
+    other -> DirectBaseline <$> Json.parseJSON other
+
+instance FromJSON DataStructureEntry where
+  parseJSON = \case
+    Json.Object obj -> do
+      dataType :: Text <- obj .: "type"
+      case dataType of
+        "builtin_data" -> BuiltinDataEntry <$> obj .: "value"
+        "script_context" -> ScriptContextEntry <$> obj .: "script_context"
+        _ -> fail $ "Unknown data structure type: " <> toString dataType
+    other ->
+      fail $
+        "Expected object for data structure entry with 'type' "
+          <> "field, got: "
+          <> show other
+
 instance FromJSON TestSuite where
   parseJSON = withObject "TestSuite" \o ->
     TestSuite
@@ -117,11 +413,11 @@ instance FromJSON TestInput where
       <*> o .:? "script_context"
 
 instance FromJSON InputType where
-  parseJSON = Json.withText "InputType" \t -> case t of
+  parseJSON = Json.withText "InputType" \case
     "builtin_data" -> pure BuiltinData
     "raw_uplc" -> pure RawUPLC
     "script_context" -> pure ScriptContext
-    _ -> fail $ "Unknown input type: " <> Text.unpack t
+    t -> fail $ "Unknown input type: " <> toString t
 
 instance FromJSON ExpectedResult where
   parseJSON = withObject "ExpectedResult" \o ->
@@ -131,10 +427,10 @@ instance FromJSON ExpectedResult where
       <*> o .:? "file"
 
 instance FromJSON ResultType where
-  parseJSON = Json.withText "ResultType" \t -> case t of
+  parseJSON = Json.withText "ResultType" \case
     "value" -> pure ExpectedValue
     "error" -> pure ExpectedError
-    _ -> fail $ "Unknown result type: " <> Text.unpack t
+    t -> fail $ "Unknown result type: " <> toString t
 
 instance FromJSON ScriptContextSpec where
   parseJSON = withObject "ScriptContextSpec" \o ->
@@ -147,12 +443,30 @@ instance FromJSON PatchOperationSpec where
     op :: Text <- o .: "op"
     case op of
       "add_signature" -> AddSignatureSpec <$> o .: "pubkey_hash"
+      "remove_signature" -> RemoveSignatureSpec <$> o .: "pubkey_hash"
       "set_redeemer" -> SetRedeemerSpec <$> o .: "redeemer"
-      "set_spending_utxo" -> SetSpendingUTXOSpec <$> o .: "tx_id" <*> o .: "tx_index"
-      "set_valid_range" -> SetValidRangeSpec <$> o .:? "from_time" <*> o .:? "to_time"
-      _ -> fail $ "Unknown patch operation: " <> Text.unpack op
+      "add_input_utxo" ->
+        AddInputUTXOSpec
+          <$> o .: "utxo_ref"
+          <*> o .: "lovelace"
+          <*> o .: "is_own_input"
+      "set_valid_range" ->
+        SetValidRangeSpec
+          <$> o .:? "from_time"
+          <*> o .:? "to_time"
+      "set_output_value" -> SetOutputValueSpec <$> o .: "lovelace"
+      _ -> fail $ "Unknown patch operation: " <> toString op
 
--- | Load test suite from JSON file
+-- * Core Functions
+
+{- | Load test suite from JSON file.
+
+Example:
+
+@
+suite <- loadTestSuite "scenarios/fibonacci/cape-tests.json"
+@
+-}
 loadTestSuite :: FilePath -> IO TestSuite
 loadTestSuite testFile = do
   content <- LBS.readFile testFile
@@ -160,7 +474,20 @@ loadTestSuite testFile = do
     Left err -> die ("Failed to parse test file: " <> err)
     Right suite -> pure suite
 
--- | Resolve test input with support for script_context type
+{- | Resolve test input with support for script_context type.
+
+Resolves test inputs from various sources:
+
+* Inline values
+* External files
+* ScriptContext specifications with patches
+
+Example:
+
+@
+input <- resolveTestInput baseDir suite testInput
+@
+-}
 resolveTestInput :: FilePath -> TestSuite -> TestInput -> IO Text
 resolveTestInput baseDir testSuite testInput =
   case testInput of
@@ -183,10 +510,21 @@ resolveTestInput baseDir testSuite testInput =
     _ ->
       die "Test input must have either 'value', 'file', or 'script_context'"
 
--- | Resolve file references in expected result
+{- | Resolve file references in expected result.
+
+Loads expected results from inline content or external files.
+
+Example:
+
+@
+expected <- resolveExpectedResult baseDir (tcExpected testCase)
+@
+-}
 resolveExpectedResult :: FilePath -> ExpectedResult -> IO (Maybe Text)
-resolveExpectedResult _ ExpectedResult {erType = ExpectedError} = pure Nothing
-resolveExpectedResult _ ExpectedResult {erContent = Just content} = pure (Just content)
+resolveExpectedResult _ ExpectedResult {erType = ExpectedError} =
+  pure Nothing
+resolveExpectedResult _ ExpectedResult {erContent = Just content} =
+  pure (Just content)
 resolveExpectedResult baseDir ExpectedResult {erFile = Just file} = do
   let fullPath = baseDir </> file
   exists <- doesFileExist fullPath
@@ -200,87 +538,310 @@ resolveExpectedResult baseDir ExpectedResult {erFile = Just file} = do
 resolveExpectedResult _ _ =
   die "Expected result of type 'value' must have either 'content' or 'file'"
 
--- | Get base directory for resolving relative file paths
+{- | Get base directory for resolving relative file paths.
+
+Used to resolve file references in test inputs and expected results.
+
+Example:
+
+@
+baseDir <- getTestBaseDir "scenarios/fibonacci/cape-tests.json"
+-- Returns "scenarios/fibonacci"
+@
+-}
 getTestBaseDir :: FilePath -> FilePath
 getTestBaseDir = takeDirectory
 
--- | Check if a test case is marked as pending
+{- | Check if a test case is marked as pending.
+
+Pending tests are skipped during execution.
+-}
 isPendingTest :: TestCase -> Bool
 isPendingTest tc = fromMaybe False (tcPending tc)
 
--- | Resolve @name references in text using data structures map
-resolveReferences :: Map Text Value -> Text -> Text
-resolveReferences dataStructures text
+-- * Reference Resolution Functions
+
+{- | Resolve @name references to BuiltinData using typed data structures map.
+
+Supports both reference resolution (@name) and literal parsing.
+
+Example:
+
+@
+builtinData <- resolveBuiltinDataReference dataStructures "@buyer_pubkey"
+@
+-}
+resolveBuiltinDataReference ::
+  Map Text DataStructureEntry -> Text -> IO V3.BuiltinData
+resolveBuiltinDataReference dataStructures text
   | Text.isPrefixOf "@" text && Text.length text > 1 =
       let refName = Text.drop 1 text
        in case Map.lookup refName dataStructures of
-            Just (Json.String val) -> val
-            Just _val ->
-              error
-                ( toText
-                    ( "Reference @"
-                        <> Text.unpack refName
-                        <> " is not a string"
+            Just (BuiltinDataEntry (Json.String val)) ->
+              case parseBuiltinDataText val of
+                Left parseErr ->
+                  die
+                    ( "Failed to parse BuiltinData for @"
+                        <> toString refName
+                        <> ": "
+                        <> show (renderParseError parseErr)
                     )
+                Right builtinData ->
+                  pure $ V3.BuiltinData builtinData
+            Just (BuiltinDataEntry _) ->
+              die
+                ( "Reference @"
+                    <> toString refName
+                    <> " is builtin_data but not a string value"
+                )
+            Just (ScriptContextEntry _) ->
+              die
+                ( "Reference @"
+                    <> toString refName
+                    <> " is script_context, cannot be used as BuiltinData"
                 )
             Nothing ->
-              error
-                ( toText
-                    ( "Reference @"
-                        <> Text.unpack refName
-                        <> " not found in data_structures"
-                    )
+              die
+                ( "Reference @"
+                    <> toString refName
+                    <> " not found in data_structures"
                 )
+  | otherwise =
+      -- Not a reference, try to parse as literal BuiltinData
+      case parseBuiltinDataText text of
+        Left parseErr ->
+          die
+            ( "Failed to parse BuiltinData: "
+                <> show (renderParseError parseErr)
+            )
+        Right builtinData ->
+          pure $ V3.BuiltinData builtinData
+
+{- | Resolve @name references in text using typed data structures map.
+
+Returns the resolved text value or the original text if not a reference.
+
+Example:
+
+@
+resolvedText <- resolveTextReference dataStructures "@some_reference"
+@
+-}
+resolveTextReference :: Map Text DataStructureEntry -> Text -> Text
+resolveTextReference dataStructures text
+  | Text.isPrefixOf "@" text && Text.length text > 1 =
+      let refName = Text.drop 1 text
+       in case Map.lookup refName dataStructures of
+            Just (BuiltinDataEntry (Json.String val)) -> val
+            Just (BuiltinDataEntry _) ->
+              error $
+                "Reference @"
+                  <> refName
+                  <> " is builtin_data but not a string value"
+            Just (ScriptContextEntry _) ->
+              error $
+                "Reference @"
+                  <> refName
+                  <> " is script_context, cannot be used as text"
+            Nothing ->
+              error $
+                "Reference @"
+                  <> refName
+                  <> " not found in data_structures"
   | otherwise = text
 
--- | Convert PatchOperationSpec to PatchOperation with reference resolution
+{- | Resolve script context reference.
+
+Looks up a ScriptContextSpec from the data structures map.
+
+Example:
+
+@
+spec <- resolveScriptContextReference dataStructures "successful_deposit"
+@
+-}
+resolveScriptContextReference ::
+  Map Text DataStructureEntry -> Text -> Maybe ScriptContextSpec
+resolveScriptContextReference dataStructures refName =
+  case Map.lookup refName dataStructures of
+    Just (ScriptContextEntry value) ->
+      case Json.fromJSON value of
+        Json.Success spec -> Just spec
+        Json.Error _err ->
+          Nothing -- Parse error - invalid script_context reference
+    Just _ -> Nothing -- Not a script_context reference
+    Nothing -> Nothing -- Reference not found
+
+-- * Patch Operation Conversion
+
+{- | Convert PatchOperationSpec to PatchOperation with reference resolution.
+
+Handles both literal values and @references from data_structures.
+
+Example:
+
+@
+patchOp <- convertPatchOperation dataStructures (AddSignatureSpec "@buyer_pubkey")
+@
+-}
 convertPatchOperation ::
-  Map Text Value -> PatchOperationSpec -> IO PatchOperation
+  Map Text DataStructureEntry -> PatchOperationSpec -> IO PatchOperation
 convertPatchOperation dataStructures spec =
   case spec of
     AddSignatureSpec pubKeyHashText -> do
-      let resolvedText = resolveReferences dataStructures pubKeyHashText
-          pubKeyHashBytes = Builtins.toBuiltin (TE.encodeUtf8 resolvedText)
-      pure $ AddSignature (V3.PubKeyHash pubKeyHashBytes)
+      -- Check if this is a reference to a builtin_data type
+      if Text.isPrefixOf "@" pubKeyHashText && Text.length pubKeyHashText > 1
+        then do
+          let refName = Text.drop 1 pubKeyHashText
+          case Map.lookup refName dataStructures of
+            Just (BuiltinDataEntry _) -> do
+              -- Reference to builtin_data: resolve and use bytes directly
+              resolvedBuiltinData <-
+                resolveBuiltinDataReference dataStructures pubKeyHashText
+              let coreData = Builtins.builtinDataToData resolvedBuiltinData
+              case coreData of
+                PLC.B bytestring -> do
+                  let pubKeyHashBytes = Builtins.toBuiltin bytestring
+                  pure $ AddSignature (V3.PubKeyHash pubKeyHashBytes)
+                _ ->
+                  die $
+                    "Expected bytestring data for PubKeyHash in AddSignature: "
+                      <> toString pubKeyHashText
+            _ -> do
+              -- Reference to non-builtin_data or literal: use text approach
+              let resolvedText =
+                    resolveTextReference dataStructures pubKeyHashText
+                  pubKeyHashBytes =
+                    Builtins.toBuiltin (TE.encodeUtf8 resolvedText)
+              pure $ AddSignature (V3.PubKeyHash pubKeyHashBytes)
+        else do
+          -- Literal case: use old UTF-8 encoding approach
+          let resolvedText = resolveTextReference dataStructures pubKeyHashText
+              pubKeyHashBytes = Builtins.toBuiltin (TE.encodeUtf8 resolvedText)
+          pure $ AddSignature (V3.PubKeyHash pubKeyHashBytes)
+    RemoveSignatureSpec pubKeyHashText -> do
+      -- Check if this is a reference to a builtin_data type
+      if Text.isPrefixOf "@" pubKeyHashText && Text.length pubKeyHashText > 1
+        then do
+          let refName = Text.drop 1 pubKeyHashText
+          case Map.lookup refName dataStructures of
+            Just (BuiltinDataEntry _) -> do
+              -- Reference to builtin_data: resolve and use bytes directly
+              resolvedBuiltinData <-
+                resolveBuiltinDataReference dataStructures pubKeyHashText
+              let coreData = Builtins.builtinDataToData resolvedBuiltinData
+              case coreData of
+                PLC.B bytestring -> do
+                  let pubKeyHashBytes = Builtins.toBuiltin bytestring
+                  pure $ RemoveSignature (V3.PubKeyHash pubKeyHashBytes)
+                _ ->
+                  die $
+                    "Expected bytestring data for PubKeyHash in RemoveSignature: "
+                      <> toString pubKeyHashText
+            _ -> do
+              -- Reference to non-builtin_data or literal: use text approach
+              let resolvedText =
+                    resolveTextReference dataStructures pubKeyHashText
+                  pubKeyHashBytes =
+                    Builtins.toBuiltin (TE.encodeUtf8 resolvedText)
+              pure $ RemoveSignature (V3.PubKeyHash pubKeyHashBytes)
+        else do
+          -- Literal case: use old UTF-8 encoding approach
+          let resolvedText = resolveTextReference dataStructures pubKeyHashText
+              pubKeyHashBytes = Builtins.toBuiltin (TE.encodeUtf8 resolvedText)
+          pure $ RemoveSignature (V3.PubKeyHash pubKeyHashBytes)
     SetRedeemerSpec redeemerValue -> do
       -- Convert JSON Value to BuiltinData (expects string with builtin data encoding)
       case redeemerValue of
         Json.String dataText ->
           case parseBuiltinDataText dataText of
             Left parseErr ->
-              die
-                ( "Failed to parse redeemer BuiltinData: "
-                    <> show (renderParseError parseErr)
-                )
+              die $
+                "Failed to parse redeemer BuiltinData: "
+                  <> show (renderParseError parseErr)
             Right builtinData ->
               pure $ SetRedeemer (V3.Redeemer (BI.BuiltinData builtinData))
         other ->
-          die ("Redeemer must be a string with BuiltinData encoding, got: " <> show other)
-    SetSpendingUTXOSpec txIdText txIndex -> do
-      let resolvedTxId = resolveReferences dataStructures txIdText
-          txIdBytes = Builtins.toBuiltin (TE.encodeUtf8 resolvedTxId)
-      pure $ SetSpendingUTXO (V3.TxOutRef (V3.TxId txIdBytes) txIndex)
+          die $
+            "Redeemer must be a string with BuiltinData encoding, got: "
+              <> show other
+    AddInputUTXOSpec utxoRefText lovelaceAmount isOwnInput -> do
+      let resolvedUtxoRef = resolveTextReference dataStructures utxoRefText
+      case parseTxOutRef resolvedUtxoRef of
+        Left parseErr ->
+          die ("Failed to parse UTXO reference: " <> show parseErr)
+        Right txOutRef -> do
+          let value = V3.singleton V3.adaSymbol V3.adaToken lovelaceAmount
+          pure $ AddInputUTXO txOutRef value isOwnInput
     SetValidRangeSpec fromTime toTime -> do
       let fromPosix = fmap V3.POSIXTime fromTime
           toPosix = fmap V3.POSIXTime toTime
       pure $ SetValidRange fromPosix toPosix
+    SetOutputValueSpec lovelaceAmount -> do
+      let value = V3.singleton V3.adaSymbol V3.adaToken lovelaceAmount
+      pure $ SetOutputValue value
 
--- | Convert ScriptContextSpec to ScriptContextBuilder with reference resolution
+{- | Convert ScriptContextSpec to ScriptContextBuilder with reference resolution.
+
+Handles both direct baselines and referenced baselines with recursive resolution.
+Combines inherited patches from references with local patches.
+
+Example:
+
+@
+builder <- convertScriptContextSpec dataStructures contextSpec
+@
+-}
 convertScriptContextSpec ::
-  Map Text Value -> ScriptContextSpec -> IO ScriptContextBuilder
-convertScriptContextSpec dataStructures ScriptContextSpec {scsBaseline, scsPatches} = do
-  convertedPatches <- mapM (convertPatchOperation dataStructures) scsPatches
-  pure $ ScriptContextBuilder scsBaseline convertedPatches
+  Map Text DataStructureEntry ->
+  ScriptContextSpec ->
+  IO ScriptContextBuilder
+convertScriptContextSpec
+  dataStructures
+  ScriptContextSpec {scsBaseline, scsPatches} = do
+    -- Handle baseline references
+    (finalBaseline, inheritedPatches) <- case scsBaseline of
+      DirectBaseline baseline -> pure (baseline, [])
+      ReferencedBaseline refText -> do
+        let refName = Text.drop 1 refText -- Remove '@' prefix
+        case resolveScriptContextReference dataStructures refName of
+          Just referencedSpec -> do
+            -- Recursively resolve the referenced spec
+            ScriptContextBuilder refBaseline refPatches <-
+              convertScriptContextSpec dataStructures referencedSpec
+            pure (refBaseline, refPatches)
+          Nothing ->
+            die $
+              "Script context reference @"
+                <> refName
+                <> " not found or not a script_context type"
 
--- | Resolve script context input and convert to BuiltinData text
-resolveScriptContextInput :: Map Text Value -> ScriptContextSpec -> IO Text
+    -- Convert patches and combine inherited with local patches
+    convertedInheritedPatches <- pure inheritedPatches
+    convertedPatches <- mapM (convertPatchOperation dataStructures) scsPatches
+    pure $
+      ScriptContextBuilder
+        finalBaseline
+        (convertedInheritedPatches <> convertedPatches)
+
+{- | Resolve script context input and convert to BuiltinData text.
+
+Builds ScriptContext from specification and converts to compact text format.
+
+Example:
+
+@
+contextText <- resolveScriptContextInput dataStructures contextSpec
+@
+-}
+resolveScriptContextInput ::
+  Map Text DataStructureEntry -> ScriptContextSpec -> IO Text
 resolveScriptContextInput dataStructures spec = do
   builder <- convertScriptContextSpec dataStructures spec
   case buildScriptContext builder of
     Left err -> die ("Failed to build ScriptContext: " <> show err)
     Right scriptContext -> do
       let builtinData = V3.toBuiltinData scriptContext
-          -- Convert BuiltinData to PlutusCore.Data
-          coreData = Builtins.builtinDataToData builtinData
+
       -- Convert PlutusCore.Data to compact text representation
-      pure $ dataToCompactText coreData
+      pure $ dataToCompactText $ Builtins.builtinDataToData builtinData
