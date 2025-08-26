@@ -46,6 +46,29 @@ Accept  = 1  -- Seller accepts and receives payment
 Refund  = 2  -- Buyer reclaims funds after deadline
 ```
 
+### Test Context Assumptions
+
+When testing this validator, the test framework uses generic dummy constants for script context setup:
+
+**Script Input (UTXO Being Spent):**
+
+- **Script Hash**: `deadbeef` (generic test identifier)
+- **Transaction ID**: `0000000000000000000000000000000000000000000000000000000000000000`
+- **Output Index**: `0`
+
+**Transaction Context:**
+
+- The validator is spending from a script address with the above dummy script hash
+- Transaction outputs to the same script address represent continuing escrow UTXOs
+- Deposit validation requires checking that exactly 75 ADA is sent to the script address
+
+**Test Framework Behavior:**
+
+- The baseline ScriptContext starts minimal with empty inputs and outputs lists
+- Test patches add specific transaction inputs/outputs as needed for each test case
+- Deposit validation tests use patches to add outputs with 75 ADA to the script address
+- All script contexts use the above dummy transaction reference for spending operations
+
 ---
 
 ## View 1: State Lifecycle View

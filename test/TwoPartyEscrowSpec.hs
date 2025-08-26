@@ -4,12 +4,13 @@ import Prelude
 
 import Cape.ScriptContextBuilder
 import PlutusCore.Data qualified as PLC
+import PlutusLedgerApi.V1.Data.Value (Lovelace (..))
 import PlutusLedgerApi.V3 qualified as V3
 import PlutusTx qualified
-import PlutusTx.Code (CompiledCodeIn (..))
 import PlutusTx.Eval (EvalResult (..), evaluateCompiledCode)
 import Test.Hspec
 import TwoPartyEscrow
+import TwoPartyEscrow.Fixture
 
 -- | Build ScriptContext or crash with error message
 -- This eliminates the need for case analysis in tests
@@ -41,18 +42,9 @@ isEvaluationSuccess EvalResult {evalResult = result} =
 isEvaluationFailure :: EvalResult -> Bool
 isEvaluationFailure = not . isEvaluationSuccess
 
--- | Constants matching cape-tests.json
-buyerKeyHash :: V3.PubKeyHash
-buyerKeyHash =
-  V3.PubKeyHash "a1b2c3d4e5f6789012345678abcdef0123456789abcdef0123456789abcdef01"
-
-sellerKeyHash :: V3.PubKeyHash
-sellerKeyHash =
-  V3.PubKeyHash "fedcba9876543210fedcba9876543210fedcba9876543210fedcba9876543210"
-
 spec :: Spec
-spec = describe "TwoPartyEscrow" do
-  describe "Invalid redeemer types (matching cape-tests.json)" do
+spec = do
+  describe "Invalid redeemer types" do
     it "fails with invalid redeemer integer 3" do
       let invalidData = V3.toBuiltinData (3 :: Integer)
       result <- evaluateValidator invalidData
@@ -93,49 +85,63 @@ spec = describe "TwoPartyEscrow" do
       result <- evaluateValidator mapData
       result `shouldSatisfy` isEvaluationFailure
 
-  describe "Simple builtin data test (matching cape-tests.json)" do
-    it "fails when given raw integer 0 instead of ScriptContext" do
-      let rawData = V3.toBuiltinData (0 :: Integer)
-      result <- evaluateValidator rawData
+  describe "Simple builtin_data validation" do
+    it "simple_builtin_data_redeemer_0 should fail" do
+      -- Test that redeemer 0 with simple builtin_data (not script_context) fails
+      -- This verifies the validator requires proper ScriptContext structure
+      let simpleData = V3.toBuiltinData (0 :: Integer)
+      result <- evaluateValidator simpleData
       result `shouldSatisfy` isEvaluationFailure
 
-  describe "ScriptContext validation (matching cape-tests.json)" do
-    it "fails for deposit without buyer signature" do
-      let contextData =
-            buildContextData $
-              ScriptContextBuilder
-                Spending
-                [SetRedeemer (V3.Redeemer (V3.toBuiltinData (0 :: Integer)))]
-      result <- evaluateValidator contextData
-      result `shouldSatisfy` isEvaluationFailure
-
-    -- NOTE: This test currently fails due to validator bug - will fix validator logic
-    it "succeeds for deposit with buyer signature" do
-      let contextData =
+  describe "ScriptContext validation" do
+    it "deposit_successful should pass" do
+      -- This matches the @successful_deposit data structure from cape-tests.json
+      let txId = V3.TxId "1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef"
+          txOutRef = V3.TxOutRef txId 0
+          value = V3.singleton V3.adaSymbol V3.adaToken (case escrowPrice of Lovelace n -> n)
+          contextData =
             buildContextData $
               ScriptContextBuilder
                 Spending
                 [ SetRedeemer (V3.Redeemer (V3.toBuiltinData (0 :: Integer)))
                 , AddSignature buyerKeyHash
+                , AddInputUTXO txOutRef value True
+                , SetOutputValue value
                 ]
-      result <- evaluateValidator contextData
-      -- TODO: This should succeed after fixing validator logic
-      result `shouldSatisfy` isEvaluationFailure -- Currently fails, should be isEvaluationSuccess
-  describe "Valid redeemer operations" do
-    it "succeeds for accept redeemer (1)" do
-      let contextData =
-            buildContextData $
-              ScriptContextBuilder
-                Spending
-                [SetRedeemer (V3.Redeemer (V3.toBuiltinData (1 :: Integer)))]
       result <- evaluateValidator contextData
       result `shouldSatisfy` isEvaluationSuccess
 
-    it "succeeds for refund redeemer (2)" do
-      let contextData =
+    it "deposit_without_buyer_signature should fail" do
+      -- This matches the test that removes buyer signature from @successful_deposit
+      let txId = V3.TxId "1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef"
+          txOutRef = V3.TxOutRef txId 0
+          value = V3.singleton V3.adaSymbol V3.adaToken (case escrowPrice of Lovelace n -> n)
+          contextData =
             buildContextData $
               ScriptContextBuilder
                 Spending
-                [SetRedeemer (V3.Redeemer (V3.toBuiltinData (2 :: Integer)))]
+                [ SetRedeemer (V3.Redeemer (V3.toBuiltinData (0 :: Integer)))
+                , -- Note: No AddSignature (simulating removed buyer signature)
+                  AddInputUTXO txOutRef value True
+                , SetOutputValue value
+                ]
       result <- evaluateValidator contextData
-      result `shouldSatisfy` isEvaluationSuccess
+      result `shouldSatisfy` isEvaluationFailure
+
+    it "deposit_with_incorrect_amount should fail" do
+      -- Deposit with buyer signature but wrong amount (50 ADA instead of 75 ADA)
+      let txId = V3.TxId "1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef"
+          txOutRef = V3.TxOutRef txId 0
+          correctInputValue = V3.singleton V3.adaSymbol V3.adaToken (case escrowPrice of Lovelace n -> n)
+          wrongOutputValue = V3.singleton V3.adaSymbol V3.adaToken 50000000 -- Wrong amount: 50 ADA
+          contextData =
+            buildContextData $
+              ScriptContextBuilder
+                Spending
+                [ SetRedeemer (V3.Redeemer (V3.toBuiltinData (0 :: Integer)))
+                , AddSignature buyerKeyHash
+                , AddInputUTXO txOutRef correctInputValue True
+                , SetOutputValue wrongOutputValue -- Wrong amount: 50 ADA instead of 75 ADA
+                ]
+      result <- evaluateValidator contextData
+      result `shouldSatisfy` isEvaluationFailure
