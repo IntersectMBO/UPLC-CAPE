@@ -283,6 +283,85 @@
         "type": "value",
         "content": "(con unit ())"
       }
+    },
+    {
+      "name": "accept_without_seller_signature",
+      "description": "Accept operation fails when seller signature is missing",
+      "input": {
+        "type": "script_context",
+        "script_context": {
+          "baseline": "@successful_accept",
+          "patches": [
+            {
+              "op": "remove_signature",
+              "pubkey_hash": "@seller_pubkey"
+            }
+          ]
+        }
+      },
+      "expected": {
+        "type": "error"
+      }
+    },
+    {
+      "name": "accept_with_incorrect_payment_amount",
+      "description": "Accept operation fails with wrong payment amount (50 ADA instead of 75 ADA)",
+      "input": {
+        "type": "script_context",
+        "script_context": {
+          "baseline": "@successful_accept",
+          "patches": [
+            {
+              "op": "add_output_utxo",
+              "address": {
+                "type": "pubkey",
+                "pubkey_hash": "@seller_pubkey"
+              },
+              "lovelace": 50000000
+            }
+          ]
+        }
+      },
+      "expected": {
+        "type": "error"
+      }
+    },
+    {
+      "name": "accept_with_payment_to_wrong_address",
+      "description": "Accept operation fails when payment goes to impostor address instead of seller",
+      "input": {
+        "type": "script_context",
+        "script_context": {
+          "baseline": "spending",
+          "patches": [
+            {
+              "op": "set_redeemer",
+              "redeemer": "1"
+            },
+            {
+              "op": "add_signature",
+              "pubkey_hash": "@seller_pubkey"
+            },
+            {
+              "op": "add_input_utxo",
+              "utxo_ref": "4444444444444444444444444444444444444444444444444444444444444444:0",
+              "lovelace": 75000000,
+              "is_own_input": true
+            },
+            {
+              "op": "add_output_utxo",
+              "address": {
+                "type": "pubkey",
+                "pubkey_hash": "@impostor_pubkey"
+              },
+              "lovelace": 75000000
+            }
+          ]
+        }
+      },
+      "expected": {
+        "type": "error"
+      }
     }
   ]
 }
