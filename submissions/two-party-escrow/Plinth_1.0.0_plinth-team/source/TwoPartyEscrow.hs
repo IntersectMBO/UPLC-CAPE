@@ -54,6 +54,7 @@ twoPartyEscrowValidator :: BuiltinData -> BuiltinUnit
 twoPartyEscrowValidator scriptContextData =
   case red of
     (0 :: Integer) ->
+      -- Deposit: buyer deposits payment (75 ADA should remain in script)
       let outs = getContinuingOutputs ctx
           outCount = List.length outs
        in if
@@ -69,18 +70,38 @@ twoPartyEscrowValidator scriptContextData =
             | otherwise -> unitval
     1 ->
       -- Accept: seller accepts payment (75 ADA should go to seller)
-      if
-        | not (txSignedBy (scriptContextTxInfo ctx) Fixed.sellerKeyHash) ->
-            traceError "Seller signature missing"
-        | lovelaceValueOf (valuePaidTo (scriptContextTxInfo ctx) Fixed.sellerKeyHash)
-            /= Fixed.escrowPrice ->
-            traceError "Incorrect payment to seller"
-        | otherwise -> unitval
+      let inputs = txInfoInputs (scriptContextTxInfo ctx)
+          outs = getContinuingOutputs ctx
+       in if
+            | not (txSignedBy (scriptContextTxInfo ctx) Fixed.sellerKeyHash) ->
+                traceError "Seller signature missing"
+            | not (List.any isValidEscrowInput inputs) ->
+                traceError "No valid escrow deposit found in inputs"
+            | not (List.null outs) ->
+                traceError "Incomplete withdrawal - funds remain in script"
+            | lovelaceValueOf
+                (valuePaidTo (scriptContextTxInfo ctx) Fixed.sellerKeyHash)
+                /= Fixed.escrowPrice ->
+                traceError "Incorrect payment to seller"
+            | otherwise -> unitval
     2 -> traceError "Refund not implemented"
     _ -> traceError "Invalid redeemer"
   where
     ctx = unsafeFromBuiltinData scriptContextData
     red = unsafeFromBuiltinData (getRedeemer (scriptContextRedeemer ctx))
+
+{- | Helper function to validate escrow input UTXOs
+Checks if a TxInInfo represents a valid escrow deposit being spent
+-}
+{-# INLINEABLE isValidEscrowInput #-}
+isValidEscrowInput :: TxInInfo -> Bool
+isValidEscrowInput
+  TxInInfo {txInInfoResolved = TxOut {txOutAddress, txOutValue}} =
+    case txOutAddress of
+      Address (ScriptCredential _) _ ->
+        -- Input comes from script address AND has correct value
+        lovelaceValueOf txOutValue == Fixed.escrowPrice
+      _ -> False
 
 -- | Compiled validator code
 twoPartyEscrowValidatorCode :: CompiledCode (BuiltinData -> BuiltinUnit)
