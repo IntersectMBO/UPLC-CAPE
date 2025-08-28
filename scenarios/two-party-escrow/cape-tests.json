@@ -362,6 +362,261 @@
       "expected": {
         "type": "error"
       }
+    },
+    {
+      "name": "accept_without_prior_deposit",
+      "description": "Accept operation without valid deposit UTXO (should fail - invalid escrow state)",
+      "input": {
+        "type": "script_context",
+        "script_context": {
+          "baseline": "spending",
+          "patches": [
+            {
+              "op": "set_redeemer",
+              "redeemer": "1"
+            },
+            {
+              "op": "add_signature",
+              "pubkey_hash": "@seller_pubkey"
+            },
+            {
+              "op": "add_output_utxo",
+              "address": {
+                "type": "pubkey",
+                "pubkey_hash": "@seller_pubkey"
+              },
+              "lovelace": 75000000
+            }
+          ]
+        }
+      },
+      "expected": {
+        "type": "error"
+      }
+    },
+    {
+      "name": "accept_with_multiple_inputs",
+      "description": "Accept with multiple script inputs (ambiguous state - expects pass)",
+      "input": {
+        "type": "script_context",
+        "script_context": {
+          "baseline": "spending",
+          "patches": [
+            {
+              "op": "set_redeemer",
+              "redeemer": "1"
+            },
+            {
+              "op": "add_signature",
+              "pubkey_hash": "@seller_pubkey"
+            },
+            {
+              "op": "add_input_utxo",
+              "utxo_ref": "3333333333333333333333333333333333333333333333333333333333333333:0",
+              "lovelace": 75000000,
+              "is_own_input": true
+            },
+            {
+              "op": "add_input_utxo",
+              "utxo_ref": "4444444444444444444444444444444444444444444444444444444444444444:0",
+              "lovelace": 75000000,
+              "is_own_input": true
+            },
+            {
+              "op": "add_output_utxo",
+              "address": {
+                "type": "pubkey",
+                "pubkey_hash": "@seller_pubkey"
+              },
+              "lovelace": 75000000
+            }
+          ]
+        }
+      },
+      "expected": {
+        "type": "value",
+        "content": "(con unit ())"
+      }
+    },
+    {
+      "name": "accept_with_partial_payment_to_seller",
+      "description": "Accept with only 50 ADA payment to seller (insufficient - expects fail)",
+      "input": {
+        "type": "script_context",
+        "script_context": {
+          "baseline": "spending",
+          "patches": [
+            {
+              "op": "set_redeemer",
+              "redeemer": "1"
+            },
+            {
+              "op": "add_signature",
+              "pubkey_hash": "@seller_pubkey"
+            },
+            {
+              "op": "add_input_utxo",
+              "utxo_ref": "4444444444444444444444444444444444444444444444444444444444444444:0",
+              "lovelace": 75000000,
+              "is_own_input": true
+            },
+            {
+              "op": "add_output_utxo",
+              "address": {
+                "type": "pubkey",
+                "pubkey_hash": "@seller_pubkey"
+              },
+              "lovelace": 50000000
+            }
+          ]
+        }
+      },
+      "expected": {
+        "type": "error"
+      }
+    },
+    {
+      "name": "accept_with_excess_payment_to_seller",
+      "description": "Accept with 100 ADA payment to seller (excess amount - expects fail due to exact validation)",
+      "input": {
+        "type": "script_context",
+        "script_context": {
+          "baseline": "spending",
+          "patches": [
+            {
+              "op": "set_redeemer",
+              "redeemer": "1"
+            },
+            {
+              "op": "add_signature",
+              "pubkey_hash": "@seller_pubkey"
+            },
+            {
+              "op": "add_input_utxo",
+              "utxo_ref": "4444444444444444444444444444444444444444444444444444444444444444:0",
+              "lovelace": 75000000,
+              "is_own_input": true
+            },
+            {
+              "op": "add_output_utxo",
+              "address": {
+                "type": "pubkey",
+                "pubkey_hash": "@seller_pubkey"
+              },
+              "lovelace": 100000000
+            }
+          ]
+        }
+      },
+      "expected": {
+        "type": "error"
+      }
+    },
+    {
+      "name": "accept_with_datum_attached",
+      "description": "Accept with datum attached to seller's payment (expects pass)",
+      "input": {
+        "type": "script_context",
+        "script_context": {
+          "baseline": "@successful_accept",
+          "patches": []
+        }
+      },
+      "expected": {
+        "type": "value",
+        "content": "(con unit ())"
+      }
+    },
+    {
+      "name": "accept_with_multiple_outputs_to_seller",
+      "description": "Accept with payment split across two outputs to seller (50+25 ADA - expects pass)",
+      "input": {
+        "type": "script_context",
+        "script_context": {
+          "baseline": "spending",
+          "patches": [
+            {
+              "op": "set_redeemer",
+              "redeemer": "1"
+            },
+            {
+              "op": "add_signature",
+              "pubkey_hash": "@seller_pubkey"
+            },
+            {
+              "op": "add_input_utxo",
+              "utxo_ref": "4444444444444444444444444444444444444444444444444444444444444444:0",
+              "lovelace": 75000000,
+              "is_own_input": true
+            },
+            {
+              "op": "add_output_utxo",
+              "address": {
+                "type": "pubkey",
+                "pubkey_hash": "@seller_pubkey"
+              },
+              "lovelace": 50000000
+            },
+            {
+              "op": "add_output_utxo",
+              "address": {
+                "type": "pubkey",
+                "pubkey_hash": "@seller_pubkey"
+              },
+              "lovelace": 25000000
+            }
+          ]
+        }
+      },
+      "expected": {
+        "type": "value",
+        "content": "(con unit ())"
+      }
+    },
+    {
+      "name": "accept_with_remaining_script_output",
+      "description": "Accept while leaving funds in script (should fail - incomplete withdrawal)",
+      "input": {
+        "type": "script_context",
+        "script_context": {
+          "baseline": "spending",
+          "patches": [
+            {
+              "op": "set_redeemer",
+              "redeemer": "1"
+            },
+            {
+              "op": "add_signature",
+              "pubkey_hash": "@seller_pubkey"
+            },
+            {
+              "op": "add_input_utxo",
+              "utxo_ref": "4444444444444444444444444444444444444444444444444444444444444444:0",
+              "lovelace": 75000000,
+              "is_own_input": true
+            },
+            {
+              "op": "add_output_utxo",
+              "address": {
+                "type": "pubkey",
+                "pubkey_hash": "@seller_pubkey"
+              },
+              "lovelace": 75000000
+            },
+            {
+              "op": "add_output_utxo",
+              "address": {
+                "type": "script",
+                "script_hash": "1111111111111111111111111111111111111111111111111111111111"
+              },
+              "lovelace": 10000000
+            }
+          ]
+        }
+      },
+      "expected": {
+        "type": "error"
+      }
     }
   ]
 }

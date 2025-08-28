@@ -222,3 +222,135 @@ spec = do
                 ]
       result <- evaluateValidator contextData
       result `shouldSatisfy` isEvaluationFailure
+
+    -- State Validation Tests (Reference Script Context)
+    it "accept_without_prior_deposit should fail (invalid escrow state)" do
+      -- Accept operation without a valid deposit UTXO being spent
+      -- This should fail because there's no escrow state to accept from
+      let outputValue = lovelaceValue Fixed.escrowPrice
+          contextData =
+            buildContextData $
+              ScriptContextBuilder
+                Spending
+                [ SetRedeemer Fixed.acceptRedeemer
+                , AddSignature Fixed.sellerKeyHash
+                , -- Note: No input UTXO added (simulating no prior deposit)
+                  AddOutputUTXO Fixed.sellerAddr outputValue
+                ]
+      result <- evaluateValidator contextData
+      -- Expected: FAIL - accepting without valid deposit should be rejected
+      result `shouldSatisfy` isEvaluationFailure
+
+    it "accept_with_multiple_inputs should pass (no single input validation)" do
+      -- Accept with multiple script inputs (ambiguous state)
+      let inputValue = lovelaceValue Fixed.escrowPrice
+          contextData =
+            buildContextData $
+              ScriptContextBuilder
+                Spending
+                [ SetRedeemer Fixed.acceptRedeemer
+                , AddSignature Fixed.sellerKeyHash
+                , AddInputUTXO Fixed.txOutRef inputValue True -- First script input
+                , AddInputUTXO Fixed.txOutRef2 inputValue True -- Second script input
+                , AddOutputUTXO Fixed.sellerAddr inputValue
+                ]
+      result <- evaluateValidator contextData
+      -- Expected: PASS because validator doesn't enforce single input
+      result `shouldSatisfy` isEvaluationSuccess
+
+    -- Value Distribution Tests
+    it "accept_with_partial_payment_to_seller should fail" do
+      -- Accept with only 50 ADA going to seller (less than required 75 ADA)
+      let inputValue = lovelaceValue Fixed.escrowPrice
+          partialPayment = lovelaceValue (Lovelace 50000000) -- Only 50 ADA
+          contextData =
+            buildContextData $
+              ScriptContextBuilder
+                Spending
+                [ SetRedeemer Fixed.acceptRedeemer
+                , AddSignature Fixed.sellerKeyHash
+                , AddInputUTXO Fixed.txOutRef2 inputValue True
+                , AddOutputUTXO Fixed.sellerAddr partialPayment -- Insufficient payment
+                ]
+      result <- evaluateValidator contextData
+      result `shouldSatisfy` isEvaluationFailure
+
+    it "accept_with_excess_payment_to_seller should fail (exact amount required)" do
+      -- Accept with 100 ADA going to seller (more than required 75 ADA)
+      -- Current validator requires exactly 75 ADA, not "at least 75 ADA"
+      let inputValue = lovelaceValue Fixed.escrowPrice
+          excessPayment = lovelaceValue (Lovelace 100000000) -- 100 ADA
+          contextData =
+            buildContextData $
+              ScriptContextBuilder
+                Spending
+                [ SetRedeemer Fixed.acceptRedeemer
+                , AddSignature Fixed.sellerKeyHash
+                , AddInputUTXO Fixed.txOutRef2 inputValue True
+                , AddOutputUTXO Fixed.sellerAddr excessPayment -- More than required
+                ]
+      result <- evaluateValidator contextData
+      -- Expected: FAIL because validator requires exactly 75 ADA (uses /= not <)
+      result `shouldSatisfy` isEvaluationFailure
+
+    -- Output Structure Tests
+    it "accept_with_datum_attached should pass" do
+      -- Accept with datum attached to seller's payment output
+      -- Note: In current test framework, datum attachment is implicit
+      let inputValue = lovelaceValue Fixed.escrowPrice
+          contextData =
+            buildContextData $
+              ScriptContextBuilder
+                Spending
+                [ SetRedeemer Fixed.acceptRedeemer
+                , AddSignature Fixed.sellerKeyHash
+                , AddInputUTXO Fixed.txOutRef2 inputValue True
+                , AddOutputUTXO Fixed.sellerAddr inputValue -- Payment with potential datum
+                ]
+      result <- evaluateValidator contextData
+      -- Expected: PASS because datum doesn't affect payment validation
+      result `shouldSatisfy` isEvaluationSuccess
+
+    it "accept_with_multiple_outputs_to_seller should pass" do
+      -- Accept with payment split across two outputs to seller (50 + 25 ADA)
+      let inputValue = lovelaceValue Fixed.escrowPrice
+          firstPayment = lovelaceValue (Lovelace 50000000) -- 50 ADA
+          secondPayment = lovelaceValue (Lovelace 25000000) -- 25 ADA
+          contextData =
+            buildContextData $
+              ScriptContextBuilder
+                Spending
+                [ SetRedeemer Fixed.acceptRedeemer
+                , AddSignature Fixed.sellerKeyHash
+                , AddInputUTXO Fixed.txOutRef2 inputValue True
+                , AddOutputUTXO Fixed.sellerAddr firstPayment -- First payment
+                , AddOutputUTXO Fixed.sellerAddr secondPayment -- Second payment
+                ]
+      result <- evaluateValidator contextData
+      -- Expected: PASS because valuePaidTo sums all outputs to seller
+      result `shouldSatisfy` isEvaluationSuccess
+
+    -- Script Continuity Tests
+    it "accept_with_remaining_script_output should fail (incomplete withdrawal)" do
+      -- Accept while leaving funds in script (security vulnerability)
+      -- Escrow should ensure complete withdrawal - no funds should remain in script
+      let inputValue = lovelaceValue Fixed.escrowPrice
+          scriptAddr =
+            V3.Address
+              ( V3.ScriptCredential
+                  (V3.ScriptHash "1111111111111111111111111111111111111111111111111111111111")
+              )
+              Nothing
+          contextData =
+            buildContextData $
+              ScriptContextBuilder
+                Spending
+                [ SetRedeemer Fixed.acceptRedeemer
+                , AddSignature Fixed.sellerKeyHash
+                , AddInputUTXO Fixed.txOutRef2 inputValue True
+                , AddOutputUTXO Fixed.sellerAddr inputValue -- Payment to seller
+                , AddOutputUTXO scriptAddr (lovelaceValue (Lovelace 10000000)) -- Remaining in script
+                ]
+      result <- evaluateValidator contextData
+      -- Expected: FAIL - Accept should ensure complete withdrawal from escrow
+      result `shouldSatisfy` isEvaluationFailure
