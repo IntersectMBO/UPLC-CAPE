@@ -64,17 +64,17 @@
       "name": "simple_builtin_data_redeemer_0"
     },
     {
-      "cpu_units": 55269599,
+      "cpu_units": 56261599,
       "description": "Deposit with buyer signature and exactly 75 ADA should succeed",
       "execution_result": "success",
-      "memory_units": 201314,
+      "memory_units": 207514,
       "name": "deposit_successful"
     },
     {
-      "cpu_units": 46947213,
+      "cpu_units": 50147213,
       "description": "Deposit without buyer signature should fail",
       "execution_result": "success",
-      "memory_units": 168762,
+      "memory_units": 188762,
       "name": "deposit_without_buyer_signature"
     },
     {
@@ -90,6 +90,83 @@
       "execution_result": "success",
       "memory_units": 126322,
       "name": "deposit_to_wrong_address"
+    },
+    {
+      "cpu_units": 96881280,
+      "description": "Accept with seller signature and 75 ADA to seller should succeed",
+      "execution_result": "success",
+      "memory_units": 365535,
+      "name": "accept_successful"
+    },
+    {
+      "cpu_units": 55900690,
+      "description": "Accept operation fails when seller signature is missing",
+      "execution_result": "success",
+      "memory_units": 210102,
+      "name": "accept_without_seller_signature"
+    },
+    {
+      "cpu_units": 135454080,
+      "description": "Accept operation fails with wrong payment amount (50 ADA instead of 75 ADA)",
+      "execution_result": "success",
+      "memory_units": 499995,
+      "name": "accept_with_incorrect_payment_amount"
+    },
+    {
+      "cpu_units": 78910602,
+      "description": "Accept operation fails when payment goes to impostor address instead of seller",
+      "execution_result": "success",
+      "memory_units": 293409,
+      "name": "accept_with_payment_to_wrong_address"
+    },
+    {
+      "cpu_units": 11950818,
+      "description": "Accept operation without valid deposit UTXO (should fail - invalid escrow state)",
+      "execution_result": "success",
+      "memory_units": 42409,
+      "name": "accept_without_prior_deposit"
+    },
+    {
+      "cpu_units": 96881280,
+      "description": "Accept with multiple script inputs (ambiguous state - expects pass)",
+      "execution_result": "success",
+      "memory_units": 365535,
+      "name": "accept_with_multiple_inputs"
+    },
+    {
+      "cpu_units": 95308778,
+      "description": "Accept with only 50 ADA payment to seller (insufficient - expects fail)",
+      "execution_result": "success",
+      "memory_units": 355367,
+      "name": "accept_with_partial_payment_to_seller"
+    },
+    {
+      "cpu_units": 95308778,
+      "description": "Accept with 100 ADA payment to seller (excess amount - expects fail due to exact validation)",
+      "execution_result": "success",
+      "memory_units": 355367,
+      "name": "accept_with_excess_payment_to_seller"
+    },
+    {
+      "cpu_units": 96881280,
+      "description": "Accept with datum attached to seller's payment (expects pass)",
+      "execution_result": "success",
+      "memory_units": 365535,
+      "name": "accept_with_datum_attached"
+    },
+    {
+      "cpu_units": 137218582,
+      "description": "Accept with payment split across two outputs to seller (50+25 ADA - expects pass)",
+      "execution_result": "success",
+      "memory_units": 511363,
+      "name": "accept_with_multiple_outputs_to_seller"
+    },
+    {
+      "cpu_units": 74240862,
+      "description": "Accept while leaving funds in script (should fail - incomplete withdrawal)",
+      "execution_result": "success",
+      "memory_units": 272483,
+      "name": "accept_with_remaining_script_output"
     }
   ],
   "execution_environment": {
@@ -97,26 +174,26 @@
   },
   "measurements": {
     "cpu_units": {
-      "maximum": 55269599,
-      "median": 24688,
+      "maximum": 137218582,
+      "median": 48391310,
       "minimum": 24688,
-      "sum": 183713764,
+      "sum": 1162842794,
       "sum_negative": 0,
-      "sum_positive": 183713764
+      "sum_positive": 1162842794
     },
     "memory_units": {
-      "maximum": 201314,
-      "median": 132,
+      "maximum": 511363,
+      "median": 178493,
       "minimum": 132,
-      "sum": 665875,
+      "sum": 4329175,
       "sum_negative": 0,
-      "sum_positive": 665875
+      "sum_positive": 4329175
     },
-    "script_size_bytes": 1361,
-    "term_size": 1340
+    "script_size_bytes": 2392,
+    "term_size": 2221
   },
   "scenario": "two-party-escrow",
-  "timestamp": "2025-08-26T17:33:17Z",
+  "timestamp": "2025-08-28T11:32:27Z",
   "version": "1.0.0",
   "notes": "Manual metrics with test results - one failing test case due to validator logic"
 }
