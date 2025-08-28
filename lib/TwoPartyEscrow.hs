@@ -72,13 +72,14 @@ twoPartyEscrowValidator scriptContextData =
       -- Accept: seller accepts payment (75 ADA should go to seller)
       let inputs = txInfoInputs (scriptContextTxInfo ctx)
           outs = getContinuingOutputs ctx
+          outCount = List.length outs
        in if
+            | outCount > 0 ->
+                traceError "Incomplete withdrawal - funds remain in script"
             | not (txSignedBy (scriptContextTxInfo ctx) Fixed.sellerKeyHash) ->
                 traceError "Seller signature missing"
             | not (List.any isValidEscrowInput inputs) ->
                 traceError "No valid escrow deposit found in inputs"
-            | not (List.null outs) ->
-                traceError "Incomplete withdrawal - funds remain in script"
             | lovelaceValueOf
                 (valuePaidTo (scriptContextTxInfo ctx) Fixed.sellerKeyHash)
                 /= Fixed.escrowPrice ->
