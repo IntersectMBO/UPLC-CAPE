@@ -1,6 +1,6 @@
 # UPLC-CAPE
 
-_Comparative Artifact Performance Evaluation for UPLC programs_
+_**C**omparative **A**rtifact **P**erformance **E**valuation for UPLC programs_
 
 <img src="uplc-cape-logo.jpg" alt="UPLC-CAPE Logo" width="300" align="left" style="margin-right: 20px;">
 
