@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="uplc-cape-logo.jpg" alt="UPLC-CAPE Logo" width="400">
+</p>
+
 # UPLC-CAPE
 
 Comparative Artifact Performance Evaluation for UPLC programs
