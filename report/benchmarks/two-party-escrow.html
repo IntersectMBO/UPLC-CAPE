@@ -53,44 +53,30 @@
             padding-bottom: 10px;
             margin-bottom: 30px;
         }
-        .no-submissions-message {
+        .chart-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+        .chart-container {
             text-align: center;
-            padding: 60px 20px;
-            color: #6c757d;
-        }
-        .no-submissions-message h3 {
-            color: #495057;
-            margin-bottom: 20px;
-            font-size: 1.5em;
-        }
-        .no-submissions-message p {
-            font-size: 1.1em;
-            margin-bottom: 15px;
-        }
-        .no-submissions-message .icon {
-            font-size: 4em;
-            margin-bottom: 20px;
-            opacity: 0.6;
-        }
-        .contribute-info {
-            background-color: #f8f9fa;
-            border-left: 4px solid #667eea;
+            background: #f8f9fa;
             padding: 20px;
-            margin-top: 30px;
-            border-radius: 0 8px 8px 0;
+            border-radius: 8px;
+            border: 1px solid #e9ecef;
         }
-        .contribute-info h4 {
-            color: #667eea;
+        .chart-container img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 6px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+        .chart-title {
+            font-size: 1.1em;
+            font-weight: 600;
+            color: #495057;
             margin-bottom: 15px;
-        }
-        .contribute-info p {
-            margin-bottom: 10px;
-        }
-        .contribute-info code {
-            background-color: #e9ecef;
-            padding: 2px 6px;
-            border-radius: 4px;
-            font-family: 'Monaco', 'Menlo', monospace;
         }
         .footer {
             text-align: center;
@@ -103,6 +89,53 @@
             font-style: italic;
             color: #6c757d;
             margin-bottom: 20px;
+        }
+        .data-table {
+            background: white;
+            margin-top: 40px;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            overflow-x: auto;
+        }
+        .data-table h3 {
+            color: #667eea;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9em;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #e9ecef;
+        }
+        th {
+            background-color: #f8f9fa;
+            font-weight: 600;
+            color: #495057;
+            position: sticky;
+            top: 0;
+        }
+        td {
+            color: #6c757d;
+        }
+        tr:hover {
+            background-color: #f8f9fa;
+        }
+        .numeric {
+            text-align: right;
+            font-family: 'Courier New', monospace;
+        }
+        table a {
+            text-decoration: none;
+            cursor: pointer;
+            text-align: center;
+            display: block;
         }
     </style>
 </head>
@@ -117,24 +150,63 @@
     </div>
     
     <div class="timestamp">
-        Generated on: 2025-08-20 12:02:10 CEST
+        Generated on: 2025-09-02 13:23:16 CDT
     </div>
     
     <div class="benchmark-section">
         <h2 class="benchmark-title">📊 two-party-escrow benchmark report</h2>
-        <div class="no-submissions-message">
-            <div class="icon">📭</div>
-            <h3>No Submissions Yet</h3>
-            <p>This benchmark is available but has no compiler submissions yet.</p>
-            <p>Charts and performance data will appear here once submissions are added.</p>
-            
-            <div class="contribute-info">
-                <h4>🚀 Want to contribute?</h4>
-                <p>Create a submission for the <strong>two-party-escrow</strong> benchmark using:</p>
-                <p><code>cape submission new two-party-escrow &lt;compiler&gt; &lt;version&gt; &lt;your-handle&gt;</code></p>
-                <p>Then follow the prompts to implement your solution and submit performance measurements.</p>
+        <div class="chart-grid">
+            <div class="chart-container">
+                <div class="chart-title">💻 CPU Units</div>
+                <img src="images/two-party-escrow_cpu_units.png" alt="CPU Units comparison for two-party-escrow">
+            </div>
+            <div class="chart-container">
+                <div class="chart-title">🧠 Memory Units</div>
+                <img src="images/two-party-escrow_memory_units.png" alt="Memory Units comparison for two-party-escrow">
+            </div>
+            <div class="chart-container">
+                <div class="chart-title">📦 Script Size</div>
+                <img src="images/two-party-escrow_script_size.png" alt="Script Size comparison for two-party-escrow">
+            </div>
+            <div class="chart-container">
+                <div class="chart-title">🌳 Term Size</div>
+                <img src="images/two-party-escrow_term_size.png" alt="Term Size comparison for two-party-escrow">
             </div>
         </div>
+    </div>
+    
+    <div class="data-table">
+        <h3>📋 Performance Data</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Timestamp</th>
+                    <th>Language</th>
+                    <th>Version</th>
+                    <th>User</th>
+                    <th class="numeric">CPU Units</th>
+                    <th class="numeric">Memory Units</th>
+                    <th class="numeric">Script Size (bytes)</th>
+                    <th class="numeric">Term Size (nodes)</th>
+                    <th>Source</th>
+                    <th>UPLC</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>2025-09-02T18:23:06Z</td>
+                    <td>Plinth</td>
+                    <td>1.0.0</td>
+                    <td>plinth-team</td>
+                    <td class="numeric">271568</td>
+                    <td class="numeric">1452</td>
+                    <td class="numeric">617</td>
+                    <td class="numeric">568</td>
+                    <td><a href="https://github.com/IntersectMBO/UPLC-CAPE/blob/main/submissions/two-party-escrow/Plinth_1.0.0_plinth-team/source/README.md" target="_blank" rel="noopener">📁</a></td>
+                    <td><a href="https://github.com/IntersectMBO/UPLC-CAPE/blob/main/submissions/two-party-escrow/Plinth_1.0.0_plinth-team/two-party-escrow.uplc" target="_blank" rel="noopener">🔗</a></td>
+                </tr>
+            </tbody>
+        </table>
     </div>
     
     <div class="footer">
