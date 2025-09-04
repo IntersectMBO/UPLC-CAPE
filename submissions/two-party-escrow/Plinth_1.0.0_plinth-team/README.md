@@ -34,6 +34,6 @@ The validator has a signature of `BuiltinData -> BuiltinUnit` and uses `unsafeDa
 
 This is a reference implementation demonstrating the Two-Party Escrow benchmark specification. The validator provides basic structure for escrow operations but does not include full on-chain validation logic (signature verification, UTxO handling, etc.) that would be required in a production escrow contract. The implementation focuses on computational patterns relevant for performance benchmarking.
 
-- Source code available in the `plinth/src/TwoPartyEscrow.hs` module
+- Source code available in the `lib/TwoPartyEscrow.hs` module
 - Compiled with PlutusTx plugin targeting Plutus Core 1.1.0
 - Uses driver-based measurement architecture for accurate performance isolation

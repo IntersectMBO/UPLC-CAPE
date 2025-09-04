@@ -44,7 +44,8 @@ import Test.Hspec
 This eliminates the need for case analysis in tests by converting
 build failures to runtime errors with descriptive messages.
 -}
-buildScriptContextOrCrash :: ScriptContextBuilder -> V3.ScriptContext
+buildScriptContextOrCrash ::
+  HasCallStack => ScriptContextBuilder -> V3.ScriptContext
 buildScriptContextOrCrash builder =
   case buildScriptContext builder of
     Right ctx -> ctx
@@ -67,6 +68,7 @@ Generic function that can evaluate any validator compiled code with
 the provided input data. Returns IO EvalResult for use in tests.
 -}
 evaluateValidatorCode ::
+  HasCallStack =>
   PlutusTx.CompiledCode (V3.BuiltinData -> BuiltinUnit) ->
   V3.BuiltinData ->
   IO EvalResult
@@ -81,6 +83,7 @@ Convenience function for asserting successful validator evaluation.
 This creates a specialized version for a specific validator.
 -}
 expectSuccess ::
+  HasCallStack =>
   (V3.BuiltinData -> IO EvalResult) ->
   V3.BuiltinData ->
   IO ()
@@ -94,6 +97,7 @@ Convenience function for asserting failed validator evaluation.
 This creates a specialized version for a specific validator.
 -}
 expectFailure ::
+  HasCallStack =>
   (V3.BuiltinData -> IO EvalResult) ->
   V3.BuiltinData ->
   IO ()

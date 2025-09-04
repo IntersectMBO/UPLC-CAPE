@@ -347,8 +347,10 @@ UPLC-CAPE/
 ├── scripts/                      # Project CLI tooling
 │   ├── cape.sh                   # Main CLI
 │   └── cape-subcommands/         # Command implementations
-├── plinth/                       # Haskell reference implementations and examples
-├── measure/                      # Measurement tooling
+├── lib/                          # Haskell library code (validators, fixtures, utilities)
+├── measure-app/                  # UPLC program measurement tool
+├── plinth-submissions-app/       # Plinth submission generator
+├── test/                         # Test suites
 ├── report/                       # Generated HTML reports and assets
 ├── doc/                          # Documentation
 │   ├── domain-model.md
@@ -370,7 +372,7 @@ UPLC-CAPE/
 - Development environment: Nix shell (`nix develop`) with optional direnv (`direnv allow`).
 - GHC: 9.6.6 (provided in Nix shell).
 - Plutus Core target: 1.1.0.
-  - Use `plcVersion110` (for code in plinth-workspace).
+  - Use `plcVersion110` (for Haskell/PlutusTx code).
 - Package baselines (CHaP):
   - plutus-core >= 1.52.0.0
   - plutus-tx >= 1.52.0.0
@@ -392,7 +394,7 @@ direnv allow
 Common tools:
 
 - cape … (project CLI)
-- cabal build (in plinth-workspace and related components)
+- cabal build (builds all Haskell components: library, executables, tests)
 - treefmt (format all files)
 - fourmolu (Haskell formatting)
 - adr (Architecture Decision Records)

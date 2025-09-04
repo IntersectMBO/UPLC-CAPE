@@ -162,6 +162,8 @@ test-suite cape-tests
     , hspec
     , megaparsec
     , mtl
+    , plutus-ledger-api
+    , plutus-tx
     , plutus-tx:plutus-tx-testlib
     , vector
 
