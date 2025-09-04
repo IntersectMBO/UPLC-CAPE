@@ -75,10 +75,11 @@ When testing this validator, the test framework uses generic dummy constants for
 
 The Two-Party Escrow validator operates as a **state machine validator**:
 
-```text
-[Initial] --Deposit(0)--> [DepositValid] --Accept(1)--> [AcceptComplete]
-                                     \
-                                      --Refund(2)--> [RefundComplete]
+```mermaid
+flowchart LR
+  Initial -->|Deposit 0| DepositValid
+  DepositValid -->|Accept 1| AcceptComplete
+  DepositValid -->|Refund 2| RefundComplete
 ```
 
 | Current State | Event | Condition | Next State |
@@ -103,21 +104,73 @@ The Two-Party Escrow validator operates as a **state machine validator**:
 
 ## View 2: Transaction Sequence View
 
-### Performance Measurement Sequence (Happy Path)
+### UTXO Flow Diagram
 
-The **Accept Sequence** is used for performance measurement:
+```mermaid
+graph
+    %% Initial UTXO owned by Buyer
+    UTXO1["fa:fa-wallet UTXO #1<br/>Owner: Buyer<br/>Value: 75 ADA"]:::utxo
 
-1. **Initial → DepositValid**: Buyer deposits 75 ADA
-2. **DepositValid → AcceptComplete**: Seller accepts payment
+    %% Transaction 1: Deposit to Escrow
+    TX1("fa:fa-exchange Transaction 1<br/>━━━━━━━━━━━━━━━<br/><b>Deposit to Escrow</b><br/><br/>fa:fa-pen Signatures: Buyer<br/>fa:fa-clock Validity: slot 1000-2000"):::transaction
 
-**Performance Measurement**: Sum of CPU/Memory units across both steps
+    %% Escrow UTXO with lock icon
+    UTXO2["fa:fa-lock UTXO #2<br/><b>Owner: Escrow Script</b><br/>Value: 75 ADA<br/>Datum: {buyer, seller, deadline}"]:::escrowUtxo
 
-### Verification Sequences
+    %% Branch indicator
+    CHOICE{{"fa:fa-code-branch<br/>Script Logic<br/>━━━━━━━━━<br/>Either/Or"}}:::choice
 
-**Refund Sequence** (functional verification only):
+    %% Transaction 2a: Seller Accepts
+    TX2A("fa:fa-handshake Transaction 2a<br/>━━━━━━━━━━━━━━━<br/><b>Seller Accepts</b><br/><br/>fa:fa-key Redeemer: Accept<br/>fa:fa-pen Signatures: Seller<br/>fa:fa-clock Validity: before deadline"):::acceptTx
 
-1. **Initial → DepositValid**: Buyer deposits 75 ADA
-2. **DepositValid → RefundComplete**: Buyer reclaims funds after deadline
+    %% Transaction 2b: Buyer Refund
+    TX2B("fa:fa-undo Transaction 2b<br/>━━━━━━━━━━━━━━━<br/><b>Buyer Refund</b><br/><br/>fa:fa-key Redeemer: Refund<br/>fa:fa-pen Signatures: Buyer<br/>fa:fa-clock Validity: after deadline"):::refundTx
+
+    %% Final UTXOs
+    UTXO3["fa:fa-check-circle UTXO #3<br/>Owner: Seller<br/>Value: 75 ADA<br/><i>Payment Complete</i>"]:::successUtxo
+    UTXO4["fa:fa-rotate-left UTXO #4<br/>Owner: Buyer<br/>Value: 75 ADA<br/><i>Funds Returned</i>"]:::refundedUtxo
+
+    %% Connections with proper flow
+    UTXO1 -.->|consumed| TX1
+    TX1 ==>|creates| UTXO2
+    UTXO2 --> CHOICE
+    CHOICE -.->|"fa:fa-thumbs-up Accept"| TX2A
+    CHOICE -.->|"fa:fa-hourglass-end Timeout"| TX2B
+    TX2A ==>|creates| UTXO3
+    TX2B ==>|creates| UTXO4
+
+    %% Define styles with modern colors
+    classDef utxo fill:#fef3e2,stroke:#f39c12,stroke-width:2px,color:#000,font-weight:bold
+    classDef transaction fill:#e3f2fd,stroke:#1976d2,stroke-width:2px,color:#000
+    classDef escrowUtxo fill:#f3e5f5,stroke:#7b1fa2,stroke-width:3px,color:#000,font-weight:bold
+    classDef choice fill:#ffebee,stroke:#c62828,stroke-width:2px,stroke-dasharray:5 5,color:#000
+    classDef acceptTx fill:#e8f5e9,stroke:#388e3c,stroke-width:2px,color:#000
+    classDef refundTx fill:#fff3e0,stroke:#f57c00,stroke-width:2px,color:#000
+    classDef successUtxo fill:#c8e6c9,stroke:#2e7d32,stroke-width:2px,color:#000,font-weight:bold
+    classDef refundedUtxo fill:#ffe0b2,stroke:#ef6c00,stroke-width:2px,color:#000,font-weight:bold
+
+    %% Apply classes
+    class UTXO1 utxo
+    class TX1 transaction
+    class UTXO2 escrowUtxo
+    class CHOICE choice
+    class TX2A acceptTx
+    class TX2B refundTx
+    class UTXO3 successUtxo
+    class UTXO4 refundedUtxo
+```
+
+### Performance Measurement Sequences (Happy Paths)
+
+Both **Accept** and **Refund** sequences are measured for comprehensive performance benchmarking:
+
+**Complete Transaction Flow**:
+
+1. **Initial → DepositValid**: Buyer deposits 75 ADA (shared operation)
+2. **DepositValid → AcceptComplete**: Seller accepts payment (Accept path)
+3. **DepositValid → RefundComplete**: Buyer reclaims funds after deadline (Refund path)
+
+**Performance Measurement**: Sum of CPU/Memory units across all unique operations (Deposit + Accept + Refund)
 
 **Extended Negative Test Sequences**:
 
@@ -160,45 +213,23 @@ The **Accept Sequence** is used for performance measurement:
 - **State Check**: Valid deposit exists
 - **Timing**: Current time > deposit time + 1800 seconds
 
-### Performance Characteristics
-
-**Expected Ranges** (approximate guidelines for reference implementations):
-
-- CPU Units per operation: 50,000 - 500,000
-- Memory Units per operation: 10,000 - 100,000
-- Script Size: 1,000 - 10,000 bytes
-- Accept Sequence Total: 100,000 - 1,000,000 CPU units
-
-_Note: These ranges are indicative and may vary significantly based on compiler optimizations and implementation approaches._
-
-### Validation
-
-To validate your implementation:
-
-1. **Functional Test**: Ensure all three operations validate correctly
-2. **Budget Test**: Verify each operation completes within CEK machine limits
-3. **Sequence Test**: Test complete Accept and Refund sequences
-4. **Negative Test**: Verify proper rejection of invalid transactions
-
 ---
 
 ## Test Cases
 
-### Primary Test Case (Performance Measurement)
+### Primary Test Cases (Performance Measurement)
 
 **Accept Sequence**:
 
 1. **Input**: Redeemer = 0 (Deposit) **Expected**: Validation succeeds
 2. **Input**: Redeemer = 1 (Accept) **Expected**: Validation succeeds
 
-**Combined Performance**: Sum CPU/Memory units from both operations
-
-### Functional Verification Cases
-
 **Refund Sequence**:
 
 1. **Input**: Redeemer = 0 (Deposit) **Expected**: Validation succeeds
 2. **Input**: Redeemer = 2 (Refund) **Expected**: Validation succeeds (after deadline)
+
+**Combined Performance**: Sum of CPU/Memory units from all operations across both sequences
 
 ### Edge Case Considerations
 
@@ -214,104 +245,107 @@ To validate your implementation:
 
 ### Required Metrics
 
-All submissions must include measurements for the **Accept Sequence**:
+All submissions must include measurements for **both Accept and Refund Sequences**:
 
-1. **CPU Units**: Total computational cost (sum of Deposit + Accept)
-2. **Memory Units**: Peak memory consumption across both operations
+1. **CPU Units**: Total computational cost (sum of all unique operations: Deposit + Accept + Refund)
+2. **Memory Units**: Peak memory consumption across all operations
 3. **Script Size**: Size of the compiled UPLC validator script in bytes
 4. **Term Size**: Size of the UPLC term representation
 
 ### Measurement Method
 
-**Happy Path Measurement**:
+**Complete Happy Paths Measurement**:
 
 1. Execute Deposit operation (redeemer = 0), record CPU/Memory
 2. Execute Accept operation (redeemer = 1), record CPU/Memory
-3. Sum the values for total sequence cost
+3. Execute Refund operation (redeemer = 2), record CPU/Memory
+
+**Total Performance**: Sum all three unique operations (Deposit counted once)
 
 ### Reporting Format
 
-Use the standard metrics template in `submissions/TEMPLATE/metrics-template.json`:
+Use the standard metrics schema as defined in `submissions/TEMPLATE/metrics.schema.json`:
 
 ```json
 {
   "scenario": "two-party-escrow",
   "version": "1.0.0",
   "measurements": {
-    "cpu_units": "<sum_of_deposit_and_accept_cpu>",
-    "memory_units": "<peak_memory_across_operations>",
-    "script_size_bytes": "<validator_script_size>",
-    "term_size": "<uplc_term_size>"
+    "cpu_units": {
+      "maximum": 137218582,
+      "sum": 1162842794,
+      "minimum": 24688,
+      "median": 48391310,
+      "sum_positive": 1162842794,
+      "sum_negative": 0
+    },
+    "memory_units": {
+      "maximum": 511363,
+      "sum": 4329175,
+      "minimum": 132,
+      "median": 178493,
+      "sum_positive": 4329175,
+      "sum_negative": 0
+    },
+    "script_size_bytes": 2392,
+    "term_size": 2221
   },
+  "evaluations": [
+    {
+      "name": "deposit_successful",
+      "description": "Deposit with buyer signature and exactly 75 ADA should succeed",
+      "cpu_units": 56261599,
+      "memory_units": 207514,
+      "execution_result": "success"
+    },
+    {
+      "name": "accept_successful",
+      "description": "Accept with seller signature and 75 ADA to seller should succeed",
+      "cpu_units": 96881280,
+      "memory_units": 365535,
+      "execution_result": "success"
+    },
+    {
+      "name": "refund_successful",
+      "description": "Refund after deadline with buyer signature should succeed",
+      "cpu_units": 78453623,
+      "memory_units": 294717,
+      "execution_result": "success"
+    }
+  ],
   "execution_environment": {
-    "evaluator": "<evaluator_version>"
+    "evaluator": "PlutusTx.Eval-1.52.0.0"
   },
-  "sequence_measured": "accept_sequence",
-  "timestamp": "<ISO-8601_timestamp>",
-  "measurement_method": "manual",
-  "notes": "Measured happy path: Deposit + Accept operations"
+  "timestamp": "2025-01-15T10:30:00Z",
+  "notes": "Measured all happy paths: Deposit + Accept + Refund operations plus comprehensive negative test cases"
 }
 ```
 
----
+**Field Explanations:**
 
-## Implementation Notes
+**Measurements Object**: Contains performance metrics across all test evaluations:
 
-### Algorithm Considerations
+- **cpu_units/memory_units objects**: Multiple aggregation strategies for comprehensive analysis:
 
-- **Data Encoding**: Efficient encoding of redeemer integers and validation context
-- **Signature Verification**: Optimize cryptographic operations if available
-- **Time Handling**: Efficient deadline comparison logic
-- **Value Validation**: Streamlined ADA amount checking
+  - `maximum`: Peak resource usage (worst-case performance)
+  - `sum`: Total resources across all evaluations (overall computational work)
+  - `minimum`: Best-case resource usage (optimal performance)
+  - `median`: Typical resource usage (normal performance)
+  - `sum_positive`: Resources from successful evaluations only
+  - `sum_negative`: Resources from failed evaluations only
 
-### Common Pitfalls
+- **script_size_bytes**: Size of the compiled UPLC validator script in bytes
+- **term_size**: Number of AST nodes in the UPLC term representation
 
-- **Integer Overflow**: Ensure safe arithmetic operations for large lovelace values
-- **Redeemer Parsing**: Proper decoding of BuiltinData to integer redeemer
-- **State Consistency**: Maintain consistent view of escrow state across operations
-- **Deadline Logic**: Correct time comparison with proper bounds checking
+**Evaluations Array**: Individual test case measurements showing per-evaluation performance data. Each evaluation includes:
 
-### Optimization Opportunities
+- `name`: Test case identifier
+- `description`: What the test validates
+- `cpu_units/memory_units`: Resources consumed for this specific test
+- `execution_result`: "success" for validation pass, "error" for validation failure
 
-- **Branch Prediction**: Optimize common paths (Accept more likely than Refund)
-- **Data Structure Access**: Minimize BuiltinData traversal costs
-- **Constant Folding**: Leverage fixed parameters for compile-time optimizations
-- **Dead Code Elimination**: Remove unused validation paths
+**Environment Info**:
 
----
-
-## Security Considerations
-
-### Validation Requirements
-
-- **Cryptographic Integrity**: Proper signature verification
-- **Economic Safety**: Prevent value leakage or double spending
-- **Temporal Safety**: Enforce deadline constraints correctly
-- **Authorization Safety**: Verify proper transaction signers
-
-### Attack Vectors to Consider
-
-- **Race Conditions**: Simultaneous accept/refund attempts
-- **Replay Attacks**: Reusing valid transaction patterns
-- **Time Manipulation**: Exploiting deadline calculation edge cases
-- **Value Manipulation**: Attempts to extract more/less than 75 ADA
-
----
-
-## References and Resources
-
-### Related Work
-
-- **Cardano Escrow Patterns**: Real-world escrow implementations on Cardano
-- **Plutus Validator Examples**: Reference implementations in Plutus ecosystem
-
-### Helpful Documentation
-
-- [Plutus Validator Documentation](https://plutus.cardano.intersectmbo.org/docs/)
-- [Cardano Transaction Model](https://docs.cardano.org/learn/cardano-node/)
-- [UPLC Specification](https://plutus.readthedocs.io/)
-- [CEK Machine Documentation](https://plutus.readthedocs.io/)
-
----
-
-_This scenario is part of the CAPE (Comparative Artifact Performance Evaluation) framework for benchmarking UPLC compiler performance, focusing on real-world smart contract validator patterns._
+- `evaluator`: Tool/version used for UPLC evaluation
+- `timestamp`: ISO-8601 timestamp when measurements were taken
+- `notes`: Optional implementation details or measurement context

@@ -32,6 +32,7 @@ import PlutusLedgerApi.Data.V3
 import PlutusTx
 import PlutusTx.Prelude
 
+import PlutusLedgerApi.V1.Data.Interval
 import PlutusLedgerApi.V1.Data.Value (lovelaceValueOf)
 import PlutusLedgerApi.V3.Data.Contexts (
   getContinuingOutputs,
@@ -42,12 +43,13 @@ import PlutusTx.Builtins.Internal (unitval)
 import PlutusTx.Data.List qualified as List
 import TwoPartyEscrow.Fixture qualified as Fixed
 
-{- | Redeemer constants for documentation
-Deposit = 0, Accept = 1, Refund = 2
--}
-
 {- | Two-Party Escrow Validator
-Takes BuiltinData-encoded ScriptContext and returns BuiltinUnit
+
+Redeemer constants for documentation:
+
+  Deposit = 0
+  Accept  = 1
+  Refund  = 2
 -}
 {-# INLINEABLE twoPartyEscrowValidator #-}
 twoPartyEscrowValidator :: BuiltinData -> BuiltinUnit
@@ -85,7 +87,21 @@ twoPartyEscrowValidator scriptContextData =
                 /= Fixed.escrowPrice ->
                 traceError "Incorrect payment to seller"
             | otherwise -> unitval
-    2 -> traceError "Refund not implemented"
+    2 ->
+      let inputs = txInfoInputs (scriptContextTxInfo ctx)
+          nowApprox = txInfoValidRange (scriptContextTxInfo ctx)
+       in if
+            | not (txSignedBy (scriptContextTxInfo ctx) Fixed.buyerKeyHash) ->
+                traceError "Buyer signature missing"
+            | not (from (succ Fixed.refundTime) `contains` nowApprox) ->
+                traceError "Refund time not reached"
+            | not (List.any isValidEscrowInput inputs) ->
+                traceError "No valid escrow deposit found in inputs"
+            | lovelaceValueOf
+                (valuePaidTo (scriptContextTxInfo ctx) Fixed.buyerKeyHash)
+                /= Fixed.escrowPrice ->
+                traceError "Incorrect refund to buyer"
+            | otherwise -> unitval
     _ -> traceError "Invalid redeemer"
   where
     ctx = unsafeFromBuiltinData scriptContextData

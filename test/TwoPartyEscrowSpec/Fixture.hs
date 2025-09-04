@@ -22,12 +22,21 @@ module TwoPartyEscrowSpec.Fixture (
   txOutRef2,
   depositRedeemer,
   acceptRedeemer,
+  refundRedeemer,
+
+  -- ** Addresses
+  buyerAddr,
+
+  -- ** Helper Functions (re-exported from ValidatorHelpers)
+  lovelaceValue,
+  adaValue,
 ) where
 
 import Prelude
 
 import PlutusLedgerApi.V3 qualified as V3
 import TwoPartyEscrow.Fixture
+import ValidatorHelpers (adaValue, lovelaceValue)
 
 --------------------------------------------------------------------------------
 -- Spec-Only Fixtures ---------------------------------------------------------
@@ -72,6 +81,14 @@ where payments should be made to the seller.
 sellerAddr :: V3.Address
 sellerAddr = V3.Address (V3.PubKeyCredential sellerKeyHash) Nothing
 
+{- | Buyer address for testing Refund operation scenarios
+
+This address uses the buyer's pubkey hash for Refund operation tests
+where funds should be returned to the buyer.
+-}
+buyerAddr :: V3.Address
+buyerAddr = V3.Address (V3.PubKeyCredential buyerKeyHash) Nothing
+
 -- ** Transaction Fixtures
 
 {- | Standard transaction ID for testing (matches cape-tests.json)
@@ -113,3 +130,13 @@ Corresponds to the accept action in the two-party escrow validator logic.
 -}
 acceptRedeemer :: V3.Redeemer
 acceptRedeemer = V3.Redeemer (V3.toBuiltinData (1 :: Integer))
+
+{- | Refund action redeemer for testing
+
+The refund redeemer (integer 2) used for Refund operation tests.
+Corresponds to the refund action in the two-party escrow validator logic.
+-}
+refundRedeemer :: V3.Redeemer
+refundRedeemer = V3.Redeemer (V3.toBuiltinData (2 :: Integer))
+
+-- ** Helper Functions are re-exported from ValidatorHelpers

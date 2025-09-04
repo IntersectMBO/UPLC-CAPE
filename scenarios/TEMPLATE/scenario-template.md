@@ -21,6 +21,69 @@ The {Scenario Name} benchmark is a **{synthetic/real-world} {type}** designed to
 
 **Success Criteria**: The program must successfully {success condition} within the execution budget constraints.
 
+## TL;DR
+
+Implement a {brief_description} and compile it as a fully-applied UPLC program.
+
+**Required Files**: Submit `{scenario_name}.uplc`, `metadata.json`, `metrics.json` to `submissions/{scenario_name}/{Compiler}_{Version}_{Handle}/`
+
+**Target**: {target_computation} → Expected result: `{expected_result}`  
+**Metrics**: CPU units, Memory units, Script size (bytes), Term size  
+**Constraints**: Plutus Core 1.1.0, CEK machine budget limits  
+**Implementation**: {implementation_summary}
+
+---
+
+## Exact Task
+
+Implement a {detailed_task_description} and compile it as a **fully-applied UPLC program** that {specific_functionality}.
+
+### Core Requirements
+
+1. **{Primary_Component}**: Create a {component_description} with signature `{function_signature}` that handles:
+
+   - `{Operation_1}` ({parameter} = {value}): {description_1}
+   - `{Operation_2}` ({parameter} = {value}): {description_2}
+   - `{Operation_3}` ({parameter} = {value}): {description_3}
+
+2. **Fixed Parameters**: The following parameters must be baked into the UPLC program:
+
+   - **{Parameter_1}**: `{value_1}`
+   - **{Parameter_2}**: `{value_2}`
+   - **{Parameter_3}**: `{value_3}`
+
+3. **{Validation_Rules}**: The {component} must enforce {specific_constraints}
+
+### {Input_Format} Encoding
+
+```text
+{Format_1} = {value_1}  -- {description_1}
+{Format_2} = {value_2}  -- {description_2}
+{Format_3} = {value_3}  -- {description_3}
+```
+
+### Test Context Assumptions
+
+When testing this {component}, the test framework uses {framework_description}:
+
+**{Context_Component_1}:**
+
+- **{Field_1}**: `{value_1}` ({description_1})
+- **{Field_2}**: `{value_2}`
+- **{Field_3}**: `{value_3}`
+
+**{Context_Component_2}:**
+
+- {Assumption_1}
+- {Assumption_2}
+- {Assumption_3}
+
+**Test Framework Behavior:**
+
+- {Behavior_1}
+- {Behavior_2}
+- {Behavior_3}
+
 ---
 
 ## View 1: State Lifecycle View
@@ -49,13 +112,23 @@ The {Scenario Name} program operates as a **{description of execution model}**:
 
 ---
 
-## View 2: Behavioral Scenario View
+## View 2: Transaction Sequence View
 
-### Core Algorithm
+### {Sequence_Type} Flow Diagram
 
-```text
-{pseudo_code_or_algorithm_description}
+```mermaid
+{mermaid_diagram_placeholder}
 ```
+
+### Performance Measurement Sequences
+
+**{Primary_Sequence}**:
+
+1. **{Step_1}**: {description_1}
+2. **{Step_2}**: {description_2}
+3. **{Step_3}**: {description_3}
+
+**Performance Measurement**: {measurement_strategy}
 
 ### Input Specification
 
@@ -80,16 +153,6 @@ The {Scenario Name} program operates as a **{description of execution model}**:
 2. **Determinism**: Results must be identical across multiple executions
 3. **Self-Contained**: All parameters must be baked into the UPLC program
 4. **Correctness**: Must produce the exact expected result: `{expected_result}`
-
-### Performance Characteristics
-
-**Expected Ranges** (approximate guidelines for reference implementations):
-
-- CPU Units: {min_cpu} - {max_cpu}
-- Memory Units: {min_mem} - {max_mem}
-- Script Size: {min_size} - {max_size} bytes
-
-_Note: These ranges are indicative and may vary significantly based on compiler optimizations and implementation approaches._
 
 ### Validation
 
@@ -132,71 +195,87 @@ All submissions must include measurements for:
 
 ### Reporting Format
 
-Use the standard metrics template in `submissions/TEMPLATE/metrics-template.json`:
+Use the standard metrics schema as defined in `submissions/TEMPLATE/metrics.schema.json`:
 
 ```json
 {
   "scenario": "{scenario_name}",
   "version": "1.0.0",
   "measurements": {
-    "cpu_units": "<measured_value>",
-    "memory_units": "<measured_value>",
-    "script_size_bytes": "<measured_value>",
-    "term_size": "<measured_value>"
+    "cpu_units": {
+      "maximum": 0,
+      "sum": 0,
+      "minimum": 0,
+      "median": 0,
+      "sum_positive": 0,
+      "sum_negative": 0
+    },
+    "memory_units": {
+      "maximum": 0,
+      "sum": 0,
+      "minimum": 0,
+      "median": 0,
+      "sum_positive": 0,
+      "sum_negative": 0
+    },
+    "script_size_bytes": 0,
+    "term_size": 0
   },
+  "evaluations": [
+    {
+      "name": "{test_case_name}",
+      "description": "{what_this_test_validates}",
+      "cpu_units": 0,
+      "memory_units": 0,
+      "execution_result": "success"
+    }
+  ],
   "execution_environment": {
     "evaluator": "<evaluator_version>"
   },
   "timestamp": "<ISO-8601_timestamp>",
-  "measurement_method": "manual",
   "notes": "<optional_implementation_notes>"
 }
 ```
 
----
+**Field Explanations:**
 
-## Implementation Notes
+**Measurements Object**: Contains aggregated performance metrics across all test evaluations:
 
-### Algorithm Considerations
+- **cpu_units/memory_units objects**: Multiple aggregation strategies for comprehensive analysis:
 
-- {Implementation guidance 1}
-- {Implementation guidance 2}
-- {Performance optimization suggestions}
+  - `maximum`: Peak resource usage (worst-case performance)
+  - `sum`: Total resources across all evaluations (overall computational work)
+  - `minimum`: Best-case resource usage (optimal performance)
+  - `median`: Typical resource usage (normal performance)
+  - `sum_positive`: Resources from successful evaluations only
+  - `sum_negative`: Resources from failed evaluations only
 
-### Common Pitfalls
+- **script_size_bytes**: Size of the compiled UPLC validator script in bytes
+- **term_size**: Number of AST nodes in the UPLC term representation
 
-- {Pitfall 1}: {description and how to avoid}
-- {Pitfall 2}: {description and how to avoid}
+**Evaluations Array**: Individual test case measurements showing per-evaluation performance data. Each evaluation includes:
 
-### Optimization Opportunities
+- `name`: Test case identifier
+- `description`: What the test validates
+- `cpu_units/memory_units`: Resources consumed for this specific test
+- `execution_result`: "success" for validation pass, "error" for validation failure
 
-- {Optimization 1}: {description and potential benefits}
-- {Optimization 2}: {description and potential benefits}
+**Environment Info**:
+
+- `evaluator`: Tool/version used for UPLC evaluation
+- `timestamp`: ISO-8601 timestamp when measurements were taken
+- `notes`: Optional implementation details or measurement context
 
 ---
 
 ## References and Resources
-
-### Related Work
-
-- {Reference 1}: {description}
-- {Reference 2}: {description}
 
 ### Helpful Documentation
 
 - [UPLC Specification]({link})
 - [CEK Machine Documentation]({link})
 - [Cardano Protocol Parameters]({link})
-
----
-
-## Changelog
-
-### Version 1.0.0 (Initial)
-
-- Initial scenario specification
-- Defined core requirements and constraints
-- Established measurement guidelines
 
 ---
 

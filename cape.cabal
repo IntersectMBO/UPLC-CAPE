@@ -58,6 +58,7 @@ common common-language
     MultiWayIf
     NamedFieldPuns
     NoImplicitPrelude
+    NumericUnderscores
     OverloadedStrings
     PatternSynonyms
     ScopedTypeVariables
@@ -151,6 +152,7 @@ test-suite cape-tests
     PlutusCore.Data.Compact.PrinterSpec
     TwoPartyEscrowSpec
     TwoPartyEscrowSpec.Fixture
+    ValidatorHelpers
 
   build-depends:
     , aeson
