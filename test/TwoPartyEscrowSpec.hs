@@ -4,7 +4,7 @@ import Prelude
 
 import Cape.ScriptContextBuilder
 import PlutusCore.Data qualified as PLC
-import PlutusLedgerApi.V3 qualified as V3
+import PlutusLedgerApi.Data.V3
 import PlutusTx.Eval (EvalResult)
 import Test.Hspec
 import TwoPartyEscrow
@@ -15,42 +15,42 @@ spec :: Spec
 spec = do
   describe "Invalid redeemer types" do
     it "fails with invalid redeemer integer 3" do
-      let invalidData = V3.toBuiltinData (3 :: Integer)
+      let invalidData = toBuiltinData (3 :: Integer)
       expectFailure evaluateValidator invalidData
 
     it "fails with invalid redeemer integer 4" do
-      let invalidData = V3.toBuiltinData (4 :: Integer)
+      let invalidData = toBuiltinData (4 :: Integer)
       expectFailure evaluateValidator invalidData
 
     it "fails with invalid redeemer integer 99" do
-      let invalidData = V3.toBuiltinData (99 :: Integer)
+      let invalidData = toBuiltinData (99 :: Integer)
       expectFailure evaluateValidator invalidData
 
     it "fails with invalid redeemer integer -1" do
-      let invalidData = V3.toBuiltinData (-1 :: Integer)
+      let invalidData = toBuiltinData (-1 :: Integer)
       expectFailure evaluateValidator invalidData
 
     it "fails with constructor redeemer 0()" do
-      let constructorData = V3.BuiltinData (PLC.Constr 0 [])
+      let constructorData = BuiltinData (PLC.Constr 0 [])
       expectFailure evaluateValidator constructorData
 
     it "fails with bytestring redeemer #deadbeef" do
-      let bytestringData = V3.BuiltinData (PLC.B "deadbeef")
+      let bytestringData = BuiltinData (PLC.B "deadbeef")
       expectFailure evaluateValidator bytestringData
 
     it "fails with list redeemer [1 2 3]" do
-      let listData = V3.BuiltinData (PLC.List [PLC.I 1, PLC.I 2, PLC.I 3])
+      let listData = BuiltinData (PLC.List [PLC.I 1, PLC.I 2, PLC.I 3])
       expectFailure evaluateValidator listData
 
     it "fails with map redeemer {1:42}" do
-      let mapData = V3.BuiltinData (PLC.Map [(PLC.I 1, PLC.I 42)])
+      let mapData = BuiltinData (PLC.Map [(PLC.I 1, PLC.I 42)])
       expectFailure evaluateValidator mapData
 
   describe "Simple builtin_data validation" do
     it "simple_builtin_data_redeemer_0 should fail" do
       -- Test that redeemer 0 with simple builtin_data (not script_context) fails
       -- This verifies the validator requires proper ScriptContext structure
-      let simpleData = V3.toBuiltinData (0 :: Integer)
+      let simpleData = toBuiltinData (0 :: Integer)
       expectFailure evaluateValidator simpleData
 
   ------------------------------------------------------------------------------
@@ -63,11 +63,12 @@ spec = do
           contextData =
             buildContextData $
               ScriptContextBuilder
-                Spending
+                SpendingBaseline
                 [ SetRedeemer Fixed.depositRedeemer
                 , AddSignature Fixed.buyerKeyHash
-                , AddInputUTXO Fixed.txOutRef value True
-                , AddOutputUTXO Fixed.scriptAddr value
+                , SetValidRange (Just 1000) Nothing -- Match depositedEscrowDatum.depositTime
+                , AddInputUTXO Fixed.txOutRef value False -- Input from buyer wallet (not script)
+                , AddOutputUTXOWithDatum Fixed.scriptAddr value Fixed.depositedEscrowDatum
                 ]
       expectSuccess evaluateValidator contextData
 
@@ -77,7 +78,7 @@ spec = do
           contextData =
             buildContextData $
               ScriptContextBuilder
-                Spending
+                SpendingBaseline
                 [ SetRedeemer Fixed.depositRedeemer
                 , -- Note: No AddSignature (simulating removed buyer signature)
                   AddInputUTXO Fixed.txOutRef value True
@@ -92,7 +93,7 @@ spec = do
           contextData =
             buildContextData $
               ScriptContextBuilder
-                Spending
+                SpendingBaseline
                 [ SetRedeemer Fixed.depositRedeemer
                 , AddSignature Fixed.buyerKeyHash
                 , AddInputUTXO Fixed.txOutRef correctInputValue True
@@ -107,11 +108,41 @@ spec = do
           contextData =
             buildContextData $
               ScriptContextBuilder
-                Spending
+                SpendingBaseline
                 [ SetRedeemer Fixed.depositRedeemer
                 , AddSignature Fixed.buyerKeyHash
                 , AddInputUTXO Fixed.txOutRef inputValue True
                 , AddOutputUTXO Fixed.impostorAddr outputValue -- Output to wrong address!
+                ]
+      expectFailure evaluateValidator contextData
+
+    it "deposit_creates_valid_deposited_datum should pass" do
+      -- Deposit that creates proper Deposited datum
+      let value = Fixed.lovelaceValue Fixed.escrowPrice
+          contextData =
+            buildContextData $
+              ScriptContextBuilder
+                SpendingBaseline
+                [ SetRedeemer Fixed.depositRedeemer
+                , AddSignature Fixed.buyerKeyHash
+                , SetValidRange (Just 1000) Nothing -- Deposit time
+                , AddInputUTXO Fixed.txOutRef value False -- Input from buyer wallet (not script)
+                , AddOutputUTXOWithDatum Fixed.scriptAddr value Fixed.depositedEscrowDatum
+                ]
+      expectSuccess evaluateValidator contextData
+
+    it "deposit_with_invalid_datum_state should fail" do
+      -- Deposit with datum that's not in Deposited state
+      let value = Fixed.lovelaceValue Fixed.escrowPrice
+          contextData =
+            buildContextData $
+              ScriptContextBuilder
+                SpendingBaseline
+                [ SetRedeemer Fixed.depositRedeemer
+                , AddSignature Fixed.buyerKeyHash
+                , SetValidRange (Just 1000) Nothing
+                , AddInputUTXO Fixed.txOutRef value True
+                , AddOutputUTXOWithDatum Fixed.scriptAddr value Fixed.acceptedEscrowDatum -- Wrong state!
                 ]
       expectFailure evaluateValidator contextData
 
@@ -125,9 +156,10 @@ spec = do
           contextData =
             buildContextData $
               ScriptContextBuilder
-                Spending
+                SpendingBaseline
                 [ SetRedeemer Fixed.acceptRedeemer
                 , AddSignature Fixed.sellerKeyHash
+                , SetScriptDatum Fixed.depositedEscrowDatum -- Add proper datum for Accept operation
                 , AddInputUTXO Fixed.txOutRef2 inputValue True -- Script input with escrowed funds
                 , AddOutputUTXO Fixed.sellerAddr inputValue -- Payment to seller
                 ]
@@ -139,8 +171,9 @@ spec = do
           contextData =
             buildContextData $
               ScriptContextBuilder
-                Spending
+                SpendingBaseline
                 [ SetRedeemer Fixed.acceptRedeemer
+                , SetScriptDatum Fixed.depositedEscrowDatum -- Add proper datum
                 , -- Note: No AddSignature (simulating missing seller signature)
                   AddInputUTXO Fixed.txOutRef2 inputValue True
                 , AddOutputUTXO Fixed.sellerAddr inputValue
@@ -154,9 +187,10 @@ spec = do
           contextData =
             buildContextData $
               ScriptContextBuilder
-                Spending
+                SpendingBaseline
                 [ SetRedeemer Fixed.acceptRedeemer
                 , AddSignature Fixed.sellerKeyHash
+                , SetScriptDatum Fixed.depositedEscrowDatum -- Add proper datum
                 , AddInputUTXO Fixed.txOutRef2 correctInputValue True
                 , AddOutputUTXO Fixed.sellerAddr wrongOutputValue -- Wrong payment amount: 50 ADA instead of 75 ADA
                 ]
@@ -168,9 +202,10 @@ spec = do
           contextData =
             buildContextData $
               ScriptContextBuilder
-                Spending
+                SpendingBaseline
                 [ SetRedeemer Fixed.acceptRedeemer
                 , AddSignature Fixed.sellerKeyHash -- Seller signs, but payment goes to impostor!
+                , SetScriptDatum Fixed.depositedEscrowDatum -- Add proper datum
                 , AddInputUTXO Fixed.txOutRef2 inputValue True
                 , AddOutputUTXO Fixed.impostorAddr inputValue -- Payment to wrong address!
                 ]
@@ -184,9 +219,10 @@ spec = do
           contextData =
             buildContextData $
               ScriptContextBuilder
-                Spending
+                SpendingBaseline
                 [ SetRedeemer Fixed.acceptRedeemer
                 , AddSignature Fixed.sellerKeyHash
+                , SetScriptDatum Fixed.depositedEscrowDatum -- Add proper datum for Accept operation
                 , -- Note: No input UTXO added (simulating no prior deposit)
                   AddOutputUTXO Fixed.sellerAddr outputValue
                 ]
@@ -200,9 +236,10 @@ spec = do
           contextData =
             buildContextData $
               ScriptContextBuilder
-                Spending
+                SpendingBaseline
                 [ SetRedeemer Fixed.acceptRedeemer
                 , AddSignature Fixed.sellerKeyHash
+                , SetScriptDatum Fixed.depositedEscrowDatum -- Add proper datum for Accept operation
                 , AddInputUTXO Fixed.txOutRef inputValue True -- First script input
                 , AddInputUTXO Fixed.txOutRef2 inputValue True -- Second script input
                 , AddOutputUTXO Fixed.sellerAddr inputValue
@@ -219,9 +256,10 @@ spec = do
           contextData =
             buildContextData $
               ScriptContextBuilder
-                Spending
+                SpendingBaseline
                 [ SetRedeemer Fixed.acceptRedeemer
                 , AddSignature Fixed.sellerKeyHash
+                , SetScriptDatum Fixed.depositedEscrowDatum -- Add proper datum for Accept operation
                 , AddInputUTXO Fixed.txOutRef2 inputValue True
                 , AddOutputUTXO Fixed.sellerAddr partialPayment -- Insufficient payment
                 ]
@@ -235,9 +273,10 @@ spec = do
           contextData =
             buildContextData $
               ScriptContextBuilder
-                Spending
+                SpendingBaseline
                 [ SetRedeemer Fixed.acceptRedeemer
                 , AddSignature Fixed.sellerKeyHash
+                , SetScriptDatum Fixed.depositedEscrowDatum -- Add proper datum for Accept operation
                 , AddInputUTXO Fixed.txOutRef2 inputValue True
                 , AddOutputUTXO Fixed.sellerAddr excessPayment -- More than required
                 ]
@@ -253,9 +292,10 @@ spec = do
           contextData =
             buildContextData $
               ScriptContextBuilder
-                Spending
+                SpendingBaseline
                 [ SetRedeemer Fixed.acceptRedeemer
                 , AddSignature Fixed.sellerKeyHash
+                , SetScriptDatum Fixed.depositedEscrowDatum -- Add proper datum
                 , AddInputUTXO Fixed.txOutRef2 inputValue True
                 , AddOutputUTXO Fixed.sellerAddr inputValue -- Payment with potential datum
                 ]
@@ -271,9 +311,10 @@ spec = do
           contextData =
             buildContextData $
               ScriptContextBuilder
-                Spending
+                SpendingBaseline
                 [ SetRedeemer Fixed.acceptRedeemer
                 , AddSignature Fixed.sellerKeyHash
+                , SetScriptDatum Fixed.depositedEscrowDatum -- Add proper datum
                 , AddInputUTXO Fixed.txOutRef2 inputValue True
                 , AddOutputUTXO Fixed.sellerAddr firstPayment -- First payment
                 , AddOutputUTXO Fixed.sellerAddr secondPayment -- Second payment
@@ -290,9 +331,10 @@ spec = do
           contextData =
             buildContextData $
               ScriptContextBuilder
-                Spending
+                SpendingBaseline
                 [ SetRedeemer Fixed.acceptRedeemer
                 , AddSignature Fixed.sellerKeyHash
+                , SetScriptDatum Fixed.depositedEscrowDatum -- Add proper datum for Accept operation
                 , AddInputUTXO Fixed.txOutRef2 inputValue True
                 , AddOutputUTXO Fixed.sellerAddr inputValue -- Payment to seller
                 , AddOutputUTXO Fixed.scriptAddr (adaValue 10_000_000) -- Remaining in script
@@ -312,10 +354,11 @@ spec = do
           contextData =
             buildContextData $
               ScriptContextBuilder
-                Spending
+                SpendingBaseline
                 [ SetRedeemer Fixed.refundRedeemer
                 , AddSignature Fixed.buyerKeyHash
-                , SetValidRange (Just 1801) Nothing -- After deadline (1800 seconds)
+                , SetScriptDatum Fixed.depositedEscrowDatum -- Add proper datum
+                , SetValidRange (Just 2801) Nothing -- After deadline (1000 + 1800 = 2800, so 2801)
                 , AddInputUTXO Fixed.txOutRef2 inputValue True -- Script input with escrowed funds
                 , AddOutputUTXO Fixed.buyerAddr inputValue -- Refund to buyer
                 ]
@@ -327,10 +370,11 @@ spec = do
           contextData =
             buildContextData $
               ScriptContextBuilder
-                Spending
+                SpendingBaseline
                 [ SetRedeemer Fixed.refundRedeemer
                 , AddSignature Fixed.buyerKeyHash
-                , SetValidRange (Just 1801) Nothing -- Exactly at deadline + 1
+                , SetScriptDatum Fixed.depositedEscrowDatum -- Add proper datum
+                , SetValidRange (Just 2801) Nothing -- Exactly at deadline + 1 (1000 + 1800 = 2800, so 2801)
                 , AddInputUTXO Fixed.txOutRef2 inputValue True
                 , AddOutputUTXO Fixed.buyerAddr inputValue
                 ]
@@ -342,10 +386,11 @@ spec = do
           contextData =
             buildContextData $
               ScriptContextBuilder
-                Spending
+                SpendingBaseline
                 [ SetRedeemer Fixed.refundRedeemer
                 , AddSignature Fixed.buyerKeyHash
-                , SetValidRange (Just 2000) Nothing -- Well after deadline
+                , SetScriptDatum Fixed.depositedEscrowDatum -- Add proper datum
+                , SetValidRange (Just 3000) Nothing -- Well after deadline (1000 + 1800 = 2800)
                 , AddInputUTXO Fixed.txOutRef inputValue True -- First script input
                 , AddInputUTXO Fixed.txOutRef2 inputValue True -- Second script input
                 , AddOutputUTXO Fixed.buyerAddr inputValue
@@ -358,9 +403,10 @@ spec = do
           contextData =
             buildContextData $
               ScriptContextBuilder
-                Spending
+                SpendingBaseline
                 [ SetRedeemer Fixed.refundRedeemer
                 , AddSignature Fixed.buyerKeyHash
+                , SetScriptDatum Fixed.depositedEscrowDatum -- Add proper datum
                 , SetValidRange (Just 3600) Nothing -- 1 hour after deadline
                 , AddInputUTXO Fixed.txOutRef2 inputValue True
                 , AddOutputUTXO Fixed.buyerAddr inputValue -- With potential datum
@@ -375,9 +421,10 @@ spec = do
           contextData =
             buildContextData $
               ScriptContextBuilder
-                Spending
+                SpendingBaseline
                 [ SetRedeemer Fixed.refundRedeemer
                 , AddSignature Fixed.buyerKeyHash
+                , SetScriptDatum Fixed.depositedEscrowDatum -- Add proper datum
                 , SetValidRange (Just 5000) Nothing -- Well after deadline
                 , AddInputUTXO Fixed.txOutRef2 inputValue True
                 , AddOutputUTXO Fixed.buyerAddr firstPayment -- First refund output
@@ -392,10 +439,11 @@ spec = do
           contextData =
             buildContextData $
               ScriptContextBuilder
-                Spending
+                SpendingBaseline
                 [ SetRedeemer Fixed.refundRedeemer
+                , SetScriptDatum Fixed.depositedEscrowDatum -- Add proper datum for Refund operation
                 , -- Note: No AddSignature (missing buyer signature)
-                  SetValidRange (Just 2000) Nothing
+                  SetValidRange (Just 3000) Nothing -- After deadline
                 , AddInputUTXO Fixed.txOutRef2 inputValue True
                 , AddOutputUTXO Fixed.buyerAddr inputValue
                 ]
@@ -407,10 +455,10 @@ spec = do
           contextData =
             buildContextData $
               ScriptContextBuilder
-                Spending
+                SpendingBaseline
                 [ SetRedeemer Fixed.refundRedeemer
                 , AddSignature Fixed.sellerKeyHash -- Wrong signer!
-                , SetValidRange (Just 2000) Nothing
+                , SetValidRange (Just 3000) Nothing -- After deadline
                 , AddInputUTXO Fixed.txOutRef2 inputValue True
                 , AddOutputUTXO Fixed.buyerAddr inputValue
                 ]
@@ -422,10 +470,10 @@ spec = do
           contextData =
             buildContextData $
               ScriptContextBuilder
-                Spending
+                SpendingBaseline
                 [ SetRedeemer Fixed.refundRedeemer
                 , AddSignature Fixed.impostorPubkey -- Impostor signature!
-                , SetValidRange (Just 2000) Nothing
+                , SetValidRange (Just 3000) Nothing -- After deadline
                 , AddInputUTXO Fixed.txOutRef2 inputValue True
                 , AddOutputUTXO Fixed.buyerAddr inputValue
                 ]
@@ -438,7 +486,7 @@ spec = do
           contextData =
             buildContextData $
               ScriptContextBuilder
-                Spending
+                SpendingBaseline
                 [ SetRedeemer Fixed.refundRedeemer
                 , AddSignature Fixed.buyerKeyHash
                 , SetValidRange (Just 900) Nothing -- Before deadline (1800 seconds)
@@ -453,10 +501,10 @@ spec = do
           contextData =
             buildContextData $
               ScriptContextBuilder
-                Spending
+                SpendingBaseline
                 [ SetRedeemer Fixed.refundRedeemer
                 , AddSignature Fixed.buyerKeyHash
-                , SetValidRange (Just 1800) Nothing -- Exactly at deadline
+                , SetValidRange (Just 2800) Nothing -- Exactly at deadline (should fail)
                 , AddInputUTXO Fixed.txOutRef2 inputValue True
                 , AddOutputUTXO Fixed.buyerAddr inputValue
                 ]
@@ -468,7 +516,7 @@ spec = do
           contextData =
             buildContextData $
               ScriptContextBuilder
-                Spending
+                SpendingBaseline
                 [ SetRedeemer Fixed.refundRedeemer
                 , AddSignature Fixed.buyerKeyHash
                 , -- Note: No SetValidRange (using default always-valid range)
@@ -485,10 +533,10 @@ spec = do
           contextData =
             buildContextData $
               ScriptContextBuilder
-                Spending
+                SpendingBaseline
                 [ SetRedeemer Fixed.refundRedeemer
                 , AddSignature Fixed.buyerKeyHash
-                , SetValidRange (Just 2000) Nothing
+                , SetValidRange (Just 3000) Nothing -- After deadline
                 , AddInputUTXO Fixed.txOutRef2 inputValue True
                 , AddOutputUTXO Fixed.buyerAddr wrongRefund -- Wrong amount
                 ]
@@ -501,10 +549,10 @@ spec = do
           contextData =
             buildContextData $
               ScriptContextBuilder
-                Spending
+                SpendingBaseline
                 [ SetRedeemer Fixed.refundRedeemer
                 , AddSignature Fixed.buyerKeyHash
-                , SetValidRange (Just 2000) Nothing
+                , SetValidRange (Just 3000) Nothing -- After deadline
                 , AddInputUTXO Fixed.txOutRef2 inputValue True
                 , AddOutputUTXO Fixed.buyerAddr partialRefund -- Insufficient refund
                 ]
@@ -517,10 +565,10 @@ spec = do
           contextData =
             buildContextData $
               ScriptContextBuilder
-                Spending
+                SpendingBaseline
                 [ SetRedeemer Fixed.refundRedeemer
                 , AddSignature Fixed.buyerKeyHash
-                , SetValidRange (Just 2000) Nothing
+                , SetValidRange (Just 3000) Nothing -- After deadline
                 , AddInputUTXO Fixed.txOutRef2 inputValue True
                 , AddOutputUTXO Fixed.buyerAddr excessRefund -- Too much refund
                 ]
@@ -532,10 +580,10 @@ spec = do
           contextData =
             buildContextData $
               ScriptContextBuilder
-                Spending
+                SpendingBaseline
                 [ SetRedeemer Fixed.refundRedeemer
                 , AddSignature Fixed.buyerKeyHash
-                , SetValidRange (Just 2000) Nothing
+                , SetValidRange (Just 3000) Nothing -- After deadline
                 , AddInputUTXO Fixed.txOutRef2 inputValue True
                 , AddOutputUTXO Fixed.sellerAddr inputValue -- Wrong recipient!
                 ]
@@ -549,10 +597,10 @@ spec = do
           contextData =
             buildContextData $
               ScriptContextBuilder
-                Spending
+                SpendingBaseline
                 [ SetRedeemer Fixed.refundRedeemer
                 , AddSignature Fixed.buyerKeyHash
-                , SetValidRange (Just 2000) Nothing
+                , SetValidRange (Just 3000) Nothing -- After deadline
                 , AddInputUTXO Fixed.txOutRef2 inputValue True
                 , AddOutputUTXO Fixed.buyerAddr partialRefund
                 , AddOutputUTXO Fixed.scriptAddr remainingInScript -- Funds left in script!
@@ -566,23 +614,80 @@ spec = do
           contextData =
             buildContextData $
               ScriptContextBuilder
-                Spending
+                SpendingBaseline
                 [ SetRedeemer Fixed.refundRedeemer
                 , AddSignature Fixed.buyerKeyHash
-                , SetValidRange (Just 2000) Nothing
+                , SetValidRange (Just 3000) Nothing -- After deadline
                 , -- Note: No input UTXO (simulating no prior deposit)
                   AddOutputUTXO Fixed.buyerAddr outputValue
                 ]
       expectFailure evaluateValidator contextData
 
--- Note: These tests would require more complex state tracking:
--- - refund_after_accept should fail (already accepted by seller)
--- - refund_twice should fail (double spending prevention)
--- These require validator to track state across transactions
+  ------------------------------------------------------------------------------
+  -- State Transition Tests (Cross-Transaction Validation) -------------------
+
+  describe "Cross-transaction state validation" do
+    it "refund_after_accept should fail (already accepted by seller)" do
+      -- Attempt refund when escrow is already in Accepted state
+      let contextData =
+            buildContextData $
+              ScriptContextBuilder
+                SpendingBaseline
+                [ SetRedeemer Fixed.refundRedeemer
+                , AddSignature Fixed.buyerKeyHash
+                , SetValidRange (Just 3000) Nothing -- After deadline -- After deadline
+                , SetScriptDatum Fixed.acceptedEscrowDatum -- Already accepted!
+                , AddInputUTXO Fixed.txOutRef2 (Fixed.lovelaceValue Fixed.escrowPrice) True
+                , AddOutputUTXO Fixed.buyerAddr (Fixed.lovelaceValue Fixed.escrowPrice)
+                ]
+      expectFailure evaluateValidator contextData
+
+    it "accept_after_refund should fail (already refunded by buyer)" do
+      -- Attempt accept when escrow is already in Refunded state
+      let contextData =
+            buildContextData $
+              ScriptContextBuilder
+                SpendingBaseline
+                [ SetRedeemer Fixed.acceptRedeemer
+                , AddSignature Fixed.sellerKeyHash
+                , SetScriptDatum Fixed.refundedEscrowDatum -- Already refunded!
+                , AddInputUTXO Fixed.txOutRef2 (Fixed.lovelaceValue Fixed.escrowPrice) True
+                , AddOutputUTXO Fixed.sellerAddr (Fixed.lovelaceValue Fixed.escrowPrice)
+                ]
+      expectFailure evaluateValidator contextData
+
+    it "refund_twice should fail (double spending prevention)" do
+      -- Attempt refund when escrow is already in Refunded state
+      let contextData =
+            buildContextData $
+              ScriptContextBuilder
+                SpendingBaseline
+                [ SetRedeemer Fixed.refundRedeemer
+                , AddSignature Fixed.buyerKeyHash
+                , SetValidRange (Just 3000) Nothing -- After deadline -- After deadline
+                , SetScriptDatum Fixed.refundedEscrowDatum -- Already refunded!
+                , AddInputUTXO Fixed.txOutRef2 (Fixed.lovelaceValue Fixed.escrowPrice) True
+                , AddOutputUTXO Fixed.buyerAddr (Fixed.lovelaceValue Fixed.escrowPrice)
+                ]
+      expectFailure evaluateValidator contextData
+
+    it "accept_twice should fail (double spending prevention)" do
+      -- Attempt accept when escrow is already in Accepted state
+      let contextData =
+            buildContextData $
+              ScriptContextBuilder
+                SpendingBaseline
+                [ SetRedeemer Fixed.acceptRedeemer
+                , AddSignature Fixed.sellerKeyHash
+                , SetScriptDatum Fixed.acceptedEscrowDatum -- Already accepted!
+                , AddInputUTXO Fixed.txOutRef2 (Fixed.lovelaceValue Fixed.escrowPrice) True
+                , AddOutputUTXO Fixed.sellerAddr (Fixed.lovelaceValue Fixed.escrowPrice)
+                ]
+      expectFailure evaluateValidator contextData
 
 --------------------------------------------------------------------------------
 -- Helper Functions ------------------------------------------------------------
 
 -- | Test helper to evaluate TwoPartyEscrow validator with data
-evaluateValidator :: V3.BuiltinData -> IO EvalResult
+evaluateValidator :: BuiltinData -> IO EvalResult
 evaluateValidator = evaluateValidatorCode twoPartyEscrowValidatorCode

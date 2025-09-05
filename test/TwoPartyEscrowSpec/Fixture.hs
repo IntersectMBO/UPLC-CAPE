@@ -10,8 +10,7 @@ module TwoPartyEscrowSpec.Fixture (
 
   -- * Spec-Only Fixtures
 
-  -- ** Addresses
-  scriptAddr,
+  -- ** Addresses (scriptAddr now from main fixture)
   impostorPubkey,
   impostorAddr,
   sellerAddr,
@@ -30,11 +29,17 @@ module TwoPartyEscrowSpec.Fixture (
   -- ** Helper Functions (re-exported from ValidatorHelpers)
   lovelaceValue,
   adaValue,
+
+  -- ** Datum Helpers
+  depositedEscrowDatum,
+  acceptedEscrowDatum,
+  refundedEscrowDatum,
 ) where
 
 import Prelude
 
-import PlutusLedgerApi.V3 qualified as V3
+import PlutusLedgerApi.Data.V3
+import PlutusLedgerApi.V1.Data.Time (POSIXTime (..))
 import TwoPartyEscrow.Fixture
 import ValidatorHelpers (adaValue, lovelaceValue)
 
@@ -43,51 +48,42 @@ import ValidatorHelpers (adaValue, lovelaceValue)
 
 -- ** Address Fixtures
 
-{- | Standard script address for testing (matches ScriptContextBuilder)
-
-This address uses the standardized script hash (all 1's) that matches
-the script address used in ScriptContextBuilder for consistent testing.
+{- | Script address is now exported from TwoPartyEscrow.Fixture
+   using the unified PlutusLedgerApi.Data.V3 Address type
 -}
-scriptAddr :: V3.Address
-scriptAddr =
-  V3.Address
-    ( V3.ScriptCredential
-        (V3.ScriptHash "1111111111111111111111111111111111111111111111111111111111")
-    )
-    Nothing
 
 {- | Standardized impostor pubkey hash for testing wrong address scenarios
 
 This pubkey hash (all c's) is used to test scenarios where funds are
 incorrectly sent to an impostor's address instead of the script.
 -}
-impostorPubkey :: V3.PubKeyHash
+impostorPubkey :: PubKeyHash
 impostorPubkey =
-  V3.PubKeyHash "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+  PubKeyHash "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
 
 {- | Impostor address for testing wrong address scenarios
 
 This address uses the standardized impostor pubkey hash (all c's)
 for testing scenarios where payments are incorrectly sent to an impostor.
 -}
-impostorAddr :: V3.Address
-impostorAddr = V3.Address (V3.PubKeyCredential impostorPubkey) Nothing
+impostorAddr :: Address
+impostorAddr = Address (PubKeyCredential impostorPubkey) Nothing
 
 {- | Seller address for testing Accept operation scenarios
 
 This address uses the seller's pubkey hash for Accept operation tests
 where payments should be made to the seller.
 -}
-sellerAddr :: V3.Address
-sellerAddr = V3.Address (V3.PubKeyCredential sellerKeyHash) Nothing
+sellerAddr :: Address
+sellerAddr = Address (PubKeyCredential sellerKeyHash) Nothing
 
 {- | Buyer address for testing Refund operation scenarios
 
 This address uses the buyer's pubkey hash for Refund operation tests
 where funds should be returned to the buyer.
 -}
-buyerAddr :: V3.Address
-buyerAddr = V3.Address (V3.PubKeyCredential buyerKeyHash) Nothing
+buyerAddr :: Address
+buyerAddr = Address (PubKeyCredential buyerKeyHash) Nothing
 
 -- ** Transaction Fixtures
 
@@ -96,47 +92,93 @@ buyerAddr = V3.Address (V3.PubKeyCredential buyerKeyHash) Nothing
 This transaction ID (all 3's) is used consistently across all ScriptContext
 tests to ensure reproducible test scenarios that align with JSON test data.
 -}
-txId :: V3.TxId
-txId = V3.TxId "3333333333333333333333333333333333333333333333333333333333333333"
+txId :: TxId
+txId = TxId "3333333333333333333333333333333333333333333333333333333333333333"
 
 {- | Standard UTXO reference for testing
 
 Uses the standardized txId with output index 0, matching the pattern
 used consistently across all ScriptContext tests and cape-tests.json.
 -}
-txOutRef :: V3.TxOutRef
-txOutRef = V3.TxOutRef txId 0
+txOutRef :: TxOutRef
+txOutRef = TxOutRef txId 0
 
 {- | Second UTXO reference for Accept operation testing
 
 Uses the same standardized txId with output index 1, simulating
 the second transaction in the Accept sequence after Deposit.
 -}
-txOutRef2 :: V3.TxOutRef
-txOutRef2 = V3.TxOutRef txId 1
+txOutRef2 :: TxOutRef
+txOutRef2 = TxOutRef txId 1
 
 {- | Deposit action redeemer for testing
 
 The deposit redeemer (integer 0) used consistently across ScriptContext tests.
 Corresponds to the deposit action in the two-party escrow validator logic.
 -}
-depositRedeemer :: V3.Redeemer
-depositRedeemer = V3.Redeemer (V3.toBuiltinData (0 :: Integer))
+depositRedeemer :: Redeemer
+depositRedeemer = Redeemer (toBuiltinData (0 :: Integer))
 
 {- | Accept action redeemer for testing
 
 The accept redeemer (integer 1) used for Accept operation tests.
 Corresponds to the accept action in the two-party escrow validator logic.
 -}
-acceptRedeemer :: V3.Redeemer
-acceptRedeemer = V3.Redeemer (V3.toBuiltinData (1 :: Integer))
+acceptRedeemer :: Redeemer
+acceptRedeemer = Redeemer (toBuiltinData (1 :: Integer))
 
 {- | Refund action redeemer for testing
 
 The refund redeemer (integer 2) used for Refund operation tests.
 Corresponds to the refund action in the two-party escrow validator logic.
 -}
-refundRedeemer :: V3.Redeemer
-refundRedeemer = V3.Redeemer (V3.toBuiltinData (2 :: Integer))
+refundRedeemer :: Redeemer
+refundRedeemer = Redeemer (toBuiltinData (2 :: Integer))
+
+--------------------------------------------------------------------------------
+-- Datum Helpers ---------------------------------------------------------------
+
+{- | Create a Deposited state escrow datum for testing
+
+Standard datum representing an escrow that has been deposited but not yet
+accepted or refunded. Uses a fixed deposit time of 1000 seconds for consistent
+test scenarios.
+-}
+depositedEscrowDatum :: Datum
+depositedEscrowDatum =
+  let escrowDatum =
+        EscrowDatum
+          { escrowState = Deposited
+          , depositTime = POSIXTime 1000 -- Fixed deposit time for testing
+          }
+   in Datum (toBuiltinData escrowDatum)
+
+{- | Create an Accepted state escrow datum for testing
+
+Datum representing an escrow that has been accepted by the seller.
+This is used to test invalid state transitions (e.g., refund after accept).
+-}
+acceptedEscrowDatum :: Datum
+acceptedEscrowDatum =
+  let escrowDatum =
+        EscrowDatum
+          { escrowState = Accepted
+          , depositTime = POSIXTime 1000
+          }
+   in Datum (toBuiltinData escrowDatum)
+
+{- | Create a Refunded state escrow datum for testing
+
+Datum representing an escrow that has been refunded to the buyer.
+This is used to test invalid state transitions (e.g., accept after refund).
+-}
+refundedEscrowDatum :: Datum
+refundedEscrowDatum =
+  let escrowDatum =
+        EscrowDatum
+          { escrowState = Refunded
+          , depositTime = POSIXTime 1000
+          }
+   in Datum (toBuiltinData escrowDatum)
 
 -- ** Helper Functions are re-exported from ValidatorHelpers

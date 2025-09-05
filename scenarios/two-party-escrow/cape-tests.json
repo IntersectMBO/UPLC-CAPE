@@ -14,6 +14,18 @@
       "type": "builtin_data",
       "value": "#cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
     },
+    "deposited_escrow_datum": {
+      "type": "builtin_data",
+      "value": "0([0, 1000])"
+    },
+    "accepted_escrow_datum": {
+      "type": "builtin_data",
+      "value": "0([1, 1000])"
+    },
+    "refunded_escrow_datum": {
+      "type": "builtin_data",
+      "value": "0([2, 1000])"
+    },
     "successful_deposit": {
       "type": "script_context",
       "script_context": {
@@ -1280,6 +1292,178 @@
               "address": {
                 "type": "pubkey",
                 "pubkey_hash": "@buyer_pubkey"
+              },
+              "lovelace": 75000000
+            }
+          ]
+        }
+      },
+      "expected": {
+        "type": "error"
+      }
+    },
+    {
+      "name": "refund_after_accept_should_fail",
+      "description": "Refund attempt after seller has already accepted should fail (state validation)",
+      "input": {
+        "type": "script_context",
+        "script_context": {
+          "baseline": "spending",
+          "patches": [
+            {
+              "op": "set_redeemer",
+              "redeemer": "2"
+            },
+            {
+              "op": "add_signature",
+              "pubkey_hash": "@buyer_pubkey"
+            },
+            {
+              "op": "set_valid_range",
+              "from_time": 2000
+            },
+            {
+              "op": "set_script_datum",
+              "datum": "@accepted_escrow_datum"
+            },
+            {
+              "op": "add_input_utxo",
+              "utxo_ref": "4444444444444444444444444444444444444444444444444444444444444444:0",
+              "lovelace": 75000000,
+              "is_own_input": true
+            },
+            {
+              "op": "add_output_utxo",
+              "address": {
+                "type": "pubkey",
+                "pubkey_hash": "@buyer_pubkey"
+              },
+              "lovelace": 75000000
+            }
+          ]
+        }
+      },
+      "expected": {
+        "type": "error"
+      }
+    },
+    {
+      "name": "accept_after_refund_should_fail",
+      "description": "Accept attempt after buyer has already refunded should fail (state validation)",
+      "input": {
+        "type": "script_context",
+        "script_context": {
+          "baseline": "spending",
+          "patches": [
+            {
+              "op": "set_redeemer",
+              "redeemer": "1"
+            },
+            {
+              "op": "add_signature",
+              "pubkey_hash": "@seller_pubkey"
+            },
+            {
+              "op": "set_script_datum",
+              "datum": "@refunded_escrow_datum"
+            },
+            {
+              "op": "add_input_utxo",
+              "utxo_ref": "4444444444444444444444444444444444444444444444444444444444444444:0",
+              "lovelace": 75000000,
+              "is_own_input": true
+            },
+            {
+              "op": "add_output_utxo",
+              "address": {
+                "type": "pubkey",
+                "pubkey_hash": "@seller_pubkey"
+              },
+              "lovelace": 75000000
+            }
+          ]
+        }
+      },
+      "expected": {
+        "type": "error"
+      }
+    },
+    {
+      "name": "double_refund_should_fail",
+      "description": "Multiple refund attempts should fail (double spending prevention)",
+      "input": {
+        "type": "script_context",
+        "script_context": {
+          "baseline": "spending",
+          "patches": [
+            {
+              "op": "set_redeemer",
+              "redeemer": "2"
+            },
+            {
+              "op": "add_signature",
+              "pubkey_hash": "@buyer_pubkey"
+            },
+            {
+              "op": "set_valid_range",
+              "from_time": 2000
+            },
+            {
+              "op": "set_script_datum",
+              "datum": "@refunded_escrow_datum"
+            },
+            {
+              "op": "add_input_utxo",
+              "utxo_ref": "4444444444444444444444444444444444444444444444444444444444444444:0",
+              "lovelace": 75000000,
+              "is_own_input": true
+            },
+            {
+              "op": "add_output_utxo",
+              "address": {
+                "type": "pubkey",
+                "pubkey_hash": "@buyer_pubkey"
+              },
+              "lovelace": 75000000
+            }
+          ]
+        }
+      },
+      "expected": {
+        "type": "error"
+      }
+    },
+    {
+      "name": "double_accept_should_fail",
+      "description": "Multiple accept attempts should fail (double spending prevention)",
+      "input": {
+        "type": "script_context",
+        "script_context": {
+          "baseline": "spending",
+          "patches": [
+            {
+              "op": "set_redeemer",
+              "redeemer": "1"
+            },
+            {
+              "op": "add_signature",
+              "pubkey_hash": "@seller_pubkey"
+            },
+            {
+              "op": "set_script_datum",
+              "datum": "@accepted_escrow_datum"
+            },
+            {
+              "op": "add_input_utxo",
+              "utxo_ref": "4444444444444444444444444444444444444444444444444444444444444444:0",
+              "lovelace": 75000000,
+              "is_own_input": true
+            },
+            {
+              "op": "add_output_utxo",
+              "address": {
+                "type": "pubkey",
+                "pubkey_hash": "@seller_pubkey"
               },
               "lovelace": 75000000
             }

@@ -29,8 +29,8 @@ module ValidatorHelpers (
 import Prelude
 
 import Cape.ScriptContextBuilder
+import PlutusLedgerApi.Data.V3
 import PlutusLedgerApi.V1.Data.Value (Lovelace (..))
-import PlutusLedgerApi.V3 qualified as V3
 import PlutusTx qualified
 import PlutusTx.Eval (EvalResult (..), evaluateCompiledCode)
 import PlutusTx.Prelude (BuiltinUnit)
@@ -45,7 +45,7 @@ This eliminates the need for case analysis in tests by converting
 build failures to runtime errors with descriptive messages.
 -}
 buildScriptContextOrCrash ::
-  HasCallStack => ScriptContextBuilder -> V3.ScriptContext
+  HasCallStack => ScriptContextBuilder -> ScriptContext
 buildScriptContextOrCrash builder =
   case buildScriptContext builder of
     Right ctx -> ctx
@@ -56,8 +56,8 @@ buildScriptContextOrCrash builder =
 Convenience function that combines context building and conversion
 to the format expected by validator functions.
 -}
-buildContextData :: ScriptContextBuilder -> V3.BuiltinData
-buildContextData = V3.toBuiltinData . buildScriptContextOrCrash
+buildContextData :: ScriptContextBuilder -> BuiltinData
+buildContextData = toBuiltinData . buildScriptContextOrCrash
 
 --------------------------------------------------------------------------------
 -- Validator Evaluation Helpers ------------------------------------------------
@@ -69,8 +69,8 @@ the provided input data. Returns IO EvalResult for use in tests.
 -}
 evaluateValidatorCode ::
   HasCallStack =>
-  PlutusTx.CompiledCode (V3.BuiltinData -> BuiltinUnit) ->
-  V3.BuiltinData ->
+  PlutusTx.CompiledCode (BuiltinData -> BuiltinUnit) ->
+  BuiltinData ->
   IO EvalResult
 evaluateValidatorCode validatorCode inputData = do
   case validatorCode `PlutusTx.applyCode` PlutusTx.liftCodeDef inputData of
@@ -84,8 +84,8 @@ This creates a specialized version for a specific validator.
 -}
 expectSuccess ::
   HasCallStack =>
-  (V3.BuiltinData -> IO EvalResult) ->
-  V3.BuiltinData ->
+  (BuiltinData -> IO EvalResult) ->
+  BuiltinData ->
   IO ()
 expectSuccess evaluateFunc contextData = do
   result <- evaluateFunc contextData
@@ -98,8 +98,8 @@ This creates a specialized version for a specific validator.
 -}
 expectFailure ::
   HasCallStack =>
-  (V3.BuiltinData -> IO EvalResult) ->
-  V3.BuiltinData ->
+  (BuiltinData -> IO EvalResult) ->
+  BuiltinData ->
   IO ()
 expectFailure evaluateFunc contextData = do
   result <- evaluateFunc contextData
@@ -128,20 +128,20 @@ isEvaluationFailure = not . isEvaluationSuccess
 --------------------------------------------------------------------------------
 -- Value Creation Helpers ------------------------------------------------------
 
-{- | Convert Lovelace to V3.Value for test scenarios
+{- | Convert Lovelace to Value for test scenarios
 
 This helper function simplifies the creation of ADA-only values in tests,
-converting from the semantic Lovelace type to the low-level V3.Value type.
+converting from the semantic Lovelace type to the low-level Value type.
 -}
-lovelaceValue :: Lovelace -> V3.Value
-lovelaceValue (Lovelace n) = V3.singleton V3.adaSymbol V3.adaToken n
+lovelaceValue :: Lovelace -> Value
+lovelaceValue (Lovelace n) = singleton adaSymbol adaToken n
 
-{- | Convert ADA amount (in lovelace) to V3.Value
+{- | Convert ADA amount (in lovelace) to Value
 
 This helper function creates ADA-only values directly from lovelace amounts,
 making test values more readable. For example:
   adaValue 50_000_000 -- represents 50 ADA (with NumericUnderscores)
   adaValue 50000000  -- same, without underscores
 -}
-adaValue :: Integer -> V3.Value
-adaValue = V3.singleton V3.adaSymbol V3.adaToken
+adaValue :: Integer -> Value
+adaValue = singleton adaSymbol adaToken
