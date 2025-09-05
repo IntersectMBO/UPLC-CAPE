@@ -10,12 +10,10 @@ Implement a two-party escrow validator that handles deposit, accept, and refund 
 
 **Required Files**: Submit `two-party-escrow.uplc`, `metadata.json`, `metrics.json` to `submissions/two-party-escrow/{Compiler}_{Version}_{Handle}/`
 
-**Target**: Accept sequence → Expected result: `() (unit)`  
+**Target**: Both Accept and Refund sequences → Expected result: `() (unit)`  
 **Metrics**: CPU units, Memory units, Script size (bytes), Term size  
 **Constraints**: Plutus Core 1.1.0, Plutus V3 recommended, CEK machine budget limits  
 **Implementation**: Handle deposit, accept, and refund with proper validation
-
----
 
 ## Exact Task
 
@@ -69,8 +67,6 @@ When testing this validator, the test framework uses generic dummy constants for
 - Deposit validation tests use patches to add outputs with 75 ADA to the script address
 - All script contexts use the above dummy transaction reference for spending operations
 
----
-
 ## View 1: State Lifecycle View
 
 The Two-Party Escrow validator operates as a **state machine validator**:
@@ -99,8 +95,6 @@ flowchart LR
 - **Final**: Terminal state, no further transactions
 
 **Note**: Each state transition must validate appropriate signatures, values, and timing constraints
-
----
 
 ## View 2: Transaction Sequence View
 
@@ -179,8 +173,6 @@ Both **Accept** and **Refund** sequences are measured for comprehensive performa
 - Value violations (incorrect amounts)
 - State transition violations (invalid sequences)
 
----
-
 ## Implementation Requirements
 
 ### Technical Constraints
@@ -213,33 +205,219 @@ Both **Accept** and **Refund** sequences are measured for comprehensive performa
 - **State Check**: Valid deposit exists
 - **Timing**: Current time > deposit time + 1800 seconds
 
----
+## Test Constants and Fixed Values
+
+The two-party escrow tests (both Haskell specs and `cape-tests.json`) rely on a consistent set of fixed constants to ensure reproducible and predictable test scenarios.
+
+### Core Escrow Parameters
+
+**Amount:**
+
+- **Escrow Price**: 75 ADA (75,000,000 lovelace)
+  - Used in all deposit, accept, and refund validations
+
+**Timing:**
+
+- **Deadline Duration**: 30 minutes (1800 seconds)
+  - Time limit for seller to accept before buyer can refund
+- **Test Deposit Time**: 1000 seconds
+  - Fixed timestamp used as baseline in all test scenarios
+- **Refund Valid Time**: 1801+ seconds
+  - Any time after deposit time (1000) + deadline (1800) + 1
+
+### Address Constants
+
+**Public Key Hashes:**
+
+- **Buyer KeyHash**: `aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa`
+  - Used for buyer signature validation and refund destination
+- **Seller KeyHash**: `bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb`
+  - Used for seller signature validation and accept payment destination
+- **Test KeyHash**: `cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc`
+  - Used in wrong address test scenarios
+
+**Script Hash:**
+
+- **Test Script Hash**: `1111111111111111111111111111111111111111111111111111111111`
+  - Standard script address used across all escrow operations
+
+### Transaction References
+
+**UTXO References:**
+
+- **Primary TxId**: `3333333333333333333333333333333333333333333333333333333333333333`
+  - Used for deposit operations and various test scenarios
+- **Secondary TxId**: `4444444444444444444444444444444444444444444444444444444444444444`
+  - Used for accept/refund operations (spending escrow UTXOs)
+- **Generic TxId**: `0000000000000000000000000000000000000000000000000000000000000000`
+  - Used in test framework baseline configurations
+
+### Redeemer Values
+
+**Operation Codes:**
+
+- **Deposit**: `0` (integer) - Buyer deposits funds into escrow
+- **Accept**: `1` (integer) - Seller accepts and receives payment
+- **Refund**: `2` (integer) - Buyer reclaims funds after deadline
+
+### Test-Specific Values
+
+**Temporal Boundaries:**
+
+- **Before Deadline**: 900 seconds - Should fail for refund operations
+- **At Deadline**: 2800 seconds (1000 + 1800) - Should fail (must be strictly after)
+- **After Deadline**: 2801+ seconds - Valid for refund operations
+- **Extended Times**: 3000, 3600, 5000 seconds - Used in various success scenarios
+
+These constants ensure that all tests operate with predictable, well-defined scenarios that thoroughly validate the escrow validator's behavior across different conditions and edge cases.
 
 ## Test Cases
 
-### Primary Test Cases (Performance Measurement)
+The two-party escrow validator is tested through a comprehensive suite of test cases covering all operations, edge cases, and failure scenarios. Each test case validates specific aspects of the validator logic.
 
-**Accept Sequence**:
+- **`redeemer_integer_3`**  
+  Tests that validator fails when redeemer is invalid integer 3
 
-1. **Input**: Redeemer = 0 (Deposit) **Expected**: Validation succeeds
-2. **Input**: Redeemer = 1 (Accept) **Expected**: Validation succeeds
+- **`redeemer_integer_4`**  
+  Tests that validator fails when redeemer is invalid integer 4
 
-**Refund Sequence**:
+- **`redeemer_integer_99`**  
+  Tests that validator fails when redeemer is invalid integer 99
 
-1. **Input**: Redeemer = 0 (Deposit) **Expected**: Validation succeeds
-2. **Input**: Redeemer = 2 (Refund) **Expected**: Validation succeeds (after deadline)
+- **`redeemer_integer_negative_1`**  
+  Tests that validator fails when redeemer is invalid negative integer -1
 
-**Combined Performance**: Sum of CPU/Memory units from all operations across both sequences
+- **`redeemer_constructor_0`**  
+  Tests that validator fails when redeemer is constructor instead of integer
 
-### Edge Case Considerations
+- **`redeemer_bytestring`**  
+  Tests that validator fails when redeemer is bytestring instead of integer
 
-- **Authorization Failures**: Wrong signature on any operation
-- **Timing Violations**: Refund attempt before deadline expiration
-- **Value Mismatches**: Incorrect amounts in deposit/payment/refund
-- **State Violations**: Accept/refund without valid deposit
-- **Double Spending**: Multiple operations on same UTXO
+- **`redeemer_list_with_integers`**  
+  Tests that validator fails when redeemer is list instead of integer
 
----
+- **`redeemer_map_with_data`**  
+  Tests that validator fails when redeemer is map instead of integer
+
+- **`simple_builtin_data_redeemer_0`**  
+  Tests redeemer 0 with simple builtin_data (not script_context) fails
+
+- **`deposit_successful`**  
+  Verifies successful deposit with buyer signature and exactly 75 ADA
+
+- **`deposit_without_buyer_signature`**  
+  Verifies deposit fails without buyer signature
+
+- **`deposit_with_incorrect_amount`**  
+  Verifies deposit fails with wrong amount (50 ADA instead of 75 ADA)
+
+- **`deposit_to_wrong_address`**  
+  Verifies deposit fails when ADA goes to pubkey address instead of script
+
+- **`accept_successful`**  
+  Verifies successful accept with seller signature and 75 ADA to seller
+
+- **`accept_without_seller_signature`**  
+  Verifies accept fails when seller signature is missing
+
+- **`accept_with_incorrect_payment_amount`**  
+  Verifies accept fails with wrong payment amount (50 ADA instead of 75 ADA)
+
+- **`accept_with_payment_to_wrong_address`**  
+  Verifies accept fails when payment goes to impostor address instead of seller
+
+- **`accept_without_prior_deposit`**  
+  Verifies accept fails without valid deposit UTXO (invalid escrow state)
+
+- **`accept_with_multiple_inputs`**  
+  Verifies accept succeeds with multiple script inputs (ambiguous state)
+
+- **`accept_with_partial_payment_to_seller`**  
+  Verifies accept fails with only 50 ADA payment to seller (insufficient)
+
+- **`accept_with_excess_payment_to_seller`**  
+  Verifies accept fails with 100 ADA payment to seller (excess amount)
+
+- **`accept_with_datum_attached`**  
+  Verifies accept succeeds with datum attached to seller's payment
+
+- **`accept_with_multiple_outputs_to_seller`**  
+  Verifies accept succeeds with payment split across two outputs (50+25 ADA)
+
+- **`accept_with_remaining_script_output`**  
+  Verifies accept fails while leaving funds in script (incomplete withdrawal)
+
+- **`refund_successful`**  
+  Verifies successful refund after deadline with buyer signature
+
+- **`refund_after_exact_deadline`**  
+  Verifies refund succeeds exactly 1 second after deadline expiry
+
+- **`refund_with_multiple_inputs`**  
+  Verifies refund succeeds with multiple script inputs (no single input validation)
+
+- **`refund_with_datum_attached`**  
+  Verifies refund succeeds with datum attached to buyer's output
+
+- **`refund_with_multiple_outputs_to_buyer`**  
+  Verifies refund succeeds split across two outputs to buyer (50+25 ADA)
+
+- **`refund_without_buyer_signature`**  
+  Verifies refund fails without buyer signature
+
+- **`refund_with_seller_signature_only`**  
+  Verifies refund fails with seller signature instead of buyer
+
+- **`refund_with_impostor_signature`**  
+  Verifies refund fails with impostor signature
+
+- **`refund_before_deadline`**  
+  Verifies refund fails before deadline expiry
+
+- **`refund_at_exact_deadline`**  
+  Verifies refund fails exactly at deadline (must be strictly after)
+
+- **`refund_with_no_time_range`**  
+  Verifies refund fails without time range (missing temporal context)
+
+- **`refund_with_incorrect_amount`**  
+  Verifies refund fails with wrong total amount (80 ADA instead of 75)
+
+- **`refund_with_partial_refund`**  
+  Verifies refund fails with partial refund (50 ADA to buyer)
+
+- **`refund_with_excess_refund`**  
+  Verifies refund fails with excess refund (100 ADA to buyer)
+
+- **`refund_to_wrong_address`**  
+  Verifies refund fails to wrong address (seller instead of buyer)
+
+- **`refund_with_remaining_script_output`**  
+  Verifies refund fails leaving funds in script (incomplete withdrawal)
+
+- **`refund_without_prior_deposit`**  
+  Verifies refund fails without valid deposit UTXO (invalid escrow state)
+
+- **`refund_after_accept_should_fail`**  
+  Verifies refund fails after seller has already accepted (state validation)
+
+- **`accept_after_refund_should_fail`**  
+  Verifies accept fails after buyer has already refunded (state validation)
+
+- **`double_refund_should_fail`**  
+  Verifies multiple refund attempts fail (double spending prevention)
+
+- **`double_accept_should_fail`**  
+  Verifies multiple accept attempts fail (double spending prevention)
+
+### Primary Test Cases for Performance Measurement
+
+The core performance measurement focuses on the successful operation sequences:
+
+- **Accept Sequence**: `deposit_successful` → `accept_successful`
+- **Refund Sequence**: `deposit_successful` → `refund_successful`
+
+These test cases provide the baseline performance metrics for measuring CPU units, memory units, script size, and execution efficiency across different validator implementations.
 
 ## Measurement Guidelines
 
