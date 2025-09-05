@@ -43,15 +43,15 @@ import Prelude
 import Cape.ScriptContextBuilder
 import Data.Aeson (FromJSON (..), withObject, (.:), (.:?))
 import Data.Aeson qualified as Json
-import Data.Aeson.Types (Value)
+import Data.Aeson.Types qualified as AesonTypes
 import Data.ByteString.Lazy qualified as LBS
-import Data.Map qualified as Map
+import Data.Map qualified as HaskellMap
 import Data.Text qualified as Text
 import Data.Text.Encoding qualified as TE
 import PlutusCore.Data qualified as PLC
 import PlutusCore.Data.Compact.Parser (parseBuiltinDataText, renderParseError)
 import PlutusCore.Data.Compact.Printer (dataToCompactText)
-import PlutusLedgerApi.V3 qualified as V3
+import PlutusLedgerApi.Data.V3 qualified as V3
 import PlutusTx.Builtins qualified as Builtins
 import PlutusTx.Builtins.Internal qualified as BI
 import System.Directory (doesFileExist)
@@ -73,7 +73,7 @@ data DataStructureEntry
     --       "value": "#aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
     --     }
     --     @
-    BuiltinDataEntry Value
+    BuiltinDataEntry AesonTypes.Value
   | -- | ScriptContext specification
     --
     --     JSON example:
@@ -88,7 +88,7 @@ data DataStructureEntry
     --       }
     --     }
     --     @
-    ScriptContextEntry Value
+    ScriptContextEntry AesonTypes.Value
   deriving stock (Show)
 
 {- | Complete test suite loaded from cape-tests.json.
@@ -103,7 +103,7 @@ data TestSuite = TestSuite
   -- ^ Optional description
   --
   --     JSON: @"description": "Test cases for fibonacci validator"@
-  , tsDataStructures :: Maybe (Map Text DataStructureEntry)
+  , tsDataStructures :: Maybe (HaskellMap.Map Text DataStructureEntry)
   -- ^ Shared test data structures
   --
   --     JSON example:
@@ -285,7 +285,7 @@ data PatchOperationSpec
     --     @
     --     {"op": "set_redeemer", "redeemer": "0"}
     --     @
-    SetRedeemerSpec Value
+    SetRedeemerSpec AesonTypes.Value
   | -- | Add input UTXO (ref, lovelace, is_own)
     --
     --     JSON example:
@@ -324,7 +324,15 @@ data PatchOperationSpec
     --     {"op": "remove_output_utxo", "index": 0}
     --     @
     RemoveOutputUTXOSpec Int
-  deriving stock (Show)
+  | -- | Set script datum (BuiltinData as string or reference)
+    --
+    --     JSON examples:
+    --     @
+    --     {"op": "set_script_datum", "datum": "42"}
+    --     {"op": "set_script_datum", "datum": "@accepted_escrow_datum"}
+    --     @
+    SetScriptDatumSpec AesonTypes.Value
+  deriving stock (Show, Eq)
 
 -- | Expected result specification for test cases.
 data ExpectedResult = ExpectedResult
@@ -385,7 +393,7 @@ data AddressSpec
     --     }
     --     @
     PubkeyAddressSpec Text
-  deriving stock (Show)
+  deriving stock (Show, Eq)
 
 -- * Utility Functions
 
@@ -501,6 +509,7 @@ instance FromJSON PatchOperationSpec where
           <$> o .: "address"
           <*> o .: "lovelace"
       "remove_output_utxo" -> RemoveOutputUTXOSpec <$> o .: "index"
+      "set_script_datum" -> SetScriptDatumSpec <$> o .: "datum"
       _ -> fail $ "Unknown patch operation: " <> toString op
 
 instance FromJSON AddressSpec where
@@ -546,7 +555,7 @@ resolveTestInput :: FilePath -> TestSuite -> TestInput -> IO Text
 resolveTestInput baseDir testSuite testInput =
   case testInput of
     TestInput {tiType = ScriptContext, tiScriptContext = Just spec} -> do
-      let dataStructures = fromMaybe Map.empty (tsDataStructures testSuite)
+      let dataStructures = fromMaybe HaskellMap.empty (tsDataStructures testSuite)
       resolveScriptContextInput dataStructures spec
     TestInput {tiType = ScriptContext, tiScriptContext = Nothing} ->
       die "ScriptContext input type requires script_context specification"
@@ -626,11 +635,11 @@ builtinData <- resolveBuiltinDataReference dataStructures "@buyer_pubkey"
 @
 -}
 resolveBuiltinDataReference ::
-  Map Text DataStructureEntry -> Text -> IO V3.BuiltinData
+  HaskellMap.Map Text DataStructureEntry -> Text -> IO V3.BuiltinData
 resolveBuiltinDataReference dataStructures text
   | Text.isPrefixOf "@" text && Text.length text > 1 =
       let refName = Text.drop 1 text
-       in case Map.lookup refName dataStructures of
+       in case HaskellMap.lookup refName dataStructures of
             Just (BuiltinDataEntry (Json.String val)) ->
               case parseBuiltinDataText val of
                 Left parseErr ->
@@ -641,7 +650,7 @@ resolveBuiltinDataReference dataStructures text
                         <> show (renderParseError parseErr)
                     )
                 Right builtinData ->
-                  pure $ V3.BuiltinData builtinData
+                  pure $ BI.BuiltinData builtinData
             Just (BuiltinDataEntry _) ->
               die
                 ( "Reference @"
@@ -669,7 +678,7 @@ resolveBuiltinDataReference dataStructures text
                 <> show (renderParseError parseErr)
             )
         Right builtinData ->
-          pure $ V3.BuiltinData builtinData
+          pure $ BI.BuiltinData builtinData
 
 {- | Resolve @name references in text using typed data structures map.
 
@@ -681,11 +690,11 @@ Example:
 resolvedText <- resolveTextReference dataStructures "@some_reference"
 @
 -}
-resolveTextReference :: Map Text DataStructureEntry -> Text -> Text
+resolveTextReference :: HaskellMap.Map Text DataStructureEntry -> Text -> Text
 resolveTextReference dataStructures text
   | Text.isPrefixOf "@" text && Text.length text > 1 =
       let refName = Text.drop 1 text
-       in case Map.lookup refName dataStructures of
+       in case HaskellMap.lookup refName dataStructures of
             Just (BuiltinDataEntry (Json.String val)) -> val
             Just (BuiltinDataEntry _) ->
               error $
@@ -715,9 +724,9 @@ spec <- resolveScriptContextReference dataStructures "successful_deposit"
 @
 -}
 resolveScriptContextReference ::
-  Map Text DataStructureEntry -> Text -> Maybe ScriptContextSpec
+  HaskellMap.Map Text DataStructureEntry -> Text -> Maybe ScriptContextSpec
 resolveScriptContextReference dataStructures refName =
-  case Map.lookup refName dataStructures of
+  case HaskellMap.lookup refName dataStructures of
     Just (ScriptContextEntry value) ->
       case Json.fromJSON value of
         Json.Success spec -> Just spec
@@ -739,7 +748,9 @@ patchOp <- convertPatchOperation dataStructures (AddSignatureSpec "@buyer_pubkey
 @
 -}
 convertPatchOperation ::
-  Map Text DataStructureEntry -> PatchOperationSpec -> IO PatchOperation
+  HaskellMap.Map Text DataStructureEntry ->
+  PatchOperationSpec ->
+  IO PatchOperation
 convertPatchOperation dataStructures spec =
   case spec of
     AddSignatureSpec pubKeyHashText -> do
@@ -747,7 +758,7 @@ convertPatchOperation dataStructures spec =
       if Text.isPrefixOf "@" pubKeyHashText && Text.length pubKeyHashText > 1
         then do
           let refName = Text.drop 1 pubKeyHashText
-          case Map.lookup refName dataStructures of
+          case HaskellMap.lookup refName dataStructures of
             Just (BuiltinDataEntry _) -> do
               -- Reference to builtin_data: resolve and use bytes directly
               resolvedBuiltinData <-
@@ -778,7 +789,7 @@ convertPatchOperation dataStructures spec =
       if Text.isPrefixOf "@" pubKeyHashText && Text.length pubKeyHashText > 1
         then do
           let refName = Text.drop 1 pubKeyHashText
-          case Map.lookup refName dataStructures of
+          case HaskellMap.lookup refName dataStructures of
             Just (BuiltinDataEntry _) -> do
               -- Reference to builtin_data: resolve and use bytes directly
               resolvedBuiltinData <-
@@ -837,14 +848,39 @@ convertPatchOperation dataStructures spec =
       pure $ AddOutputUTXO address value
     RemoveOutputUTXOSpec index -> do
       pure $ RemoveOutputUTXO index
+    SetScriptDatumSpec datumValue -> do
+      -- Convert JSON Value to BuiltinData with reference resolution support
+      case datumValue of
+        Json.String dataText -> do
+          -- Check if this is a reference to a builtin_data type
+          if Text.isPrefixOf "@" dataText && Text.length dataText > 1
+            then do
+              -- Reference case: resolve from data structures
+              resolvedBuiltinData <-
+                resolveBuiltinDataReference dataStructures dataText
+              pure $ SetScriptDatum (V3.Datum resolvedBuiltinData)
+            else do
+              -- Literal case: parse as BuiltinData
+              case parseBuiltinDataText dataText of
+                Left parseErr ->
+                  die $
+                    "Failed to parse script datum BuiltinData: "
+                      <> show (renderParseError parseErr)
+                Right builtinData ->
+                  pure $ SetScriptDatum (V3.Datum (BI.BuiltinData builtinData))
+        other ->
+          die $
+            "Script datum must be a string with BuiltinData encoding, got: "
+              <> show other
 
-{- | Parse AddressSpec into V3.Address with reference resolution.
+{- | Parse AddressSpec into Address with reference resolution.
 
 Supports structural address format:
 - ScriptAddressSpec: Script address (uses standard all-1s script hash)
 - PubkeyAddressSpec: Public key address with pubkey hash (supports @references and hex literals)
 -}
-parseAddressSpec :: Map Text DataStructureEntry -> AddressSpec -> IO V3.Address
+parseAddressSpec ::
+  HaskellMap.Map Text DataStructureEntry -> AddressSpec -> IO V3.Address
 parseAddressSpec dataStructures addressSpec = case addressSpec of
   ScriptAddressSpec scriptHashText -> do
     -- Use OverloadedStrings directly like ScriptContextBuilder does
@@ -857,7 +893,7 @@ parseAddressSpec dataStructures addressSpec = case addressSpec of
     if Text.isPrefixOf "@" pubkeyHashText && Text.length pubkeyHashText > 1
       then do
         let refName = Text.drop 1 pubkeyHashText
-        case Map.lookup refName dataStructures of
+        case HaskellMap.lookup refName dataStructures of
           Just (BuiltinDataEntry _) -> do
             -- Reference to builtin_data: resolve and use bytes directly
             resolvedBuiltinData <-
@@ -895,7 +931,7 @@ builder <- convertScriptContextSpec dataStructures contextSpec
 @
 -}
 convertScriptContextSpec ::
-  Map Text DataStructureEntry ->
+  HaskellMap.Map Text DataStructureEntry ->
   ScriptContextSpec ->
   IO ScriptContextBuilder
 convertScriptContextSpec
@@ -937,7 +973,7 @@ contextText <- resolveScriptContextInput dataStructures contextSpec
 @
 -}
 resolveScriptContextInput ::
-  Map Text DataStructureEntry -> ScriptContextSpec -> IO Text
+  HaskellMap.Map Text DataStructureEntry -> ScriptContextSpec -> IO Text
 resolveScriptContextInput dataStructures spec = do
   builder <- convertScriptContextSpec dataStructures spec
   case buildScriptContext builder of
