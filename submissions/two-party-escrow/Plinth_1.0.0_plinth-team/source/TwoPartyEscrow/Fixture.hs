@@ -14,6 +14,7 @@ module TwoPartyEscrow.Fixture (
   -- * Escrow Parameters
   escrowPrice,
   escrowDeadlineSeconds,
+  refundTime,
 
   -- * Buyer Fixture Data
   buyerKeyHash,
@@ -22,12 +23,20 @@ module TwoPartyEscrow.Fixture (
   -- * Seller Fixture Data
   sellerKeyHash,
   sellerKeyHashBytes,
+
+  -- * Script Address
+  scriptAddr,
+
+  -- * Datum Types for State Management
+  EscrowState (..),
+  EscrowDatum (..),
+  initialEscrowDatum,
 ) where
 
-import PlutusLedgerApi.V1.Data.Value (Lovelace (..))
-import PlutusLedgerApi.V3 (BuiltinByteString, PubKeyHash (..))
+import PlutusLedgerApi.Data.V3
+import PlutusTx (makeIsDataIndexed)
 import PlutusTx.Builtins.HasOpaque (stringToBuiltinByteStringHex)
-import Prelude (Integer)
+import Prelude
 
 --------------------------------------------------------------------------------
 -- Escrow Parameters -----------------------------------------------------------
@@ -39,6 +48,10 @@ escrowPrice = Lovelace 75000000
 -- | Escrow deadline in seconds (30 minutes)
 escrowDeadlineSeconds :: Integer
 escrowDeadlineSeconds = 1800
+
+-- | Refund time in POSIXTime (based on deadline)
+refundTime :: POSIXTime
+refundTime = POSIXTime escrowDeadlineSeconds
 
 --------------------------------------------------------------------------------
 -- Buyer Fixture Data ----------------------------------------------------------
@@ -65,3 +78,46 @@ sellerKeyHashBytes :: BuiltinByteString
 sellerKeyHashBytes =
   stringToBuiltinByteStringHex
     "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+
+--------------------------------------------------------------------------------
+-- Script Address ---------------------------------------------------------------
+
+-- | Standard script address for UPLC validators
+scriptAddr :: Address
+scriptAddr =
+  Address
+    ( ScriptCredential
+        (ScriptHash "1111111111111111111111111111111111111111111111111111111111")
+    )
+    Nothing
+
+--------------------------------------------------------------------------------
+-- Datum Types for State Management --------------------------------------------
+
+-- | Escrow state transitions for proper state machine validation
+data EscrowState
+  = -- | Initial state after buyer deposits funds
+    Deposited
+  | -- | Seller has accepted payment (final state)
+    Accepted
+  | -- | Buyer has reclaimed funds (final state)
+    Refunded
+
+-- | Complete escrow datum containing state and timing information
+data EscrowDatum = EscrowDatum
+  { escrowState :: EscrowState
+  -- ^ Current state of the escrow
+  , depositTime :: POSIXTime
+  -- ^ When the deposit was made (for deadline calculations)
+  }
+
+-- | Initial datum state when escrow is first created
+initialEscrowDatum :: POSIXTime -> EscrowDatum
+initialEscrowDatum depositTime =
+  EscrowDatum {escrowState = Deposited, depositTime = depositTime}
+
+-- PlutusTx instances for serialization
+makeIsDataIndexed
+  ''EscrowState
+  [('Deposited, 0), ('Accepted, 1), ('Refunded, 2)]
+makeIsDataIndexed ''EscrowDatum [('EscrowDatum, 0)]
