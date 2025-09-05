@@ -29,4 +29,4 @@
 - Uses recursive factorial implementation: `factorial(n) = if n <= 0 then 1 else n * factorial(n-1)`
 - Much more efficient than fibonacci due to linear recursion vs exponential
 - Compiled with PlutusTx plugin targeting Plutus Core 1.1.0
-- Source code available in the `plinth/src/Factorial.hs` module
+- Source code available in the `lib/Factorial.hs` module

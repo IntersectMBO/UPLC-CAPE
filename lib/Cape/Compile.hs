@@ -5,18 +5,19 @@ import Prelude
 import PlutusCore qualified as PLC
 import PlutusCore.Annotation (SrcSpans (..))
 import PlutusCore.MkPlc qualified as MkPlc
-import PlutusLedgerApi.V3 qualified as V3
+import PlutusLedgerApi.Data.V3
 import PlutusTx.Builtins qualified as Builtins
 import PlutusTx.Code (CompiledCodeIn (..))
 import UntypedPlutusCore qualified as UPLC
 import UntypedPlutusCore.DeBruijn (deBruijnTerm)
 
--- | Unified program compilation with optional BuiltinData application
--- TODO: rename it to `programToCompiledCode` or similar
--- TODO: instead of passing optional builtin data, callers could use `unsafeApplyCode` with `liftCodeDef`. This makes this function simpler.
+{- | Unified program compilation with optional BuiltinData application
+TODO: rename it to `programToCompiledCode` or similar
+TODO: instead of passing optional builtin data, callers could use `unsafeApplyCode` with `liftCodeDef`. This makes this function simpler.
+-}
 compileProgram ::
   UPLC.Program UPLC.Name PLC.DefaultUni PLC.DefaultFun PLC.SrcSpan ->
-  Maybe V3.BuiltinData ->
+  Maybe BuiltinData ->
   IO (CompiledCodeIn PLC.DefaultUni PLC.DefaultFun ())
 compileProgram program mBuiltinData = do
   -- Extract term and version via pattern matching for portability across Plutus versions

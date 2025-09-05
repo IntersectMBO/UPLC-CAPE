@@ -131,7 +131,21 @@ verify_submission_dir() {
 
   case "$measure_rc" in
     0)
-      cape_success "✓ UPLC code evaluates as expected."
+      # Extract test statistics from measure output
+      local test_stats=""
+      if [[ -f "$tmp_stdout" && -s "$tmp_stdout" ]]; then
+        test_stats=$(grep -E "Test results: [0-9]+ of [0-9]+ tests passed" "$tmp_stdout" | head -n1 || echo "")
+        if [[ -n "$test_stats" ]]; then
+          # Extract just the "X/Y tests passed" part
+          local stats_summary
+          stats_summary=$(echo "$test_stats" | sed -E 's/Test results: ([0-9]+) of ([0-9]+) tests passed/(\1\/\2 tests passed)/')
+          cape_success "✓ UPLC code evaluates as expected. $stats_summary"
+        else
+          cape_success "✓ UPLC code evaluates as expected."
+        fi
+      else
+        cape_success "✓ UPLC code evaluates as expected."
+      fi
       # Only update metrics.json when measurement succeeds
       ;;
     1)

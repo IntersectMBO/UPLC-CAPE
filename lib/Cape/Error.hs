@@ -26,17 +26,17 @@ renderMeasureError :: MeasureError -> String
 renderMeasureError err =
   case err of
     FileNotFoundError path ->
-      "Error: File not found: " ++ path
+      "Error: File not found: " <> path
     FileDecodeError path ->
-      "Error: Failed to decode UTF-8 text: " ++ path
+      "Error: Failed to decode UTF-8 text: " <> path
     UPLCParseError path details ->
-      "Error: Malformed/invalid UPLC file: " ++ path ++ "\n" ++ details
+      "Error: Malformed/invalid UPLC file: " <> path <> "\n" <> details
     EvaluationError details ->
-      "Error: Evaluation failed: " ++ details
+      "Error: Evaluation failed: " <> details
     VerificationError details ->
-      "Error: Verification failed: " ++ details
+      "Error: Verification failed: " <> details
     DriverError details ->
-      "Error: Driver operation failed: " ++ details
+      "Error: Driver operation failed: " <> details
 
 -- | Get exit code for MeasureError
 exitCodeForError :: MeasureError -> ExitCode

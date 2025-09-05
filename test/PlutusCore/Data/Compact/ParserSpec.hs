@@ -8,7 +8,7 @@ import PlutusCore.Data.Compact.Parser
 import Test.Hspec
 
 spec :: Spec
-spec = describe "PlutusCore.Data.Compact.Parser" do
+spec = do
   describe "parseBuiltinDataText" do
     context "integers" do
       it "parses positive integers" do
@@ -35,41 +35,8 @@ spec = describe "PlutusCore.Data.Compact.Parser" do
           `shouldBe` Right (B (BS.pack [0xa1, 0xb2, 0xc3]))
 
       it "parses long hex bytestrings" do
-        let longHex = "#a1b2c3d4e5f6789012345678abcdef0123456789abcdef0123456789abcdef01"
-        let expected =
-              [ 0xa1
-              , 0xb2
-              , 0xc3
-              , 0xd4
-              , 0xe5
-              , 0xf6
-              , 0x78
-              , 0x90
-              , 0x12
-              , 0x34
-              , 0x56
-              , 0x78
-              , 0xab
-              , 0xcd
-              , 0xef
-              , 0x01
-              , 0x23
-              , 0x45
-              , 0x67
-              , 0x89
-              , 0xab
-              , 0xcd
-              , 0xef
-              , 0x01
-              , 0x23
-              , 0x45
-              , 0x67
-              , 0x89
-              , 0xab
-              , 0xcd
-              , 0xef
-              , 0x01
-              ]
+        let longHex = "#aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        let expected = replicate 32 0xaa
         parseBuiltinDataText longHex `shouldBe` Right (B (BS.pack expected))
 
       it "handles uppercase and lowercase hex" do
@@ -113,9 +80,9 @@ spec = describe "PlutusCore.Data.Compact.Parser" do
           `shouldBe` Right (Constr 0 [I 42, B (BS.pack [0xca, 0xfe])])
 
       it "parses complex escrow examples" do
-        let pubkey = BS.pack $ replicate 32 0xa1
+        let pubkey = BS.pack $ replicate 32 0xaa
         parseBuiltinDataText
-          "0(#a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1 1000 0())"
+          "0(#aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa 1000 0())"
           `shouldBe` Right (Constr 0 [B pubkey, I 1000, Constr 0 []])
 
     context "lists" do

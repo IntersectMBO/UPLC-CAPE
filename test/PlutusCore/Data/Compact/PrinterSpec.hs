@@ -9,7 +9,7 @@ import PlutusCore.Data.Compact.Printer (dataToCompactText)
 import Test.Hspec
 
 spec :: Spec
-spec = describe "PlutusCore.Data.Compact.Printer" do
+spec = do
   describe "dataToCompactText" do
     it "converts integer data" do
       dataToCompactText (I 42) `shouldBe` "42"

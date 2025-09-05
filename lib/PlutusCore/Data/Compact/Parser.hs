@@ -1,27 +1,28 @@
--- | Parser for compact BuiltinData text representation
---
--- = Grammar (BNF)
---
--- @
--- data         ::= integer | bytestring | constructor | list | map
--- integer      ::= ('-')? digit+
--- bytestring   ::= '#' hexdigit*
--- constructor  ::= integer '(' data* ')'
--- list         ::= '[' data* ']'
--- map          ::= '{' pair* '}'
--- pair         ::= data ':' data
--- digit        ::= '0'..'9'
--- hexdigit     ::= '0'..'9' | 'a'..'f' | 'A'..'F'
--- whitespace   ::= (' ' | '\t' | '\n' | '\r')*
--- @
---
--- Whitespace is ignored between tokens. Examples:
---
--- * Integers: @42@, @-123@
--- * ByteStrings: @#@, @#deadbeef@, @#A1B2C3@
--- * Constructors: @0()@, @1(42 #cafe)@, @0(1(2()))@
--- * Lists: @[]@, @[1 2 3]@, @[42 #beef 0()]@
--- * Maps: @{}@, @{1:42}@, @{#key:0() 42:#value}@
+{- | Parser for compact BuiltinData text representation
+
+= Grammar (BNF)
+
+@
+data         ::= integer | bytestring | constructor | list | map
+integer      ::= ('-')? digit+
+bytestring   ::= '#' hexdigit*
+constructor  ::= integer '(' data* ')'
+list         ::= '[' data* ']'
+map          ::= '{' pair* '}'
+pair         ::= data ':' data
+digit        ::= '0'..'9'
+hexdigit     ::= '0'..'9' | 'a'..'f' | 'A'..'F'
+whitespace   ::= (' ' | '\t' | '\n' | '\r')*
+@
+
+Whitespace is ignored between tokens. Examples:
+
+* Integers: @42@, @-123@
+* ByteStrings: @#@, @#deadbeef@, @#A1B2C3@
+* Constructors: @0()@, @1(42 #cafe)@, @0(1(2()))@
+* Lists: @[]@, @[1 2 3]@, @[42 #beef 0()]@
+* Maps: @{}@, @{1:42}@, @{#key:0() 42:#value}@
+-}
 module PlutusCore.Data.Compact.Parser (
   parseBuiltinDataText,
   parseData,
