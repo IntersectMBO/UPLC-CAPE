@@ -15,7 +15,7 @@ spec = do
       it "resolves simple ScriptContext with AddSignature patch" do
         let scriptContextSpec =
               ScriptContextSpec
-                { scsBaseline = DirectBaseline Spending
+                { scsBaseline = DirectBaseline SpendingBaseline
                 , scsPatches = [AddSignatureSpec "deadbeef"]
                 }
             testInput =
@@ -45,7 +45,7 @@ spec = do
         let redeemerValue = Json.String "42"
             scriptContextSpec =
               ScriptContextSpec
-                { scsBaseline = DirectBaseline Spending
+                { scsBaseline = DirectBaseline SpendingBaseline
                 , scsPatches = [SetRedeemerSpec redeemerValue]
                 }
             testInput =
@@ -75,7 +75,7 @@ spec = do
       it "resolves ScriptContext with multiple patches" do
         let scriptContextSpec =
               ScriptContextSpec
-                { scsBaseline = DirectBaseline Spending
+                { scsBaseline = DirectBaseline SpendingBaseline
                 , scsPatches =
                     [ AddSignatureSpec "cafe0001"
                     , AddSignatureSpec "cafe0002"
@@ -115,7 +115,7 @@ spec = do
 
             scriptContextSpec =
               ScriptContextSpec
-                { scsBaseline = DirectBaseline Spending
+                { scsBaseline = DirectBaseline SpendingBaseline
                 , scsPatches = [AddSignatureSpec "@test_signature"]
                 }
             testInput =
@@ -144,7 +144,7 @@ spec = do
       it "handles ScriptContext type properly" do
         let scriptContextSpec =
               ScriptContextSpec
-                { scsBaseline = DirectBaseline Spending
+                { scsBaseline = DirectBaseline SpendingBaseline
                 , scsPatches = []
                 }
             testInput =
@@ -174,7 +174,7 @@ spec = do
       it "resolves ScriptContext for Accept operation with seller signature" do
         let scriptContextSpec =
               ScriptContextSpec
-                { scsBaseline = DirectBaseline Spending
+                { scsBaseline = DirectBaseline SpendingBaseline
                 , scsPatches =
                     [ SetRedeemerSpec (Json.String "1") -- Accept redeemer
                     , AddSignatureSpec
@@ -216,7 +216,7 @@ spec = do
       it "resolves ScriptContext with RemoveSignature patch" do
         let scriptContextSpec =
               ScriptContextSpec
-                { scsBaseline = DirectBaseline Spending
+                { scsBaseline = DirectBaseline SpendingBaseline
                 , scsPatches =
                     [ AddSignatureSpec "cafe0001"
                     , AddSignatureSpec "cafe0002"
@@ -255,7 +255,7 @@ spec = do
 
             scriptContextSpec =
               ScriptContextSpec
-                { scsBaseline = DirectBaseline Spending
+                { scsBaseline = DirectBaseline SpendingBaseline
                 , scsPatches =
                     [ AddSignatureSpec "@test_key1"
                     , AddSignatureSpec "@test_key2"
@@ -293,7 +293,7 @@ spec = do
 
             scriptContextSpec =
               ScriptContextSpec
-                { scsBaseline = DirectBaseline Spending
+                { scsBaseline = DirectBaseline SpendingBaseline
                 , scsPatches =
                     [ AddSignatureSpec "literal0001"
                     , AddSignatureSpec "@ref_key"
@@ -370,7 +370,7 @@ spec = do
       it "works with empty patches (minimal ScriptContext)" do
         let scriptContextSpec =
               ScriptContextSpec
-                { scsBaseline = DirectBaseline Spending
+                { scsBaseline = DirectBaseline SpendingBaseline
                 , scsPatches = []
                 }
             testInput =
@@ -396,3 +396,61 @@ spec = do
             expectationFailure $
               "Failed to parse minimal ScriptContext: " <> show parseErr
           Right _ -> pass
+
+  describe "PatchOperationSpec JSON completeness" do
+    it "has JSON support for all constructors (exhaustive)" do
+      -- This test uses exhaustive pattern matching without wildcards.
+      -- Adding new PatchOperationSpec constructors will break compilation,
+      -- forcing developers to add corresponding JSON test cases.
+      let testJSONRoundTrip jsonValue expectedSpec = do
+            case Json.eitherDecode jsonValue of
+              Left err -> expectationFailure $ "Failed to parse JSON: " <> err
+              Right spec -> spec `shouldBe` expectedSpec
+
+          testAllConstructors spec = case spec of
+            AddSignatureSpec _ ->
+              testJSONRoundTrip
+                "{\"op\": \"add_signature\", \"pubkey_hash\": \"deadbeef\"}"
+                (AddSignatureSpec "deadbeef")
+            RemoveSignatureSpec _ ->
+              testJSONRoundTrip
+                "{\"op\": \"remove_signature\", \"pubkey_hash\": \"cafe0001\"}"
+                (RemoveSignatureSpec "cafe0001")
+            SetRedeemerSpec _ ->
+              testJSONRoundTrip
+                "{\"op\": \"set_redeemer\", \"redeemer\": \"42\"}"
+                (SetRedeemerSpec (Json.String "42"))
+            AddInputUTXOSpec _ _ _ ->
+              testJSONRoundTrip
+                "{\"op\": \"add_input_utxo\", \"utxo_ref\": \"txid:0\", \"lovelace\": 1000000, \"is_own_input\": true}"
+                (AddInputUTXOSpec "txid:0" 1000000 True)
+            SetValidRangeSpec _ _ ->
+              testJSONRoundTrip
+                "{\"op\": \"set_valid_range\", \"from_time\": 1000, \"to_time\": 2000}"
+                (SetValidRangeSpec (Just 1000) (Just 2000))
+            AddOutputUTXOSpec _ _ ->
+              testJSONRoundTrip
+                "{\"op\": \"add_output_utxo\", \"address\": {\"type\": \"pubkey\", \"pubkey_hash\": \"deadbeef\"}, \"lovelace\": 500000}"
+                (AddOutputUTXOSpec (PubkeyAddressSpec "deadbeef") 500000)
+            RemoveOutputUTXOSpec _ ->
+              testJSONRoundTrip
+                "{\"op\": \"remove_output_utxo\", \"index\": 0}"
+                (RemoveOutputUTXOSpec 0)
+            SetScriptDatumSpec _ ->
+              testJSONRoundTrip
+                "{\"op\": \"set_script_datum\", \"datum\": \"42\"}"
+                (SetScriptDatumSpec (Json.String "42"))
+      -- NO wildcard pattern! Compilation will fail if a constructor is added
+
+      -- Test with one instance of each constructor
+      mapM_
+        testAllConstructors
+        [ AddSignatureSpec "test"
+        , RemoveSignatureSpec "test"
+        , SetRedeemerSpec (Json.String "test")
+        , AddInputUTXOSpec "test:0" 1000000 True
+        , SetValidRangeSpec (Just 100) (Just 200)
+        , AddOutputUTXOSpec (PubkeyAddressSpec "test") 1000000
+        , RemoveOutputUTXOSpec 0
+        , SetScriptDatumSpec (Json.String "test")
+        ]
