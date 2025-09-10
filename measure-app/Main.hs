@@ -29,10 +29,12 @@ import Data.Text.Encoding qualified as TE
 import Data.Time (defaultTimeLocale, formatTime, getCurrentTime)
 import PlutusCore qualified as PLC
 import PlutusCore.Data.Compact.Parser (parseBuiltinDataText, renderParseError)
+import PlutusCore.Data.Compact.Printer (dataToCompactText)
 import PlutusCore.Evaluation.Machine.ExBudget (ExBudget (..))
 import PlutusCore.Evaluation.Machine.ExMemory (ExCPU (..), ExMemory (..))
 import PlutusLedgerApi.Common (serialiseCompiledCode)
 import PlutusLedgerApi.V3 qualified as V3
+import PlutusTx.Builtins qualified as Builtins
 import PlutusTx.Code (countAstNodes)
 import PlutusTx.Eval (EvalResult (..), evaluateCompiledCode)
 import System.Console.ANSI (
@@ -98,17 +100,25 @@ colorizePendingPassing text = do
 
 main :: IO ()
 main = do
-  Options {optInput, optOutput, optTests} <- parseOptions
+  Options {optInput, optOutput, optTests, optValidateOnly, optDebugContext} <-
+    parseOptions
   -- Run test execution
-  E.try (runTestSuite optInput optTests optOutput) >>= \case
-    Left err -> do
-      putStrLn (renderMeasureError err)
-      Exit.exitWith (exitCodeForError err)
-    Right () -> pass
+  E.try
+    ( runTestSuite
+        optInput
+        optTests
+        (if optValidateOnly then Nothing else Just optOutput)
+        optDebugContext
+    )
+    >>= \case
+      Left err -> do
+        putStrLn (renderMeasureError err)
+        Exit.exitWith (exitCodeForError err)
+      Right () -> pass
 
 -- | Run test suite
-runTestSuite :: FilePath -> FilePath -> FilePath -> IO ()
-runTestSuite uplcFile testsFile metricsFile = do
+runTestSuite :: FilePath -> FilePath -> Maybe FilePath -> Bool -> IO ()
+runTestSuite uplcFile testsFile metricsFileOpt debugContext = do
   -- Load test suite
   testSuite <- loadTestSuite testsFile
   let baseDir = getTestBaseDir testsFile
@@ -121,15 +131,17 @@ runTestSuite uplcFile testsFile metricsFile = do
 
   -- Run each test case and collect results and metrics
   testResultsAndMetrics <- forM (tsTests testSuite) \testCase -> do
-    runSingleTest program baseDir testSuite testCase
+    runSingleTest program baseDir testSuite testCase debugContext
 
   let (testResults, evaluationMetrics) = unzip testResultsAndMetrics
 
   -- Evaluate test suite with pending support
   evaluateTestSuite testResults
 
-  -- Write detailed metrics file with per-evaluation data
-  writeDetailedMetrics program evaluationMetrics metricsFile
+  -- Write detailed metrics file with per-evaluation data (if not validate-only mode)
+  case metricsFileOpt of
+    Just metricsFile -> writeDetailedMetrics program evaluationMetrics metricsFile
+    Nothing -> putTextLn "\nValidation completed successfully (no metrics file written)"
 
 -- | Evaluate test suite results with pending support
 evaluateTestSuite :: [TestResult] -> IO ()
@@ -146,11 +158,11 @@ evaluateTestSuite results = do
       <> show (length nonPendingTests)
       <> " tests passed"
 
-  when (length pendingTests > 0) $
+  when (not (null pendingTests)) $
     putTextLn $
       "Pending tests: " <> show (length pendingTests) <> " (expected failures)"
 
-  if length pendingPassingTests > 0
+  if not (null pendingPassingTests)
     then do
       putTextLn
         "❌ Some pending tests are now passing! Please remove 'pending: true' from:"
@@ -170,8 +182,9 @@ runSingleTest ::
   FilePath ->
   TestSuite ->
   TestCase ->
+  Bool ->
   IO (TestResult, EvaluationMetrics)
-runSingleTest program baseDir testSuite testCase = do
+runSingleTest program baseDir testSuite testCase debugContext = do
   (testResult, evalRes) <- case tcInput testCase of
     Nothing -> do
       -- No input - run program directly
@@ -183,6 +196,14 @@ runSingleTest program baseDir testSuite testCase = do
       -- Apply input to validator
       inputText <- resolveTestInput baseDir testSuite testInput
       builtinData <- parseBuiltinDataFromText inputText
+
+      -- Output debug information if requested
+      when debugContext $ do
+        let plcData = Builtins.builtinDataToData builtinData
+            compactText = dataToCompactText plcData
+        putStrLn $
+          "DEBUG_CAPE[" <> toString (tcName testCase) <> "]: " <> show compactText
+
       appliedCode <- compileProgram program (Just builtinData)
       let evalRes = evaluateCompiledCode appliedCode
       testResult <- checkTestResult evalRes testCase baseDir
@@ -387,7 +408,7 @@ instance ToJSON Metrics where
       , "execution_environment" .= execEnv
       , "timestamp" .= timestamp
       ]
-        ++ case notes of
+        <> case notes of
           Nothing -> []
           Just n -> ["notes" .= n]
 
