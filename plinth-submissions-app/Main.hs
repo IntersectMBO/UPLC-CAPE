@@ -7,7 +7,7 @@ import Fibonacci (fibonacci25Code)
 import PlutusCore.Pretty qualified as PP
 import PlutusCore.Quote (runQuoteT)
 import PlutusTx.Code (CompiledCode, getPlcNoAnn)
-import TwoPartyEscrow (twoPartyEscrowAcceptCode)
+import TwoPartyEscrow (twoPartyEscrowValidatorCode)
 import UntypedPlutusCore qualified as UPLC
 import UntypedPlutusCore.DeBruijn (unDeBruijnTerm)
 
@@ -15,7 +15,7 @@ main :: IO ()
 main = do
   writeCodeToFile "fibonacci.uplc" fibonacci25Code
   writeCodeToFile "factorial.uplc" factorial10Code
-  writeCodeToFile "two-party-escrow.uplc" twoPartyEscrowAcceptCode
+  writeCodeToFile "two-party-escrow.uplc" twoPartyEscrowValidatorCode
 
 writeCodeToFile :: FilePath -> CompiledCode a -> IO ()
 writeCodeToFile filePath code = do
@@ -37,4 +37,4 @@ writeCodeToFile filePath code = do
     Left err -> putTextLn $ "Error converting DeBruijn names: " <> show err
     Right prettyUplc -> do
       writeFile filePath (show prettyUplc)
-      putStrLn $ filePath ++ " written."
+      putStrLn $ filePath <> " written."

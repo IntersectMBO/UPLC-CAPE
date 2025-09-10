@@ -201,7 +201,8 @@
 
               # Update cabal indexes and build the measure executable
               cabal update
-              cabal build exe:measure
+              # Skip measure build in development mode to avoid circular dependencies
+              [ -z "$DEVELOPMENT" ] && cabal build exe:measure || true
 
               # Display banner using glow for better markdown rendering
               # Resolve repo root so this works when entering the shell from subdirectories

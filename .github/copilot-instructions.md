@@ -236,8 +236,9 @@ UPLC-CAPE/
 ├── scripts/              # Management tools
 │   ├── cape.sh          # Main CLI
 │   └── cape-subcommands/ # Command implementations
-├── plinth/               # Haskell reference implementations workspace
-└── measure/              # UPLC performance measurement tool
+├── lib/                  # Haskell library modules
+├── measure-app/          # UPLC performance measurement tool source
+└── plinth-submissions-app/ # Plinth submission generator source
 ```
 
 **Core Entities:**
@@ -417,7 +418,7 @@ measurePerformance compiled = do
 
 **Reference Implementation:** ✅ Available
 
-- Plinth workspace with Fibonacci benchmark example
+- Haskell library with Fibonacci and Two-Party Escrow examples
 - Modern PlutusTx patterns and best practices
 - Relude-based prelude for consistency
 - Production-ready compilation settings and optimization flags

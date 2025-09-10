@@ -9,13 +9,13 @@ import PlutusCore.Data.Compact.Parser (parseBuiltinDataText)
 import Test.Hspec
 
 spec :: Spec
-spec = describe "App.Tests" do
+spec = do
   describe "resolveTestInput" do
     context "script_context input type" do
       it "resolves simple ScriptContext with AddSignature patch" do
         let scriptContextSpec =
               ScriptContextSpec
-                { scsBaseline = Spending
+                { scsBaseline = DirectBaseline SpendingBaseline
                 , scsPatches = [AddSignatureSpec "deadbeef"]
                 }
             testInput =
@@ -45,7 +45,7 @@ spec = describe "App.Tests" do
         let redeemerValue = Json.String "42"
             scriptContextSpec =
               ScriptContextSpec
-                { scsBaseline = Spending
+                { scsBaseline = DirectBaseline SpendingBaseline
                 , scsPatches = [SetRedeemerSpec redeemerValue]
                 }
             testInput =
@@ -75,7 +75,7 @@ spec = describe "App.Tests" do
       it "resolves ScriptContext with multiple patches" do
         let scriptContextSpec =
               ScriptContextSpec
-                { scsBaseline = Spending
+                { scsBaseline = DirectBaseline SpendingBaseline
                 , scsPatches =
                     [ AddSignatureSpec "cafe0001"
                     , AddSignatureSpec "cafe0002"
@@ -109,11 +109,13 @@ spec = describe "App.Tests" do
 
       it "resolves ScriptContext with data_structures references" do
         let dataStructures =
-              Map.singleton "test_signature" (Json.String "cafe1234567890abcdef")
+              Map.singleton
+                "test_signature"
+                (BuiltinDataEntry (Json.String "#cafe1234567890abcdef"))
 
             scriptContextSpec =
               ScriptContextSpec
-                { scsBaseline = Spending
+                { scsBaseline = DirectBaseline SpendingBaseline
                 , scsPatches = [AddSignatureSpec "@test_signature"]
                 }
             testInput =
@@ -142,7 +144,7 @@ spec = describe "App.Tests" do
       it "handles ScriptContext type properly" do
         let scriptContextSpec =
               ScriptContextSpec
-                { scsBaseline = Spending
+                { scsBaseline = DirectBaseline SpendingBaseline
                 , scsPatches = []
                 }
             testInput =
@@ -163,6 +165,161 @@ spec = describe "App.Tests" do
         result <- resolveTestInput "" testSuite testInput
 
         -- Should produce valid BuiltinData
+        case parseBuiltinDataText result of
+          Left parseErr ->
+            expectationFailure $
+              "Failed to parse ScriptContext result: " <> show parseErr
+          Right _ -> pass
+
+      it "resolves ScriptContext for Accept operation with seller signature" do
+        let scriptContextSpec =
+              ScriptContextSpec
+                { scsBaseline = DirectBaseline SpendingBaseline
+                , scsPatches =
+                    [ SetRedeemerSpec (Json.String "1") -- Accept redeemer
+                    , AddSignatureSpec
+                        "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb" -- Seller signature
+                    , AddInputUTXOSpec
+                        "4444444444444444444444444444444444444444444444444444444444444444:0"
+                        75000000
+                        True
+                    , AddOutputUTXOSpec
+                        ( PubkeyAddressSpec
+                            "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+                        )
+                        75000000
+                    ]
+                }
+            testInput =
+              TestInput
+                { tiType = ScriptContext
+                , tiValue = Nothing
+                , tiFile = Nothing
+                , tiScriptContext = Just scriptContextSpec
+                }
+            testSuite =
+              TestSuite
+                { tsVersion = "1.0.0"
+                , tsDescription = Just "Accept operation test"
+                , tsTests = []
+                , tsDataStructures = Nothing
+                }
+
+        result <- resolveTestInput "" testSuite testInput
+
+        -- The result should be a valid BuiltinData text representation
+        case parseBuiltinDataText result of
+          Left parseErr ->
+            expectationFailure $
+              "Failed to parse resolved Accept ScriptContext: " <> show parseErr
+          Right _ -> pass -- Success - it's valid BuiltinData for Accept
+      it "resolves ScriptContext with RemoveSignature patch" do
+        let scriptContextSpec =
+              ScriptContextSpec
+                { scsBaseline = DirectBaseline SpendingBaseline
+                , scsPatches =
+                    [ AddSignatureSpec "cafe0001"
+                    , AddSignatureSpec "cafe0002"
+                    , RemoveSignatureSpec "cafe0001"
+                    ]
+                }
+            testInput =
+              TestInput
+                { tiType = ScriptContext
+                , tiValue = Nothing
+                , tiFile = Nothing
+                , tiScriptContext = Just scriptContextSpec
+                }
+            testSuite =
+              TestSuite
+                { tsVersion = "1.0.0"
+                , tsDescription = Just "test"
+                , tsTests = []
+                , tsDataStructures = Nothing
+                }
+
+        result <- resolveTestInput "" testSuite testInput
+
+        -- The result should be a valid BuiltinData text representation
+        case parseBuiltinDataText result of
+          Left parseErr ->
+            expectationFailure $
+              "Failed to parse resolved ScriptContext: " <> show parseErr
+          Right _ -> pass -- Success - it's valid BuiltinData
+      it "resolves ScriptContext with RemoveSignature and @references" do
+        let dataStructures =
+              Map.fromList
+                [ ("test_key1", BuiltinDataEntry (Json.String "#deadbeef0001"))
+                , ("test_key2", BuiltinDataEntry (Json.String "#deadbeef0002"))
+                ]
+
+            scriptContextSpec =
+              ScriptContextSpec
+                { scsBaseline = DirectBaseline SpendingBaseline
+                , scsPatches =
+                    [ AddSignatureSpec "@test_key1"
+                    , AddSignatureSpec "@test_key2"
+                    , RemoveSignatureSpec "@test_key1"
+                    ]
+                }
+            testInput =
+              TestInput
+                { tiType = ScriptContext
+                , tiValue = Nothing
+                , tiFile = Nothing
+                , tiScriptContext = Just scriptContextSpec
+                }
+            testSuite =
+              TestSuite
+                { tsVersion = "1.0.0"
+                , tsDescription = Just "test"
+                , tsTests = []
+                , tsDataStructures = Just dataStructures
+                }
+
+        result <- resolveTestInput "" testSuite testInput
+
+        -- Verify it produces valid BuiltinData
+        case parseBuiltinDataText result of
+          Left parseErr ->
+            expectationFailure $ "Failed to parse resolved ScriptContext: " <> show parseErr
+          Right _ -> pass
+
+      it "handles RemoveSignature with mixed literal and reference pubkeys" do
+        let dataStructures =
+              Map.singleton
+                "ref_key"
+                (BuiltinDataEntry (Json.String "#deadbeef123456"))
+
+            scriptContextSpec =
+              ScriptContextSpec
+                { scsBaseline = DirectBaseline SpendingBaseline
+                , scsPatches =
+                    [ AddSignatureSpec "literal0001"
+                    , AddSignatureSpec "@ref_key"
+                    , AddSignatureSpec "literal0002"
+                    , RemoveSignatureSpec "literal0001"
+                    , RemoveSignatureSpec "@ref_key"
+                    ]
+                }
+            testInput =
+              TestInput
+                { tiType = ScriptContext
+                , tiValue = Nothing
+                , tiFile = Nothing
+                , tiScriptContext = Just scriptContextSpec
+                }
+            testSuite =
+              TestSuite
+                { tsVersion = "1.0.0"
+                , tsDescription = Just "test"
+                , tsTests = []
+                , tsDataStructures = Just dataStructures
+                }
+
+        result <- resolveTestInput "" testSuite testInput
+
+        -- Should produce valid BuiltinData with only literal0002 signature remaining
         case parseBuiltinDataText result of
           Left parseErr ->
             expectationFailure $
@@ -213,7 +370,7 @@ spec = describe "App.Tests" do
       it "works with empty patches (minimal ScriptContext)" do
         let scriptContextSpec =
               ScriptContextSpec
-                { scsBaseline = Spending
+                { scsBaseline = DirectBaseline SpendingBaseline
                 , scsPatches = []
                 }
             testInput =
@@ -239,3 +396,73 @@ spec = describe "App.Tests" do
             expectationFailure $
               "Failed to parse minimal ScriptContext: " <> show parseErr
           Right _ -> pass
+
+  describe "PatchOperationSpec JSON completeness" do
+    it "has JSON support for all constructors (exhaustive)" do
+      -- This test uses exhaustive pattern matching without wildcards.
+      -- Adding new PatchOperationSpec constructors will break compilation,
+      -- forcing developers to add corresponding JSON test cases.
+      let testJSONRoundTrip jsonValue expectedSpec = do
+            case Json.eitherDecode jsonValue of
+              Left err -> expectationFailure $ "Failed to parse JSON: " <> err
+              Right parsedSpec -> parsedSpec `shouldBe` expectedSpec
+
+          testAllConstructors patchSpec = case patchSpec of
+            AddSignatureSpec _ ->
+              testJSONRoundTrip
+                "{\"op\": \"add_signature\", \"pubkey_hash\": \"deadbeef\"}"
+                (AddSignatureSpec "deadbeef")
+            RemoveSignatureSpec _ ->
+              testJSONRoundTrip
+                "{\"op\": \"remove_signature\", \"pubkey_hash\": \"cafe0001\"}"
+                (RemoveSignatureSpec "cafe0001")
+            SetRedeemerSpec _ ->
+              testJSONRoundTrip
+                "{\"op\": \"set_redeemer\", \"redeemer\": \"42\"}"
+                (SetRedeemerSpec (Json.String "42"))
+            AddInputUTXOSpec _ _ _ ->
+              testJSONRoundTrip
+                "{\"op\": \"add_input_utxo\", \"utxo_ref\": \"txid:0\", \"lovelace\": 1000000, \"is_own_input\": true}"
+                (AddInputUTXOSpec "txid:0" 1000000 True)
+            SetValidRangeSpec _ _ ->
+              testJSONRoundTrip
+                "{\"op\": \"set_valid_range\", \"from_time\": 1000, \"to_time\": 2000}"
+                (SetValidRangeSpec (Just 1000) (Just 2000))
+            AddOutputUTXOSpec _ _ ->
+              testJSONRoundTrip
+                "{\"op\": \"add_output_utxo\", \"address\": {\"type\": \"pubkey\", \"pubkey_hash\": \"deadbeef\"}, \"lovelace\": 500000}"
+                (AddOutputUTXOSpec (PubkeyAddressSpec "deadbeef") 500000)
+            RemoveOutputUTXOSpec _ ->
+              testJSONRoundTrip
+                "{\"op\": \"remove_output_utxo\", \"index\": 0}"
+                (RemoveOutputUTXOSpec 0)
+            SetScriptDatumSpec _ ->
+              testJSONRoundTrip
+                "{\"op\": \"set_script_datum\", \"datum\": \"42\"}"
+                (SetScriptDatumSpec (Json.String "42"))
+            AddOutputUTXOWithDatumSpec _ _ _ ->
+              testJSONRoundTrip
+                "{\"op\": \"add_output_utxo\", \"address\": {\"type\": \"pubkey\", \"pubkey_hash\": \"deadbeef\"}, \"lovelace\": 500000, \"datum\": \"42\"}"
+                ( AddOutputUTXOWithDatumSpec
+                    (PubkeyAddressSpec "deadbeef")
+                    500000
+                    (Json.String "42")
+                )
+      -- NO wildcard pattern! Compilation will fail if a constructor is added
+
+      -- Test with one instance of each constructor
+      mapM_
+        testAllConstructors
+        [ AddSignatureSpec "test"
+        , RemoveSignatureSpec "test"
+        , SetRedeemerSpec (Json.String "test")
+        , AddInputUTXOSpec "test:0" 1000000 True
+        , SetValidRangeSpec (Just 100) (Just 200)
+        , AddOutputUTXOSpec (PubkeyAddressSpec "test") 1000000
+        , RemoveOutputUTXOSpec 0
+        , SetScriptDatumSpec (Json.String "test")
+        , AddOutputUTXOWithDatumSpec
+            (PubkeyAddressSpec "test")
+            1000000
+            (Json.String "test")
+        ]

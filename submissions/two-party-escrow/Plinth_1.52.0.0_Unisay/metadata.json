@@ -1,7 +1,7 @@
 {
   "compiler": {
     "name": "Plinth",
-    "version": "1.0.0",
+    "version": "1.52.0.0",
     "commit_hash": "800c67d38d01177fd0a36d01aa23ff7fea7bd1ba"
   },
   "compilation_config": {
@@ -18,9 +18,8 @@
     }
   },
   "contributor": {
-    "name": "plinth-team",
-    "organization": "IntersectMBO",
-    "contact": "plinth@intersectmbo.org"
+    "name": "Unisay",
+    "organization": "UPLC-CAPE Project"
   },
   "submission": {
     "date": "2025-08-19T17:45:00Z",

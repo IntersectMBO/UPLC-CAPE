@@ -86,6 +86,31 @@ test_group() {
   done
 }
 
+# Run UPLC validation using dedicated submissions subcommand
+run_uplc_validation() {
+  # Create temporary file for counter synchronization
+  local counter_file
+  counter_file=$(mktemp)
+
+  # Export environment variables needed by the submissions subcommand
+  export TEST_TMP_DIR SANDBOX_DIR TESTS_RUN TESTS_PASSED TESTS_FAILED COUNTER_UPDATE_FILE="$counter_file"
+
+  # Run the submissions subcommand
+  if (cd "$PROJECT_ROOT" && PROJECT_ROOT="$SANDBOX_DIR" bash "$REPO_ROOT/scripts/cape-subcommands/test/submissions.sh"); then
+    # Source the updated counters if file exists
+    if [[ -f "$counter_file" ]]; then
+      # shellcheck disable=SC1090
+      source "$counter_file"
+    fi
+  else
+    cape_error "UPLC submissions validation failed"
+    rm -f "$counter_file"
+    return 1
+  fi
+
+  rm -f "$counter_file"
+}
+
 # Setup clean test environment
 setup_test_env() {
   TEST_TMP_DIR="$(cape_mktemp_dir)"
@@ -190,8 +215,6 @@ main() {
     "verify help" "(cd \"$PROJECT_ROOT\" && PROJECT_ROOT=\"$SANDBOX_DIR\" bash \"$REPO_ROOT/scripts/cape-subcommands/submission/verify.sh\" --help)" 5 "" \
     "measure help" "(cd \"$PROJECT_ROOT\" && PROJECT_ROOT=\"$SANDBOX_DIR\" bash \"$REPO_ROOT/scripts/cape-subcommands/submission/measure.sh\" --help)" 5 ""
 
-  # NOTE: Test fixture scenarios removed - using real scenarios only
-
   # Reporting and aggregation
   test_group "reporting" \
     "report help" "(cd \"$PROJECT_ROOT\" && PROJECT_ROOT=\"$SANDBOX_DIR\" bash \"$REPO_ROOT/scripts/cape-subcommands/submission/report.sh\" --help)" 5 "" \
@@ -216,8 +239,6 @@ main() {
   run_test "create submission" "(cd \"$PROJECT_ROOT\" && PROJECT_ROOT=\"$SANDBOX_DIR\" bash \"$REPO_ROOT/scripts/cape-subcommands/submission/new.sh\" $test_name TestComp 1.0 user)" 15
   run_test "verify submission created" "test -d $SANDBOX_DIR/submissions/$test_name/TestComp_1.0_user" 2
 
-  # No single file measurements - all measurements must be part of submission structure
-
   # Structure validation
   test_group "directory structure" \
     "scenarios dir" "test -d scenarios" 2 "" \
@@ -228,6 +249,9 @@ main() {
   # Haskell library tests
   test_group "Haskell library tests" \
     "cabal test cape-tests" "(cd \"$REPO_ROOT\" && cabal test cape-tests)" 60 ""
+
+  # UPLC validation - test actual UPLC execution for all submissions
+  run_uplc_validation
 
   if [[ -t 1 && -z "${NO_COLOR:-}" ]]; then
     echo -e "\033[0;34mINFO:\033[0m Test suite completed!"

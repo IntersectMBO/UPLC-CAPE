@@ -6,10 +6,10 @@ import-export-style: diff-friendly
 indent-wheres: true
 record-brace-space: true
 newlines-between-decls: 1
-haddock-style: single-line
+haddock-style: multi-line
 haddock-style-module: null
 let-style: inline
 in-style: right-align
-single-constraint-parens: always
+single-constraint-parens: never
 single-derivation-parens: always
 unicode: never

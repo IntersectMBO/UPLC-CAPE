@@ -9,26 +9,31 @@ module Cape.ScriptContextBuilder (
   createBaseline,
 ) where
 
+import PlutusLedgerApi.Data.V3
 import Prelude
 
 import Control.Monad (foldM)
 import Data.Aeson (FromJSON (..))
 import Data.Aeson qualified as Json
 import Data.Text qualified as Text
-import PlutusLedgerApi.V3 qualified as V3
-import PlutusLedgerApi.V3.MintValue (emptyMintValue)
-import PlutusTx.AssocMap qualified as Map
+import PlutusTx.Data.AssocMap qualified as Map
+import PlutusTx.Data.List qualified as List
 
 -- | Baseline template types for ScriptContext generation
-data BaselineType = Spending
+data BaselineType = SpendingBaseline
   deriving stock (Show, Eq, Generic)
 
 -- | Individual patch operations that can be applied to a ScriptContext
 data PatchOperation
-  = AddSignature V3.PubKeyHash
-  | SetRedeemer V3.Redeemer
-  | SetSpendingUTXO V3.TxOutRef
-  | SetValidRange (Maybe V3.POSIXTime) (Maybe V3.POSIXTime)
+  = AddSignature PubKeyHash
+  | RemoveSignature PubKeyHash
+  | SetRedeemer Redeemer
+  | AddInputUTXO TxOutRef Value Bool
+  | SetValidRange (Maybe POSIXTime) (Maybe POSIXTime)
+  | AddOutputUTXO Address Value
+  | RemoveOutputUTXO Int
+  | SetScriptDatum Datum
+  | AddOutputUTXOWithDatum Address Value Datum
   deriving stock (Show, Eq, Generic)
 
 -- | Builder specification combining baseline and patches
@@ -46,98 +51,152 @@ data BuildError
   deriving stock (Show, Eq)
 
 -- | Build a complete ScriptContext from a builder specification
-buildScriptContext :: ScriptContextBuilder -> Either BuildError V3.ScriptContext
+buildScriptContext :: ScriptContextBuilder -> Either BuildError ScriptContext
 buildScriptContext ScriptContextBuilder {baselineType, patches} = do
   let baseline = createBaseline baselineType
   applyPatches patches baseline
 
 -- | Create a baseline ScriptContext template
-createBaseline :: BaselineType -> V3.ScriptContext
-createBaseline Spending =
-  V3.ScriptContext
-    { V3.scriptContextTxInfo = createMinimalTxInfo
-    , V3.scriptContextRedeemer = V3.Redeemer (V3.toBuiltinData ())
-    , V3.scriptContextScriptInfo = V3.SpendingScript dummyTxOutRef (Just dummyDatum)
+createBaseline :: BaselineType -> ScriptContext
+createBaseline SpendingBaseline =
+  ScriptContext
+    { scriptContextTxInfo = createMinimalTxInfo
+    , scriptContextRedeemer = Redeemer (toBuiltinData ())
+    , scriptContextScriptInfo = SpendingScript dummyTxOutRef (Just dummyDatum)
     }
   where
-    createMinimalTxInfo :: V3.TxInfo
+    createMinimalTxInfo :: TxInfo
     createMinimalTxInfo =
-      V3.TxInfo
-        { V3.txInfoInputs = []
-        , V3.txInfoReferenceInputs = []
-        , V3.txInfoOutputs = []
-        , V3.txInfoFee = V3.Lovelace 0
-        , V3.txInfoMint = emptyMintValue
-        , V3.txInfoTxCerts = []
-        , V3.txInfoWdrl = Map.empty
-        , V3.txInfoValidRange = V3.always
-        , V3.txInfoSignatories = []
-        , V3.txInfoRedeemers = Map.empty
-        , V3.txInfoData = Map.empty
-        , V3.txInfoId = dummyTxId
-        , V3.txInfoVotes = Map.empty
-        , V3.txInfoProposalProcedures = []
-        , V3.txInfoCurrentTreasuryAmount = Nothing
-        , V3.txInfoTreasuryDonation = Nothing
+      TxInfo
+        { txInfoInputs = mempty
+        , txInfoReferenceInputs = mempty
+        , txInfoOutputs = mempty
+        , txInfoFee = Lovelace 0
+        , txInfoMint = emptyMintValue
+        , txInfoTxCerts = mempty
+        , txInfoWdrl = Map.empty
+        , txInfoValidRange = always
+        , txInfoSignatories = mempty
+        , txInfoRedeemers = Map.empty
+        , txInfoData = Map.empty
+        , txInfoId = dummyTxId
+        , txInfoVotes = Map.empty
+        , txInfoProposalProcedures = mempty
+        , txInfoCurrentTreasuryAmount = Nothing
+        , txInfoTreasuryDonation = Nothing
         }
 
-    dummyTxId :: V3.TxId
-    dummyTxId = V3.TxId "0000000000000000000000000000000000000000000000000000000000000000"
+    dummyTxId :: TxId
+    dummyTxId = TxId "0000000000000000000000000000000000000000000000000000000000000000"
 
-    dummyTxOutRef :: V3.TxOutRef
-    dummyTxOutRef = V3.TxOutRef dummyTxId 0
+    dummyTxOutRef :: TxOutRef
+    dummyTxOutRef = TxOutRef dummyTxId 0
 
-    dummyDatum :: V3.Datum
-    dummyDatum = V3.Datum (V3.toBuiltinData ())
+    dummyDatum :: Datum
+    dummyDatum = Datum (toBuiltinData ())
 
 -- | Apply a sequence of patch operations to a ScriptContext
 applyPatches ::
-  [PatchOperation] -> V3.ScriptContext -> Either BuildError V3.ScriptContext
+  [PatchOperation] -> ScriptContext -> Either BuildError ScriptContext
 applyPatches patches scriptContext = foldM applyPatch scriptContext patches
 
 -- | Apply a single patch operation to a ScriptContext
 applyPatch ::
-  V3.ScriptContext -> PatchOperation -> Either BuildError V3.ScriptContext
+  ScriptContext -> PatchOperation -> Either BuildError ScriptContext
 applyPatch ctx patch =
   case patch of
     AddSignature pubKeyHash -> do
-      let txInfo = V3.scriptContextTxInfo ctx
+      let txInfo = scriptContextTxInfo ctx
           updatedTxInfo =
             txInfo
-              { V3.txInfoSignatories = pubKeyHash : V3.txInfoSignatories txInfo
+              { txInfoSignatories = List.cons pubKeyHash (txInfoSignatories txInfo)
               }
-      pure $ ctx {V3.scriptContextTxInfo = updatedTxInfo}
+      pure $ ctx {scriptContextTxInfo = updatedTxInfo}
+    RemoveSignature pubKeyHash -> do
+      let txInfo = scriptContextTxInfo ctx
+          currentSignatories = txInfoSignatories txInfo
+          filteredSignatories = List.filter (/= pubKeyHash) currentSignatories
+          updatedTxInfo = txInfo {txInfoSignatories = filteredSignatories}
+      pure $ ctx {scriptContextTxInfo = updatedTxInfo}
     SetRedeemer redeemer -> do
-      pure $ ctx {V3.scriptContextRedeemer = redeemer}
-    SetSpendingUTXO txOutRef -> do
-      case V3.scriptContextScriptInfo ctx of
-        V3.SpendingScript _ maybeDatum ->
-          pure $
-            ctx {V3.scriptContextScriptInfo = V3.SpendingScript txOutRef maybeDatum}
-        _ ->
-          Left $
-            PatchApplicationError
-              "SetSpendingUTXO can only be applied to spending scripts"
-              patch
+      pure $ ctx {scriptContextRedeemer = redeemer}
+    AddInputUTXO txOutRef value isOwnInput -> do
+      let txInfo = scriptContextTxInfo ctx
+          -- Use script address for script inputs, dummy address for regular inputs
+          inputAddr =
+            if isOwnInput
+              then
+                Address
+                  ( ScriptCredential
+                      (ScriptHash "1111111111111111111111111111111111111111111111111111111111")
+                  )
+                  Nothing
+              else Address (PubKeyCredential (PubKeyHash "")) Nothing
+          newTxIn = TxInInfo txOutRef (TxOut inputAddr value NoOutputDatum Nothing)
+          updatedInputs = List.cons newTxIn (txInfoInputs txInfo)
+          updatedTxInfo = txInfo {txInfoInputs = updatedInputs}
+          updatedCtx = ctx {scriptContextTxInfo = updatedTxInfo}
+      -- If this is the script's own input, also update the spending script info
+      if isOwnInput
+        then case scriptContextScriptInfo ctx of
+          SpendingScript _ maybeDatum ->
+            pure $
+              updatedCtx {scriptContextScriptInfo = SpendingScript txOutRef maybeDatum}
+          _ ->
+            Left $
+              PatchApplicationError
+                "AddInputUTXO with is_own_input=true can only be applied to spending scripts"
+                patch
+        else pure updatedCtx
     SetValidRange fromTime toTime -> do
-      let txInfo = V3.scriptContextTxInfo ctx
+      let txInfo = scriptContextTxInfo ctx
           newRange =
-            V3.Interval
+            Interval
               ( maybe
-                  (V3.LowerBound V3.NegInf True)
-                  (\t -> V3.LowerBound (V3.Finite t) True)
+                  (LowerBound NegInf True)
+                  (\t -> LowerBound (Finite t) True)
                   fromTime
               )
               ( maybe
-                  (V3.UpperBound V3.PosInf True)
-                  (\t -> V3.UpperBound (V3.Finite t) True)
+                  (UpperBound PosInf True)
+                  (\t -> UpperBound (Finite t) True)
                   toTime
               )
-          updatedTxInfo = txInfo {V3.txInfoValidRange = newRange}
-      pure $ ctx {V3.scriptContextTxInfo = updatedTxInfo}
+          updatedTxInfo = txInfo {txInfoValidRange = newRange}
+      pure $ ctx {scriptContextTxInfo = updatedTxInfo}
+    AddOutputUTXO address value -> do
+      let txInfo = scriptContextTxInfo ctx
+          newTxOut = TxOut address value NoOutputDatum Nothing
+          updatedOutputs = List.cons newTxOut (txInfoOutputs txInfo)
+          updatedTxInfo = txInfo {txInfoOutputs = updatedOutputs}
+      pure $ ctx {scriptContextTxInfo = updatedTxInfo}
+    RemoveOutputUTXO index -> do
+      let txInfo = scriptContextTxInfo ctx
+          currentOutputs = txInfoOutputs txInfo
+          before = List.take (fromIntegral index) currentOutputs
+          after = List.drop (fromIntegral $ index + 1) currentOutputs
+          updatedOutputs = List.append before after
+          updatedTxInfo = txInfo {txInfoOutputs = updatedOutputs}
+      pure $ ctx {scriptContextTxInfo = updatedTxInfo}
+    SetScriptDatum datum -> do
+      case scriptContextScriptInfo ctx of
+        SpendingScript txOutRef _ ->
+          pure $
+            ctx {scriptContextScriptInfo = SpendingScript txOutRef (Just datum)}
+        _ ->
+          Left $
+            PatchApplicationError
+              "SetScriptDatum can only be applied to spending scripts"
+              patch
+    AddOutputUTXOWithDatum address value datum -> do
+      let txInfo = scriptContextTxInfo ctx
+          newTxOut = TxOut address value (OutputDatum datum) Nothing
+          updatedOutputs = List.cons newTxOut (txInfoOutputs txInfo)
+          updatedTxInfo = txInfo {txInfoOutputs = updatedOutputs}
+      pure $ ctx {scriptContextTxInfo = updatedTxInfo}
 
 -- JSON instances
 instance FromJSON BaselineType where
   parseJSON = Json.withText "BaselineType" \t -> case t of
-    "spending" -> pure Spending
+    "spending" -> pure SpendingBaseline
     _ -> fail $ "Unknown baseline type: " <> Text.unpack t
