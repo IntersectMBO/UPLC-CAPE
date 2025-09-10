@@ -58,6 +58,7 @@ common common-language
     MultiWayIf
     NamedFieldPuns
     NoImplicitPrelude
+    NumericUnderscores
     OverloadedStrings
     PatternSynonyms
     ScopedTypeVariables
@@ -83,6 +84,7 @@ library
     PlutusCore.Data.Compact.Parser
     PlutusCore.Data.Compact.Printer
     TwoPartyEscrow
+    TwoPartyEscrow.Fixture
 
   build-depends:
     , aeson
@@ -149,6 +151,8 @@ test-suite cape-tests
     PlutusCore.Data.Compact.ParserSpec
     PlutusCore.Data.Compact.PrinterSpec
     TwoPartyEscrowSpec
+    TwoPartyEscrowSpec.Fixture
+    ValidatorHelpers
 
   build-depends:
     , aeson
@@ -158,6 +162,8 @@ test-suite cape-tests
     , hspec
     , megaparsec
     , mtl
+    , plutus-ledger-api
+    , plutus-tx
     , plutus-tx:plutus-tx-testlib
     , vector
 
