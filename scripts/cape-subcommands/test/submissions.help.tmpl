@@ -1,0 +1,37 @@
+Usage:
+  cape test submissions [options] [submission_path...]
+
+Description:
+  Validates UPLC submissions against their scenario test suites using the
+  measure tool with --validate-only flag. This command can test all submissions
+  or specific submissions provided as arguments.
+
+  When no submission paths are provided, discovers all scenarios with cape-tests.json
+  files and tests all corresponding UPLC submissions.
+
+  When submission paths are provided, validates only those specific submissions.
+
+Options:
+  -h, --help    Show this help message
+
+Arguments:
+  submission_path   Path to specific submission directory (relative to submissions/)
+                   Can be provided with or without the "submissions/" prefix
+                   Multiple paths can be specified
+
+Examples:
+  cape test submissions                                    # Validate all UPLC submissions
+  cape test submissions two-party-escrow/Plinth_1.52.0.0_Unisay  # Test specific submission
+  cape test submissions fibonacci/Aiken_1.1.17_KtorZ fibonacci/Plinth_1.49.0.0_Unisay  # Test multiple submissions
+  cape test submissions submissions/factorial/Plinth_1.52.0.0_Unisay  # Full path also works
+  cape test submissions --help                            # Show this help
+
+The submissions test:
+- Discovers scenarios dynamically by scanning for cape-tests.json files
+- Finds UPLC files in specified or all submission directories
+- Runs measure tool with --validate-only flag for dry-run testing
+- Reports pass/fail status for each scenario/submission combination
+- Updates global test counters for integration with main test suite
+
+Note: This command can run standalone or from within the main test suite.
+In standalone mode, it uses the actual project directories directly.
