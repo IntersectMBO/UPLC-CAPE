@@ -66,131 +66,139 @@
           ];
         };
 
-        # UPLC CLI from Plutus repository (musl build)
-        uplcMusl = plutus.packages.${system}.musl64-uplc;
-        plcMusl = plutus.packages.${system}.musl64-plc;
-        pirMusl = plutus.packages.${system}.musl64-pir;
-        plutusMusl = plutus.packages.${system}.musl64-plutus;
+        # Platform detection
+        isDarwin = pkgs.stdenv.hostPlatform.isDarwin;
+
+        # UPLC CLI from Plutus repository (musl build) - only available on non-darwin
+        uplcMusl = if isDarwin then null else plutus.packages.${system}.musl64-uplc;
+        plcMusl = if isDarwin then null else plutus.packages.${system}.musl64-plc;
+        pirMusl = if isDarwin then null else plutus.packages.${system}.musl64-pir;
+        plutusMusl = if isDarwin then null else plutus.packages.${system}.musl64-plutus;
 
         # Development shell extending devx with UPLC-CAPE specific tools
         baseShell = devx.devShells.${system}.ghc96-iog-full.overrideAttrs (old: {
           buildInputs =
             (old.buildInputs or [ ])
-            ++ (with pkgs; [
-              # Core development tools
-              git
+            ++ (
+              with pkgs;
+              [
+                # Core development tools
+                git
 
-              # Formatting tools
-              treefmt
-              shfmt # Shell script formatter
-              nodePackages.prettier # YAML, Markdown, and more
+                # Formatting tools
+                treefmt
+                shfmt # Shell script formatter
+                nodePackages.prettier # YAML, Markdown, and more
 
-              # Documentation and ADR tools
-              nodejs_20 # Required for log4brains
+                # Documentation and ADR tools
+                nodejs_20 # Required for log4brains
 
-              # ADR command wrapper
-              (writeShellScriptBin "adr" ''
-                case "$1" in
-                  "new"|"n")
-                    shift
-                    npx log4brains adr new "$@"
-                    ;;
-                  "preview"|"p")
-                    shift
-                    npx log4brains preview "$@"
-                    ;;
-                  "build"|"b")
-                    shift
-                    npx log4brains build "$@"
-                    ;;
-                  "init"|"i")
-                    shift
-                    npx log4brains init "$@"
-                    ;;
-                  "help"|"h"|"--help"|"-h")
-                    echo "ADR (Architecture Decision Records) Tool"
-                    echo ""
-                    echo "Usage: adr <command> [options]"
-                    echo ""
-                    echo "Commands:"
-                    echo "  new, n        Create a new ADR"
-                    echo "  preview, p    Preview ADRs in browser"
-                    echo "  build, b      Build static documentation site"
-                    echo "  init, i       Initialize log4brains project"
-                    echo "  help, h       Show this help message"
-                    echo ""
-                    echo "Examples:"
-                    echo "  adr new \"My Decision Title\""
-                    echo "  adr preview"
-                    echo "  adr build --out ./docs"
-                    echo ""
-                    echo "For more options, use: npx log4brains <command> --help"
-                    ;;
-                  "")
-                    echo "Error: No command specified"
-                    echo "Run 'adr help' for usage information"
-                    exit 1
-                    ;;
-                  *)
-                    echo "Error: Unknown command '$1'"
-                    echo "Run 'adr help' for available commands"
-                    exit 1
-                    ;;
-                esac
-              '')
+                # ADR command wrapper
+                (writeShellScriptBin "adr" ''
+                  case "$1" in
+                    "new"|"n")
+                      shift
+                      npx log4brains adr new "$@"
+                      ;;
+                    "preview"|"p")
+                      shift
+                      npx log4brains preview "$@"
+                      ;;
+                    "build"|"b")
+                      shift
+                      npx log4brains build "$@"
+                      ;;
+                    "init"|"i")
+                      shift
+                      npx log4brains init "$@"
+                      ;;
+                    "help"|"h"|"--help"|"-h")
+                      echo "ADR (Architecture Decision Records) Tool"
+                      echo ""
+                      echo "Usage: adr <command> [options]"
+                      echo ""
+                      echo "Commands:"
+                      echo "  new, n        Create a new ADR"
+                      echo "  preview, p    Preview ADRs in browser"
+                      echo "  build, b      Build static documentation site"
+                      echo "  init, i       Initialize log4brains project"
+                      echo "  help, h       Show this help message"
+                      echo ""
+                      echo "Examples:"
+                      echo "  adr new \"My Decision Title\""
+                      echo "  adr preview"
+                      echo "  adr build --out ./docs"
+                      echo ""
+                      echo "For more options, use: npx log4brains <command> --help"
+                      ;;
+                    "")
+                      echo "Error: No command specified"
+                      echo "Run 'adr help' for usage information"
+                      exit 1
+                      ;;
+                    *)
+                      echo "Error: Unknown command '$1'"
+                      echo "Run 'adr help' for available commands"
+                      exit 1
+                      ;;
+                  esac
+                '')
 
-              # Essential utilities
-              just
-              jq
-              tree
+                # Essential utilities
+                just
+                jq
+                tree
 
-              # Plotting utilities
-              gnuplot
-              bc # Calculator for mathematical operations in shell scripts
+                # Plotting utilities
+                gnuplot
+                bc # Calculator for mathematical operations in shell scripts
 
-              # Template rendering
-              gomplate
+                # Template rendering
+                gomplate
 
-              # Markdown rendering in terminal
-              glow
+                # Markdown rendering in terminal
+                glow
 
-              # Convenience alias for viewing usage documentation
-              (writeShellScriptBin "usage" ''
-                exec glow USAGE.md
-              '')
+                # Convenience alias for viewing usage documentation
+                (writeShellScriptBin "usage" ''
+                  exec glow USAGE.md
+                '')
 
-              # Mermaid CLI for diagram generation
-              mermaid-cli
+                # Mermaid CLI for diagram generation
+                mermaid-cli
 
-              # JSON Schema validation (required by submission validation script)
-              check-jsonschema
+                # JSON Schema validation (required by submission validation script)
+                check-jsonschema
 
-              # CAPE project management tool
-              (writeShellScriptBin "cape" ''
-                # Prefer repo-local cape.sh when available; fallback to store copy
-                if [ -x "$PWD/scripts/cape.sh" ]; then
-                  exec "$PWD/scripts/cape.sh" --project-root "$PWD" "$@"
-                else
-                  exec ${./scripts/cape.sh} --project-root "$PWD" "$@"
-                fi
-              '')
+                # CAPE project management tool
+                (writeShellScriptBin "cape" ''
+                  # Prefer repo-local cape.sh when available; fallback to store copy
+                  if [ -x "$PWD/scripts/cape.sh" ]; then
+                    exec "$PWD/scripts/cape.sh" --project-root "$PWD" "$@"
+                  else
+                    exec ${./scripts/cape.sh} --project-root "$PWD" "$@"
+                  fi
+                '')
 
-              # --- Additive Plinth / Cardano tooling below (new) ---
-              pkg-config
-              libsodium
-              secp256k1
-              libblst
-              cabal-install
-              haskell.compiler.ghc966
-              fourmolu
-              haskellPackages.cabal-fmt
-              haskellPackages.hlint
-              nixfmt-rfc-style
-              uplcMusl
-              plcMusl
-              pirMusl
-              plutusMusl
-            ]);
+                # --- Additive Plinth / Cardano tooling below (new) ---
+                pkg-config
+                libsodium
+                secp256k1
+                libblst
+                cabal-install
+                haskell.compiler.ghc966
+                fourmolu
+                haskellPackages.cabal-fmt
+                haskellPackages.hlint
+                nixfmt-rfc-style
+              ]
+              ++ pkgs.lib.optionals (!isDarwin) [
+                uplcMusl
+                plcMusl
+                pirMusl
+                plutusMusl
+              ]
+            );
 
           shellHook =
             (old.shellHook or "")
