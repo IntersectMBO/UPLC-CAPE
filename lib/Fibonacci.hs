@@ -37,7 +37,7 @@ fibonacciCode = $$(PlutusTx.compile [||fibonacci||])
 
 -- | The compiled fibonacci validator for n=25
 fibonacci25Code :: CompiledCode Integer
-fibonacci25Code = fibonacciCode `unsafeApplyCode` liftCodeDef (25 :: Integer)
+fibonacci25Code = $$(PlutusTx.compile [||fibonacci 25||])
 
 {-# INLINEABLE fibonacci #-}
 fibonacci :: Integer -> Integer

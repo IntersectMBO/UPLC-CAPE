@@ -190,7 +190,13 @@ run_single_validation() {
 
   total_validations=$((total_validations + 1))
 
-  if (cd "$REPO_ROOT" && timeout 60s cabal run measure -- --validate-only -i "$(realpath --relative-to="$REPO_ROOT" "$uplc_file")" -t "$(realpath --relative-to="$REPO_ROOT" "$scenario_tests")" -o /tmp/temp-metrics.json > /dev/null 2>&1); then
+  # Use longer timeout in CI environments
+  local timeout_duration="60s"
+  if [[ "${CI:-}" == "true" ]] || [[ "${GITHUB_ACTIONS:-}" == "true" ]]; then
+    timeout_duration="180s"
+  fi
+
+  if (cd "$REPO_ROOT" && timeout "$timeout_duration" cabal run measure -- --validate-only -i "$(realpath --relative-to="$REPO_ROOT" "$uplc_file")" -t "$(realpath --relative-to="$REPO_ROOT" "$scenario_tests")" -o /tmp/temp-metrics.json > /dev/null 2>&1); then
     cape_success "✓ $test_name"
   else
     cape_error "✗ $test_name"

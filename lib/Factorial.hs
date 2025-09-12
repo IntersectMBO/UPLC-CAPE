@@ -37,7 +37,7 @@ factorialCode = $$(PlutusTx.compile [||factorial||])
 
 -- | The compiled factorial validator for n=10
 factorial10Code :: CompiledCode Integer
-factorial10Code = factorialCode `unsafeApplyCode` liftCodeDef (10 :: Integer)
+factorial10Code = $$(PlutusTx.compile [||factorial 10||])
 
 {-# INLINEABLE factorial #-}
 factorial :: Integer -> Integer
