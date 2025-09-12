@@ -215,10 +215,10 @@ data InputType
     --
     --     JSON: @"type": "builtin_data"@
     BuiltinData
-  | -- | Raw UPLC program text
+  | -- | UPLC program text
     --
-    --     JSON: @"type": "raw_uplc"@
-    RawUPLC
+    --     JSON: @"type": "uplc"@
+    UPLC
   | -- | Constructed ScriptContext
     --
     --     JSON: @"type": "script_context"@
@@ -472,7 +472,7 @@ instance FromJSON TestInput where
 instance FromJSON InputType where
   parseJSON = Json.withText "InputType" \case
     "builtin_data" -> pure BuiltinData
-    "raw_uplc" -> pure RawUPLC
+    "uplc" -> pure UPLC
     "script_context" -> pure ScriptContext
     t -> fail $ "Unknown input type: " <> toString t
 

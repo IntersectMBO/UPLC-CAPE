@@ -86,29 +86,38 @@ test_group() {
   done
 }
 
-# Run UPLC validation using dedicated submissions subcommand
+# Run UPLC validation using cape submission verify --all
 run_uplc_validation() {
-  # Create temporary file for counter synchronization
-  local counter_file
-  counter_file=$(mktemp)
-
-  # Export environment variables needed by the submissions subcommand
-  export TEST_TMP_DIR SANDBOX_DIR TESTS_RUN TESTS_PASSED TESTS_FAILED COUNTER_UPDATE_FILE="$counter_file"
-
-  # Run the submissions subcommand
-  if (cd "$PROJECT_ROOT" && PROJECT_ROOT="$SANDBOX_DIR" bash "$REPO_ROOT/scripts/cape-subcommands/test/submissions.sh"); then
-    # Source the updated counters if file exists
-    if [[ -f "$counter_file" ]]; then
-      # shellcheck disable=SC1090
-      source "$counter_file"
-    fi
+  if [[ -t 1 && -z "${NO_COLOR:-}" ]]; then
+    echo -e "\033[0;34mINFO:\033[0m Testing UPLC cape-tests validation..."
   else
-    cape_error "UPLC submissions validation failed"
-    rm -f "$counter_file"
-    return 1
+    echo "INFO: Testing UPLC cape-tests validation..."
   fi
 
-  rm -f "$counter_file"
+  # Run cape submission verify --all with output redirected to /dev/null for performance
+  local verify_exit_code=0
+  (cd "$PROJECT_ROOT" && PROJECT_ROOT="$SANDBOX_DIR" bash "$REPO_ROOT/scripts/cape.sh" submission verify --all > /dev/null 2>&1) || verify_exit_code=$?
+
+  # Update test counters
+  TESTS_RUN=$((TESTS_RUN + 1))
+
+  if [[ $verify_exit_code -eq 0 ]]; then
+    TESTS_PASSED=$((TESTS_PASSED + 1))
+    if [[ -t 1 && -z "${NO_COLOR:-}" ]]; then
+      echo -e "\033[0;34mINFO:\033[0m \033[0;32m✓ UPLC submissions validation\033[0m"
+    else
+      echo "INFO: ✓ UPLC submissions validation"
+    fi
+  else
+    TESTS_FAILED=$((TESTS_FAILED + 1))
+    if [[ -t 1 && -z "${NO_COLOR:-}" ]]; then
+      echo -e "\033[0;31mERROR:\033[0m \033[0;31m✗ UPLC submissions validation\033[0m"
+    else
+      echo "ERROR: ✗ UPLC submissions validation"
+    fi
+    cape_error "UPLC submissions validation failed"
+    return 1
+  fi
 }
 
 # Setup clean test environment

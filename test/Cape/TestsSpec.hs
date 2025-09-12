@@ -346,11 +346,11 @@ spec = do
         result <- resolveTestInput "" testSuite testInput
         result `shouldBe` "Constr 0 [I 42]"
 
-      it "resolves RawUPLC from value" do
+      it "resolves UPLC from value" do
         let uplcProgram = "(program 1.1.0 (con integer 42))"
             testInput =
               TestInput
-                { tiType = RawUPLC
+                { tiType = UPLC
                 , tiValue = Just uplcProgram
                 , tiFile = Nothing
                 , tiScriptContext = Nothing

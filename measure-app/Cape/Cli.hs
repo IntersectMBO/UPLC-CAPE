@@ -15,7 +15,6 @@ data Options = Options
   { optInput :: FilePath
   , optOutput :: FilePath
   , optTests :: FilePath
-  , optValidateOnly :: Bool
   , optDebugContext :: Bool
   }
 
@@ -40,10 +39,6 @@ optionsParser =
           <> metavar "TESTS.json"
           <> help
             "Test specification file (cape-tests.json) for test execution"
-      )
-    <*> switch
-      ( long "validate-only"
-          <> help "Run validation tests only, do not generate metrics.json"
       )
     <*> switch
       ( long "debug-context"

@@ -8,7 +8,9 @@ import Cape.Error (MeasureError (..), exitCodeForError, renderMeasureError)
 import Cape.PrettyResult (compareResult, extractPrettyResult)
 import Cape.Tests (
   ExpectedResult (..),
+  InputType (..),
   TestCase (..),
+  TestInput (..),
   TestSuite (..),
   getTestBaseDir,
   isPendingTest,
@@ -100,14 +102,14 @@ colorizePendingPassing text = do
 
 main :: IO ()
 main = do
-  Options {optInput, optOutput, optTests, optValidateOnly, optDebugContext} <-
+  Options {optInput, optOutput, optTests, optDebugContext} <-
     parseOptions
   -- Run test execution
   E.try
     ( runTestSuite
         optInput
         optTests
-        (if optValidateOnly then Nothing else Just optOutput)
+        (Just optOutput)
         optDebugContext
     )
     >>= \case
@@ -138,7 +140,7 @@ runTestSuite uplcFile testsFile metricsFileOpt debugContext = do
   -- Evaluate test suite with pending support
   evaluateTestSuite testResults
 
-  -- Write detailed metrics file with per-evaluation data (if not validate-only mode)
+  -- Write detailed metrics file with per-evaluation data
   case metricsFileOpt of
     Just metricsFile -> writeDetailedMetrics program evaluationMetrics metricsFile
     Nothing -> putTextLn "\nValidation completed successfully (no metrics file written)"
@@ -193,21 +195,52 @@ runSingleTest program baseDir testSuite testCase debugContext = do
       testResult <- checkTestResult evalRes testCase baseDir
       pure (testResult, evalRes)
     Just testInput -> do
-      -- Apply input to validator
+      -- Apply input to validator based on input type
       inputText <- resolveTestInput baseDir testSuite testInput
-      builtinData <- parseBuiltinDataFromText inputText
 
-      -- Output debug information if requested
-      when debugContext $ do
-        let plcData = Builtins.builtinDataToData builtinData
-            compactText = dataToCompactText plcData
-        putStrLn $
-          "DEBUG_CAPE[" <> toString (tcName testCase) <> "]: " <> show compactText
+      case tiType testInput of
+        UPLC -> do
+          -- Parse input as UPLC term and apply to program
+          -- Need to wrap the term in a minimal program for parsing
+          let wrappedInput = "(program 1.1.0 " <> inputText <> ")"
+          inputTerm <- case PLC.runQuote (runExceptT (UPLCParser.parseProgram wrappedInput)) of
+            Left err -> E.throwIO (UPLCParseError "uplc_input" (show err))
+            Right inputProgram -> do
+              let UPLC.Program _ _ term = inputProgram
+              pure term
 
-      appliedCode <- compileProgram program (Just builtinData)
-      let evalRes = evaluateCompiledCode appliedCode
-      testResult <- checkTestResult evalRes testCase baseDir
-      pure (testResult, evalRes)
+          -- Create applied program by applying the main program to the input term
+          let UPLC.Program ann ver mainTerm = program
+              appliedTerm = UPLC.Apply ann mainTerm inputTerm
+              appliedProgram = UPLC.Program ann ver appliedTerm
+
+          -- Output debug information if requested
+          when debugContext $ do
+            putStrLn $
+              "DEBUG_CAPE["
+                <> toString (tcName testCase)
+                <> "]: raw_uplc input: "
+                <> show inputText
+
+          appliedCode <- compileProgram appliedProgram Nothing
+          let evalRes = evaluateCompiledCode appliedCode
+          testResult <- checkTestResult evalRes testCase baseDir
+          pure (testResult, evalRes)
+        _ -> do
+          -- Handle BuiltinData and ScriptContext (existing logic)
+          builtinData <- parseBuiltinDataFromText inputText
+
+          -- Output debug information if requested
+          when debugContext $ do
+            let plcData = Builtins.builtinDataToData builtinData
+                compactText = dataToCompactText plcData
+            putStrLn $
+              "DEBUG_CAPE[" <> toString (tcName testCase) <> "]: " <> show compactText
+
+          appliedCode <- compileProgram program (Just builtinData)
+          let evalRes = evaluateCompiledCode appliedCode
+          testResult <- checkTestResult evalRes testCase baseDir
+          pure (testResult, evalRes)
 
   -- Extract metrics from evaluation result
   let budget = evalResultBudget evalRes

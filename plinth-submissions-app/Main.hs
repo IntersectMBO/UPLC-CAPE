@@ -2,8 +2,8 @@ module Main (main) where
 
 import Prelude
 
-import Factorial (factorial10Code)
-import Fibonacci (fibonacci25Code)
+import Factorial (factorialCode)
+import Fibonacci (fibonacciCode)
 import PlutusCore.Pretty qualified as PP
 import PlutusCore.Quote (runQuoteT)
 import PlutusTx.Code (CompiledCode, getPlcNoAnn)
@@ -13,9 +13,15 @@ import UntypedPlutusCore.DeBruijn (unDeBruijnTerm)
 
 main :: IO ()
 main = do
-  writeCodeToFile "fibonacci.uplc" fibonacci25Code
-  writeCodeToFile "factorial.uplc" factorial10Code
-  writeCodeToFile "two-party-escrow.uplc" twoPartyEscrowValidatorCode
+  writeCodeToFile
+    "submissions/fibonacci/Plinth_1.53.0.0_Unisay/fibonacci.uplc"
+    fibonacciCode
+  writeCodeToFile
+    "submissions/factorial/Plinth_1.53.0.0_Unisay/factorial.uplc"
+    factorialCode
+  writeCodeToFile
+    "submissions/two-party-escrow/Plinth_1.53.0.0_Unisay/two-party-escrow.uplc"
+    twoPartyEscrowValidatorCode
 
 writeCodeToFile :: FilePath -> CompiledCode a -> IO ()
 writeCodeToFile filePath code = do

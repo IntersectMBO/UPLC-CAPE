@@ -17,3 +17,5 @@ index-state:
 
 packages:
   ./.
+
+tests: true
