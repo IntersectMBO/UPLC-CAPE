@@ -11,13 +11,9 @@ repository cardano-haskell-packages
 
 index-state:
   -- Bump both the following dates if you need newer packages from Hackage
-  , hackage.haskell.org 2025-08-19T01:52:39Z
+  , hackage.haskell.org 2025-09-12T08:10:22Z
   -- Bump this if you need newer packages from CHaP
-  , cardano-haskell-packages 2025-08-14T14:31:31Z
+  , cardano-haskell-packages 2025-09-11T16:20:37Z
 
 packages:
   ./.
-
-allow-newer:
-  -- Resolve QuickCheck version conflicts with Plutus 1.52.0.0
-  ral:QuickCheck, fin:QuickCheck, *:QuickCheck
