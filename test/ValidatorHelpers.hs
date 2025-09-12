@@ -30,9 +30,9 @@ import Prelude
 
 import Cape.ScriptContextBuilder
 import PlutusLedgerApi.Data.V3
-import PlutusLedgerApi.V1.Data.Value (Lovelace (..))
-import PlutusTx qualified
+import PlutusTx.Code (CompiledCode, applyCode)
 import PlutusTx.Eval (EvalResult (..), evaluateCompiledCode)
+import PlutusTx.Lift (liftCodeDef)
 import PlutusTx.Prelude (BuiltinUnit)
 import Test.Hspec
 
@@ -69,11 +69,11 @@ the provided input data. Returns IO EvalResult for use in tests.
 -}
 evaluateValidatorCode ::
   HasCallStack =>
-  PlutusTx.CompiledCode (BuiltinData -> BuiltinUnit) ->
+  CompiledCode (BuiltinData -> BuiltinUnit) ->
   BuiltinData ->
   IO EvalResult
 evaluateValidatorCode validatorCode inputData = do
-  case validatorCode `PlutusTx.applyCode` PlutusTx.liftCodeDef inputData of
+  case validatorCode `applyCode` liftCodeDef inputData of
     Left err -> error $ "Failed to apply code: " <> toText err
     Right appliedCode -> pure $ evaluateCompiledCode appliedCode
 
@@ -113,10 +113,8 @@ expectFailure evaluateFunc contextData = do
 Predicate for testing EvalResult success in Hspec assertions.
 -}
 isEvaluationSuccess :: EvalResult -> Bool
-isEvaluationSuccess EvalResult {evalResult = result} =
-  case result of
-    Left _ -> False
-    Right _ -> True
+isEvaluationSuccess EvalResult {evalResult = Left _} = False
+isEvaluationSuccess EvalResult {evalResult = Right _} = True
 
 {- | Check if evaluation failed
 

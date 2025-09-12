@@ -39,7 +39,6 @@ module TwoPartyEscrowSpec.Fixture (
 import Prelude
 
 import PlutusLedgerApi.Data.V3
-import PlutusLedgerApi.V1.Data.Time (POSIXTime (..))
 import TwoPartyEscrow.Fixture
 import ValidatorHelpers (adaValue, lovelaceValue)
 
