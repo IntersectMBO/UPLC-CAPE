@@ -148,6 +148,8 @@ test-suite cape-tests
   other-modules:
     Cape.ScriptContextBuilderSpec
     Cape.TestsSpec
+    FactorialSpec
+    FibonacciSpec
     PlutusCore.Data.Compact.ParserSpec
     PlutusCore.Data.Compact.PrinterSpec
     TwoPartyEscrowSpec
