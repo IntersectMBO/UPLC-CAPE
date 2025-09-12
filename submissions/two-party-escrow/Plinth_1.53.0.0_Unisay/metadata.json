@@ -1,0 +1,30 @@
+{
+  "compiler": {
+    "name": "Plinth",
+    "version": "1.53.0.0",
+    "commit_hash": "800c67d38d01177fd0a36d01aa23ff7fea7bd1ba"
+  },
+  "compilation_config": {
+    "optimization_level": "conservative",
+    "target": "uplc",
+    "flags": ["conservative-optimisation", "remove-trace", "target-version=1.1.0"],
+    "environment": {
+      "dependencies": {
+        "plutus-core": "1.53.0.0",
+        "plutus-tx": "1.53.0.0",
+        "plutus-tx-plugin": "1.53.0.0",
+        "plutus-ledger-api": "1.53.0.0"
+      }
+    }
+  },
+  "contributor": {
+    "name": "Unisay",
+    "organization": "UPLC-CAPE Project"
+  },
+  "submission": {
+    "date": "2025-08-19T17:45:00Z",
+    "source_available": true,
+    "source_repository": "https://github.com/IntersectMBO/UPLC-CAPE",
+    "implementation_notes": "Two-Party Escrow validator implemented in PlutusTx with baked-in parameters (75 ADA, 30min deadline). Uses BuiltinData->BuiltinUnit signature with redeemer-based dispatch (Deposit=0, Accept=1, Refund=2)."
+  }
+}

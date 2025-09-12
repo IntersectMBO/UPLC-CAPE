@@ -1,0 +1,108 @@
+{
+  "evaluations": [
+    {
+      "cpu_units": 299937,
+      "description": "Fibonacci of 0 should return 0",
+      "execution_result": "success",
+      "memory_units": 1701,
+      "name": "fibonacci_0"
+    },
+    {
+      "cpu_units": 299937,
+      "description": "Fibonacci of 1 should return 1",
+      "execution_result": "success",
+      "memory_units": 1701,
+      "name": "fibonacci_1"
+    },
+    {
+      "cpu_units": 1267235,
+      "description": "Fibonacci of 2 should return 1",
+      "execution_result": "success",
+      "memory_units": 5309,
+      "name": "fibonacci_2"
+    },
+    {
+      "cpu_units": 2234533,
+      "description": "Fibonacci of 3 should return 2",
+      "execution_result": "success",
+      "memory_units": 8917,
+      "name": "fibonacci_3"
+    },
+    {
+      "cpu_units": 7071023,
+      "description": "Fibonacci of 5 should return 5",
+      "execution_result": "success",
+      "memory_units": 26957,
+      "name": "fibonacci_5"
+    },
+    {
+      "cpu_units": 32220771,
+      "description": "Fibonacci of 8 should return 21",
+      "execution_result": "success",
+      "memory_units": 120765,
+      "name": "fibonacci_8"
+    },
+    {
+      "cpu_units": 85422161,
+      "description": "Fibonacci of 10 should return 55",
+      "execution_result": "success",
+      "memory_units": 319205,
+      "name": "fibonacci_10"
+    },
+    {
+      "cpu_units": 954055765,
+      "description": "Fibonacci of 15 should return 610",
+      "execution_result": "success",
+      "memory_units": 3559189,
+      "name": "fibonacci_15"
+    },
+    {
+      "cpu_units": 10587376547,
+      "description": "Fibonacci of 20 should return 6765",
+      "execution_result": "success",
+      "memory_units": 39491261,
+      "name": "fibonacci_20"
+    },
+    {
+      "cpu_units": 117422538753,
+      "description": "Fibonacci of 25 should return 75025 (original benchmark target)",
+      "execution_result": "success",
+      "memory_units": 437984037,
+      "name": "fibonacci_25"
+    },
+    {
+      "cpu_units": 299937,
+      "description": "Fibonacci of negative number should return the negative number itself based on current implementation",
+      "execution_result": "success",
+      "memory_units": 1701,
+      "name": "fibonacci_negative"
+    }
+  ],
+  "execution_environment": {
+    "evaluator": "PlutusTx.Eval-1.52.0.0"
+  },
+  "measurements": {
+    "cpu_units": {
+      "maximum": 117422538753,
+      "median": 7071023,
+      "minimum": 299937,
+      "sum": 129093086599,
+      "sum_negative": 0,
+      "sum_positive": 129093086599
+    },
+    "memory_units": {
+      "maximum": 437984037,
+      "median": 26957,
+      "minimum": 1701,
+      "sum": 481520743,
+      "sum_negative": 0,
+      "sum_positive": 481520743
+    },
+    "script_size_bytes": 43,
+    "term_size": 36
+  },
+  "scenario": "fibonacci",
+  "timestamp": "2025-09-12T16:36:28Z",
+  "version": "1.0.0",
+  "notes": "<optional notes>"
+}
