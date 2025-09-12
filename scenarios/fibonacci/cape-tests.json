@@ -1,13 +1,137 @@
 {
   "version": "1.0.0",
-  "description": "Test cases for pre-applied fibonacci(25) computation",
+  "description": "Comprehensive fibonacci function testing across multiple input values",
   "tests": [
     {
-      "name": "fibonacci_25_computation",
-      "description": "Pre-applied fibonacci(25) should return 75025 with no input required",
+      "name": "fibonacci_0",
+      "description": "Fibonacci of 0 should return 0",
+      "input": {
+        "type": "uplc",
+        "value": "(con integer 0)"
+      },
+      "expected": {
+        "type": "value",
+        "content": "(con integer 0)"
+      }
+    },
+    {
+      "name": "fibonacci_1",
+      "description": "Fibonacci of 1 should return 1",
+      "input": {
+        "type": "uplc",
+        "value": "(con integer 1)"
+      },
+      "expected": {
+        "type": "value",
+        "content": "(con integer 1)"
+      }
+    },
+    {
+      "name": "fibonacci_2",
+      "description": "Fibonacci of 2 should return 1",
+      "input": {
+        "type": "uplc",
+        "value": "(con integer 2)"
+      },
+      "expected": {
+        "type": "value",
+        "content": "(con integer 1)"
+      }
+    },
+    {
+      "name": "fibonacci_3",
+      "description": "Fibonacci of 3 should return 2",
+      "input": {
+        "type": "uplc",
+        "value": "(con integer 3)"
+      },
+      "expected": {
+        "type": "value",
+        "content": "(con integer 2)"
+      }
+    },
+    {
+      "name": "fibonacci_5",
+      "description": "Fibonacci of 5 should return 5",
+      "input": {
+        "type": "uplc",
+        "value": "(con integer 5)"
+      },
+      "expected": {
+        "type": "value",
+        "content": "(con integer 5)"
+      }
+    },
+    {
+      "name": "fibonacci_8",
+      "description": "Fibonacci of 8 should return 21",
+      "input": {
+        "type": "uplc",
+        "value": "(con integer 8)"
+      },
+      "expected": {
+        "type": "value",
+        "content": "(con integer 21)"
+      }
+    },
+    {
+      "name": "fibonacci_10",
+      "description": "Fibonacci of 10 should return 55",
+      "input": {
+        "type": "uplc",
+        "value": "(con integer 10)"
+      },
+      "expected": {
+        "type": "value",
+        "content": "(con integer 55)"
+      }
+    },
+    {
+      "name": "fibonacci_15",
+      "description": "Fibonacci of 15 should return 610",
+      "input": {
+        "type": "uplc",
+        "value": "(con integer 15)"
+      },
+      "expected": {
+        "type": "value",
+        "content": "(con integer 610)"
+      }
+    },
+    {
+      "name": "fibonacci_20",
+      "description": "Fibonacci of 20 should return 6765",
+      "input": {
+        "type": "uplc",
+        "value": "(con integer 20)"
+      },
+      "expected": {
+        "type": "value",
+        "content": "(con integer 6765)"
+      }
+    },
+    {
+      "name": "fibonacci_25",
+      "description": "Fibonacci of 25 should return 75025 (original benchmark target)",
+      "input": {
+        "type": "uplc",
+        "value": "(con integer 25)"
+      },
       "expected": {
         "type": "value",
         "content": "(con integer 75025)"
+      }
+    },
+    {
+      "name": "fibonacci_negative",
+      "description": "Fibonacci of negative number should return the negative number itself based on current implementation",
+      "input": {
+        "type": "uplc",
+        "value": "(con integer -1)"
+      },
+      "expected": {
+        "type": "value",
+        "content": "(con integer -1)"
       }
     }
   ]

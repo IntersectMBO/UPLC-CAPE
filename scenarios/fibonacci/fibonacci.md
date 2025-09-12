@@ -35,34 +35,7 @@ Implement a Fibonacci function and compile it as a **fully-applied UPLC program*
 
 ### Implementation Approaches
 
-Choose the approach that works best for your compiler:
-
-#### Recursive Implementation (Most Direct)
-
-```pseudocode
-function fibonacci_recursive(n):
-    if n == 1 OR n == 2:
-        return 1
-    return fibonacci_recursive(n - 1) + fibonacci_recursive(n - 2)
-```
-
-#### Iterative Implementation (More Efficient)
-
-```pseudocode
-function fibonacci_iterative(n):
-    if n == 1 OR n == 2:
-        return 1
-
-    prev1 = 1  // fib(1)
-    prev2 = 1  // fib(2)
-
-    for i in range(3, n + 1):
-        current = prev1 + prev2
-        prev1 = prev2
-        prev2 = current
-
-    return prev2
-```
+**Note**: You have complete freedom in implementation approach - recursive, iterative, memoized, or any other method that correctly computes Fibonacci numbers. Choose the approach that works best for your compiler's optimization capabilities.
 
 ---
 

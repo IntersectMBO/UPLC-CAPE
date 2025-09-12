@@ -2,62 +2,45 @@
 
 ## Overview
 
-The Factorial benchmark is a **synthetic computational scenario** designed to measure the performance characteristics of iterative and recursive algorithms implemented as UPLC programs. This benchmark tests a compiler's ability to optimize mathematical computations, manage stack operations, and handle integer arithmetic efficiently.
+The Factorial benchmark is a **synthetic computational scenario** designed to measure the performance characteristics of iterative and recursive algorithms implemented as UPLC programs. This benchmark tests a compiler's ability to optimize mathematical computations, manage stack operations, and handle integer arithmetic efficiently across multiple input values and edge cases.
 
 ## TL;DR
 
-Implement a Factorial function that computes **factorial(10) = 3628800** and compile it as a fully-applied UPLC program.
+Implement a Factorial function that passes **comprehensive test cases** ranging from edge cases to moderate computational loads, compiled as a parameterized UPLC program.
 
 **Required Files**: Submit `factorial.uplc`, `metadata.json`, `metrics.json` to `submissions/factorial/{Compiler}_{Version}_{Handle}/`
 
-**Target**: `factorial(10)` → Expected result: `3628800`  
-**Metrics**: CPU units, Memory units, Script size (bytes), Term size  
+**Test Cases**: 10 comprehensive test cases including factorial(0), factorial(10), and negative inputs  
+**Metrics**: Per-test CPU/memory units, aggregated measurements, script size, term size  
 **Constraints**: Plutus Core 1.1.0, Plutus V3 recommended, CEK machine budget limits  
-**Implementation**: Choose recursive or iterative approach
+**Implementation**: Must handle negative inputs correctly (return 1 for n ≤ 0)
 
 ---
 
 ## Exact Task
 
-Implement a Factorial function and compile it as a **fully-applied UPLC program** that computes the factorial of 10.
+Implement a Factorial function and compile it as a **parameterized UPLC program** that accepts integer inputs and computes factorials correctly across all test cases.
 
 ### Core Requirements
 
-1. **Function Implementation**: Create a function that computes factorials using the mathematical definition:
+1. **Function Implementation**: Create a function that computes factorials using the mathematical definition with proper edge case handling:
 
-   - `factorial(0) = 1`
+   - `factorial(n) = 1` for n ≤ 0 (handles negative inputs and zero)
    - `factorial(n) = n * factorial(n-1)` for n > 0
 
-2. **Full Application**: The UPLC program must be fully-applied with the target value (10) baked in during compilation, not passed as a parameter.
+2. **Parameterized Program**: The UPLC program must accept integer parameters at runtime and compute results dynamically.
 
-3. **Target Computation**: `factorial(10)` must produce exactly `3628800`
+3. **Comprehensive Testing**: Must pass all test cases in `scenarios/factorial/cape-tests.json` including:
+   - Edge cases: factorial(0), factorial(1)
+   - Small values: factorial(2), factorial(3), factorial(4), factorial(5)
+   - Moderate values: factorial(8), factorial(10), factorial(12)
+   - Negative inputs: factorial(-5)
 
 ### Implementation Approaches
 
 Choose the approach that works best for your compiler:
 
-#### Recursive Implementation (Most Direct)
-
-```pseudocode
-function factorial_recursive(n):
-    if n == 0:
-        return 1
-    return n * factorial_recursive(n - 1)
-```
-
-#### Iterative Implementation (More Efficient)
-
-```pseudocode
-function factorial_iterative(n):
-    if n == 0:
-        return 1
-
-    result = 1
-    for i in range(1, n + 1):
-        result = result * i
-
-    return result
-```
+**Note**: You have full freedom in implementation approach - recursive, iterative, tail-recursive, or any other method that correctly handles all test cases. The critical requirement is proper handling of edge cases, particularly negative inputs (n ≤ 0 should return 1).
 
 ---
 
@@ -65,10 +48,11 @@ function factorial_iterative(n):
 
 Your submission passes if:
 
-- ✅ **Correctness**: Program outputs exactly `3628800`
-- ✅ **Budget Compliance**: Executes within CEK machine CPU and memory limits
+- ✅ **Comprehensive Correctness**: Passes all 10 test cases in `scenarios/factorial/cape-tests.json`
+- ✅ **Negative Input Handling**: Correctly returns 1 for factorial(-5) and any n ≤ 0
+- ✅ **Budget Compliance**: All test cases execute within CEK machine CPU and memory limits
 - ✅ **Determinism**: Produces identical results across multiple executions
-- ✅ **Self-Contained**: No external dependencies or parameters
+- ✅ **Parameterized**: Accepts integer inputs at runtime (not hardcoded values)
 - ✅ **File Format**: Valid UPLC program that can be executed by the CEK evaluator
 
 ---
@@ -88,18 +72,25 @@ All submissions are measured on these standardized metrics:
 
 ### Performance Context
 
-**Why factorial(10)?**
+**Why comprehensive test cases?**
 
-- **Computationally Manageable**: 10! = 3,628,800 fits comfortably in standard integer types
-- **Budget Safe**: Fits well within CEK machine limits for both recursive and iterative approaches
-- **Optimization Sensitive**: Large enough to show compiler differences in loop vs recursion handling
-- **Practical Scale**: Representative of many real-world mathematical computations
+- **Edge Case Coverage**: Tests factorial(0), factorial(1), and negative inputs to verify correct implementation
+- **Scalability Analysis**: Tests range from factorial(2) to factorial(12) to measure performance scaling
+- **Budget Safety**: All test cases fit within CEK machine limits for both recursive and iterative approaches
+- **Implementation Validation**: Catches common bugs like infinite recursion on negative inputs
+- **Compiler Comparison**: Shows differences in optimization across different input ranges
+
+**Test Case Performance Characteristics**:
+
+- **factorial(0) to factorial(5)**: Minimal computation, tests base case handling
+- **factorial(8) to factorial(12)**: Moderate computation, shows scaling behavior
+- **factorial(-5)**: Critical test for negative input handling (common source of infinite recursion)
 
 **Expected Performance Ranges** (approximate):
 
-- **Recursive**: Higher CPU usage due to function call overhead
-- **Iterative**: Lower CPU usage, more predictable memory patterns
-- **Tail Recursive**: Moderate CPU usage with optimized stack handling
+- **Recursive**: Higher CPU usage due to function call overhead, scales with input value
+- **Iterative**: Lower CPU usage, more predictable memory patterns, better scaling
+- **Negative inputs**: Should be O(1) with proper implementation (n ≤ 0 → return 1)
 
 ---
 

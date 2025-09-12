@@ -1,15 +1,5 @@
-{-# LANGUAGE BangPatterns #-}
-{-# LANGUAGE BlockArguments #-}
-{-# LANGUAGE DataKinds #-}
-{-# LANGUAGE LambdaCase #-}
-{-# LANGUAGE MultiParamTypeClasses #-}
-{-# LANGUAGE MultiWayIf #-}
-{-# LANGUAGE NamedFieldPuns #-}
-{-# LANGUAGE OverloadedStrings #-}
-{-# LANGUAGE PatternSynonyms #-}
 {-# LANGUAGE Strict #-}
 {-# LANGUAGE TemplateHaskell #-}
-{-# LANGUAGE ViewPatterns #-}
 {-# LANGUAGE NoImplicitPrelude #-}
 --
 {-# OPTIONS_GHC -fno-full-laziness #-}
@@ -26,18 +16,14 @@
 {-# OPTIONS_GHC -fplugin-opt PlutusTx.Plugin:remove-trace #-}
 {-# OPTIONS_GHC -fplugin-opt PlutusTx.Plugin:target-version=1.1.0 #-}
 
-module Factorial (factorialCode, factorial10Code) where
+module Factorial (factorialCode) where
 
 import PlutusTx
 import PlutusTx.Prelude
 
--- | Compiled validator script
+-- | Compiled factorial function
 factorialCode :: CompiledCode (Integer -> Integer)
 factorialCode = $$(PlutusTx.compile [||factorial||])
-
--- | The compiled factorial validator for n=10
-factorial10Code :: CompiledCode Integer
-factorial10Code = $$(PlutusTx.compile [||factorial 10||])
 
 {-# INLINEABLE factorial #-}
 factorial :: Integer -> Integer

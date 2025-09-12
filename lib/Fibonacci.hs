@@ -1,15 +1,5 @@
-{-# LANGUAGE BangPatterns #-}
-{-# LANGUAGE BlockArguments #-}
-{-# LANGUAGE DataKinds #-}
-{-# LANGUAGE LambdaCase #-}
-{-# LANGUAGE MultiParamTypeClasses #-}
-{-# LANGUAGE MultiWayIf #-}
-{-# LANGUAGE NamedFieldPuns #-}
-{-# LANGUAGE OverloadedStrings #-}
-{-# LANGUAGE PatternSynonyms #-}
 {-# LANGUAGE Strict #-}
 {-# LANGUAGE TemplateHaskell #-}
-{-# LANGUAGE ViewPatterns #-}
 {-# LANGUAGE NoImplicitPrelude #-}
 --
 {-# OPTIONS_GHC -fno-full-laziness #-}
@@ -26,18 +16,14 @@
 {-# OPTIONS_GHC -fplugin-opt PlutusTx.Plugin:remove-trace #-}
 {-# OPTIONS_GHC -fplugin-opt PlutusTx.Plugin:target-version=1.1.0 #-}
 
-module Fibonacci (fibonacciCode, fibonacci25Code) where
+module Fibonacci (fibonacciCode) where
 
 import PlutusTx
 import PlutusTx.Prelude
 
--- | Compiled validator script
+-- | Compiled fibonacci function
 fibonacciCode :: CompiledCode (Integer -> Integer)
 fibonacciCode = $$(PlutusTx.compile [||fibonacci||])
-
--- | The compiled fibonacci validator for n=25
-fibonacci25Code :: CompiledCode Integer
-fibonacci25Code = $$(PlutusTx.compile [||fibonacci 25||])
 
 {-# INLINEABLE fibonacci #-}
 fibonacci :: Integer -> Integer
