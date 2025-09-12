@@ -246,9 +246,14 @@ main() {
     "scripts dir" "test -d scripts" 2 "" \
     "templates exist" "test -d scenarios/TEMPLATE && test -d submissions/TEMPLATE" 2 ""
 
-  # Haskell library tests
+  # Haskell library tests - use longer timeout in CI
+  local cabal_test_timeout=60
+  if [[ "${CI:-}" == "true" ]] || [[ "${GITHUB_ACTIONS:-}" == "true" ]]; then
+    cabal_test_timeout=180
+  fi
+
   test_group "Haskell library tests" \
-    "cabal test cape-tests" "(cd \"$REPO_ROOT\" && cabal test cape-tests)" 60 ""
+    "cabal test cape-tests" "(cd \"$REPO_ROOT\" && cabal test cape-tests)" "$cabal_test_timeout" ""
 
   # UPLC validation - test actual UPLC execution for all submissions
   run_uplc_validation
