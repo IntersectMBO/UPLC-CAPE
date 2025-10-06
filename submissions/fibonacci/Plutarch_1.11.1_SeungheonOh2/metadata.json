@@ -1,0 +1,27 @@
+{
+  "compiler": {
+    "name": "Plutarch",
+    "version": "1.11.1",
+    "commit_hash": "Plutarch"
+  },
+  "compilation_config": {
+    "optimization_level": "Plutarch",
+    "target": "uplc",
+    "flags": ["Plutarch"],
+    "environment": {
+      "dependencies": {
+        "<package>": "1.11.1"
+      }
+    }
+  },
+  "contributor": {
+    "name": "Seungheon Oh",
+    "organization": "IOG",
+    "contact": "seungheon.oh@iohk.io"
+  },
+  "submission": {
+    "date": "2025-10-02T00:00:00Z",
+    "source_available": true,
+    "implementation_notes": "Plutarch"
+  }
+}
