@@ -182,46 +182,13 @@ verify_submission_dir() {
 
   # Write/merge metrics.json - only reached when measure_rc=0
   local metrics_out="$submission_dir/metrics.json"
-  local evaluator
-  evaluator=$(grep -E '^Evaluator:' "$tmp_stdout" | sed -E 's/^Evaluator: *//') || true
-  local timestamp
-  timestamp="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
-  local existing_notes existing_version existing_evaluator
-  existing_notes=""
-  existing_version=""
-  existing_evaluator=""
-  if [[ -f "$metrics_out" ]]; then
-    existing_notes=$(jq -r '.notes // empty' "$metrics_out" 2> /dev/null || echo "") || true
-    existing_version=$(jq -r '.version // empty' "$metrics_out" 2> /dev/null || echo "") || true
-    existing_evaluator=$(jq -r '.execution_environment.evaluator // empty' "$metrics_out" 2> /dev/null || echo "") || true
-  fi
-  if [[ -z "$existing_notes" ]]; then existing_notes="Generated using UPLC-CAPE measure tool"; fi
-  if [[ -z "$existing_version" ]]; then existing_version="1.0.0"; fi
-  if [[ -z "$evaluator" ]]; then evaluator="$existing_evaluator"; fi
-  if [[ -z "$evaluator" ]]; then evaluator="unknown"; fi
 
-  local tmp_out
-  tmp_out="$(cape_mktemp)"
-  if ! jq -n \
-    --slurpfile m "$tmp_metrics" \
-    --arg evaluator "$evaluator" \
-    --arg notes "$existing_notes" \
-    --arg scenario "${scenario:-unknown}" \
-    --arg version "$existing_version" \
-    --arg timestamp "$timestamp" '
-    $m[0] + {
-      execution_environment: { evaluator: $evaluator },
-      notes: $notes,
-      scenario: $scenario,
-      timestamp: $timestamp,
-      version: $version
-    }
-  ' > "$tmp_out"; then
+  if ! cape_write_metrics_json "$tmp_metrics" "$metrics_out" "${scenario:-unknown}" "$tmp_stdout"; then
     cape_error "Failed to compose metrics.json for $rel_dir"
-    rm -f "$tmp_metrics" "$tmp_stdout" "$tmp_out" || true
+    rm -f "$tmp_metrics" "$tmp_stdout" || true
     return 1
   fi
-  mv "$tmp_out" "$metrics_out"
+
   rm -f "$tmp_metrics" "$tmp_stdout" || true
 
   # Validate JSON files against schemas
