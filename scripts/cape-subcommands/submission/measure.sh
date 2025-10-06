@@ -156,111 +156,17 @@ measure_uplc_file() {
     fi
   fi
 
-  local stdout_file
-  stdout_file="$stdout_tmp"
-  local evaluator
-  evaluator=$(grep -E '^Evaluator:' "$stdout_file" | sed -E 's/^Evaluator: *//') || true
-  if [[ -n "$evaluator" ]]; then
-    cape_debug "Evaluator detected: $evaluator"
-  fi
-
-  # Preserve existing metadata (notes, version) if metrics.json exists
-  local submission_dir_out
-  submission_dir_out="$(dirname "$uplc_file")"
   if [[ -z "$scenario" ]]; then
     scenario="unknown"
   fi
 
-  if [[ $was_existing -eq 1 ]]; then
-    existing_notes=$(jq -r '.notes // empty' "$output_file" 2> /dev/null || echo "") || true
-    existing_version=$(jq -r '.version // empty' "$output_file" 2> /dev/null || echo "") || true
-    existing_evaluator=$(jq -r '.execution_environment.evaluator // empty' "$output_file" 2> /dev/null || echo "") || true
-  fi
-
-  if [[ -z "$existing_notes" ]]; then
-    existing_notes="Generated using UPLC-CAPE measure tool"
-  fi
-  if [[ -z "$existing_version" ]]; then
-    existing_version="1.0.0"
-  fi
-  if [[ -z "$evaluator" ]]; then
-    evaluator="$existing_evaluator"
-  fi
-  if [[ -z "$evaluator" ]]; then
-    evaluator="unknown"
-  fi
-
-  local timestamp
-  timestamp="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
-
-  # Preserve existing timestamp if measurements are identical
-  if [[ $was_existing -eq 1 ]]; then
-    # Create temporary metrics with new measurements for comparison
-    local tmp_new_metrics
-    tmp_new_metrics="$(cape_mktemp)"
-    if jq -n \
-      --slurpfile m "$tmp_raw" \
-      --arg evaluator "$evaluator" \
-      --arg notes "$existing_notes" \
-      --arg scenario "$scenario" \
-      --arg version "$existing_version" \
-      --arg timestamp "$timestamp" '
-      {
-        execution_environment: {
-          evaluator: $evaluator
-        },
-        measurements: $m[0],
-        notes: $notes,
-        scenario: $scenario,
-        timestamp: $timestamp,
-        version: $version
-      }
-    ' > "$tmp_new_metrics" 2> /dev/null; then
-
-      # Compare new metrics with existing (excluding timestamp)
-      local new_metrics_no_ts existing_metrics_no_ts
-      new_metrics_no_ts=$(jq 'del(.timestamp)' "$tmp_new_metrics" 2> /dev/null || echo "{}")
-      existing_metrics_no_ts=$(jq 'del(.timestamp)' "$output_file" 2> /dev/null || echo "{}")
-
-      if [[ "$new_metrics_no_ts" == "$existing_metrics_no_ts" ]]; then
-        # Preserve original timestamp if measurements are identical
-        local existing_timestamp
-        existing_timestamp=$(jq -r '.timestamp // empty' "$output_file" 2> /dev/null || echo "")
-        if [[ -n "$existing_timestamp" ]]; then
-          timestamp="$existing_timestamp"
-          cape_debug "Measurements unchanged, preserving timestamp: $existing_timestamp"
-        fi
-      fi
-    fi
-    rm -f "$tmp_new_metrics" || true
-  fi
-
-  local tmp_out
-  tmp_out="$(cape_mktemp)"
-  if ! jq -n \
-    --slurpfile m "$tmp_raw" \
-    --arg evaluator "$evaluator" \
-    --arg notes "$existing_notes" \
-    --arg scenario "$scenario" \
-    --arg version "$existing_version" \
-    --arg timestamp "$timestamp" '
-    $m[0] + {
-      execution_environment: {
-        evaluator: $evaluator
-      },
-      notes: $notes,
-      scenario: $scenario,
-      timestamp: $timestamp,
-      version: $version
-    }
-  ' > "$tmp_out"; then
+  if ! cape_write_metrics_json "$tmp_raw" "$output_file" "$scenario" "$stdout_tmp"; then
     cape_error "Failed to compose metrics.json for $rel_uplc"
-    rm -f "$tmp_raw" "$stdout_file" "$tmp_out" || true
+    rm -f "$tmp_raw" "$stdout_tmp" || true
     return 1
   fi
 
-  mv "$tmp_out" "$output_file"
-  rm -f "$tmp_raw" "$stdout_file" || true
+  rm -f "$tmp_raw" "$stdout_tmp" || true
   echo ""
   if [[ $was_existing -eq 1 ]]; then
     cape_success "Updated $rel_output"

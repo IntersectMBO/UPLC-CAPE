@@ -183,3 +183,122 @@ cape_measure_binary() {
     echo "cabal run measure --"
   fi
 }
+
+# Write metrics.json with timestamp preservation
+# Merges raw metrics from measure tool with metadata and preserves timestamp if unchanged
+# Args:
+#   $1: tmp_raw_metrics - Path to temporary file with raw metrics from measure tool
+#   $2: output_file - Path to final metrics.json file
+#   $3: scenario - Scenario name
+#   $4: stdout_file - Path to stdout from measure tool (for extracting evaluator info)
+cape_write_metrics_json() {
+  local tmp_raw="$1"
+  local output_file="$2"
+  local scenario="$3"
+  local stdout_file="$4"
+
+  cape_require_cmd jq
+
+  # Initialize metadata holders
+  local existing_notes="" existing_version="" existing_evaluator=""
+  local was_existing=0
+
+  if [[ -f "$output_file" ]]; then
+    was_existing=1
+    existing_notes=$(jq -r '.notes // empty' "$output_file" 2> /dev/null || echo "") || true
+    existing_version=$(jq -r '.version // empty' "$output_file" 2> /dev/null || echo "") || true
+    existing_evaluator=$(jq -r '.execution_environment.evaluator // empty' "$output_file" 2> /dev/null || echo "") || true
+  fi
+
+  # Set defaults
+  if [[ -z "$existing_notes" ]]; then
+    existing_notes="Generated using UPLC-CAPE measure tool"
+  fi
+  if [[ -z "$existing_version" ]]; then
+    existing_version="1.0.0"
+  fi
+
+  # Extract evaluator from stdout if available
+  local evaluator=""
+  if [[ -f "$stdout_file" ]]; then
+    evaluator=$(grep -E '^Evaluator:' "$stdout_file" | sed -E 's/^Evaluator: *//') || true
+  fi
+  if [[ -z "$evaluator" ]]; then
+    evaluator="$existing_evaluator"
+  fi
+  if [[ -z "$evaluator" ]]; then
+    evaluator="unknown"
+  fi
+
+  local timestamp
+  timestamp="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+
+  # Preserve existing timestamp if measurements are identical
+  if [[ $was_existing -eq 1 ]]; then
+    # Create temporary metrics with new measurements for comparison
+    local tmp_new_metrics
+    tmp_new_metrics="$(cape_mktemp)"
+    if jq -n \
+      --slurpfile m "$tmp_raw" \
+      --arg evaluator "$evaluator" \
+      --arg notes "$existing_notes" \
+      --arg scenario "$scenario" \
+      --arg version "$existing_version" \
+      --arg timestamp "$timestamp" '
+      $m[0] + {
+        execution_environment: {
+          evaluator: $evaluator
+        },
+        notes: $notes,
+        scenario: $scenario,
+        timestamp: $timestamp,
+        version: $version
+      }
+    ' > "$tmp_new_metrics" 2> /dev/null; then
+
+      # Compare new metrics with existing (excluding timestamp)
+      local new_metrics_no_ts existing_metrics_no_ts
+      new_metrics_no_ts=$(jq 'del(.timestamp)' "$tmp_new_metrics" 2> /dev/null || echo "{}")
+      existing_metrics_no_ts=$(jq 'del(.timestamp)' "$output_file" 2> /dev/null || echo "{}")
+
+      if [[ "$new_metrics_no_ts" == "$existing_metrics_no_ts" ]]; then
+        # Preserve original timestamp if measurements are identical
+        local existing_timestamp
+        existing_timestamp=$(jq -r '.timestamp // empty' "$output_file" 2> /dev/null || echo "")
+        if [[ -n "$existing_timestamp" ]]; then
+          timestamp="$existing_timestamp"
+          cape_debug "Measurements unchanged, preserving timestamp: $existing_timestamp"
+        fi
+      fi
+    fi
+    rm -f "$tmp_new_metrics" || true
+  fi
+
+  # Create final metrics.json
+  local tmp_out
+  tmp_out="$(cape_mktemp)"
+  if ! jq -n \
+    --slurpfile m "$tmp_raw" \
+    --arg evaluator "$evaluator" \
+    --arg notes "$existing_notes" \
+    --arg scenario "$scenario" \
+    --arg version "$existing_version" \
+    --arg timestamp "$timestamp" '
+    $m[0] + {
+      execution_environment: {
+        evaluator: $evaluator
+      },
+      notes: $notes,
+      scenario: $scenario,
+      timestamp: $timestamp,
+      version: $version
+    }
+  ' > "$tmp_out"; then
+    cape_error "Failed to compose metrics.json"
+    rm -f "$tmp_out" || true
+    return 1
+  fi
+
+  mv "$tmp_out" "$output_file"
+  return 0
+}
