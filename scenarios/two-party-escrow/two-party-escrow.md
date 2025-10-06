@@ -22,13 +22,11 @@ Implement a two-party escrow validator and compile it as a **fully-applied UPLC 
 ### Core Requirements
 
 1. **Validator Implementation**: Create a validator with signature `BuiltinData -> BuiltinUnit` that handles three redeemer types:
-
    - `Deposit` (redeemer = 0): Allow buyer to deposit funds into escrow
    - `Accept` (redeemer = 1): Allow seller to accept and complete the escrow
    - `Refund` (redeemer = 2): Allow buyer to reclaim funds after deadline
 
 2. **Fixed Parameters**: The following parameters must be baked into the UPLC program:
-
    - **Buyer Address**: `aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa`
    - **Seller Address**: `bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb`
    - **Price**: 75 ADA (75,000,000 lovelace)
@@ -504,7 +502,6 @@ Use the standard metrics schema as defined in `submissions/TEMPLATE/metrics.sche
 **Measurements Object**: Contains performance metrics across all test evaluations:
 
 - **cpu_units/memory_units objects**: Multiple aggregation strategies for comprehensive analysis:
-
   - `maximum`: Peak resource usage (worst-case performance)
   - `sum`: Total resources across all evaluations (overall computational work)
   - `minimum`: Best-case resource usage (optimal performance)

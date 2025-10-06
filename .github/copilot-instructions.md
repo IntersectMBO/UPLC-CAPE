@@ -472,7 +472,6 @@ measurePerformance compiled = do
 To avoid churn and keep tooling predictable, respect these boundaries:
 
 - Wrapper (repo-aware): `cape submission measure`
-
   - Purpose: operates on submissions and directories, aware of repository layout and scenarios.
   - Stable interface: do not add or remove flags. Supported options are:
     - `-a, --all` — measure every submission under `submissions/`
@@ -482,7 +481,6 @@ To avoid churn and keep tooling predictable, respect these boundaries:
   - No scenario/verifier override flags are exposed in the wrapper; it auto-infers the scenario from the path and, if present, passes the scenario verifier to the low-level tool.
 
 - Wrapper (repo-aware): `cape submission verify`
-
   - Purpose: correctness verification (via `measure`) + schema validation; aware of repository layout and scenarios.
   - Stable interface: do not add or remove flags. Supported options are:
     - `-a, --all` — verify every submission under `submissions/`

@@ -181,7 +181,6 @@ The output includes formatted metrics, best value indicators, and submission met
    ```
 
 1. Add your UPLC program
-
    - Replace the placeholder UPLC with your fully-applied program (no parameters).
    - Path:
      - submissions/fibonacci/MyCompiler_1.0.0_myhandle/fibonacci.uplc
@@ -190,7 +189,6 @@ The output includes formatted metrics, best value indicators, and submission met
 1. Verify and measure
 
    Use the unified verification command to ensure your submission is correct and schema-compliant, then measure performance.
-
    - Verify correctness and JSON schemas (all submissions or a path):
 
      ```zsh
@@ -200,7 +198,6 @@ The output includes formatted metrics, best value indicators, and submission met
      ```
 
    - Measure and write metrics.json automatically:
-
      - Measure all .uplc files under a path (e.g., your submission directory):
 
        ```zsh
@@ -216,13 +213,11 @@ The output includes formatted metrics, best value indicators, and submission met
        ```
 
    - What verification does:
-
      - Evaluates your UPLC program; if it reduces to BuiltinUnit, correctness passes
      - Otherwise, runs the comprehensive test suite defined in `scenarios/{benchmark}/cape-tests.json`
      - Validates your `metrics.json` and `metadata.json` against schemas
 
    - What measure does automatically:
-
      - Measures CPU units, memory units, script size, and term size for your .uplc file(s)
      - Generates or updates a `metrics.json` with scenario, measurements, evaluator, and timestamp
      - Keeps your existing `notes` and `version` if present; otherwise fills sensible defaults
@@ -230,7 +225,6 @@ The output includes formatted metrics, best value indicators, and submission met
      - Produces output that validates against `submissions/TEMPLATE/metrics.schema.json`
 
    - **Aggregation Strategies**: The `measure` tool now runs multiple test cases per program and provides several aggregation methods for CPU and memory metrics:
-
      - `maximum`: Peak resource usage across all test cases (useful for identifying worst-case performance)
      - `sum`: Total computational work across all test cases (useful for overall efficiency comparison)
      - `minimum`: Best-case resource usage (useful for identifying optimal performance)

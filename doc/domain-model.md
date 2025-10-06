@@ -178,12 +178,10 @@ erDiagram
 ## Key Relationships
 
 1. **Scenario to Submission**: One-to-Many
-
    - A scenario can have multiple submissions from different compilers
    - Each submission implements exactly one scenario
 
 2. **Compiler to Submission**: One-to-Many
-
    - A specific compiler version can produce submissions for multiple scenarios
    - A specific compiler version can have multiple submissions for the same scenario from different contributors, as long as the UPLC programs or compilation configurations differ
    - Each submission is produced by exactly one compiler name-version combination

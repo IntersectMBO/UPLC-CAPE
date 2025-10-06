@@ -24,7 +24,6 @@ Implement a Factorial function and compile it as a **parameterized UPLC program*
 ### Core Requirements
 
 1. **Function Implementation**: Create a function that computes factorials using the mathematical definition with proper edge case handling:
-
    - `factorial(n) = 1` for n ≤ 0 (handles negative inputs and zero)
    - `factorial(n) = n * factorial(n-1)` for n > 0
 

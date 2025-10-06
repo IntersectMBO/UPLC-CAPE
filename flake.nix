@@ -200,36 +200,34 @@
               ]
             );
 
-          shellHook =
-            (old.shellHook or "")
-            + ''
-              # Install log4brains via npx when needed
-              # Create node_modules directory if it doesn't exist
-              [ ! -d "node_modules" ] && mkdir -p node_modules
+          shellHook = (old.shellHook or "") + ''
+            # Install log4brains via npx when needed
+            # Create node_modules directory if it doesn't exist
+            [ ! -d "node_modules" ] && mkdir -p node_modules
 
-              # Update cabal indexes and build the measure executable
-              cabal update
-              # Skip measure build in development mode to avoid circular dependencies
-              [ -z "$DEVELOPMENT" ] && cabal build exe:measure || true
+            # Update cabal indexes and build the measure executable
+            cabal update
+            # Skip measure build in development mode to avoid circular dependencies
+            [ -z "$DEVELOPMENT" ] && cabal build exe:measure || true
 
-              # Display banner using glow for better markdown rendering
-              # Resolve repo root so this works when entering the shell from subdirectories
-              if command -v git >/dev/null 2>&1; then
-                REPO_ROOT="$(git rev-parse --show-toplevel 2>/dev/null || true)"
-              else
-                REPO_ROOT=""
-              fi
-              if [ -n "$REPO_ROOT" ] && [ -f "$REPO_ROOT/BANNER.md" ]; then
-                glow -w0 "$REPO_ROOT/BANNER.md" || true
-              else
-                # Fallback to the flake's BANNER in the Nix store
-                 glow -w0 "${./BANNER.md}" || true
-              fi
+            # Display banner using glow for better markdown rendering
+            # Resolve repo root so this works when entering the shell from subdirectories
+            if command -v git >/dev/null 2>&1; then
+              REPO_ROOT="$(git rev-parse --show-toplevel 2>/dev/null || true)"
+            else
+              REPO_ROOT=""
+            fi
+            if [ -n "$REPO_ROOT" ] && [ -f "$REPO_ROOT/BANNER.md" ]; then
+              glow -w0 "$REPO_ROOT/BANNER.md" || true
+            else
+              # Fallback to the flake's BANNER in the Nix store
+               glow -w0 "${./BANNER.md}" || true
+            fi
 
-              # Show environment info
-              echo "💻 Development Environment: Full toolchain with devx pre-cached HLS"
-              echo ""
-            '';
+            # Show environment info
+            echo "💻 Development Environment: Full toolchain with devx pre-cached HLS"
+            echo ""
+          '';
         });
       in
       {

@@ -41,13 +41,11 @@ Implement a {detailed_task_description} and compile it as a **fully-applied UPLC
 ### Core Requirements
 
 1. **{Primary_Component}**: Create a {component_description} with signature `{function_signature}` that handles:
-
    - `{Operation_1}` ({parameter} = {value}): {description_1}
    - `{Operation_2}` ({parameter} = {value}): {description_2}
    - `{Operation_3}` ({parameter} = {value}): {description_3}
 
 2. **Fixed Parameters**: The following parameters must be baked into the UPLC program:
-
    - **{Parameter_1}**: `{value_1}`
    - **{Parameter_2}**: `{value_2}`
    - **{Parameter_3}**: `{value_3}`
@@ -243,7 +241,6 @@ Use the standard metrics schema as defined in `submissions/TEMPLATE/metrics.sche
 **Measurements Object**: Contains aggregated performance metrics across all test evaluations:
 
 - **cpu_units/memory_units objects**: Multiple aggregation strategies for comprehensive analysis:
-
   - `maximum`: Peak resource usage (worst-case performance)
   - `sum`: Total resources across all evaluations (overall computational work)
   - `minimum`: Best-case resource usage (optimal performance)

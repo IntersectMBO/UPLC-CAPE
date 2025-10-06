@@ -24,7 +24,6 @@ Implement a Fibonacci function and compile it as a **fully-applied UPLC program*
 ### Core Requirements
 
 1. **Function Implementation**: Create a function that computes Fibonacci numbers using the mathematical definition:
-
    - `fibonacci(1) = 1`
    - `fibonacci(2) = 1`
    - `fibonacci(n) = fibonacci(n-1) + fibonacci(n-2)` for n > 2

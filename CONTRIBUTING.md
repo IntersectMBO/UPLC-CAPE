@@ -18,26 +18,21 @@ Examples:
 The submission folder **must** contain:
 
 1. **`<scenario>.uplc`**
-
    - The fully-applied UPLC program with the benchmark target baked in (e.g. `fibonacci.uplc`).
 
 2. **`metrics.json`**
-
    - Performance measurements. Validate this file against `submissions/<template-name>/metrics.schema.json`.
    - The initial file is scaffolded from `submissions/<template-name>/metrics-template.json`.
 
 3. **`metadata.json`**
-
    - Compiler metadata. Validate this file against `submissions/<template-name>/metadata.schema.json`.
    - The initial file is scaffolded from `submissions/<template-name>/metadata-template.json`.
    - For baseline scenarios, use `"compiler": { "name": "Plinth", ... }`.
 
 4. _(Optional)_ **`source/`**
-
    - Original source code (e.g. `fibonacci.plinth`) if you choose to publish it.
 
 5. _(Optional)_ **`config.json`**
-
    - Compilation parameters (flags, optimization levels) that affect the generated UPLC.
 
 6. **`README.md`**
