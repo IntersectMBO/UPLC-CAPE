@@ -4,6 +4,71 @@
 
 The Fibonacci benchmark is a **synthetic computational scenario** designed to measure the performance characteristics of recursive algorithms implemented as UPLC programs. This benchmark tests a compiler's ability to optimize recursive function calls, manage stack depth, and handle integer arithmetic operations efficiently.
 
+## Evaluation Modes
+
+This scenario supports two evaluation modes to serve different benchmarking needs:
+
+### Base Mode (Compiler Comparison)
+
+**Purpose**: Pure compiler-to-compiler comparison with fixed algorithm
+
+All "base" mode submissions MUST implement the prescribed naive recursive algorithm below:
+
+```haskell
+fibonacci :: Integer -> Integer
+fibonacci n
+  | n <= 1    = n
+  | otherwise = fibonacci (n - 1) + fibonacci (n - 2)
+```
+
+**Requirements:**
+
+- Naive recursive implementation matching the mathematical definition
+- No memoization or dynamic programming
+- No iterative loops or accumulator patterns
+- No algorithmic optimizations beyond compiler's automatic optimizations
+
+**Directory naming**: `submissions/fibonacci/{Compiler}_{Version}_{Author}_base/`
+
+**Use case**: Comparing how different compilers optimize the same recursive algorithm
+
+### Open Mode (Real-World Competition)
+
+**Purpose**: Showcase compiler ecosystem capabilities with any optimization technique
+
+**Allowed**:
+
+- Any algorithmic approach (recursive, iterative, memoized, closed-form)
+- Metaprogramming and code generation techniques
+- Loop unrolling, constant folding, or any compiler-specific optimizations
+- Multiple submissions per compiler/author using unique slugs
+
+**Directory naming**:
+
+- Generic implementation: `submissions/fibonacci/{Compiler}_{Version}_{Author}_open/`
+- Specific optimization: `submissions/fibonacci/{Compiler}_{Version}_{Author}_open_{slug}/`
+
+**Slug examples** (optional): `memoized`, `iterative`, `unrolled`, `closedform`
+
+**Use case**: Demonstrating best achievable performance for fibonacci computation
+
+### Mode Selection
+
+When creating a submission:
+
+```bash
+# Base mode (prescribed naive recursive algorithm)
+cape submission new fibonacci MyCompiler 1.0.0 handle --mode base
+
+# Open mode (generic/default optimization)
+cape submission new fibonacci MyCompiler 1.0.0 handle --mode open
+
+# Open mode (specific optimization with slug)
+cape submission new fibonacci MyCompiler 1.0.0 handle --mode open --slug memoized
+```
+
+Reports show both modes by default, or filter with `--mode base` or `--mode open`.
+
 ## TL;DR
 
 Implement a Fibonacci function that computes **fibonacci(25) = 75025** and compile it as a fully-applied UPLC program.
@@ -34,7 +99,9 @@ Implement a Fibonacci function and compile it as a **fully-applied UPLC program*
 
 ### Implementation Approaches
 
-**Note**: You have complete freedom in implementation approach - recursive, iterative, memoized, or any other method that correctly computes Fibonacci numbers. Choose the approach that works best for your compiler's optimization capabilities.
+**Base Mode**: Must use the prescribed naive recursive algorithm (see Evaluation Modes section above).
+
+**Open Mode**: Complete freedom in implementation approach - recursive, iterative, memoized, closed-form, or any other method that correctly computes Fibonacci numbers. Choose the approach that showcases your compiler's best capabilities.
 
 ---
 
