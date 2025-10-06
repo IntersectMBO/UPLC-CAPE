@@ -1,14 +1,38 @@
 Usage:
-  cape submission new <scenario> <language> <version> <github-handle>
+  cape submission new <scenario> <language> <version> <github-handle> --mode <base|open> [--slug <name>]
+
+Required Arguments:
+  <scenario>          Benchmark name (must exist in scenarios/)
+  <language>          Compiler/language name (letters/digits/hyphens only)
+  <version>           Compiler version (e.g., 1.52.0.0 or 1.1.17)
+  <github-handle>     Your GitHub handle (1-39 chars, alphanumeric and hyphens)
+  --mode <base|open>  Evaluation mode (REQUIRED)
+                      base: Prescribed algorithm (compiler comparison)
+                      open: Any optimization (real-world competition)
+
+Options:
+  --slug <name>       Optional for open mode (e.g., 'memoized', 'unrolled', 'pfix')
+                      Omit for generic/default implementation
+                      Not allowed for base mode
 
 Examples:
-  cape submission new fibonacci Aiken 1.1.17 KtorZ
-  cape submission new fibonacci Plinth 1.52.0.0 Unisay
+  # Base mode (prescribed algorithm for compiler comparison)
+  cape submission new fibonacci Plinth 1.53.0 Unisay --mode base
+
+  # Open mode with generic/default implementation (no slug)
+  cape submission new fibonacci Aiken 1.1.17 KtorZ --mode open
+
+  # Open mode with specific optimization variant
+  cape submission new fibonacci Plutarch 1.11.1 SeungheonOh --mode open --slug memoized
+
+Directory Naming:
+  - Base mode: <language>_<version>_<github-handle>_base
+  - Open mode (generic): <language>_<version>_<github-handle>_open
+  - Open mode (with slug): <language>_<version>_<github-handle>_open_<slug>
 
 Notes:
-  - All arguments are required; if any are missing, the command fails.
-  - Folder name will be <language>_<version>_<github-handle>.
-  - Scenario must exist as scenarios/<scenario>.md.
-  - Language: letters/digits/hyphens only (no spaces).
-  - Version: digits, dots and hyphens (e.g., 1.52.0.0 or 1.1.17).
-  - GitHub handle: 1-39 chars, alnum and hyphens, cannot start/end with '-'.
+  - Scenario must exist in scenarios/<scenario>/
+  - Mode is REQUIRED - must explicitly choose base or open
+  - Slug is optional for open mode; use only for specific optimization variants
+  - Base mode requires implementing the exact algorithm prescribed in the scenario
+  - GitHub handle rules: 1-39 chars, alphanumeric and hyphens, cannot start/end with '-'
