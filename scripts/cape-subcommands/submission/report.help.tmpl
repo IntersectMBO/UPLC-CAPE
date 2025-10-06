@@ -1,5 +1,5 @@
-Usage: cape submission report [--dry-run] [--keep-existing] <benchmark>
-       cape submission report [--dry-run] [--keep-existing] --all
+Usage: cape submission report [--dry-run] [--keep-existing] [--mode <base|open>] <benchmark>
+       cape submission report [--dry-run] [--keep-existing] [--mode <base|open>] --all
 
 Generate HTML performance reports with chart images comparing submission performance.
 
@@ -10,6 +10,8 @@ Arguments:
 Options:
   --dry-run       Show actions without writing files
   --keep-existing Do not delete the existing report/ directory before generating
+  --mode <base|open>  Filter submissions by evaluation mode
+                      Omit to show all modes (default)
 
 The report includes:
 - Main index page (report/index.html) listing all benchmarks
@@ -28,8 +30,10 @@ Output:
   report/benchmarks/images/<benchmark>_*.png  # Chart image files
 
 Examples:
-  cape submission report fibonacci    # Report for fibonacci benchmark
-  cape submission report --all        # Reports for all benchmarks
+  cape submission report fibonacci           # Report for fibonacci (all modes)
+  cape submission report --all               # Reports for all benchmarks (all modes)
+  cape submission report fibonacci --mode base    # Only base mode submissions
+  cape submission report --all --mode open        # Only open mode submissions
 
 Requirements:
   - gnuplot must be installed

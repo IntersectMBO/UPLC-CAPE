@@ -33,6 +33,7 @@ cape_enable_tmp_cleanup
 # Parse flags
 DRY_RUN=0
 KEEP_EXISTING=0
+MODE=""
 args=()
 while [[ $# -gt 0 ]]; do
   case "$1" in
@@ -48,6 +49,10 @@ while [[ $# -gt 0 ]]; do
       KEEP_EXISTING=1
       shift
       ;;
+    --mode)
+      MODE="$2"
+      shift 2
+      ;;
     --all)
       args+=("--all")
       shift
@@ -59,6 +64,12 @@ while [[ $# -gt 0 ]]; do
   esac
 done
 set -- "${args[@]}"
+
+# Validate mode if provided
+if [ -n "$MODE" ] && [ "$MODE" != "base" ] && [ "$MODE" != "open" ]; then
+  log_err "Invalid mode '$MODE'. Must be 'base' or 'open'."
+  exit 1
+fi
 
 # Check required tools
 cape_require_cmds gnuplot gomplate
@@ -72,6 +83,23 @@ fi
 
 # Validate benchmark name pattern when provided (lowercase, hyphens allowed)
 valid_benchmark_name() { [[ $1 =~ ^[a-z][a-z0-9-]*[a-z0-9]$|^[a-z]$ ]]; }
+
+# Filter CSV data by mode (filters field 10: submission_dir)
+filter_csv_by_mode() {
+  local csv_input="$1"
+  local mode_filter="$2"
+
+  if [ -z "$mode_filter" ]; then
+    # No filter, pass through
+    echo "$csv_input"
+  elif [ "$mode_filter" = "base" ]; then
+    # Base mode: submission_dir ends with _base
+    echo "$csv_input" | awk -F, '$10 ~ /_base$/' || true
+  elif [ "$mode_filter" = "open" ]; then
+    # Open mode: submission_dir ends with _open (no slug), _open_slug, OR is legacy format
+    echo "$csv_input" | awk -F, '$10 ~ /_open($|_)/ || ($10 !~ /_base$/ && $10 !~ /_open/)' || true
+  fi
+}
 
 # Prepare report directory
 report_dir="$PROJECT_ROOT/report"
@@ -94,7 +122,7 @@ generate_benchmark_report() {
 
   # Get CSV data for this benchmark
   # Guard grep to not fail with pipefail when no matches
-  local csv_data valid_csv_data
+  local csv_data valid_csv_data filtered_csv_data
   csv_data=$($CAPE_CMD submission aggregate | grep "^$benchmark," || true)
 
   if [ -z "$csv_data" ]; then
@@ -102,8 +130,19 @@ generate_benchmark_report() {
     return 1
   fi
 
+  # Filter by mode if specified
+  filtered_csv_data=$(filter_csv_by_mode "$csv_data" "$MODE")
+  if [ -z "$filtered_csv_data" ]; then
+    if [ -n "$MODE" ]; then
+      echo "No submissions found for benchmark: $benchmark (mode: $MODE)" >&2
+    else
+      echo "No submissions found for benchmark: $benchmark" >&2
+    fi
+    return 1
+  fi
+
   # Filter out invalid CSV entries (those with empty numeric fields or template placeholders)
-  valid_csv_data=$(echo "$csv_data" | grep -v '<.*>' | awk -F, '$6 != "" && $7 != "" && $8 != "" && $9 != ""')
+  valid_csv_data=$(echo "$filtered_csv_data" | grep -v '<.*>' | awk -F, '$6 != "" && $7 != "" && $8 != "" && $9 != ""')
   if [ -z "$valid_csv_data" ]; then
     echo "No valid submissions found for benchmark: $benchmark (all entries have missing data)" >&2
     return 1
@@ -456,11 +495,14 @@ generate_individual_benchmark_report() {
   chart4=$(echo "$chart_files" | cut -d, -f4)
 
   # Get CSV data for this benchmark to create the data table
-  local csv_data valid_csv_data
+  local csv_data valid_csv_data filtered_csv_data
   csv_data=$($CAPE_CMD submission aggregate | grep "^$benchmark," || true)
 
+  # Filter by mode if specified
+  filtered_csv_data=$(filter_csv_by_mode "$csv_data" "$MODE")
+
   # Filter out invalid CSV entries (those with empty numeric fields or template placeholders)
-  valid_csv_data=$(echo "$csv_data" | grep -v '<.*>' | awk -F, '$6 != "" && $7 != "" && $8 != "" && $9 != ""')
+  valid_csv_data=$(echo "$filtered_csv_data" | grep -v '<.*>' | awk -F, '$6 != "" && $7 != "" && $8 != "" && $9 != ""')
   csv_data="$valid_csv_data"
 
   # Create JSON data for template
