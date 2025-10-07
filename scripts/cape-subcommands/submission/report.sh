@@ -119,6 +119,7 @@ fi
 generate_benchmark_report() {
   local benchmark="$1"
   local output_dir="$2"
+  local mode="${3:-}" # Optional mode parameter
 
   # Get CSV data for this benchmark
   # Guard grep to not fail with pipefail when no matches
@@ -131,10 +132,10 @@ generate_benchmark_report() {
   fi
 
   # Filter by mode if specified
-  filtered_csv_data=$(filter_csv_by_mode "$csv_data" "$MODE")
+  filtered_csv_data=$(filter_csv_by_mode "$csv_data" "$mode")
   if [ -z "$filtered_csv_data" ]; then
-    if [ -n "$MODE" ]; then
-      echo "No submissions found for benchmark: $benchmark (mode: $MODE)" >&2
+    if [ -n "$mode" ]; then
+      echo "No submissions found for benchmark: $benchmark (mode: $mode)" >&2
     else
       echo "No submissions found for benchmark: $benchmark" >&2
     fi
@@ -486,6 +487,7 @@ generate_individual_benchmark_report() {
   local benchmark="$1"
   local output_dir="$2"
   local chart_files="$3"
+  local mode="${4:-}" # Optional mode parameter
 
   # Parse chart files manually to avoid array issues
   local chart1 chart2 chart3 chart4
@@ -499,7 +501,7 @@ generate_individual_benchmark_report() {
   csv_data=$($CAPE_CMD submission aggregate | grep "^$benchmark," || true)
 
   # Filter by mode if specified
-  filtered_csv_data=$(filter_csv_by_mode "$csv_data" "$MODE")
+  filtered_csv_data=$(filter_csv_by_mode "$csv_data" "$mode")
 
   # Filter out invalid CSV entries (those with empty numeric fields or template placeholders)
   valid_csv_data=$(echo "$filtered_csv_data" | grep -v '<.*>' | awk -F, '$6 != "" && $7 != "" && $8 != "" && $9 != ""')
@@ -511,6 +513,7 @@ generate_individual_benchmark_report() {
   cat > "$temp_json" << EOF
 {
   "benchmark": "$benchmark",
+  "mode": "$mode",
   "timestamp": "$(date '+%Y-%m-%d %H:%M:%S %Z')",
   "charts": {
     "cpu_units": "$chart1",
@@ -596,9 +599,88 @@ EOF
   rm -f "$temp_json"
 }
 
+# Generate landing page with mode explanation
+generate_landing_page() {
+  local output_dir="$1"
+  local base_benchmarks="$2"
+  local open_benchmarks="$3"
+
+  local temp_json
+  temp_json="$(cape_mktemp)"
+
+  # Create JSON data for template
+  cat > "$temp_json" << 'EOF'
+{
+  "Timestamp": "",
+  "Benchmarks": []
+}
+EOF
+
+  # Update timestamp
+  local timestamp
+  timestamp=$(date '+%Y-%m-%d %H:%M:%S %Z')
+
+  # Build benchmarks JSON array with mode counts
+  local benchmarks_json="["
+  local first=true
+
+  # Get unique benchmark names from scenarios
+  local all_benchmarks
+  all_benchmarks=$(find "$PROJECT_ROOT/scenarios" -mindepth 1 -maxdepth 1 -type d ! -name TEMPLATE -printf '%f\n' | sort)
+
+  while read -r benchmark; do
+    if [ -n "$benchmark" ]; then
+      # Count base mode submissions
+      local base_count=0
+      if [ -d "$PROJECT_ROOT/submissions/$benchmark" ]; then
+        base_count=$(find "$PROJECT_ROOT/submissions/$benchmark" -mindepth 1 -maxdepth 1 -type d -name "*_base" 2> /dev/null | wc -l)
+      fi
+
+      # Count open mode submissions
+      local open_count=0
+      if [ -d "$PROJECT_ROOT/submissions/$benchmark" ]; then
+        open_count=$(find "$PROJECT_ROOT/submissions/$benchmark" -mindepth 1 -maxdepth 1 -type d \( -name "*_open" -o -name "*_open_*" \) 2> /dev/null | wc -l)
+      fi
+
+      if [ "$first" = true ]; then
+        first=false
+      else
+        benchmarks_json="$benchmarks_json,"
+      fi
+
+      benchmarks_json="$benchmarks_json{\"Name\":\"$benchmark\",\"BaseCount\":$base_count,\"OpenCount\":$open_count}"
+    fi
+  done <<< "$all_benchmarks"
+
+  benchmarks_json="$benchmarks_json]"
+
+  # Create final JSON
+  cat > "$temp_json" << EOF
+{
+  "Timestamp": "$timestamp",
+  "Benchmarks": $benchmarks_json
+}
+EOF
+
+  # Render template
+  if [[ $DRY_RUN -eq 1 ]]; then
+    log_info "[dry-run] Would render $output_dir/index.html using template landing-page.html.tmpl"
+  else
+    if ! gomplate -c .="stdin:?type=application/json" -f "$SCRIPT_DIR/landing-page.html.tmpl" < "$temp_json" > "$output_dir/index.html"; then
+      echo "ERROR: Failed to render landing page" >&2
+      cat "$temp_json" >&2
+      rm -f "$temp_json"
+      exit 1
+    fi
+  fi
+
+  rm -f "$temp_json"
+}
+
 generate_index_report() {
   local output_dir="$1"
   local benchmark_list="$2"
+  local mode="${3:-}" # Optional mode parameter
 
   # Create JSON data for template
   local temp_json temp_stats
@@ -620,6 +702,7 @@ generate_index_report() {
   cat > "$temp_json" << EOF
 {
   "timestamp": "$(date '+%Y-%m-%d %H:%M:%S %Z')",
+  "mode": "$mode",
   "benchmarks": [
 EOF
 
@@ -658,6 +741,56 @@ EOF
 
   # Clean up temp file
   rm -f "$temp_json"
+}
+
+generate_mode_reports() {
+  local report_dir="$1"
+  local mode="$2"
+  local all_benchmarks="$3"
+
+  echo "Generating $mode mode reports..."
+
+  # Create mode-specific output directory
+  local mode_dir="$report_dir/$mode"
+  mkdir -p "$mode_dir/benchmarks/images"
+
+  # Track which benchmarks have submissions for this mode
+  local mode_benchmarks=""
+
+  # Generate individual benchmark reports for this mode
+  for benchmark in $all_benchmarks; do
+    # Check if benchmark has submissions for this mode
+    local mode_submissions
+    if [ "$mode" = "base" ]; then
+      mode_submissions=$(find "$PROJECT_ROOT/submissions/$benchmark" -mindepth 1 -maxdepth 1 -type d -name "*_base" 2> /dev/null)
+    else
+      mode_submissions=$(find "$PROJECT_ROOT/submissions/$benchmark" -mindepth 1 -maxdepth 1 -type d \( -name "*_open" -o -name "*_open_*" \) 2> /dev/null)
+    fi
+
+    if [ -n "$mode_submissions" ]; then
+      echo "  Processing $benchmark ($mode mode)..."
+
+      # Generate charts and benchmark report filtered by mode
+      chart_files=$(generate_benchmark_report "$benchmark" "$mode_dir" "$mode") || true
+      if [ -n "$chart_files" ]; then
+        generate_individual_benchmark_report "$benchmark" "$mode_dir" "$chart_files" "$mode"
+
+        # Add to mode benchmarks list
+        if [ -n "$mode_benchmarks" ]; then
+          mode_benchmarks="${mode_benchmarks}\n"
+        fi
+        mode_benchmarks="${mode_benchmarks}${benchmark}"
+      fi
+    fi
+  done
+
+  # Generate mode-specific index page
+  if [ -n "$mode_benchmarks" ]; then
+    generate_index_report "$mode_dir" "$(echo -e "$mode_benchmarks")" "$mode"
+    echo "  ✅ $mode mode index: $mode_dir/index.html"
+  else
+    echo "  ⚠️  No $mode mode submissions found"
+  fi
 }
 
 generate_no_submissions_report() {
@@ -725,51 +858,35 @@ if [ "$1" = "--all" ]; then
     exit 1
   fi
 
-  # Generate charts and individual reports for each benchmark
-  generated_benchmarks=""
+  # Generate mode-specific reports (base and open)
+  generate_mode_reports "$report_dir" "base" "$all_benchmarks"
+  echo ""
+  generate_mode_reports "$report_dir" "open" "$all_benchmarks"
+  echo ""
+
+  # Generate landing page with mode explanations and benchmark links
+  # Collect benchmark names that have at least one submission
+  benchmarks_with_submissions=""
   for benchmark in $all_benchmarks; do
-    # Validate benchmark names as we iterate
-    if ! valid_benchmark_name "$benchmark"; then
-      log_warn "Skipping invalid benchmark name: $benchmark"
-      continue
-    fi
-    echo "Processing benchmark: $benchmark"
-
-    # Check if benchmark has submissions
     if [ -d "$PROJECT_ROOT/submissions/$benchmark" ] && [ "$(find "$PROJECT_ROOT/submissions/$benchmark" -mindepth 1 -maxdepth 1 -type d ! -name "TEMPLATE" 2> /dev/null | wc -l)" -gt 0 ]; then
-      # Generate charts for benchmark with submissions
-      chart_files=$(generate_benchmark_report "$benchmark" "$report_dir") || true
-      if [ -n "$chart_files" ]; then
-        generate_individual_benchmark_report "$benchmark" "$report_dir" "$chart_files"
-      else
-        log_warn "Failed to generate charts for benchmark: $benchmark"
-        continue
-      fi
-    else
-      # Generate placeholder page for benchmark without submissions
-      echo "No submissions found for benchmark: $benchmark. Creating placeholder page."
-      generate_no_submissions_report "$benchmark" "$report_dir"
+      benchmarks_with_submissions="$benchmarks_with_submissions $benchmark"
     fi
-
-    # Add to generated benchmarks list
-    if [ -n "$generated_benchmarks" ]; then
-      generated_benchmarks="${generated_benchmarks}\n"
-    fi
-    generated_benchmarks="${generated_benchmarks}${benchmark}"
   done
 
-  # Generate index page with links to all benchmarks
-  if [ -n "$generated_benchmarks" ]; then
-    generate_index_report "$report_dir" "$(echo -e "$generated_benchmarks")"
+  if [ -n "$benchmarks_with_submissions" ]; then
+    generate_landing_page "$report_dir" "$benchmarks_with_submissions" "$benchmarks_with_submissions"
+    echo "Generating landing page..."
     echo ""
     echo "✅ HTML reports generated:"
-    echo "   📄 $report_dir/index.html (main index)"
-    echo "   📊 Individual benchmark reports in $report_dir/benchmarks/"
-    echo "   🖼️  Chart images in $report_dir/benchmarks/images/"
+    echo "   📄 $report_dir/index.html (landing page)"
+    echo "   📊 $report_dir/base/index.html (base mode index)"
+    echo "   🚀 $report_dir/open/index.html (open mode index)"
+    echo "   📈 Individual benchmark reports in $report_dir/{base,open}/benchmarks/"
+    echo "   🖼️  Chart images in $report_dir/{base,open}/benchmarks/images/"
     echo ""
-    echo "Open the main report with: xdg-open $report_dir/index.html 2>/dev/null || echo \"Open: $report_dir/index.html\""
+    echo "Open the landing page with: xdg-open $report_dir/index.html 2>/dev/null || echo \"Open: $report_dir/index.html\""
   else
-    echo "Error: No valid benchmarks found for report generation" >&2
+    echo "Error: No submissions found for report generation" >&2
     exit 1
   fi
 else
