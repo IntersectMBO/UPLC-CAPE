@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>UPLC-CAPE Performance Report - {{.benchmark}}</title>
+    <title>UPLC-CAPE Performance Report - factorial</title>
     <style>
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
@@ -181,52 +181,52 @@
 </head>
 <body>
     <div class="header">
-        <h1>🚀 UPLC-CAPE Performance Report - {{.benchmark}}</h1>
+        <h1>🚀 UPLC-CAPE Performance Report - factorial</h1>
         <p>Performance comparison of UPLC programs across different compilers</p>
     </div>
 
-    {{if .mode}}
+    
     <div class="breadcrumb">
         <a href="../../index.html">Home</a>
         <span class="breadcrumb-separator">→</span>
-        <a href="../index.html">{{if eq .mode "base"}}Base Mode{{else}}Open Mode{{end}}</a>
+        <a href="../index.html">Base Mode</a>
         <span class="breadcrumb-separator">→</span>
-        <span>{{.benchmark}}</span>
+        <span>factorial</span>
     </div>
 
-    <div class="mode-badge {{.mode}}">
+    <div class="mode-badge base">
         <span class="mode-badge-inline">
-            {{if eq .mode "base"}}📊 Base Mode{{else}}🚀 Open Mode{{end}}
+            📊 Base Mode
         </span>
     </div>
-    {{end}}
+    
 
     <div class="nav">
-        <a href="../index.html">← Back to {{if .mode}}{{if eq .mode "base"}}Base{{else}}Open{{end}} Mode Reports{{else}}All Benchmarks{{end}}</a>
+        <a href="../index.html">← Back to Base Mode Reports</a>
     </div>
 
     <div class="timestamp">
-        Generated on: {{.timestamp}}
+        Generated on: 2025-10-06 17:39:44 CEST
     </div>
     
     <div class="benchmark-section">
-        <h2 class="benchmark-title">📊 {{.benchmark}} benchmark report</h2>
+        <h2 class="benchmark-title">📊 factorial benchmark report</h2>
         <div class="chart-grid">
             <div class="chart-container">
                 <div class="chart-title">💻 CPU Units</div>
-                <img src="images/{{.charts.cpu_units}}" alt="CPU Units comparison for {{.benchmark}}">
+                <img src="images/factorial_cpu_units.png" alt="CPU Units comparison for factorial">
             </div>
             <div class="chart-container">
                 <div class="chart-title">🧠 Memory Units</div>
-                <img src="images/{{.charts.memory_units}}" alt="Memory Units comparison for {{.benchmark}}">
+                <img src="images/factorial_memory_units.png" alt="Memory Units comparison for factorial">
             </div>
             <div class="chart-container">
                 <div class="chart-title">📦 Script Size</div>
-                <img src="images/{{.charts.script_size}}" alt="Script Size comparison for {{.benchmark}}">
+                <img src="images/factorial_script_size.png" alt="Script Size comparison for factorial">
             </div>
             <div class="chart-container">
                 <div class="chart-title">🌳 Term Size</div>
-                <img src="images/{{.charts.term_size}}" alt="Term Size comparison for {{.benchmark}}">
+                <img src="images/factorial_term_size.png" alt="Term Size comparison for factorial">
             </div>
         </div>
     </div>
@@ -249,19 +249,19 @@
                 </tr>
             </thead>
             <tbody>
-{{range .submissions}}                <tr>
-                    <td>{{.timestamp}}</td>
-                    <td>{{.language}}</td>
-                    <td>{{.version}}</td>
-                    <td>{{.user}}</td>
-                    <td class="numeric">{{.cpu_units}}</td>
-                    <td class="numeric">{{.memory_units}}</td>
-                    <td class="numeric">{{.script_size}}</td>
-                    <td class="numeric">{{.term_size}}</td>
-                    <td><a href="https://github.com/IntersectMBO/UPLC-CAPE/blob/main/submissions/{{$.benchmark}}/{{.submission_dir}}/source/README.md" target="_blank" rel="noopener">📁</a></td>
-                    <td><a href="https://github.com/IntersectMBO/UPLC-CAPE/blob/main/submissions/{{$.benchmark}}/{{.submission_dir}}/{{$.benchmark}}.uplc" target="_blank" rel="noopener">🔗</a></td>
+                <tr>
+                    <td>2025-09-12T16:36:27Z</td>
+                    <td>Plinth</td>
+                    <td>1.53.0.0</td>
+                    <td>Unisay</td>
+                    <td class="numeric">28019280</td>
+                    <td class="numeric">107235</td>
+                    <td class="numeric">34</td>
+                    <td class="numeric">27</td>
+                    <td><a href="https://github.com/IntersectMBO/UPLC-CAPE/blob/main/submissions/factorial/Plinth_1.53.0.0_Unisay_base/source/README.md" target="_blank" rel="noopener">📁</a></td>
+                    <td><a href="https://github.com/IntersectMBO/UPLC-CAPE/blob/main/submissions/factorial/Plinth_1.53.0.0_Unisay_base/factorial.uplc" target="_blank" rel="noopener">🔗</a></td>
                 </tr>
-{{end}}            </tbody>
+            </tbody>
         </table>
     </div>
     

@@ -221,7 +221,7 @@
     </div>
 
     <div class="timestamp">
-        Generated on: 2025-10-06 17:39:55 CEST
+        Generated on: {{ .Timestamp }}
     </div>
 
     <div class="mode-section">
@@ -277,49 +277,21 @@
     <div class="benchmark-summary">
         <h2>📋 Available Benchmarks</h2>
         <div class="benchmark-grid">
-            
+            {{range .Benchmarks}}
             <div class="benchmark-row">
-                <div class="benchmark-name">factorial</div>
+                <div class="benchmark-name">{{.Name}}</div>
                 <div class="benchmark-links">
-                    <a href="base/benchmarks/factorial.html" class="benchmark-link base">
+                    <a href="base/benchmarks/{{.Name}}.html" class="benchmark-link base">
                         📊 Base Mode
-                        <span class="submission-count">1 submissions</span>
+                        <span class="submission-count">{{.BaseCount}} submissions</span>
                     </a>
-                    <a href="open/benchmarks/factorial.html" class="benchmark-link open">
+                    <a href="open/benchmarks/{{.Name}}.html" class="benchmark-link open">
                         🚀 Open Mode
-                        <span class="submission-count">1 submissions</span>
+                        <span class="submission-count">{{.OpenCount}} submissions</span>
                     </a>
                 </div>
             </div>
-            
-            <div class="benchmark-row">
-                <div class="benchmark-name">fibonacci</div>
-                <div class="benchmark-links">
-                    <a href="base/benchmarks/fibonacci.html" class="benchmark-link base">
-                        📊 Base Mode
-                        <span class="submission-count">3 submissions</span>
-                    </a>
-                    <a href="open/benchmarks/fibonacci.html" class="benchmark-link open">
-                        🚀 Open Mode
-                        <span class="submission-count">0 submissions</span>
-                    </a>
-                </div>
-            </div>
-            
-            <div class="benchmark-row">
-                <div class="benchmark-name">two-party-escrow</div>
-                <div class="benchmark-links">
-                    <a href="base/benchmarks/two-party-escrow.html" class="benchmark-link base">
-                        📊 Base Mode
-                        <span class="submission-count">0 submissions</span>
-                    </a>
-                    <a href="open/benchmarks/two-party-escrow.html" class="benchmark-link open">
-                        🚀 Open Mode
-                        <span class="submission-count">1 submissions</span>
-                    </a>
-                </div>
-            </div>
-            
+            {{end}}
         </div>
     </div>
 

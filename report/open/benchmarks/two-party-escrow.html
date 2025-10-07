@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>UPLC-CAPE Performance Report - fibonacci</title>
+    <title>UPLC-CAPE Performance Report - two-party-escrow</title>
     <style>
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
@@ -40,6 +40,46 @@
         .nav a:hover {
             background-color: #5a67d8;
         }
+
+        /* Breadcrumb Navigation */
+        .breadcrumb {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #6c757d;
+            font-size: 0.95em;
+        }
+        .breadcrumb a {
+            color: #667eea;
+            text-decoration: none;
+        }
+        .breadcrumb a:hover {
+            text-decoration: underline;
+        }
+        .breadcrumb-separator {
+            margin: 0 8px;
+        }
+
+        /* Mode Badge */
+        .mode-badge {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .mode-badge-inline {
+            display: inline-block;
+            padding: 6px 15px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.9em;
+        }
+        .mode-badge.base .mode-badge-inline {
+            background-color: #28a745;
+            color: white;
+        }
+        .mode-badge.open .mode-badge-inline {
+            background-color: #007bff;
+            color: white;
+        }
+
         .benchmark-section {
             background: white;
             margin-bottom: 40px;
@@ -141,36 +181,52 @@
 </head>
 <body>
     <div class="header">
-        <h1>🚀 UPLC-CAPE Performance Report - fibonacci</h1>
+        <h1>🚀 UPLC-CAPE Performance Report - two-party-escrow</h1>
         <p>Performance comparison of UPLC programs across different compilers</p>
     </div>
+
     
-    <div class="nav">
-        <a href="../index.html">← Back to All Benchmarks</a>
+    <div class="breadcrumb">
+        <a href="../../index.html">Home</a>
+        <span class="breadcrumb-separator">→</span>
+        <a href="../index.html">Open Mode</a>
+        <span class="breadcrumb-separator">→</span>
+        <span>two-party-escrow</span>
+    </div>
+
+    <div class="mode-badge open">
+        <span class="mode-badge-inline">
+            🚀 Open Mode
+        </span>
     </div>
     
+
+    <div class="nav">
+        <a href="../index.html">← Back to Open Mode Reports</a>
+    </div>
+
     <div class="timestamp">
-        Generated on: 2025-09-12 18:32:32 CEST
+        Generated on: 2025-10-06 17:39:54 CEST
     </div>
     
     <div class="benchmark-section">
-        <h2 class="benchmark-title">📊 fibonacci benchmark report</h2>
+        <h2 class="benchmark-title">📊 two-party-escrow benchmark report</h2>
         <div class="chart-grid">
             <div class="chart-container">
                 <div class="chart-title">💻 CPU Units</div>
-                <img src="images/fibonacci_cpu_units.png" alt="CPU Units comparison for fibonacci">
+                <img src="images/two-party-escrow_cpu_units.png" alt="CPU Units comparison for two-party-escrow">
             </div>
             <div class="chart-container">
                 <div class="chart-title">🧠 Memory Units</div>
-                <img src="images/fibonacci_memory_units.png" alt="Memory Units comparison for fibonacci">
+                <img src="images/two-party-escrow_memory_units.png" alt="Memory Units comparison for two-party-escrow">
             </div>
             <div class="chart-container">
                 <div class="chart-title">📦 Script Size</div>
-                <img src="images/fibonacci_script_size.png" alt="Script Size comparison for fibonacci">
+                <img src="images/two-party-escrow_script_size.png" alt="Script Size comparison for two-party-escrow">
             </div>
             <div class="chart-container">
                 <div class="chart-title">🌳 Term Size</div>
-                <img src="images/fibonacci_term_size.png" alt="Term Size comparison for fibonacci">
+                <img src="images/two-party-escrow_term_size.png" alt="Term Size comparison for two-party-escrow">
             </div>
         </div>
     </div>
@@ -194,40 +250,16 @@
             </thead>
             <tbody>
                 <tr>
-                    <td>2025-09-12T16:32:07Z</td>
+                    <td>2025-09-12T16:36:29Z</td>
                     <td>Plinth</td>
                     <td>1.53.0.0</td>
                     <td>Unisay</td>
-                    <td class="numeric">129093086599</td>
-                    <td class="numeric">481520743</td>
-                    <td class="numeric">43</td>
-                    <td class="numeric">36</td>
-                    <td><a href="https://github.com/IntersectMBO/UPLC-CAPE/blob/main/submissions/fibonacci/Plinth_1.53.0.0_Unisay/source/README.md" target="_blank" rel="noopener">📁</a></td>
-                    <td><a href="https://github.com/IntersectMBO/UPLC-CAPE/blob/main/submissions/fibonacci/Plinth_1.53.0.0_Unisay/fibonacci.uplc" target="_blank" rel="noopener">🔗</a></td>
-                </tr>
-                <tr>
-                    <td>2025-09-12T16:32:07Z</td>
-                    <td>Aiken</td>
-                    <td>1.1.17</td>
-                    <td>KtorZ</td>
-                    <td class="numeric">170746089630</td>
-                    <td class="numeric">615250662</td>
-                    <td class="numeric">86</td>
-                    <td class="numeric">79</td>
-                    <td><a href="https://github.com/IntersectMBO/UPLC-CAPE/blob/main/submissions/fibonacci/Aiken_1.1.17_KtorZ/source/README.md" target="_blank" rel="noopener">📁</a></td>
-                    <td><a href="https://github.com/IntersectMBO/UPLC-CAPE/blob/main/submissions/fibonacci/Aiken_1.1.17_KtorZ/fibonacci.uplc" target="_blank" rel="noopener">🔗</a></td>
-                </tr>
-                <tr>
-                    <td>2025-09-12T16:32:07Z</td>
-                    <td>Plutarch</td>
-                    <td>1.11.1</td>
-                    <td>Seungheon Oh</td>
-                    <td class="numeric">175016233630</td>
-                    <td class="numeric">641939062</td>
-                    <td class="numeric">47</td>
-                    <td class="numeric">41</td>
-                    <td><a href="https://github.com/IntersectMBO/UPLC-CAPE/blob/main/submissions/fibonacci/Plutarch_1.11.1_SeungheonOh/source/README.md" target="_blank" rel="noopener">📁</a></td>
-                    <td><a href="https://github.com/IntersectMBO/UPLC-CAPE/blob/main/submissions/fibonacci/Plutarch_1.11.1_SeungheonOh/fibonacci.uplc" target="_blank" rel="noopener">🔗</a></td>
+                    <td class="numeric">1494176868</td>
+                    <td class="numeric">6372891</td>
+                    <td class="numeric">3233</td>
+                    <td class="numeric">3232</td>
+                    <td><a href="https://github.com/IntersectMBO/UPLC-CAPE/blob/main/submissions/two-party-escrow/Plinth_1.53.0.0_Unisay_open/source/README.md" target="_blank" rel="noopener">📁</a></td>
+                    <td><a href="https://github.com/IntersectMBO/UPLC-CAPE/blob/main/submissions/two-party-escrow/Plinth_1.53.0.0_Unisay_open/two-party-escrow.uplc" target="_blank" rel="noopener">🔗</a></td>
                 </tr>
             </tbody>
         </table>

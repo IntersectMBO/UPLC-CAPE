@@ -40,6 +40,46 @@
         .nav a:hover {
             background-color: #5a67d8;
         }
+
+        /* Breadcrumb Navigation */
+        .breadcrumb {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #6c757d;
+            font-size: 0.95em;
+        }
+        .breadcrumb a {
+            color: #667eea;
+            text-decoration: none;
+        }
+        .breadcrumb a:hover {
+            text-decoration: underline;
+        }
+        .breadcrumb-separator {
+            margin: 0 8px;
+        }
+
+        /* Mode Badge */
+        .mode-badge {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .mode-badge-inline {
+            display: inline-block;
+            padding: 6px 15px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.9em;
+        }
+        .mode-badge.base .mode-badge-inline {
+            background-color: #28a745;
+            color: white;
+        }
+        .mode-badge.open .mode-badge-inline {
+            background-color: #007bff;
+            color: white;
+        }
+
         .benchmark-section {
             background: white;
             margin-bottom: 40px;
@@ -144,13 +184,29 @@
         <h1>🚀 UPLC-CAPE Performance Report - factorial</h1>
         <p>Performance comparison of UPLC programs across different compilers</p>
     </div>
+
     
-    <div class="nav">
-        <a href="../index.html">← Back to All Benchmarks</a>
+    <div class="breadcrumb">
+        <a href="../../index.html">Home</a>
+        <span class="breadcrumb-separator">→</span>
+        <a href="../index.html">Open Mode</a>
+        <span class="breadcrumb-separator">→</span>
+        <span>factorial</span>
+    </div>
+
+    <div class="mode-badge open">
+        <span class="mode-badge-inline">
+            🚀 Open Mode
+        </span>
     </div>
     
+
+    <div class="nav">
+        <a href="../index.html">← Back to Open Mode Reports</a>
+    </div>
+
     <div class="timestamp">
-        Generated on: 2025-09-12 18:32:30 CEST
+        Generated on: 2025-10-06 17:39:51 CEST
     </div>
     
     <div class="benchmark-section">
@@ -194,19 +250,7 @@
             </thead>
             <tbody>
                 <tr>
-                    <td>2025-09-12T16:32:06Z</td>
-                    <td>Plinth</td>
-                    <td>1.53.0.0</td>
-                    <td>Unisay</td>
-                    <td class="numeric">28019280</td>
-                    <td class="numeric">107235</td>
-                    <td class="numeric">34</td>
-                    <td class="numeric">27</td>
-                    <td><a href="https://github.com/IntersectMBO/UPLC-CAPE/blob/main/submissions/factorial/Plinth_1.53.0.0_Unisay/source/README.md" target="_blank" rel="noopener">📁</a></td>
-                    <td><a href="https://github.com/IntersectMBO/UPLC-CAPE/blob/main/submissions/factorial/Plinth_1.53.0.0_Unisay/factorial.uplc" target="_blank" rel="noopener">🔗</a></td>
-                </tr>
-                <tr>
-                    <td>2025-09-12T16:32:06Z</td>
+                    <td>2025-09-12T16:36:27Z</td>
                     <td>plutarch</td>
                     <td>1.11.1</td>
                     <td>SeungheonOh</td>
@@ -214,8 +258,8 @@
                     <td class="numeric">140290</td>
                     <td class="numeric">40</td>
                     <td class="numeric">33</td>
-                    <td><a href="https://github.com/IntersectMBO/UPLC-CAPE/blob/main/submissions/factorial/Plutarch_1.11.1_SeungheonOh/source/README.md" target="_blank" rel="noopener">📁</a></td>
-                    <td><a href="https://github.com/IntersectMBO/UPLC-CAPE/blob/main/submissions/factorial/Plutarch_1.11.1_SeungheonOh/factorial.uplc" target="_blank" rel="noopener">🔗</a></td>
+                    <td><a href="https://github.com/IntersectMBO/UPLC-CAPE/blob/main/submissions/factorial/Plutarch_1.11.1_SeungheonOh_open_pfix/source/README.md" target="_blank" rel="noopener">📁</a></td>
+                    <td><a href="https://github.com/IntersectMBO/UPLC-CAPE/blob/main/submissions/factorial/Plutarch_1.11.1_SeungheonOh_open_pfix/factorial.uplc" target="_blank" rel="noopener">🔗</a></td>
                 </tr>
             </tbody>
         </table>
