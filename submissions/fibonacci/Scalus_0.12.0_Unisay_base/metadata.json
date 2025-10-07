@@ -1,0 +1,23 @@
+{
+  "compiler": {
+    "name": "Scalus",
+    "version": "0.12.0",
+    "commit_hash": "15aeda61763870ab50b34c54b0fb9266058673a9"
+  },
+  "compilation_config": {
+    "optimization_level": "Scalus",
+    "target": "uplc",
+    "flags": ["Scalus"]
+  },
+  "contributor": {
+    "name": "Unisay",
+    "organization": "Intersect MBO"
+  },
+  "submission": {
+    "date": "2025-10-07T11:55:28Z",
+    "mode": "base",
+    "source_available": true,
+    "source_repository": "https://github.com/Unisay/scalus-cape-submissions",
+    "implementation_notes": "Scalus with default options"
+  }
+}

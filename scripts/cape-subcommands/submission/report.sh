@@ -773,7 +773,9 @@ generate_mode_reports() {
       # Generate charts and benchmark report filtered by mode
       chart_files=$(generate_benchmark_report "$benchmark" "$mode_dir" "$mode") || true
       if [ -n "$chart_files" ]; then
-        generate_individual_benchmark_report "$benchmark" "$mode_dir" "$chart_files" "$mode"
+        if [[ $DRY_RUN -eq 0 ]]; then
+          generate_individual_benchmark_report "$benchmark" "$mode_dir" "$chart_files" "$mode"
+        fi
 
         # Add to mode benchmarks list
         if [ -n "$mode_benchmarks" ]; then
