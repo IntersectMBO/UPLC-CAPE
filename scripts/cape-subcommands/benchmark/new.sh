@@ -18,16 +18,12 @@ if cape_help_requested "$@"; then
   exit 0
 fi
 
-# Get benchmark name from argument or prompt user
+# Get benchmark name from argument (required)
 if [ $# -eq 0 ]; then
-  echo "Enter benchmark name (lowercase, hyphens allowed):" >&2
+  echo "Error: Benchmark name is required" >&2
+  echo "Usage: cape benchmark new <name>" >&2
   echo "Examples: fibonacci, two-party-escrow, dao-voting" >&2
-  echo -n "> " >&2
-  read -r BENCHMARK_NAME
-  if [ -z "$BENCHMARK_NAME" ]; then
-    echo "Error: Benchmark name cannot be empty"
-    exit 1
-  fi
+  exit 1
 elif [ $# -eq 1 ]; then
   BENCHMARK_NAME="$1"
 else

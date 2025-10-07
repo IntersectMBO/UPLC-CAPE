@@ -24,6 +24,7 @@
     "date": "2025-08-15T17:12:00Z",
     "source_available": true,
     "source_repository": "https://github.com/cardano-scaling/UPLC-CAPE",
-    "implementation_notes": "Fibonacci implementation using Plinth (PlutusTx) with parameter 25, targeting Plutus Core 1.1.0"
+    "implementation_notes": "Fibonacci implementation using Plinth (PlutusTx) with parameter 25, targeting Plutus Core 1.1.0",
+    "mode": "base"
   }
 }

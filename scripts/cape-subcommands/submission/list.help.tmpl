@@ -1,10 +1,31 @@
-Usage: cape submission list [scenario]
-Example: cape submission list fibonacci
+Usage: cape submission list [scenario] [--mode <base|open>]
+
+Options:
+  --mode <base|open>  Filter submissions by evaluation mode
+                      Omit to show all modes (grouped)
 
 Arguments:
   scenario - (Optional) Show submissions for specific benchmark
 
-Without arguments, shows all submissions for every benchmark
+Examples:
+  # List all submissions grouped by mode
+  cape submission list
+
+  # List submissions for specific scenario (all modes)
+  cape submission list fibonacci
+
+  # List only base mode submissions for fibonacci
+  cape submission list fibonacci --mode base
+
+  # List only open mode submissions for fibonacci
+  cape submission list fibonacci --mode open
+
+  # List all base mode submissions across all scenarios
+  cape submission list --mode base
+
+Output Format:
+  Without --mode: Submissions are grouped by "Base mode" and "Open mode"
+  With --mode: Only matching submissions are displayed
 
 Available submission subcommands:
   aggregate   Aggregate metrics and generate reports

@@ -18,25 +18,38 @@ if cape_help_requested "$@"; then
   exit 0
 fi
 
-# Parse options (-h | --help)
+# Parse options (-h | --help | --mode | --slug) and collect positional arguments
 OPTIND=1
-while getopts ":h" opt; do
-  case "$opt" in
-    h)
-      show_help
+MODE=""
+SLUG=""
+POSITIONAL_ARGS=()
+while [ $# -gt 0 ]; do
+  case "$1" in
+    -h | --help | help)
+      cape_render_help "${BASH_SOURCE[0]}"
       exit 0
       ;;
-    \?)
-      echo "Unknown option: -$OPTARG" >&2
+    --mode)
+      MODE="$2"
+      shift 2
+      ;;
+    --slug)
+      SLUG="$2"
+      shift 2
+      ;;
+    -*)
+      echo "Unknown option: $1" >&2
       exit 1
+      ;;
+    *)
+      POSITIONAL_ARGS+=("$1")
+      shift
       ;;
   esac
 done
-shift $((OPTIND - 1))
-if [ "${1:-}" = "--help" ] || [ "${1:-}" = "help" ]; then
-  show_help
-  exit 0
-fi
+
+# Restore positional arguments
+set -- "${POSITIONAL_ARGS[@]}"
 
 # Function to prompt for missing arguments
 prompt_for_arg() {
@@ -58,6 +71,8 @@ is_valid_language() { [[ $1 =~ ^[A-Za-z][A-Za-z0-9-]*$ ]]; }
 is_valid_version() { [[ $1 =~ ^[0-9]+(\.[0-9]+){0,3}([.-][A-Za-z0-9]+)*$ ]]; }
 # GitHub: 1-39 chars, alnum or hyphen, cannot start/end with hyphen
 is_valid_handle() { [[ $1 =~ ^[A-Za-z0-9]([A-Za-z0-9-]*[A-Za-z0-9])?$ ]] && [[ ${#1} -le 39 ]]; }
+is_valid_mode() { [[ $1 == "base" || $1 == "open" ]]; }
+is_valid_slug() { [[ $1 =~ ^[a-z0-9-]+$ ]]; }
 
 # Get arguments from command line or prompt user
 if [ $# -eq 0 ]; then
@@ -86,7 +101,7 @@ elif [ $# -eq 4 ]; then
   VERSION="$3"
   GITHUB_HANDLE="$4"
 else
-  show_help
+  cape_render_help "${BASH_SOURCE[0]}"
   exit 1
 fi
 
@@ -109,8 +124,44 @@ if ! is_valid_handle "$GITHUB_HANDLE"; then
   exit 1
 fi
 
-# Create standardized folder name
-SUBMISSION_FOLDER="${LANGUAGE}_${VERSION}_${GITHUB_HANDLE}"
+# Require mode to be explicitly specified
+if [ -z "$MODE" ]; then
+  echo "Error: Evaluation mode is required. Use --mode=base or --mode=open" >&2
+  echo "  base: Single canonical implementation per compiler" >&2
+  echo "  open: Multiple optimized variants allowed (use --slug for variants)" >&2
+  exit 1
+fi
+
+# Validate mode
+if ! is_valid_mode "$MODE"; then
+  echo "Error: Invalid mode '$MODE'. Must be 'base' or 'open'." >&2
+  exit 1
+fi
+
+# Validate slug usage
+if [ "$MODE" = "open" ]; then
+  # Slug is optional for open mode
+  if [ -n "$SLUG" ]; then
+    if ! is_valid_slug "$SLUG"; then
+      echo "Error: Invalid slug '$SLUG'. Use lowercase letters, digits, and hyphens only." >&2
+      exit 1
+    fi
+  fi
+elif [ "$MODE" = "base" ] && [ -n "$SLUG" ]; then
+  echo "Error: Base mode submissions cannot have a slug. Remove --slug parameter." >&2
+  exit 1
+fi
+
+# Create standardized folder name based on mode
+if [ "$MODE" = "base" ]; then
+  SUBMISSION_FOLDER="${LANGUAGE}_${VERSION}_${GITHUB_HANDLE}_base"
+elif [ -n "$SLUG" ]; then
+  # Open mode with explicit slug
+  SUBMISSION_FOLDER="${LANGUAGE}_${VERSION}_${GITHUB_HANDLE}_open_${SLUG}"
+else
+  # Open mode without slug (default/generic implementation)
+  SUBMISSION_FOLDER="${LANGUAGE}_${VERSION}_${GITHUB_HANDLE}_open"
+fi
 SUBMISSION_PATH="$PROJECT_ROOT/submissions/${SCENARIO}/${SUBMISSION_FOLDER}"
 
 # Check if scenario exists (as directory)
@@ -146,9 +197,28 @@ EOF
 sed "s/<scenario>/$SCENARIO/g" \
   "$PROJECT_ROOT/submissions/TEMPLATE/metrics-template.json" > "$SUBMISSION_PATH/metrics.json"
 
-# Create metadata.json from template with language info
-sed -e "s/<string>/$LANGUAGE/g" -e "s/<version>/$VERSION/g" \
-  "$PROJECT_ROOT/submissions/TEMPLATE/metadata-template.json" > "$SUBMISSION_PATH/metadata.json"
+# Create metadata.json from template with language info and mode/slug
+if [ "$MODE" = "base" ]; then
+  sed -e "s/<string>/$LANGUAGE/g" \
+    -e "s/<version>/$VERSION/g" \
+    -e "s|\"mode\": \"<'base' or 'open'>\"|\"mode\": \"base\"|" \
+    -e "/\"slug\":/d" \
+    "$PROJECT_ROOT/submissions/TEMPLATE/metadata-template.json" > "$SUBMISSION_PATH/metadata.json"
+elif [ -n "$SLUG" ]; then
+  # Open mode with slug
+  sed -e "s/<string>/$LANGUAGE/g" \
+    -e "s/<version>/$VERSION/g" \
+    -e "s|\"mode\": \"<'base' or 'open'>\"|\"mode\": \"open\"|" \
+    -e "s|\"slug\": \"<optional: required for open mode, e.g., 'memoized', 'unrolled', 'default'>\"|\"slug\": \"$SLUG\"|" \
+    "$PROJECT_ROOT/submissions/TEMPLATE/metadata-template.json" > "$SUBMISSION_PATH/metadata.json"
+else
+  # Open mode without slug
+  sed -e "s/<string>/$LANGUAGE/g" \
+    -e "s/<version>/$VERSION/g" \
+    -e "s|\"mode\": \"<'base' or 'open'>\"|\"mode\": \"open\"|" \
+    -e "/\"slug\":/d" \
+    "$PROJECT_ROOT/submissions/TEMPLATE/metadata-template.json" > "$SUBMISSION_PATH/metadata.json"
+fi
 
 # Create README.md from template
 sed -e "s/<scenario>/$SCENARIO/g" -e "s/<submission-id>/$SUBMISSION_FOLDER/g" \
@@ -170,11 +240,23 @@ EOF
 
 echo "✅ Submission folder initialized successfully!"
 echo "📂 Path: $SUBMISSION_PATH"
+echo "🎯 Mode: $MODE$([ "$MODE" = "open" ] && [ -n "$SLUG" ] && echo " (slug: $SLUG)")"
 echo
+if [ "$MODE" = "base" ]; then
+  echo "⚠️  Base mode requirements:"
+  echo "   - Implement the exact algorithm prescribed in scenarios/${SCENARIO}/"
+  echo "   - See 'Base Mode Algorithm' section in the scenario documentation"
+  echo
+fi
 echo "Next steps:"
 echo "1. Replace ${SCENARIO}.uplc with your compiled UPLC program"
 echo "2. Fill in metrics.json with your performance measurements"
 echo "3. Update metadata.json with your compiler details"
 echo "4. Edit README.md with implementation notes"
-echo "5. (Optional) Add source code to source/ directory"
-echo "6. (Optional) Update config.json with compilation parameters"
+if [ "$MODE" = "base" ]; then
+  echo "5. Verify your implementation matches the prescribed base mode algorithm"
+else
+  echo "5. $([ -n "$SLUG" ] && echo "(Optional) Document optimization approach for slug '$SLUG'" || echo "(Optional) Add slug to metadata.json if using non-default optimization")"
+fi
+echo "6. (Optional) Add source code to source/ directory"
+echo "7. (Optional) Update config.json with compilation parameters"

@@ -26,26 +26,34 @@ TEST_TMP_DIR="" SANDBOX_DIR=""
 # Test environment constants
 # Commands will use: (cd "$PROJECT_ROOT" && PROJECT_ROOT="$SANDBOX_DIR" bash "$REPO_ROOT/scripts/...)
 
-# Enhanced test runner
+# Enhanced test runner with detailed error logging
 run_test() {
   local name="$1" command="$2" timeout="${3:-10}" expect_fail="${4:-}"
   TESTS_RUN=$((TESTS_RUN + 1))
 
   local result=0 exit_code=0
+  local output_file=""
+
+  # Capture output for debugging
+  output_file="$(cape_mktemp)"
 
   if [[ "$expect_fail" == "fail" ]]; then
     # For expected failures, command should return non-zero
-    if timeout "${timeout}s" bash -c "$command" > /dev/null 2>&1; then
+    if timeout "${timeout}s" bash -c "$command" > "$output_file" 2>&1; then
       result=1 # Command succeeded when it should have failed
+      exit_code=0
     else
       result=0 # Command failed as expected
+      exit_code=$?
     fi
   else
     # For expected successes, command should return zero
-    if timeout "${timeout}s" bash -c "$command" > /dev/null 2>&1; then
+    if timeout "${timeout}s" bash -c "$command" > "$output_file" 2>&1; then
       result=0 # Command succeeded as expected
+      exit_code=0
     else
       result=1 # Command failed when it should have succeeded
+      exit_code=$?
     fi
   fi
 
@@ -64,7 +72,41 @@ run_test() {
       echo "ERROR: ✗ $name"
     fi
     TESTS_FAILED=$((TESTS_FAILED + 1))
+
+    # Show detailed error information
+    if [[ -t 1 && -z "${NO_COLOR:-}" ]]; then
+      echo -e "\033[0;33m  Command:\033[0m $command"
+      echo -e "\033[0;33m  Exit code:\033[0m $exit_code"
+      echo -e "\033[0;33m  Expected:\033[0m $([ "$expect_fail" == "fail" ] && echo "failure (non-zero)" || echo "success (zero)")"
+    else
+      echo "  Command: $command"
+      echo "  Exit code: $exit_code"
+      echo "  Expected: $([ "$expect_fail" == "fail" ] && echo "failure (non-zero)" || echo "success (zero)")"
+    fi
+
+    # Show output if available and not too large
+    if [[ -f "$output_file" ]] && [[ -s "$output_file" ]]; then
+      local line_count=$(wc -l < "$output_file")
+      if [[ $line_count -le 10 ]]; then
+        if [[ -t 1 && -z "${NO_COLOR:-}" ]]; then
+          echo -e "\033[0;33m  Output:\033[0m"
+        else
+          echo "  Output:"
+        fi
+        sed 's/^/    /' "$output_file"
+      else
+        if [[ -t 1 && -z "${NO_COLOR:-}" ]]; then
+          echo -e "\033[0;33m  Output (last 10 lines):\033[0m"
+        else
+          echo "  Output (last 10 lines):"
+        fi
+        tail -10 "$output_file" | sed 's/^/    /'
+      fi
+    fi
   fi
+
+  # Clean up output file
+  rm -f "$output_file"
 }
 
 # Test group runner
@@ -205,7 +247,7 @@ main() {
     "benchmark list help" "(cd \"$PROJECT_ROOT\" && PROJECT_ROOT=\"$SANDBOX_DIR\" bash \"$REPO_ROOT/scripts/cape-subcommands/benchmark/list.sh\" --help)" 5 "" \
     "benchmark new help" "(cd \"$PROJECT_ROOT\" && PROJECT_ROOT=\"$SANDBOX_DIR\" bash \"$REPO_ROOT/scripts/cape-subcommands/benchmark/new.sh\" --help)" 5 "" \
     "benchmark fibonacci" "(cd \"$PROJECT_ROOT\" && PROJECT_ROOT=\"$SANDBOX_DIR\" bash \"$REPO_ROOT/scripts/cape-subcommands/benchmark/list.sh\" fibonacci)" 5 "" \
-    "benchmark no args fail" "echo '' | (cd \"$PROJECT_ROOT\" && PROJECT_ROOT=\"$SANDBOX_DIR\" bash \"$REPO_ROOT/scripts/cape-subcommands/benchmark/new.sh\")" 5 "fail" \
+    "benchmark no args fail" "(cd \"$PROJECT_ROOT\" && PROJECT_ROOT=\"$SANDBOX_DIR\" bash \"$REPO_ROOT/scripts/cape-subcommands/benchmark/new.sh\")" 5 "fail" \
     "benchmark invalid fail" "(cd \"$PROJECT_ROOT\" && PROJECT_ROOT=\"$SANDBOX_DIR\" bash \"$REPO_ROOT/scripts/cape-subcommands/benchmark/list.sh\" invalid_arg; exit 1)" 5 "fail"
 
   # Submission operations
@@ -214,10 +256,39 @@ main() {
     "submission list" "(cd \"$PROJECT_ROOT\" && PROJECT_ROOT=\"$SANDBOX_DIR\" bash \"$REPO_ROOT/scripts/cape-subcommands/submission/list.sh\")" 5 "" \
     "submission list help" "(cd \"$PROJECT_ROOT\" && PROJECT_ROOT=\"$SANDBOX_DIR\" bash \"$REPO_ROOT/scripts/cape-subcommands/submission/list.sh\" --help)" 5 "" \
     "submission list fibonacci" "(cd \"$PROJECT_ROOT\" && PROJECT_ROOT=\"$SANDBOX_DIR\" bash \"$REPO_ROOT/scripts/cape-subcommands/submission/list.sh\" fibonacci)" 5 "" \
-    "submission no args fail" "echo '' | (cd \"$PROJECT_ROOT\" && PROJECT_ROOT=\"$SANDBOX_DIR\" bash \"$REPO_ROOT/scripts/cape-subcommands/submission/new.sh\" fibonacci Comp 1.0)" 5 "fail" \
-    "submission complete success" "echo '' | (cd \"$PROJECT_ROOT\" && PROJECT_ROOT=\"$SANDBOX_DIR\" bash \"$REPO_ROOT/scripts/cape-subcommands/submission/new.sh\" fibonacci Comp 1.0 user)" 5 "" \
-    "submission cleanup (remove template submission)" "rm -rf \"$SANDBOX_DIR/submissions/fibonacci/Comp_1.0_user\"" 5 "" \
+    "submission no args fail" "(cd \"$PROJECT_ROOT\" && PROJECT_ROOT=\"$SANDBOX_DIR\" bash \"$REPO_ROOT/scripts/cape-subcommands/submission/new.sh\" fibonacci Comp 1.0)" 5 "fail" \
+    "submission complete success" "(cd \"$PROJECT_ROOT\" && PROJECT_ROOT=\"$SANDBOX_DIR\" bash \"$REPO_ROOT/scripts/cape-subcommands/submission/new.sh\" fibonacci Comp 1.0 user --mode open)" 5 "" \
+    "submission cleanup (remove template submission)" "rm -rf \"$SANDBOX_DIR/submissions/fibonacci/Comp_1.0_user_open\"" 5 "" \
     "submission invalid fail" "(cd \"$PROJECT_ROOT\" && PROJECT_ROOT=\"$SANDBOX_DIR\" bash \"$REPO_ROOT/scripts/cape-subcommands/submission/list.sh\" invalid_arg; exit 1)" 5 "fail"
+
+  # Mode and slug tests
+  test_group "mode and slug functionality" \
+    "base mode submission" "(cd \"$PROJECT_ROOT\" && PROJECT_ROOT=\"$SANDBOX_DIR\" bash \"$REPO_ROOT/scripts/cape-subcommands/submission/new.sh\" fibonacci TestBase 1.0 base-user --mode base)" 10 "" \
+    "verify base mode folder" "test -d $SANDBOX_DIR/submissions/fibonacci/TestBase_1.0_base-user_base" 2 "" \
+    "verify base mode metadata" "grep -q '\"mode\": \"base\"' $SANDBOX_DIR/submissions/fibonacci/TestBase_1.0_base-user_base/metadata.json" 2 "" \
+    "verify base mode no slug" "grep -q '\"slug\"' $SANDBOX_DIR/submissions/fibonacci/TestBase_1.0_base-user_base/metadata.json; test \$? -ne 0" 2 "" \
+    "open mode with slug" "(cd \"$PROJECT_ROOT\" && PROJECT_ROOT=\"$SANDBOX_DIR\" bash \"$REPO_ROOT/scripts/cape-subcommands/submission/new.sh\" fibonacci TestOpen 1.0 open-user --mode open --slug memoized)" 10 "" \
+    "verify open mode folder" "test -d $SANDBOX_DIR/submissions/fibonacci/TestOpen_1.0_open-user_open_memoized" 2 "" \
+    "verify open mode metadata" "grep -q '\"mode\": \"open\"' $SANDBOX_DIR/submissions/fibonacci/TestOpen_1.0_open-user_open_memoized/metadata.json" 2 "" \
+    "verify open mode slug" "grep -q '\"slug\": \"memoized\"' $SANDBOX_DIR/submissions/fibonacci/TestOpen_1.0_open-user_open_memoized/metadata.json" 2 "" \
+    "invalid mode fail" "(cd \"$PROJECT_ROOT\" && PROJECT_ROOT=\"$SANDBOX_DIR\" bash \"$REPO_ROOT/scripts/cape-subcommands/submission/new.sh\" fibonacci TestInvalid 1.0 user --mode invalid; exit 1)" 5 "fail" \
+    "invalid slug fail" "(cd \"$PROJECT_ROOT\" && PROJECT_ROOT=\"$SANDBOX_DIR\" bash \"$REPO_ROOT/scripts/cape-subcommands/submission/new.sh\" fibonacci TestInvalid 1.0 user --mode open --slug Invalid_Slug; exit 1)" 5 "fail" \
+    "base mode with slug fail" "(cd \"$PROJECT_ROOT\" && PROJECT_ROOT=\"$SANDBOX_DIR\" bash \"$REPO_ROOT/scripts/cape-subcommands/submission/new.sh\" fibonacci TestInvalid 1.0 user --mode base --slug notallowed; exit 1)" 5 "fail" \
+    "open mode without slug" "(cd \"$PROJECT_ROOT\" && PROJECT_ROOT=\"$SANDBOX_DIR\" bash \"$REPO_ROOT/scripts/cape-subcommands/submission/new.sh\" fibonacci TestGeneric 1.0 generic-user --mode open)" 10 "" \
+    "verify open no-slug folder" "test -d $SANDBOX_DIR/submissions/fibonacci/TestGeneric_1.0_generic-user_open" 2 "" \
+    "verify open no-slug metadata mode" "grep -q '\"mode\": \"open\"' $SANDBOX_DIR/submissions/fibonacci/TestGeneric_1.0_generic-user_open/metadata.json" 2 "" \
+    "verify open no-slug no slug field" "grep -q '\"slug\"' $SANDBOX_DIR/submissions/fibonacci/TestGeneric_1.0_generic-user_open/metadata.json; test \$? -ne 0" 2 "" \
+    "cleanup mode tests" "rm -rf $SANDBOX_DIR/submissions/fibonacci/TestBase_1.0_base-user_base $SANDBOX_DIR/submissions/fibonacci/TestOpen_1.0_open-user_open_memoized $SANDBOX_DIR/submissions/fibonacci/TestGeneric_1.0_generic-user_open" 5 ""
+
+  # Submission list filtering
+  test_group "submission list filtering" \
+    "list all submissions" "(cd \"$PROJECT_ROOT\" && PROJECT_ROOT=\"$SANDBOX_DIR\" bash \"$REPO_ROOT/scripts/cape-subcommands/submission/list.sh\")" 10 "" \
+    "list fibonacci submissions" "(cd \"$PROJECT_ROOT\" && PROJECT_ROOT=\"$SANDBOX_DIR\" bash \"$REPO_ROOT/scripts/cape-subcommands/submission/list.sh\" fibonacci)" 10 "" \
+    "list fibonacci base mode" "(cd \"$PROJECT_ROOT\" && PROJECT_ROOT=\"$SANDBOX_DIR\" bash \"$REPO_ROOT/scripts/cape-subcommands/submission/list.sh\" fibonacci --mode base)" 10 "" \
+    "list fibonacci open mode" "(cd \"$PROJECT_ROOT\" && PROJECT_ROOT=\"$SANDBOX_DIR\" bash \"$REPO_ROOT/scripts/cape-subcommands/submission/list.sh\" fibonacci --mode open)" 10 "" \
+    "list all base mode" "(cd \"$PROJECT_ROOT\" && PROJECT_ROOT=\"$SANDBOX_DIR\" bash \"$REPO_ROOT/scripts/cape-subcommands/submission/list.sh\" --mode base)" 10 "" \
+    "list all open mode" "(cd \"$PROJECT_ROOT\" && PROJECT_ROOT=\"$SANDBOX_DIR\" bash \"$REPO_ROOT/scripts/cape-subcommands/submission/list.sh\" --mode open)" 10 "" \
+    "invalid mode in list" "(cd \"$PROJECT_ROOT\" && PROJECT_ROOT=\"$SANDBOX_DIR\" bash \"$REPO_ROOT/scripts/cape-subcommands/submission/list.sh\" fibonacci --mode invalid; exit 1)" 5 "fail"
 
   # Verification & measurement
   test_group "verification & measurement" \
@@ -245,8 +316,8 @@ main() {
   fi
   local test_name="test-$$"
   run_test "create benchmark" "(cd \"$PROJECT_ROOT\" && PROJECT_ROOT=\"$SANDBOX_DIR\" bash \"$REPO_ROOT/scripts/cape-subcommands/benchmark/new.sh\" $test_name)" 15
-  run_test "create submission" "(cd \"$PROJECT_ROOT\" && PROJECT_ROOT=\"$SANDBOX_DIR\" bash \"$REPO_ROOT/scripts/cape-subcommands/submission/new.sh\" $test_name TestComp 1.0 user)" 15
-  run_test "verify submission created" "test -d $SANDBOX_DIR/submissions/$test_name/TestComp_1.0_user" 2
+  run_test "create submission" "(cd \"$PROJECT_ROOT\" && PROJECT_ROOT=\"$SANDBOX_DIR\" bash \"$REPO_ROOT/scripts/cape-subcommands/submission/new.sh\" $test_name TestComp 1.0 user --mode open)" 15
+  run_test "verify submission created" "test -d $SANDBOX_DIR/submissions/$test_name/TestComp_1.0_user_open" 2
 
   # Structure validation
   test_group "directory structure" \

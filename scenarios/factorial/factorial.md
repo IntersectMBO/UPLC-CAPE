@@ -4,16 +4,79 @@
 
 The Factorial benchmark is a **synthetic computational scenario** designed to measure the performance characteristics of iterative and recursive algorithms implemented as UPLC programs. This benchmark tests a compiler's ability to optimize mathematical computations, manage stack operations, and handle integer arithmetic efficiently across multiple input values and edge cases.
 
+## Evaluation Modes
+
+This scenario supports two evaluation modes to serve different benchmarking needs:
+
+### Base Mode (Compiler Comparison)
+
+**Purpose**: Pure compiler-to-compiler comparison with fixed algorithm
+
+All "base" mode submissions MUST implement the prescribed naive recursive algorithm below:
+
+```haskell
+factorial :: Integer -> Integer
+factorial n
+  | n <= 0    = 1
+  | otherwise = n * factorial (n - 1)
+```
+
+**Requirements:**
+
+- Naive recursive implementation matching the mathematical definition
+- Proper edge case handling (n ≤ 0 returns 1)
+- No tail-call optimization or accumulator patterns
+- No iterative loops
+- No algorithmic optimizations beyond compiler's automatic optimizations
+
+**Directory naming**: `submissions/factorial/{Compiler}_{Version}_{Author}_base/`
+
+**Use case**: Comparing how different compilers optimize the same recursive algorithm
+
+### Open Mode (Real-World Competition)
+
+**Purpose**: Showcase compiler ecosystem capabilities with any optimization technique
+
+**Allowed**:
+
+- Any algorithmic approach (recursive, iterative, tail-recursive, accumulator-based)
+- Loop unrolling, constant folding, or any compiler-specific optimizations
+- Metaprogramming and code generation techniques
+- Multiple submissions per compiler/author using unique slugs
+
+**Directory naming**:
+
+- Generic implementation: `submissions/factorial/{Compiler}_{Version}_{Author}_open/`
+- Specific optimization: `submissions/factorial/{Compiler}_{Version}_{Author}_open_{slug}/`
+
+**Slug examples** (optional): `tail-recursive`, `iterative`, `unrolled`, `pfix`
+
+**Use case**: Demonstrating best achievable performance for factorial computation
+
+### Mode Selection
+
+When creating a submission:
+
+```bash
+# Base mode (prescribed naive recursive algorithm)
+cape submission new factorial MyCompiler 1.0.0 handle --mode base
+
+# Open mode (generic/default optimization)
+cape submission new factorial MyCompiler 1.0.0 handle --mode open
+
+# Open mode (specific optimization with slug)
+cape submission new factorial MyCompiler 1.0.0 handle --mode open --slug tail-recursive
+```
+
+Reports show both modes by default, or filter with `--mode base` or `--mode open`.
+
 ## TL;DR
 
 Implement a Factorial function that passes **comprehensive test cases** ranging from edge cases to moderate computational loads, compiled as a parameterized UPLC program.
 
-**Required Files**: Submit `factorial.uplc`, `metadata.json`, `metrics.json` to `submissions/factorial/{Compiler}_{Version}_{Handle}/`
+**Required Files**: Submit `factorial.uplc`, `metadata.json`, `metrics.json` to `submissions/factorial/{Compiler}_{Version}_{Handle}_{mode}[_{slug}]/`
 
-**Test Cases**: 10 comprehensive test cases including factorial(0), factorial(10), and negative inputs  
-**Metrics**: Per-test CPU/memory units, aggregated measurements, script size, term size  
-**Constraints**: Plutus Core 1.1.0, Plutus V3 recommended, CEK machine budget limits  
-**Implementation**: Must handle negative inputs correctly (return 1 for n ≤ 0)
+**Test Cases**: 10 comprehensive test cases including factorial(0), factorial(10), and negative inputs **Metrics**: Per-test CPU/memory units, aggregated measurements, script size, term size **Constraints**: Plutus Core 1.1.0, Plutus V3 recommended, CEK machine budget limits **Implementation**: Must handle negative inputs correctly (return 1 for n ≤ 0)
 
 ---
 

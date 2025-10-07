@@ -25,6 +25,7 @@
     "date": "2025-08-19T17:45:00Z",
     "source_available": true,
     "source_repository": "https://github.com/IntersectMBO/UPLC-CAPE",
-    "implementation_notes": "Two-Party Escrow validator implemented in PlutusTx with baked-in parameters (75 ADA, 30min deadline). Uses BuiltinData->BuiltinUnit signature with redeemer-based dispatch (Deposit=0, Accept=1, Refund=2)."
+    "implementation_notes": "Two-Party Escrow validator implemented in PlutusTx with baked-in parameters (75 ADA, 30min deadline). Uses BuiltinData->BuiltinUnit signature with redeemer-based dispatch (Deposit=0, Accept=1, Refund=2).",
+    "mode": "open"
   }
 }
