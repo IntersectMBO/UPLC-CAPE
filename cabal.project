@@ -13,7 +13,8 @@ index-state:
   -- Bump both the following dates if you need newer packages from Hackage
   , hackage.haskell.org 2025-09-12T08:10:22Z
   -- Bump this if you need newer packages from CHaP
-  , cardano-haskell-packages 2025-09-11T16:20:37Z
+  -- Using cardano-node 10.4.1 index-state for Plutus 1.45 compatibility
+  , cardano-haskell-packages 2025-04-29T14:14:35Z
 
 packages:
   ./.

@@ -2,10 +2,10 @@ module FactorialSpec (spec) where
 
 import Prelude
 
+import Cape.PrettyResult (EvalResult (..), evaluateCompiledCode)
 import Factorial
 import PlutusCore.MkPlc (mkConstant)
 import PlutusTx.Code (applyCode)
-import PlutusTx.Eval (EvalResult (..), evaluateCompiledCode)
 import PlutusTx.Lift (liftCodeDef)
 import Test.Hspec
 

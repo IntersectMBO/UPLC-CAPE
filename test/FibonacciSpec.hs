@@ -2,10 +2,10 @@ module FibonacciSpec (spec) where
 
 import Prelude
 
+import Cape.PrettyResult (EvalResult (..), evaluateCompiledCode)
 import Fibonacci
 import PlutusCore.MkPlc (mkConstant)
 import PlutusTx.Code (applyCode)
-import PlutusTx.Eval (EvalResult (..), evaluateCompiledCode)
 import PlutusTx.Lift (liftCodeDef)
 import Test.Hspec
 

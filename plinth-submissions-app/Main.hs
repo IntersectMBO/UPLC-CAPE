@@ -14,13 +14,13 @@ import UntypedPlutusCore.DeBruijn (unDeBruijnTerm)
 main :: IO ()
 main = do
   writeCodeToFile
-    "submissions/fibonacci/Plinth_1.53.0.0_Unisay/fibonacci.uplc"
+    "submissions/fibonacci/Plinth_1.45.0.0_Unisay_base/fibonacci.uplc"
     fibonacciCode
   writeCodeToFile
-    "submissions/factorial/Plinth_1.53.0.0_Unisay/factorial.uplc"
+    "submissions/factorial/Plinth_1.45.0.0_Unisay_base/factorial.uplc"
     factorialCode
   writeCodeToFile
-    "submissions/two-party-escrow/Plinth_1.53.0.0_Unisay/two-party-escrow.uplc"
+    "submissions/two-party-escrow/Plinth_1.45.0.0_Unisay_open/two-party-escrow.uplc"
     twoPartyEscrowValidatorCode
 
 writeCodeToFile :: FilePath -> CompiledCode a -> IO ()
@@ -40,7 +40,7 @@ writeCodeToFile filePath code = do
     pure $ PP.prettyPlcClassic programWithNames
 
   case result of
-    Left err -> putTextLn $ "Error converting DeBruijn names: " <> show err
+    Left (err :: UPLC.FreeVariableError) -> putTextLn $ "Error converting DeBruijn names: " <> show err
     Right prettyUplc -> do
       writeFile filePath (show prettyUplc)
       putStrLn $ filePath <> " written."

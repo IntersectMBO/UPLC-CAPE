@@ -22,7 +22,12 @@ compileProgram ::
 compileProgram program mBuiltinData = do
   -- Extract term and version via pattern matching for portability across Plutus versions
   let UPLC.Program _ ver term = program
-  case deBruijnTerm term of
+      deBruijnResult ::
+        Either
+          UPLC.FreeVariableError
+          (UPLC.Term UPLC.NamedDeBruijn PLC.DefaultUni PLC.DefaultFun PLC.SrcSpan)
+      deBruijnResult = deBruijnTerm term
+  case deBruijnResult of
     Right termWithDeBruijn -> do
       let ann = SrcSpans mempty
           termWithSrcSpans = ann <$ termWithDeBruijn
@@ -38,4 +43,4 @@ compileProgram program mBuiltinData = do
 
       let finalProgram = UPLC.Program ann ver finalTerm
       pure $ DeserializedCode finalProgram Nothing mempty
-    Left err -> die ("Failed to convert names to DeBruijn indices: " <> show err)
+    Left (err :: UPLC.FreeVariableError) -> die ("Failed to convert names to DeBruijn indices: " <> show err)

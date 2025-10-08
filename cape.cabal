@@ -20,10 +20,10 @@ common common-deps
     , base               >=4.16
     , bytestring
     , flat
-    , plutus-core        ^>=1.53
-    , plutus-ledger-api  ^>=1.53
-    , plutus-tx          ^>=1.53
-    , plutus-tx-plugin   ^>=1.53
+    , plutus-core        ^>=1.45
+    , plutus-ledger-api  ^>=1.45
+    , plutus-tx          ^>=1.45
+    , plutus-tx-plugin   ^>=1.45
     , relude             ^>=1.2.2
     , serialise
     , text

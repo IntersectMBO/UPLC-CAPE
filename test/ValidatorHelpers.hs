@@ -28,13 +28,13 @@ module ValidatorHelpers (
 
 import Prelude
 
+import Cape.PrettyResult (EvalResult (..), evaluateCompiledCode)
 import Cape.ScriptContextBuilder
 import PlutusLedgerApi.Data.V3
 import PlutusTx.Code (CompiledCode, applyCode)
-import PlutusTx.Eval (EvalResult (..), evaluateCompiledCode)
 import PlutusTx.Lift (liftCodeDef)
 import PlutusTx.Prelude (BuiltinUnit)
-import Test.Hspec
+import Test.Hspec (shouldSatisfy)
 
 --------------------------------------------------------------------------------
 -- ScriptContext Building Helpers ----------------------------------------------

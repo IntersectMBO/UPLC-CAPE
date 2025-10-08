@@ -39,9 +39,11 @@ import PlutusLedgerApi.V3.Data.Contexts (
   txSignedBy,
   valuePaidTo,
  )
+import PlutusTx.Builtins (equalsInteger, greaterThanInteger)
 import PlutusTx.Builtins.Internal (unitval)
 import PlutusTx.Data.List (List)
 import PlutusTx.Data.List qualified as List
+import PlutusTx.Eq qualified as PlutusTx
 import TwoPartyEscrow.Fixture (EscrowDatum (..), EscrowState (..))
 import TwoPartyEscrow.Fixture qualified as Fixed
 
@@ -62,11 +64,11 @@ Invalid transitions are rejected to prevent double-spending and state violations
 {-# INLINEABLE twoPartyEscrowValidator #-}
 twoPartyEscrowValidator :: BuiltinData -> BuiltinUnit
 twoPartyEscrowValidator scriptContextData =
-  case redeemer of
-    0 -> validateDeposit ctx
-    1 -> validateAccept ctx
-    2 -> validateRefund ctx
-    (_ :: Integer) -> traceError "Invalid redeemer"
+  if
+    | equalsInteger redeemer 0 -> validateDeposit ctx
+    | equalsInteger redeemer 1 -> validateAccept ctx
+    | equalsInteger redeemer 2 -> validateRefund ctx
+    | otherwise -> traceError "Invalid redeemer"
   where
     ctx :: ScriptContext
     ctx = unsafeFromBuiltinData scriptContextData
@@ -82,9 +84,9 @@ twoPartyEscrowValidator scriptContextData =
 validateDeposit :: ScriptContext -> BuiltinUnit
 validateDeposit ctx =
   if
-    | outCount == 0 ->
+    | equalsInteger outCount 0 ->
         traceError "No script outputs created"
-    | outCount > 1 ->
+    | greaterThanInteger outCount 1 ->
         traceError "Too many script outputs created"
     | missingSignature txInfo Fixed.buyerKeyHash ->
         traceError "Buyer signature missing"
@@ -105,7 +107,7 @@ validateAccept ctx =
   case currentState of
     Deposited ->
       if
-        | outCount > 0 ->
+        | greaterThanInteger outCount 0 ->
             traceError "Incomplete withdrawal - funds remain in script"
         | missingSignature txInfo Fixed.sellerKeyHash ->
             traceError "Seller signature missing"
@@ -156,13 +158,17 @@ validateRefund ctx =
 getScriptOutputs :: TxInfo -> List TxOut
 getScriptOutputs txInfo = List.filter isScriptOutput (txInfoOutputs txInfo)
   where
-    isScriptOutput txOut = txOutAddress txOut == Fixed.scriptAddr
+    isScriptOutput txOut = txOutAddress txOut PlutusTx.== Fixed.scriptAddr
 
 -- | Checks if script output contains incorrect escrow amount.
 {-# INLINEABLE unexpectedAmountInScriptOutput #-}
 unexpectedAmountInScriptOutput :: TxOut -> Bool
 unexpectedAmountInScriptOutput onlyOut =
-  lovelaceValueOf (txOutValue onlyOut) /= Fixed.escrowPrice
+  not
+    ( equalsInteger
+        (getLovelace (lovelaceValueOf (txOutValue onlyOut)))
+        (getLovelace Fixed.escrowPrice)
+    )
 
 -- | Validates deposit datum has correct state and timestamp for current transaction.
 {-# INLINEABLE invalidDepositDatum #-}
@@ -175,7 +181,12 @@ invalidDepositDatum onlyOut validRange =
             Interval (LowerBound (Finite t) _) _ -> t
             _ -> traceError "No valid time range provided"
        in case escrowState escrowDatum of
-            Deposited -> Fixed.depositTime escrowDatum /= currentTime
+            Deposited ->
+              not
+                ( equalsInteger
+                    (getPOSIXTime (Fixed.depositTime escrowDatum))
+                    (getPOSIXTime currentTime)
+                )
             _ -> True -- Invalid if not Deposited state
     _ -> True -- Invalid if no datum
 
@@ -191,14 +202,22 @@ missingEscrowInput =
   List.all \TxInInfo {txInInfoResolved = TxOut {txOutAddress, txOutValue}} ->
     case txOutAddress of
       Address (ScriptCredential _) _ ->
-        lovelaceValueOf txOutValue /= Fixed.escrowPrice
+        not
+          ( equalsInteger
+              (getLovelace (lovelaceValueOf txOutValue))
+              (getLovelace Fixed.escrowPrice)
+          )
       _ -> True
 
 -- | Checks if escrow amount was not paid to the specified key hash.
 {-# INLINEABLE escrowValueNotPaidTo #-}
 escrowValueNotPaidTo :: TxInfo -> PubKeyHash -> Bool
 escrowValueNotPaidTo txInfo keyHash =
-  lovelaceValueOf (valuePaidTo txInfo keyHash) /= Fixed.escrowPrice
+  not
+    ( equalsInteger
+        (getLovelace (lovelaceValueOf (valuePaidTo txInfo keyHash)))
+        (getLovelace Fixed.escrowPrice)
+    )
 
 -- | Extracts escrow datum from spending script context.
 {-# INLINEABLE spendingScriptDatum #-}

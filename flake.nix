@@ -25,7 +25,7 @@
     };
 
     plutus = {
-      url = "github:IntersectMBO/plutus/800c67d38d01177fd0a36d01aa23ff7fea7bd1ba";
+      url = "github:IntersectMBO/plutus/ba16ec68d3ba1a53594585deed81cdb3e720e4a3";
       inputs.hackage.follows = "hackage";
       inputs.CHaP.follows = "CHaP";
       inputs.haskell-nix.follows = "haskell-nix";
