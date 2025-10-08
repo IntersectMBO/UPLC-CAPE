@@ -1,8 +1,8 @@
 {
   "compiler": {
     "name": "Scalus",
-    "version": "0.12.0",
-    "commit_hash": "15aeda61763870ab50b34c54b0fb9266058673a9"
+    "version": "0.12.1",
+    "commit_hash": "7f6afb4da0b7688e0c9e3ee3aab87ed6ec1187bd"
   },
   "compilation_config": {
     "optimization_level": "Scalus",
@@ -14,10 +14,10 @@
     "organization": "Intersect MBO"
   },
   "submission": {
-    "date": "2025-10-07T13:37:37Z",
+    "date": "2025-10-08T15:00:00Z",
     "source_available": true,
     "source_repository": "https://github.com/Unisay/scalus-cape-submissions",
     "implementation_notes": "Scalus with default options",
-    "mode": "base"
+    "mode": "open"
   }
 }
