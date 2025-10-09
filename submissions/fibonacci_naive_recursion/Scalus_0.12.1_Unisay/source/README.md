@@ -1,12 +1,12 @@
-# Scalus Fibonacci Implementation (Base Mode)
+# Scalus Fibonacci Implementation
 
 The source code for this submission is maintained in a separate repository:
 
 **Repository:** <https://github.com/Unisay/scalus-cape-submissions>
 
-**Path:** `fibonacci/base/FibonacciBase.scala`
+**Path:** `fibonacci_naive_recursion/FibonacciBase.scala`
 
-This submission uses Scalus compiler version 0.12.0 with base mode configuration.
+This submission uses Scalus compiler version 0.12.0 with naive recursive implementation.
 
 ## Building
 

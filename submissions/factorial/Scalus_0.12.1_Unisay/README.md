@@ -1,6 +1,6 @@
-# Factorial Open Mode
+# Factorial Postfix
 
-**Mode:** Open (optimized iterative)
+**Scenario:** factorial (postfix multiplication optimization)
 
 ## Implementation
 
@@ -29,4 +29,4 @@ sbt "runMain factorial.compileFactorialOpen"
 
 ## Output
 
-`submissions/factorial/open/factorial.uplc`
+`submissions/factorial/Scalus_0.12.1_Unisay/factorial.uplc`

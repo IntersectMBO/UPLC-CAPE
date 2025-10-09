@@ -24,6 +24,6 @@
     "date": "2025-10-08T00:00:00Z",
     "source_available": true,
     "source_repository": "https://github.com/IntersectMBO/UPLC-CAPE",
-    "implementation_notes": "Factorial implementation using Plinth (PlutusTx) targeting Plutus Core 1.1.0. Naive recursive approach as prescribed in base mode specification. Downgraded to Plutus 1.45 for mainnet compatibility (cardano-node 10.4.1)."
+    "implementation_notes": "Factorial implementation using Plinth (PlutusTx) targeting Plutus Core 1.1.0. Naive recursive approach as prescribed in factorial_naive_recursion scenario specification. Downgraded to Plutus 1.45 for mainnet compatibility (cardano-node 10.4.1)."
   }
 }

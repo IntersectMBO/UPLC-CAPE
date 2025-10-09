@@ -1,14 +1,14 @@
 # Benchmark Implementation Notes
 
-**Scenario**: `fibonacci`
+**Scenario**: `fibonacci_naive_recursion`
 
-**Submission ID**: `Scalus_0.12.0_Unisay_base`
+**Submission ID**: `Scalus_0.12.1_Unisay`
 
 ## Implementation Details
 
-- **Compiler**: `Scalus 0.12.0`
-- **Implementation Approach**: `recursive`
-- **Compilation Flags**: `base mode`
+- **Compiler**: `Scalus 0.12.1`
+- **Implementation Approach**: `naive recursive`
+- **Compilation Flags**: `default`
 
 ## Performance Results
 
@@ -18,11 +18,11 @@
 
 - **Source Available**: true
 - **Source Repository**: <https://github.com/Unisay/scalus-cape-submissions>
-- **Source Path**: `fibonacci/base/FibonacciBase.scala`
-- **Compilation Config**: base mode
+- **Source Path**: `fibonacci_naive_recursion/FibonacciBase.scala`
+- **Compilation Config**: default
 
 ## Notes
 
-This submission implements the Fibonacci scenario using a recursive approach with Scalus base mode configuration. The source code is maintained in a separate repository to avoid duplication.
+This submission implements the fibonacci_naive_recursion scenario using the prescribed naive recursive approach. The source code is maintained in a separate repository to avoid duplication.
 
 **Note**: The UPLC output uses Scalus bracket notation format, which differs from standard UPLC textual syntax. The verification may require Scalus-specific tooling.

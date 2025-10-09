@@ -2,13 +2,13 @@
 
 **Scenario**: `fibonacci`
 
-**Submission ID**: `Scalus_0.12.0_Unisay_open`
+**Submission ID**: `Scalus_0.12.1_Unisay`
 
 ## Implementation Details
 
-- **Compiler**: `Scalus 0.12.0`
+- **Compiler**: `Scalus 0.12.1`
 - **Implementation Approach**: `iterative`
-- **Compilation Flags**: `open mode`
+- **Compilation Flags**: `default`
 
 ## Performance Results
 
@@ -18,11 +18,11 @@
 
 - **Source Available**: true
 - **Source Repository**: <https://github.com/Unisay/scalus-cape-submissions>
-- **Source Path**: `fibonacci/open/FibonacciOpen.scala`
-- **Compilation Config**: open mode
+- **Source Path**: `fibonacci/FibonacciOpen.scala`
+- **Compilation Config**: default
 
 ## Notes
 
-This submission implements the Fibonacci scenario using an iterative approach with Scalus open mode configuration. Open mode provides slightly better performance than the recursive base mode approach. The source code is maintained in a separate repository to avoid duplication.
+This submission implements the Fibonacci scenario using an iterative approach. This optimization provides better performance than the naive recursive approach. The source code is maintained in a separate repository to avoid duplication.
 
 **Note**: The UPLC output uses Scalus bracket notation format, which differs from standard UPLC textual syntax. The verification may require Scalus-specific tooling.

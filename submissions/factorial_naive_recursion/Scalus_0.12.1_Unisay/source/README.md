@@ -1,12 +1,12 @@
-# Scalus Factorial Implementation (Base Mode)
+# Scalus Factorial Implementation
 
 The source code for this submission is maintained in a separate repository:
 
 **Repository:** <https://github.com/Unisay/scalus-cape-submissions>
 
-**Path:** `factorial/base/FactorialBase.scala`
+**Path:** `factorial_naive_recursion/FactorialBase.scala`
 
-This submission uses Scalus compiler version 0.12.0 with base mode configuration.
+This submission uses Scalus compiler version 0.12.0 with naive recursive implementation.
 
 ## Building
 

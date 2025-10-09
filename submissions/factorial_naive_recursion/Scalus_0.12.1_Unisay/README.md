@@ -1,6 +1,6 @@
-# Factorial Base Mode
+# Factorial Naive Recursion
 
-**Mode:** Base (naive recursive)
+**Scenario:** factorial_naive_recursion
 
 ## Implementation
 
@@ -15,7 +15,7 @@ def factorial(n: BigInt): BigInt =
 ## Characteristics
 
 - **Algorithm:** Simple recursive (linear time complexity, but no tail-call optimization)
-- **Optimization:** None (as prescribed by base mode)
+- **Optimization:** None (as prescribed by scenario specification)
 - **Edge case:** factorial(n) = 1 for n ≤ 0
 
 ## Build
@@ -26,4 +26,4 @@ sbt "runMain factorial.compileFactorialBase"
 
 ## Output
 
-`submissions/factorial/base/factorial.uplc`
+`submissions/factorial_naive_recursion/Scalus_0.12.1_Unisay/factorial_naive_recursion.uplc`
