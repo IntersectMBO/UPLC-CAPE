@@ -8,7 +8,7 @@ The Fibonacci benchmark is a synthetic computational scenario designed to measur
 
 ## Exact Task
 
-Implement a Fibonacci function and compile it as a **fully-applied UPLC program** that computes the 25th Fibonacci number.
+Implement a Fibonacci function and compile it as a UPLC program that accepts an integer input and returns the corresponding Fibonacci number.
 
 ### Core Requirements
 
@@ -19,9 +19,13 @@ Implement a Fibonacci function and compile it as a **fully-applied UPLC program*
    - Closed-form solution (Binet's formula)
    - Any other approach that correctly computes Fibonacci numbers
 
-2. **Full Application**: The UPLC program must be fully-applied with the target value (25) baked in during compilation, not passed as a parameter. The program should execute immediately to produce the result.
+2. **Input Parameter**: The UPLC program must accept a single integer parameter `n` and return `fibonacci(n)`. The program will be tested with multiple input values to ensure correctness across different scenarios.
 
-3. **Target Computation**: `fibonacci(25)` must produce exactly `75025`
+3. **Test Suite**: Your implementation must pass all test cases in `cape-tests.json`, including:
+   - Edge cases: `fibonacci(0) = 0`, `fibonacci(1) = 1`, `fibonacci(-1) = -1`
+   - Small values: `fibonacci(2) = 1`, `fibonacci(3) = 2`, `fibonacci(5) = 5`
+   - Medium values: `fibonacci(8) = 21`, `fibonacci(10) = 55`, `fibonacci(15) = 610`
+   - Larger values: `fibonacci(20) = 6765`, `fibonacci(25) = 75025`
 
 ### Implementation Freedom
 
@@ -33,7 +37,7 @@ You have complete freedom to:
 - Leverage your compiler's unique strengths and capabilities
 - Submit multiple variants with different optimization strategies (use variant suffixes: `_memoized`, `_iterative`, etc.)
 
-**Goal**: Demonstrate the best achievable performance for computing fibonacci(25) using your compiler.
+**Goal**: Demonstrate the best achievable performance for computing Fibonacci numbers across a range of inputs using your compiler.
 
 ## Technical Constraints
 
@@ -45,20 +49,27 @@ You have complete freedom to:
 
 ## Performance Context
 
-**Why fibonacci(25)?**
+**Test Suite Coverage**:
 
-- **Target Result**: Produces exactly 75025
-- **Computationally Significant**: ~242,785 recursive calls in naive implementation
-- **Budget Safe**: Fits comfortably within CEK machine limits for all approaches
-- **Optimization Sensitive**: Large enough to show optimization effectiveness
-- **Manageable**: Not so large as to create measurement difficulties
+The benchmark tests Fibonacci computation across a range of inputs (0-25 and negative), measuring:
 
-**Expected Performance Characteristics** (approximate):
+- **Edge case handling**: Base cases (0, 1) and negative inputs
+- **Small values**: Quick computation verification (2, 3, 5)
+- **Medium values**: Performance characteristics emerge (8, 10, 15)
+- **Larger values**: Optimization effectiveness becomes significant (20, 25)
 
-- **Naive Recursive**: Higher CPU usage, demonstrates compiler's recursion optimization
-- **Iterative**: Lower CPU usage, predictable memory patterns
-- **Memoized**: Moderate CPU, higher memory usage, demonstrates cache optimization
-- **Closed-form**: Very low CPU, demonstrates constant-time computation if feasible
+**Why test multiple inputs?**
+
+- **Correctness validation**: Ensures implementation handles edge cases and various input ranges
+- **Performance profiling**: Different inputs reveal different optimization characteristics
+- **Aggregate metrics**: Sum, maximum, and median metrics provide comprehensive performance picture
+
+**Expected Performance Characteristics**:
+
+- **Naive Recursive**: CPU usage grows exponentially with input; demonstrates compiler's recursion handling
+- **Iterative**: Linear CPU growth; predictable memory patterns; efficient for all inputs
+- **Memoized**: Near-linear CPU growth; higher memory usage; demonstrates caching effectiveness
+- **Closed-form**: Constant-time for all inputs; demonstrates mathematical optimization capability
 
 ---
 

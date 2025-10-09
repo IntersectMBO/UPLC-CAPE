@@ -51,25 +51,26 @@ You have complete freedom to:
 
 ## Performance Context
 
-**Why comprehensive test cases?**
+**Test Suite Coverage**:
 
-- **Edge Case Coverage**: Tests factorial(0), factorial(1), and negative inputs to verify correct implementation
-- **Scalability Analysis**: Tests range from factorial(2) to factorial(12) to measure performance scaling
-- **Budget Safety**: All test cases fit within CEK machine limits for all approaches
-- **Implementation Validation**: Catches common bugs like infinite recursion on negative inputs
-- **Compiler Comparison**: Shows differences in optimization across different input ranges
+The benchmark tests factorial computation across a range of inputs (0-12 and negative), measuring:
 
-**Test Case Characteristics**:
+- **Edge case handling**: Base cases (0, 1) and negative inputs (-5)
+- **Small values**: Quick computation verification (2, 3, 4, 5)
+- **Moderate values**: Performance characteristics and scaling (8, 10, 12)
 
-- **factorial(0) to factorial(5)**: Minimal computation, tests base case handling
-- **factorial(8) to factorial(12)**: Moderate computation, shows scaling behavior
-- **factorial(-5)**: Critical test for negative input handling (common source of infinite recursion)
+**Why test multiple inputs?**
 
-**Expected Performance Characteristics** (approximate):
+- **Correctness validation**: Ensures implementation handles edge cases and various input ranges
+- **Performance profiling**: Different inputs reveal optimization characteristics and scaling behavior
+- **Aggregate metrics**: Sum, maximum, and median metrics provide comprehensive performance picture
+- **Bug detection**: Catches common issues like infinite recursion on negative inputs
 
-- **Naive Recursive**: Higher CPU usage due to function call overhead, scales with input value
-- **Tail-Recursive**: Moderate CPU usage, can be optimized to iterative by compiler
-- **Iterative**: Lower CPU usage, predictable memory patterns, better scaling
+**Expected Performance Characteristics**:
+
+- **Naive Recursive**: CPU usage grows linearly with input; function call overhead visible; demonstrates compiler's recursion handling
+- **Tail-Recursive**: Moderate CPU usage; can be optimized to iterative by compiler; better memory characteristics
+- **Iterative**: Linear CPU growth; predictable memory patterns; most efficient for all inputs
 - **Negative inputs**: Should be O(1) with proper implementation (n ≤ 0 → return 1)
 
 ---

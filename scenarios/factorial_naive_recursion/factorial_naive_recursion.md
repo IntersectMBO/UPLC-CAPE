@@ -37,13 +37,24 @@ factorial n
 - **Budget safe**: All test cases fit within CEK machine limits
 - **Optimization sensitive**: Shows compiler differences in recursion handling
 
+### Test Suite
+
+Your implementation must pass all test cases in `cape-tests.json`, testing the naive recursive algorithm across multiple inputs:
+
+- **Edge cases**: `factorial(0) = 1`, `factorial(1) = 1`, `factorial(-5) = 1`
+- **Small values**: `factorial(2) = 2`, `factorial(3) = 6`, `factorial(4) = 24`, `factorial(5) = 120`
+- **Moderate values**: `factorial(8) = 40320`, `factorial(10) = 3628800`, `factorial(12) = 479001600`
+
+**Why test multiple inputs?**
+
+- **Performance profiling**: Different inputs reveal how compiler handles recursion depth and call overhead
+- **Correctness validation**: Ensures proper edge case handling (especially n ≤ 0)
+- **Aggregate metrics**: Sum, maximum, and median provide comprehensive performance picture
+- **Bug detection**: Catches common issues like infinite recursion on negative inputs
+
 ### Parameterized Program
 
-The UPLC program must accept integer parameters at runtime and compute results dynamically. It should correctly handle all test cases defined in `scenarios/factorial_naive_recursion/cape-tests.json`, including:
-
-- Edge cases: factorial(0), factorial(1), factorial(-5)
-- Small values: factorial(2), factorial(3), factorial(4), factorial(5)
-- Moderate values: factorial(8), factorial(10), factorial(12)
+The UPLC program must accept a single integer parameter `n` and return `factorial(n)`. The program will be tested with multiple input values as specified in the test suite.
 
 ## Technical Constraints
 

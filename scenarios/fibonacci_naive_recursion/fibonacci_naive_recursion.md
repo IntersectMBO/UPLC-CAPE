@@ -8,7 +8,7 @@ The Fibonacci Naive Recursion benchmark measures compiler optimization effective
 
 ## Exact Task
 
-Implement the prescribed naive recursive Fibonacci function and compile it as a **fully-applied UPLC program** that computes the 25th Fibonacci number.
+Implement the prescribed naive recursive Fibonacci function and compile it as a UPLC program that accepts an integer input and returns the corresponding Fibonacci number.
 
 ### Prescribed Algorithm
 
@@ -29,16 +29,25 @@ fibonacci n
 - No algorithmic optimizations beyond compiler's automatic optimizations
 - Direct translation of the specified algorithm into your compiler's source language
 
-**Why this algorithm?**
+### Test Suite
 
-- **fibonacci(25) = 75025**: Produces exactly 75025
-- **~242,785 recursive calls**: Computationally significant workload
-- **Budget safe**: Fits within CEK machine limits
-- **Optimization sensitive**: Large enough to show compiler optimization differences
+Your implementation must pass all test cases in `cape-tests.json`, testing the naive recursive algorithm across multiple inputs:
 
-### Full Application
+- **Edge cases**: `fibonacci(0) = 0`, `fibonacci(1) = 1`, `fibonacci(-1) = -1`
+- **Small values**: `fibonacci(2) = 1`, `fibonacci(3) = 2`, `fibonacci(5) = 5`
+- **Medium values**: `fibonacci(8) = 21`, `fibonacci(10) = 55`, `fibonacci(15) = 610`
+- **Larger values**: `fibonacci(20) = 6765`, `fibonacci(25) = 75025`
 
-The UPLC program must be fully-applied with the target value (25) baked in during compilation, not passed as a parameter. The program should execute immediately to produce the result.
+**Why test multiple inputs?**
+
+- **Performance profiling**: Different inputs reveal how compiler handles recursion depth and call overhead
+- **Correctness validation**: Ensures base case handling and negative input behavior
+- **Aggregate metrics**: Sum, maximum, and median provide comprehensive performance picture
+- **fibonacci(25) = 75025**: Still the primary benchmark target (~242,785 recursive calls), but tested alongside other values
+
+### Parameterized Program
+
+The UPLC program must accept a single integer parameter `n` and return `fibonacci(n)`. The program will be tested with multiple input values as specified in the test suite.
 
 ## Technical Constraints
 
