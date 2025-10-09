@@ -30,31 +30,13 @@ factorial n
 - No algorithmic optimizations beyond compiler's automatic optimizations
 - Direct translation of the specified algorithm into your compiler's source language
 
-**Why this algorithm?**
-
-- **Edge cases**: Tests factorial(0), factorial(1), and negative inputs
-- **Moderate workload**: factorial(10) = 3,628,800 provides meaningful computation
-- **Budget safe**: All test cases fit within CEK machine limits
-- **Optimization sensitive**: Shows compiler differences in recursion handling
-
 ### Test Suite
 
-Your implementation must pass all test cases in `cape-tests.json`, testing the naive recursive algorithm across multiple inputs:
+Your implementation must pass all test cases in `cape-tests.json`:
 
-- **Edge cases**: `factorial(0) = 1`, `factorial(1) = 1`, `factorial(-5) = 1`
-- **Small values**: `factorial(2) = 2`, `factorial(3) = 6`, `factorial(4) = 24`, `factorial(5) = 120`
-- **Moderate values**: `factorial(8) = 40320`, `factorial(10) = 3628800`, `factorial(12) = 479001600`
-
-**Why test multiple inputs?**
-
-- **Performance profiling**: Different inputs reveal how compiler handles recursion depth and call overhead
-- **Correctness validation**: Ensures proper edge case handling (especially n ≤ 0)
-- **Aggregate metrics**: Sum, maximum, and median provide comprehensive performance picture
-- **Bug detection**: Catches common issues like infinite recursion on negative inputs
-
-### Parameterized Program
-
-The UPLC program must accept a single integer parameter `n` and return `factorial(n)`. The program will be tested with multiple input values as specified in the test suite.
+- Edge cases: `factorial(0) = 1`, `factorial(1) = 1`, `factorial(-5) = 1`
+- Small values: `factorial(2) = 2`, `factorial(3) = 6`, `factorial(4) = 24`, `factorial(5) = 120`
+- Moderate values: `factorial(8) = 40320`, `factorial(10) = 3628800`, `factorial(12) = 479001600`
 
 ## Technical Constraints
 

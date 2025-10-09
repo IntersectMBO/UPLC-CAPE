@@ -31,23 +31,12 @@ fibonacci n
 
 ### Test Suite
 
-Your implementation must pass all test cases in `cape-tests.json`, testing the naive recursive algorithm across multiple inputs:
+Your implementation must pass all test cases in `cape-tests.json`:
 
-- **Edge cases**: `fibonacci(0) = 0`, `fibonacci(1) = 1`, `fibonacci(-1) = -1`
-- **Small values**: `fibonacci(2) = 1`, `fibonacci(3) = 2`, `fibonacci(5) = 5`
-- **Medium values**: `fibonacci(8) = 21`, `fibonacci(10) = 55`, `fibonacci(15) = 610`
-- **Larger values**: `fibonacci(20) = 6765`, `fibonacci(25) = 75025`
-
-**Why test multiple inputs?**
-
-- **Performance profiling**: Different inputs reveal how compiler handles recursion depth and call overhead
-- **Correctness validation**: Ensures base case handling and negative input behavior
-- **Aggregate metrics**: Sum, maximum, and median provide comprehensive performance picture
-- **fibonacci(25) = 75025**: Still the primary benchmark target (~242,785 recursive calls), but tested alongside other values
-
-### Parameterized Program
-
-The UPLC program must accept a single integer parameter `n` and return `fibonacci(n)`. The program will be tested with multiple input values as specified in the test suite.
+- Edge cases: `fibonacci(0) = 0`, `fibonacci(1) = 1`, `fibonacci(-1) = -1`
+- Small values: `fibonacci(2) = 1`, `fibonacci(3) = 2`, `fibonacci(5) = 5`
+- Medium values: `fibonacci(8) = 21`, `fibonacci(10) = 55`, `fibonacci(15) = 610`
+- Larger values: `fibonacci(20) = 6765`, `fibonacci(25) = 75025`
 
 ## Technical Constraints
 
