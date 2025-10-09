@@ -86,16 +86,16 @@
     "blst_3": {
       "flake": false,
       "locked": {
-        "lastModified": 1739372843,
-        "narHash": "sha256-IlbNMLBjs/dvGogcdbWQIL+3qwy7EXJbIDpo4xBd4bY=",
+        "lastModified": 1691598027,
+        "narHash": "sha256-oqljy+ZXJAXEB/fJtmB8rlAr4UXM+Z2OkDa20gpILNA=",
         "owner": "supranational",
         "repo": "blst",
-        "rev": "8c7db7fe8d2ce6e76dc398ebd4d475c0ec564355",
+        "rev": "3dd0f804b1819e5d03fb22ca2e6fac105932043a",
         "type": "github"
       },
       "original": {
         "owner": "supranational",
-        "ref": "v0.3.14",
+        "ref": "v0.3.11",
         "repo": "blst",
         "type": "github"
       }
@@ -1136,11 +1136,11 @@
         "sodium": "sodium_3"
       },
       "locked": {
-        "lastModified": 1751421193,
-        "narHash": "sha256-rklXDo12dfukaSqcEyiYbze3ffRtTl2/WAAQCWfkGiw=",
+        "lastModified": 1734618971,
+        "narHash": "sha256-5StB/VhWHOj3zlBxshqVFa6cwAE0Mk/wxRo3eEfcy74=",
         "owner": "input-output-hk",
         "repo": "iohk-nix",
-        "rev": "64ca6f4c0c6db283e2ec457c775bce75173fb319",
+        "rev": "dc900a3448e805243b0ed196017e8eb631e32240",
         "type": "github"
       },
       "original": {
@@ -1449,17 +1449,17 @@
         "pre-commit-hooks": "pre-commit-hooks"
       },
       "locked": {
-        "lastModified": 1755196934,
-        "narHash": "sha256-8C3/QyfOIHzPtDv7rUFzJJNLraTZHhdkea3COAkvxuM=",
+        "lastModified": 1744725137,
+        "narHash": "sha256-0DNZlW41wK+PJ7adwmv6DdssTyyq9c5IlHVJ6NGv5VI=",
         "owner": "IntersectMBO",
         "repo": "plutus",
-        "rev": "800c67d38d01177fd0a36d01aa23ff7fea7bd1ba",
+        "rev": "ba16ec68d3ba1a53594585deed81cdb3e720e4a3",
         "type": "github"
       },
       "original": {
         "owner": "IntersectMBO",
         "repo": "plutus",
-        "rev": "800c67d38d01177fd0a36d01aa23ff7fea7bd1ba",
+        "rev": "ba16ec68d3ba1a53594585deed81cdb3e720e4a3",
         "type": "github"
       }
     },

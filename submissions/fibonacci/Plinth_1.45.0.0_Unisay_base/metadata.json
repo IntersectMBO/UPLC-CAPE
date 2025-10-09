@@ -1,8 +1,8 @@
 {
   "compiler": {
     "name": "Plinth",
-    "version": "1.53.0.0",
-    "commit_hash": "800c67d38d01177fd0a36d01aa23ff7fea7bd1ba"
+    "version": "1.45.0.0",
+    "commit_hash": "ba16ec68d3ba1a53594585deed81cdb3e720e4a3"
   },
   "compilation_config": {
     "optimization_level": "Plinth",
@@ -10,9 +10,9 @@
     "flags": ["Plinth"],
     "environment": {
       "dependencies": {
-        "plutus-tx": "1.53.0.0",
-        "plutus-core": "1.53.0.0",
-        "plutus-ledger-api": "1.53.0.0"
+        "plutus-tx": "1.45.0.0",
+        "plutus-core": "1.45.0.0",
+        "plutus-ledger-api": "1.45.0.0"
       }
     }
   },
@@ -21,10 +21,10 @@
     "organization": "UPLC-CAPE Project"
   },
   "submission": {
-    "date": "2025-08-15T17:12:00Z",
+    "date": "2025-10-08T00:00:00Z",
     "source_available": true,
     "source_repository": "https://github.com/cardano-scaling/UPLC-CAPE",
-    "implementation_notes": "Fibonacci implementation using Plinth (PlutusTx) with parameter 25, targeting Plutus Core 1.1.0",
+    "implementation_notes": "Fibonacci implementation using Plinth (PlutusTx) with parameter 25, targeting Plutus Core 1.1.0. Downgraded to Plutus 1.45 for mainnet compatibility (cardano-node 10.4.1).",
     "mode": "base"
   }
 }

@@ -5,7 +5,12 @@ import Prelude
 import Cape.Cli (Options (..), parseOptions)
 import Cape.Compile (compileProgram)
 import Cape.Error (MeasureError (..), exitCodeForError, renderMeasureError)
-import Cape.PrettyResult (compareResult, extractPrettyResult)
+import Cape.PrettyResult (
+  EvalResult (..),
+  compareResult,
+  evaluateCompiledCode,
+  extractPrettyResult,
+ )
 import Cape.Tests (
   ExpectedResult (..),
   InputType (..),
@@ -34,11 +39,11 @@ import PlutusCore.Data.Compact.Parser (parseBuiltinDataText, renderParseError)
 import PlutusCore.Data.Compact.Printer (dataToCompactText)
 import PlutusCore.Evaluation.Machine.ExBudget (ExBudget (..))
 import PlutusCore.Evaluation.Machine.ExMemory (ExCPU (..), ExMemory (..))
+import PlutusCore.Size (unSize)
 import PlutusLedgerApi.Common (serialiseCompiledCode)
 import PlutusLedgerApi.V3 qualified as V3
 import PlutusTx.Builtins qualified as Builtins
-import PlutusTx.Code (countAstNodes)
-import PlutusTx.Eval (EvalResult (..), evaluateCompiledCode)
+import PlutusTx.Code (getPlc)
 import System.Console.ANSI (
   Color (..),
   ColorIntensity (..),
@@ -51,6 +56,7 @@ import System.Exit qualified as Exit
 import System.IO (putChar)
 import UntypedPlutusCore qualified as UPLC
 import UntypedPlutusCore.Parser qualified as UPLCParser
+import UntypedPlutusCore.Size (programSize)
 
 -- | Colorize text with green for PASS results
 colorizePass :: Text -> IO ()
@@ -127,7 +133,10 @@ runTestSuite uplcFile testsFile metricsFileOpt debugContext = do
 
   -- Read and parse the UPLC program
   uplcText <- readTextUtf8 uplcFile
-  program <- case PLC.runQuote (runExceptT (UPLCParser.parseProgram uplcText)) of
+  program <- case PLC.runQuote (runExceptT (UPLCParser.parseProgram uplcText)) ::
+                    Either
+                      (PLC.Error PLC.DefaultUni PLC.DefaultFun PLC.SrcSpan)
+                      (UPLC.Program UPLC.Name PLC.DefaultUni PLC.DefaultFun PLC.SrcSpan) of
     Left err -> E.throwIO (UPLCParseError uplcFile (show err))
     Right prog -> pure prog
 
@@ -203,7 +212,10 @@ runSingleTest program baseDir testSuite testCase debugContext = do
           -- Parse input as UPLC term and apply to program
           -- Need to wrap the term in a minimal program for parsing
           let wrappedInput = "(program 1.1.0 " <> inputText <> ")"
-          inputTerm <- case PLC.runQuote (runExceptT (UPLCParser.parseProgram wrappedInput)) of
+          inputTerm <- case PLC.runQuote (runExceptT (UPLCParser.parseProgram wrappedInput)) ::
+                              Either
+                                (PLC.Error PLC.DefaultUni PLC.DefaultFun PLC.SrcSpan)
+                                (UPLC.Program UPLC.Name PLC.DefaultUni PLC.DefaultFun PLC.SrcSpan) of
             Left err -> E.throwIO (UPLCParseError "uplc_input" (show err))
             Right inputProgram -> do
               let UPLC.Program _ _ term = inputProgram
@@ -310,7 +322,7 @@ writeDetailedMetrics program evaluations metricsFile = do
   code <- compileProgram program Nothing
   let scriptBytes = SBS.fromShort (serialiseCompiledCode code)
       scriptSize = BS.length scriptBytes
-      termSize = countAstNodes code
+      termSize = fromIntegral $ unSize $ programSize $ getPlc code
 
   -- Extract CPU and memory data for aggregations
   let cpuData =

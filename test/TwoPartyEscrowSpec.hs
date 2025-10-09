@@ -2,10 +2,10 @@ module TwoPartyEscrowSpec (spec) where
 
 import Prelude
 
+import Cape.PrettyResult (EvalResult)
 import Cape.ScriptContextBuilder
 import PlutusCore.Data qualified as PLC
 import PlutusLedgerApi.Data.V3
-import PlutusTx.Eval (EvalResult)
 import Test.Hspec
 import TwoPartyEscrow
 import TwoPartyEscrowSpec.Fixture qualified as Fixed
