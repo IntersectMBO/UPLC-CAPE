@@ -59,27 +59,6 @@
             margin: 0 8px;
         }
 
-        /* Mode Badge */
-        .mode-badge {
-            text-align: center;
-            margin-bottom: 20px;
-        }
-        .mode-badge-inline {
-            display: inline-block;
-            padding: 6px 15px;
-            border-radius: 20px;
-            font-weight: 600;
-            font-size: 0.9em;
-        }
-        .mode-badge.base .mode-badge-inline {
-            background-color: #28a745;
-            color: white;
-        }
-        .mode-badge.open .mode-badge-inline {
-            background-color: #007bff;
-            color: white;
-        }
-
         .benchmark-section {
             background: white;
             margin-bottom: 40px;
@@ -185,24 +164,14 @@
         <p>Performance comparison of UPLC programs across different compilers</p>
     </div>
 
-    {{if .mode}}
     <div class="breadcrumb">
-        <a href="../../index.html">Home</a>
-        <span class="breadcrumb-separator">→</span>
-        <a href="../index.html">{{if eq .mode "base"}}Base Mode{{else}}Open Mode{{end}}</a>
+        <a href="index.html">Home</a>
         <span class="breadcrumb-separator">→</span>
         <span>{{.benchmark}}</span>
     </div>
 
-    <div class="mode-badge {{.mode}}">
-        <span class="mode-badge-inline">
-            {{if eq .mode "base"}}📊 Base Mode{{else}}🚀 Open Mode{{end}}
-        </span>
-    </div>
-    {{end}}
-
     <div class="nav">
-        <a href="../index.html">← Back to {{if .mode}}{{if eq .mode "base"}}Base{{else}}Open{{end}} Mode Reports{{else}}All Benchmarks{{end}}</a>
+        <a href="index.html">← Back to All Benchmarks</a>
     </div>
 
     <div class="timestamp">

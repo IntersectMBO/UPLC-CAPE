@@ -222,51 +222,6 @@
             opacity: 1;
         }
 
-        /* Mode Badge */
-        .mode-badge {
-            text-align: center;
-            margin-bottom: 30px;
-        }
-        .mode-badge-content {
-            display: inline-block;
-            padding: 15px 30px;
-            border-radius: 8px;
-            font-weight: 600;
-            font-size: 1.2em;
-        }
-        .mode-badge.base .mode-badge-content {
-            background-color: #28a745;
-            color: white;
-        }
-        .mode-badge.open .mode-badge-content {
-            background-color: #007bff;
-            color: white;
-        }
-        .mode-description {
-            text-align: center;
-            color: #6c757d;
-            margin-bottom: 30px;
-            font-size: 1.05em;
-        }
-
-        /* Navigation */
-        .nav {
-            text-align: center;
-            margin-bottom: 30px;
-        }
-        .nav a {
-            display: inline-block;
-            padding: 10px 20px;
-            background-color: #667eea;
-            color: white;
-            text-decoration: none;
-            border-radius: 5px;
-            margin: 0 10px;
-            transition: background-color 0.3s ease;
-        }
-        .nav a:hover {
-            background-color: #5a67d8;
-        }
     </style>
 </head>
 <body>
@@ -275,25 +230,6 @@
         <p>Comparative Artifact Performance Evaluation for UPLC Programs</p>
         <p>Performance comparison of UPLC programs across different compilers</p>
     </div>
-
-    <div class="nav">
-        <a href="../index.html">← Back to All Reports</a>
-    </div>
-
-    {{if .mode}}
-    <div class="mode-badge {{.mode}}">
-        <div class="mode-badge-content">
-            {{if eq .mode "base"}}📊 Base Mode Reports{{else}}🚀 Open Mode Reports{{end}}
-        </div>
-    </div>
-    <div class="mode-description">
-        {{if eq .mode "base"}}
-        Showing submissions using prescribed algorithms for fair compiler comparison
-        {{else}}
-        Showing submissions with unrestricted optimization techniques
-        {{end}}
-    </div>
-    {{end}}
 
     <div class="timestamp">
         Generated on: {{.timestamp}}
