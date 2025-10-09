@@ -104,16 +104,6 @@
           "format": "date-time",
           "description": "ISO-8601 timestamp when the submission was created"
         },
-        "mode": {
-          "type": "string",
-          "enum": ["base", "open"],
-          "description": "Evaluation mode: 'base' for prescribed algorithm (compiler comparison), 'open' for any optimization (real-world competition)"
-        },
-        "slug": {
-          "type": "string",
-          "pattern": "^[a-z0-9-]+$",
-          "description": "Optional identifier for open mode submissions with non-default optimizations (e.g., 'memoized', 'unrolled', 'pfix'). Omit for generic/default open mode implementation or base mode."
-        },
         "source_available": {
           "type": "boolean",
           "description": "Whether source code is publicly available"
@@ -128,7 +118,7 @@
           "description": "Notes about the implementation approach, algorithms, or design decisions"
         }
       },
-      "required": ["date", "mode", "source_available", "implementation_notes"],
+      "required": ["date", "source_available", "implementation_notes"],
       "additionalProperties": false
     }
   },

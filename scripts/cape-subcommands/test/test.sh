@@ -257,38 +257,23 @@ main() {
     "submission list help" "(cd \"$PROJECT_ROOT\" && PROJECT_ROOT=\"$SANDBOX_DIR\" bash \"$REPO_ROOT/scripts/cape-subcommands/submission/list.sh\" --help)" 5 "" \
     "submission list fibonacci" "(cd \"$PROJECT_ROOT\" && PROJECT_ROOT=\"$SANDBOX_DIR\" bash \"$REPO_ROOT/scripts/cape-subcommands/submission/list.sh\" fibonacci)" 5 "" \
     "submission no args fail" "(cd \"$PROJECT_ROOT\" && PROJECT_ROOT=\"$SANDBOX_DIR\" bash \"$REPO_ROOT/scripts/cape-subcommands/submission/new.sh\" fibonacci Comp 1.0)" 5 "fail" \
-    "submission complete success" "(cd \"$PROJECT_ROOT\" && PROJECT_ROOT=\"$SANDBOX_DIR\" bash \"$REPO_ROOT/scripts/cape-subcommands/submission/new.sh\" fibonacci Comp 1.0 user --mode open)" 5 "" \
-    "submission cleanup (remove template submission)" "rm -rf \"$SANDBOX_DIR/submissions/fibonacci/Comp_1.0_user_open\"" 5 "" \
+    "submission complete success" "(cd \"$PROJECT_ROOT\" && PROJECT_ROOT=\"$SANDBOX_DIR\" bash \"$REPO_ROOT/scripts/cape-subcommands/submission/new.sh\" fibonacci Comp 1.0 user)" 5 "" \
+    "submission cleanup (remove template submission)" "rm -rf \"$SANDBOX_DIR/submissions/fibonacci/Comp_1.0_user\"" 5 "" \
     "submission invalid fail" "(cd \"$PROJECT_ROOT\" && PROJECT_ROOT=\"$SANDBOX_DIR\" bash \"$REPO_ROOT/scripts/cape-subcommands/submission/list.sh\" invalid_arg; exit 1)" 5 "fail"
 
-  # Mode and slug tests
-  test_group "mode and slug functionality" \
-    "base mode submission" "(cd \"$PROJECT_ROOT\" && PROJECT_ROOT=\"$SANDBOX_DIR\" bash \"$REPO_ROOT/scripts/cape-subcommands/submission/new.sh\" fibonacci TestBase 1.0 base-user --mode base)" 10 "" \
-    "verify base mode folder" "test -d $SANDBOX_DIR/submissions/fibonacci/TestBase_1.0_base-user_base" 2 "" \
-    "verify base mode metadata" "grep -q '\"mode\": \"base\"' $SANDBOX_DIR/submissions/fibonacci/TestBase_1.0_base-user_base/metadata.json" 2 "" \
-    "verify base mode no slug" "grep -q '\"slug\"' $SANDBOX_DIR/submissions/fibonacci/TestBase_1.0_base-user_base/metadata.json; test \$? -ne 0" 2 "" \
-    "open mode with slug" "(cd \"$PROJECT_ROOT\" && PROJECT_ROOT=\"$SANDBOX_DIR\" bash \"$REPO_ROOT/scripts/cape-subcommands/submission/new.sh\" fibonacci TestOpen 1.0 open-user --mode open --slug memoized)" 10 "" \
-    "verify open mode folder" "test -d $SANDBOX_DIR/submissions/fibonacci/TestOpen_1.0_open-user_open_memoized" 2 "" \
-    "verify open mode metadata" "grep -q '\"mode\": \"open\"' $SANDBOX_DIR/submissions/fibonacci/TestOpen_1.0_open-user_open_memoized/metadata.json" 2 "" \
-    "verify open mode slug" "grep -q '\"slug\": \"memoized\"' $SANDBOX_DIR/submissions/fibonacci/TestOpen_1.0_open-user_open_memoized/metadata.json" 2 "" \
-    "invalid mode fail" "(cd \"$PROJECT_ROOT\" && PROJECT_ROOT=\"$SANDBOX_DIR\" bash \"$REPO_ROOT/scripts/cape-subcommands/submission/new.sh\" fibonacci TestInvalid 1.0 user --mode invalid; exit 1)" 5 "fail" \
-    "invalid slug fail" "(cd \"$PROJECT_ROOT\" && PROJECT_ROOT=\"$SANDBOX_DIR\" bash \"$REPO_ROOT/scripts/cape-subcommands/submission/new.sh\" fibonacci TestInvalid 1.0 user --mode open --slug Invalid_Slug; exit 1)" 5 "fail" \
-    "base mode with slug fail" "(cd \"$PROJECT_ROOT\" && PROJECT_ROOT=\"$SANDBOX_DIR\" bash \"$REPO_ROOT/scripts/cape-subcommands/submission/new.sh\" fibonacci TestInvalid 1.0 user --mode base --slug notallowed; exit 1)" 5 "fail" \
-    "open mode without slug" "(cd \"$PROJECT_ROOT\" && PROJECT_ROOT=\"$SANDBOX_DIR\" bash \"$REPO_ROOT/scripts/cape-subcommands/submission/new.sh\" fibonacci TestGeneric 1.0 generic-user --mode open)" 10 "" \
-    "verify open no-slug folder" "test -d $SANDBOX_DIR/submissions/fibonacci/TestGeneric_1.0_generic-user_open" 2 "" \
-    "verify open no-slug metadata mode" "grep -q '\"mode\": \"open\"' $SANDBOX_DIR/submissions/fibonacci/TestGeneric_1.0_generic-user_open/metadata.json" 2 "" \
-    "verify open no-slug no slug field" "grep -q '\"slug\"' $SANDBOX_DIR/submissions/fibonacci/TestGeneric_1.0_generic-user_open/metadata.json; test \$? -ne 0" 2 "" \
-    "cleanup mode tests" "rm -rf $SANDBOX_DIR/submissions/fibonacci/TestBase_1.0_base-user_base $SANDBOX_DIR/submissions/fibonacci/TestOpen_1.0_open-user_open_memoized $SANDBOX_DIR/submissions/fibonacci/TestGeneric_1.0_generic-user_open" 5 ""
+  # Variant tests (optional 5th parameter)
+  test_group "variant functionality" \
+    "submission without variant" "(cd \"$PROJECT_ROOT\" && PROJECT_ROOT=\"$SANDBOX_DIR\" bash \"$REPO_ROOT/scripts/cape-subcommands/submission/new.sh\" fibonacci TestBasic 1.0 basic-user)" 10 "" \
+    "verify no-variant folder" "test -d $SANDBOX_DIR/submissions/fibonacci/TestBasic_1.0_basic-user" 2 "" \
+    "verify no-variant metadata no variant field" "grep -q '\"variant\"' $SANDBOX_DIR/submissions/fibonacci/TestBasic_1.0_basic-user/metadata.json; test \$? -ne 0" 2 "" \
+    "submission with variant" "(cd \"$PROJECT_ROOT\" && PROJECT_ROOT=\"$SANDBOX_DIR\" bash \"$REPO_ROOT/scripts/cape-subcommands/submission/new.sh\" fibonacci TestVariant 1.0 variant-user memoized)" 10 "" \
+    "verify variant folder" "test -d $SANDBOX_DIR/submissions/fibonacci/TestVariant_1.0_variant-user_memoized" 2 "" \
+    "cleanup variant tests" "rm -rf $SANDBOX_DIR/submissions/fibonacci/TestBasic_1.0_basic-user $SANDBOX_DIR/submissions/fibonacci/TestVariant_1.0_variant-user_memoized" 5 ""
 
   # Submission list filtering
   test_group "submission list filtering" \
     "list all submissions" "(cd \"$PROJECT_ROOT\" && PROJECT_ROOT=\"$SANDBOX_DIR\" bash \"$REPO_ROOT/scripts/cape-subcommands/submission/list.sh\")" 10 "" \
-    "list fibonacci submissions" "(cd \"$PROJECT_ROOT\" && PROJECT_ROOT=\"$SANDBOX_DIR\" bash \"$REPO_ROOT/scripts/cape-subcommands/submission/list.sh\" fibonacci)" 10 "" \
-    "list fibonacci base mode" "(cd \"$PROJECT_ROOT\" && PROJECT_ROOT=\"$SANDBOX_DIR\" bash \"$REPO_ROOT/scripts/cape-subcommands/submission/list.sh\" fibonacci --mode base)" 10 "" \
-    "list fibonacci open mode" "(cd \"$PROJECT_ROOT\" && PROJECT_ROOT=\"$SANDBOX_DIR\" bash \"$REPO_ROOT/scripts/cape-subcommands/submission/list.sh\" fibonacci --mode open)" 10 "" \
-    "list all base mode" "(cd \"$PROJECT_ROOT\" && PROJECT_ROOT=\"$SANDBOX_DIR\" bash \"$REPO_ROOT/scripts/cape-subcommands/submission/list.sh\" --mode base)" 10 "" \
-    "list all open mode" "(cd \"$PROJECT_ROOT\" && PROJECT_ROOT=\"$SANDBOX_DIR\" bash \"$REPO_ROOT/scripts/cape-subcommands/submission/list.sh\" --mode open)" 10 "" \
-    "invalid mode in list" "(cd \"$PROJECT_ROOT\" && PROJECT_ROOT=\"$SANDBOX_DIR\" bash \"$REPO_ROOT/scripts/cape-subcommands/submission/list.sh\" fibonacci --mode invalid; exit 1)" 5 "fail"
+    "list fibonacci submissions" "(cd \"$PROJECT_ROOT\" && PROJECT_ROOT=\"$SANDBOX_DIR\" bash \"$REPO_ROOT/scripts/cape-subcommands/submission/list.sh\" fibonacci)" 10 ""
 
   # Verification & measurement
   test_group "verification & measurement" \
@@ -316,8 +301,8 @@ main() {
   fi
   local test_name="test-$$"
   run_test "create benchmark" "(cd \"$PROJECT_ROOT\" && PROJECT_ROOT=\"$SANDBOX_DIR\" bash \"$REPO_ROOT/scripts/cape-subcommands/benchmark/new.sh\" $test_name)" 15
-  run_test "create submission" "(cd \"$PROJECT_ROOT\" && PROJECT_ROOT=\"$SANDBOX_DIR\" bash \"$REPO_ROOT/scripts/cape-subcommands/submission/new.sh\" $test_name TestComp 1.0 user --mode open)" 15
-  run_test "verify submission created" "test -d $SANDBOX_DIR/submissions/$test_name/TestComp_1.0_user_open" 2
+  run_test "create submission" "(cd \"$PROJECT_ROOT\" && PROJECT_ROOT=\"$SANDBOX_DIR\" bash \"$REPO_ROOT/scripts/cape-subcommands/submission/new.sh\" $test_name TestComp 1.0 user)" 15
+  run_test "verify submission created" "test -d $SANDBOX_DIR/submissions/$test_name/TestComp_1.0_user" 2
 
   # Structure validation
   test_group "directory structure" \

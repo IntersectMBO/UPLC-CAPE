@@ -33,7 +33,6 @@ cape_enable_tmp_cleanup
 # Parse flags
 DRY_RUN=0
 KEEP_EXISTING=0
-MODE=""
 args=()
 while [[ $# -gt 0 ]]; do
   case "$1" in
@@ -49,10 +48,6 @@ while [[ $# -gt 0 ]]; do
       KEEP_EXISTING=1
       shift
       ;;
-    --mode)
-      MODE="$2"
-      shift 2
-      ;;
     --all)
       args+=("--all")
       shift
@@ -64,12 +59,6 @@ while [[ $# -gt 0 ]]; do
   esac
 done
 set -- "${args[@]}"
-
-# Validate mode if provided
-if [ -n "$MODE" ] && [ "$MODE" != "base" ] && [ "$MODE" != "open" ]; then
-  log_err "Invalid mode '$MODE'. Must be 'base' or 'open'."
-  exit 1
-fi
 
 # Check required tools
 cape_require_cmds gnuplot gomplate
@@ -84,20 +73,18 @@ fi
 # Validate benchmark name pattern when provided (lowercase, hyphens allowed)
 valid_benchmark_name() { [[ $1 =~ ^[a-z][a-z0-9-]*[a-z0-9]$|^[a-z]$ ]]; }
 
-# Note: Mode filtering is now handled by the 'cape submission aggregate --mode' command
-# CSV format: benchmark,mode,timestamp,language,version,user,cpu_units,memory_units,script_size_bytes,term_size,submission_dir
+# CSV format: benchmark,timestamp,language,version,user,cpu_units,memory_units,script_size_bytes,term_size,submission_dir
 # Field positions:
 #   1: benchmark
-#   2: mode
-#   3: timestamp
-#   4: language
-#   5: version
-#   6: user
-#   7: cpu_units
-#   8: memory_units
-#   9: script_size_bytes
-#  10: term_size
-#  11: submission_dir
+#   2: timestamp
+#   3: language
+#   4: version
+#   5: user
+#   6: cpu_units
+#   7: memory_units
+#   8: script_size_bytes
+#   9: term_size
+#  10: submission_dir
 
 # Prepare report directory
 report_dir="$PROJECT_ROOT/report"
@@ -117,28 +104,20 @@ fi
 generate_benchmark_report() {
   local benchmark="$1"
   local output_dir="$2"
-  local mode="${3:-}" # Optional mode parameter
 
-  # Get CSV data for this benchmark, filtered by mode if specified
+  # Get CSV data for this benchmark
   local csv_data valid_csv_data
-  if [ -n "$mode" ]; then
-    csv_data=$($CAPE_CMD submission aggregate --mode "$mode" | grep "^$benchmark," || true)
-  else
-    csv_data=$($CAPE_CMD submission aggregate | grep "^$benchmark," || true)
-  fi
+  csv_data=$($CAPE_CMD submission aggregate | grep "^$benchmark," || true)
 
   if [ -z "$csv_data" ]; then
-    if [ -n "$mode" ]; then
-      echo "No submissions found for benchmark: $benchmark (mode: $mode)" >&2
-    else
-      echo "No submissions found for benchmark: $benchmark" >&2
-    fi
+    echo "No submissions found for benchmark: $benchmark" >&2
     return 1
   fi
 
   # Filter out invalid CSV entries (those with empty numeric fields or template placeholders)
-  # New field positions: cpu_units=7, memory_units=8, script_size_bytes=9, term_size=10
-  valid_csv_data=$(echo "$csv_data" | grep -v '<.*>' | awk -F, '$7 != "" && $8 != "" && $9 != "" && $10 != ""')
+  # CSV format: benchmark,timestamp,language,version,user,cpu_units,memory_units,script_size_bytes,term_size,submission_dir
+  # Field positions: cpu_units=6, memory_units=7, script_size_bytes=8, term_size=9
+  valid_csv_data=$(echo "$csv_data" | grep -v '<.*>' | awk -F, '$6 != "" && $7 != "" && $8 != "" && $9 != ""')
   if [ -z "$valid_csv_data" ]; then
     echo "No valid submissions found for benchmark: $benchmark (all entries have missing data)" >&2
     return 1
@@ -216,9 +195,9 @@ generate_benchmark_report() {
   )
 
   # Assign colors using distinct palette
-  # Field 11 is submission_dir (used as label)
+  # Field 10 is submission_dir (used as label)
   local all_labels
-  all_labels=$(echo "$csv_data" | awk -F, '{print $11}')
+  all_labels=$(echo "$csv_data" | awk -F, '{print $10}')
   while read -r label; do
     [ -n "$label" ] || continue
     local color_spec
@@ -248,11 +227,11 @@ generate_benchmark_report() {
   local chart_prefix="${benchmark}_"
 
   # CPU Units chart
-  # Field 7 is cpu_units, field 11 is submission_dir (label)
+  # Field 6 is cpu_units, field 10 is submission_dir (label)
   local cpu_sorted_data cpu_labels cpu_values max_cpu max_cpu_padded
-  cpu_sorted_data=$(echo "$csv_data" | sort -t, -k7,7n)
-  cpu_labels=$(echo "$cpu_sorted_data" | awk -F, '{print $11}')
-  cpu_values=$(echo "$cpu_sorted_data" | awk -F, '{print $7}')
+  cpu_sorted_data=$(echo "$csv_data" | sort -t, -k6,6n)
+  cpu_labels=$(echo "$cpu_sorted_data" | awk -F, '{print $10}')
+  cpu_values=$(echo "$cpu_sorted_data" | awk -F, '{print $6}')
   max_cpu=$(echo "$cpu_values" | tail -1)
   max_cpu_padded=$(awk -v m="$max_cpu" 'BEGIN{printf "%.0f", (m==""?0:m)*1.03}')
 
@@ -306,11 +285,11 @@ EOF
   fi
 
   # Memory Units chart
-  # Field 8 is memory_units, field 11 is submission_dir (label)
+  # Field 7 is memory_units, field 10 is submission_dir (label)
   local memory_sorted_data memory_labels memory_values max_memory max_memory_padded
-  memory_sorted_data=$(echo "$csv_data" | sort -t, -k8,8n)
-  memory_labels=$(echo "$memory_sorted_data" | awk -F, '{print $11}')
-  memory_values=$(echo "$memory_sorted_data" | awk -F, '{print $8}')
+  memory_sorted_data=$(echo "$csv_data" | sort -t, -k7,7n)
+  memory_labels=$(echo "$memory_sorted_data" | awk -F, '{print $10}')
+  memory_values=$(echo "$memory_sorted_data" | awk -F, '{print $7}')
   max_memory=$(echo "$memory_values" | tail -1)
   max_memory_padded=$(awk -v m="$max_memory" 'BEGIN{printf "%.0f", (m==""?0:m)*1.03}')
 
@@ -364,11 +343,11 @@ EOF
   fi
 
   # Script Size chart
-  # Field 9 is script_size_bytes, field 11 is submission_dir (label)
+  # Field 8 is script_size_bytes, field 10 is submission_dir (label)
   local script_sorted_data script_labels script_values max_script_size max_script_size_padded
-  script_sorted_data=$(echo "$csv_data" | sort -t, -k9,9n)
-  script_labels=$(echo "$script_sorted_data" | awk -F, '{print $11}')
-  script_values=$(echo "$script_sorted_data" | awk -F, '{print $9}')
+  script_sorted_data=$(echo "$csv_data" | sort -t, -k8,8n)
+  script_labels=$(echo "$script_sorted_data" | awk -F, '{print $10}')
+  script_values=$(echo "$script_sorted_data" | awk -F, '{print $8}')
   max_script_size=$(echo "$script_values" | tail -1)
   max_script_size_padded=$(awk -v m="$max_script_size" 'BEGIN{printf "%.0f", (m==""?0:m)*1.03}')
 
@@ -422,11 +401,11 @@ EOF
   fi
 
   # Term Size chart
-  # Field 10 is term_size, field 11 is submission_dir (label)
+  # Field 9 is term_size, field 10 is submission_dir (label)
   local term_sorted_data term_labels term_values max_term_size max_term_size_padded
-  term_sorted_data=$(echo "$csv_data" | sort -t, -k10,10n)
-  term_labels=$(echo "$term_sorted_data" | awk -F, '{print $11}')
-  term_values=$(echo "$term_sorted_data" | awk -F, '{print $10}')
+  term_sorted_data=$(echo "$csv_data" | sort -t, -k9,9n)
+  term_labels=$(echo "$term_sorted_data" | awk -F, '{print $10}')
+  term_values=$(echo "$term_sorted_data" | awk -F, '{print $9}')
   max_term_size=$(echo "$term_values" | tail -1)
   max_term_size_padded=$(awk -v m="$max_term_size" 'BEGIN{printf "%.0f", (m==""?0:m)*1.03}')
 
@@ -487,7 +466,6 @@ generate_individual_benchmark_report() {
   local benchmark="$1"
   local output_dir="$2"
   local chart_files="$3"
-  local mode="${4:-}" # Optional mode parameter
 
   # Parse chart files manually to avoid array issues
   local chart1 chart2 chart3 chart4
@@ -496,17 +474,14 @@ generate_individual_benchmark_report() {
   chart3=$(echo "$chart_files" | cut -d, -f3)
   chart4=$(echo "$chart_files" | cut -d, -f4)
 
-  # Get CSV data for this benchmark to create the data table, filtered by mode if specified
+  # Get CSV data for this benchmark to create the data table
   local csv_data valid_csv_data
-  if [ -n "$mode" ]; then
-    csv_data=$($CAPE_CMD submission aggregate --mode "$mode" | grep "^$benchmark," || true)
-  else
-    csv_data=$($CAPE_CMD submission aggregate | grep "^$benchmark," || true)
-  fi
+  csv_data=$($CAPE_CMD submission aggregate | grep "^$benchmark," || true)
 
   # Filter out invalid CSV entries (those with empty numeric fields or template placeholders)
-  # New field positions: cpu_units=7, memory_units=8, script_size_bytes=9, term_size=10
-  valid_csv_data=$(echo "$csv_data" | grep -v '<.*>' | awk -F, '$7 != "" && $8 != "" && $9 != "" && $10 != ""')
+  # CSV format: benchmark,timestamp,language,version,user,cpu_units,memory_units,script_size_bytes,term_size,submission_dir
+  # Field positions: cpu_units=6, memory_units=7, script_size_bytes=8, term_size=9
+  valid_csv_data=$(echo "$csv_data" | grep -v '<.*>' | awk -F, '$6 != "" && $7 != "" && $8 != "" && $9 != ""')
   csv_data="$valid_csv_data"
 
   # Create JSON data for template
@@ -515,7 +490,6 @@ generate_individual_benchmark_report() {
   cat > "$temp_json" << EOF
 {
   "benchmark": "$benchmark",
-  "mode": "$mode",
   "timestamp": "$(date '+%Y-%m-%d %H:%M:%S %Z')",
   "charts": {
     "cpu_units": "$chart1",
@@ -528,22 +502,22 @@ EOF
 
   # Generate JSON for submissions table - sorted by CPU units (ascending)
   # CSV data is already filtered and valid from above
-  # New CSV format: benchmark,mode,timestamp,language,version,user,cpu_units,memory_units,script_size_bytes,term_size,submission_dir
+  # CSV format: benchmark,timestamp,language,version,user,cpu_units,memory_units,script_size_bytes,term_size,submission_dir
   local table_sorted_data first
-  table_sorted_data=$(echo "$csv_data" | sort -t, -k7,7n)
+  table_sorted_data=$(echo "$csv_data" | sort -t, -k6,6n)
   first=true
   while IFS= read -r line; do
     if [ -n "$line" ]; then
       local timestamp language version user cpu_units memory_units script_size term_size submission_dir
-      timestamp=$(echo "$line" | cut -d, -f3)
-      language=$(echo "$line" | cut -d, -f4)
-      version=$(echo "$line" | cut -d, -f5)
-      user=$(echo "$line" | cut -d, -f6)
-      cpu_units=$(echo "$line" | cut -d, -f7)
-      memory_units=$(echo "$line" | cut -d, -f8)
-      script_size=$(echo "$line" | cut -d, -f9)
-      term_size=$(echo "$line" | cut -d, -f10)
-      submission_dir=$(echo "$line" | cut -d, -f11)
+      timestamp=$(echo "$line" | cut -d, -f2)
+      language=$(echo "$line" | cut -d, -f3)
+      version=$(echo "$line" | cut -d, -f4)
+      user=$(echo "$line" | cut -d, -f5)
+      cpu_units=$(echo "$line" | cut -d, -f6)
+      memory_units=$(echo "$line" | cut -d, -f7)
+      script_size=$(echo "$line" | cut -d, -f8)
+      term_size=$(echo "$line" | cut -d, -f9)
+      submission_dir=$(echo "$line" | cut -d, -f10)
 
       # Skip entries with empty numeric fields
       if [ -z "$cpu_units" ] || [ -z "$memory_units" ] || [ -z "$script_size" ] || [ -z "$term_size" ]; then
@@ -596,96 +570,11 @@ EOF
   rm -f "$temp_json"
 }
 
-# Generate landing page with mode explanation
-generate_landing_page() {
-  local output_dir="$1"
-  local base_benchmarks="$2"
-  local open_benchmarks="$3"
-
-  local temp_json
-  temp_json="$(cape_mktemp)"
-
-  # Create JSON data for template
-  cat > "$temp_json" << 'EOF'
-{
-  "Timestamp": "",
-  "Benchmarks": []
-}
-EOF
-
-  # Update timestamp
-  local timestamp
-  timestamp=$(date '+%Y-%m-%d %H:%M:%S %Z')
-
-  # Build benchmarks JSON array with mode counts
-  local benchmarks_json="["
-  local first=true
-
-  # Get unique benchmark names from scenarios
-  local all_benchmarks
-  all_benchmarks=$(find "$PROJECT_ROOT/scenarios" -mindepth 1 -maxdepth 1 -type d ! -name TEMPLATE -printf '%f\n' | sort)
-
-  while read -r benchmark; do
-    if [ -n "$benchmark" ]; then
-      # Count base mode submissions
-      local base_count=0
-      if [ -d "$PROJECT_ROOT/submissions/$benchmark" ]; then
-        base_count=$(find "$PROJECT_ROOT/submissions/$benchmark" -mindepth 1 -maxdepth 1 -type d -name "*_base" 2> /dev/null | wc -l)
-      fi
-
-      # Count open mode submissions
-      local open_count=0
-      if [ -d "$PROJECT_ROOT/submissions/$benchmark" ]; then
-        open_count=$(find "$PROJECT_ROOT/submissions/$benchmark" -mindepth 1 -maxdepth 1 -type d \( -name "*_open" -o -name "*_open_*" \) 2> /dev/null | wc -l)
-      fi
-
-      if [ "$first" = true ]; then
-        first=false
-      else
-        benchmarks_json="$benchmarks_json,"
-      fi
-
-      benchmarks_json="$benchmarks_json{\"Name\":\"$benchmark\",\"BaseCount\":$base_count,\"OpenCount\":$open_count}"
-    fi
-  done <<< "$all_benchmarks"
-
-  benchmarks_json="$benchmarks_json]"
-
-  # Create final JSON
-  cat > "$temp_json" << EOF
-{
-  "Timestamp": "$timestamp",
-  "Benchmarks": $benchmarks_json
-}
-EOF
-
-  # Render template
-  if [[ $DRY_RUN -eq 1 ]]; then
-    log_info "[dry-run] Would render $output_dir/index.html using template landing-page.html.tmpl"
-  else
-    if ! gomplate -c .="stdin:?type=application/json" -f "$SCRIPT_DIR/landing-page.html.tmpl" < "$temp_json" > "$output_dir/index.html"; then
-      echo "ERROR: Failed to render landing page" >&2
-      cat "$temp_json" >&2
-      rm -f "$temp_json"
-      exit 1
-    fi
-  fi
-
-  rm -f "$temp_json"
-}
-
 # Build filtered benchmark stats from CSV data
-# Usage: build_filtered_stats [mode]
 build_filtered_stats() {
-  local mode="$1"
-
-  # Get filtered CSV data
+  # Get CSV data
   local csv_data
-  if [ -n "$mode" ]; then
-    csv_data=$($CAPE_CMD submission aggregate --mode "$mode")
-  else
-    csv_data=$($CAPE_CMD submission aggregate)
-  fi
+  csv_data=$($CAPE_CMD submission aggregate)
 
   # Start JSON output
   echo '{'
@@ -720,16 +609,16 @@ build_filtered_stats() {
     while IFS= read -r line; do
       if [ -z "$line" ]; then continue; fi
 
-      # Parse CSV fields (benchmark,mode,timestamp,language,version,user,cpu_units,memory_units,script_size_bytes,term_size,submission_dir)
+      # Parse CSV fields (benchmark,timestamp,language,version,user,cpu_units,memory_units,script_size_bytes,term_size,submission_dir)
       local timestamp language version user cpu_units memory_units script_size term_size
-      timestamp=$(echo "$line" | cut -d, -f3)
-      language=$(echo "$line" | cut -d, -f4)
-      version=$(echo "$line" | cut -d, -f5)
-      user=$(echo "$line" | cut -d, -f6)
-      cpu_units=$(echo "$line" | cut -d, -f7)
-      memory_units=$(echo "$line" | cut -d, -f8)
-      script_size=$(echo "$line" | cut -d, -f9)
-      term_size=$(echo "$line" | cut -d, -f10)
+      timestamp=$(echo "$line" | cut -d, -f2)
+      language=$(echo "$line" | cut -d, -f3)
+      version=$(echo "$line" | cut -d, -f4)
+      user=$(echo "$line" | cut -d, -f5)
+      cpu_units=$(echo "$line" | cut -d, -f6)
+      memory_units=$(echo "$line" | cut -d, -f7)
+      script_size=$(echo "$line" | cut -d, -f8)
+      term_size=$(echo "$line" | cut -d, -f9)
 
       # Extract date from timestamp
       local date_only
@@ -810,27 +699,24 @@ format_number_short() {
 generate_index_report() {
   local output_dir="$1"
   local benchmark_list="$2"
-  local mode="${3:-}" # Optional mode parameter
 
   # Create JSON data for template
   local temp_json temp_stats
   temp_json="/tmp/cape_index_report_$$_$(date +%s).json"
   temp_stats="/tmp/cape_stats_$$_$(date +%s).json"
 
-  # Get benchmark stats filtered by mode if specified
+  # Get benchmark stats
   if [[ $DRY_RUN -eq 1 ]]; then
     log_info "[dry-run] Would generate benchmark stats"
     echo '{"benchmarks":[]}' > "$temp_stats"
   else
-    # Build stats from filtered CSV data instead of using cape benchmark stats
-    # to ensure mode filtering is properly applied
-    build_filtered_stats "$mode" > "$temp_stats"
+    # Build stats from CSV data
+    build_filtered_stats > "$temp_stats"
   fi
 
   cat > "$temp_json" << EOF
 {
   "timestamp": "$(date '+%Y-%m-%d %H:%M:%S %Z')",
-  "mode": "$mode",
   "benchmarks": [
 EOF
 
@@ -869,58 +755,6 @@ EOF
 
   # Clean up temp file
   rm -f "$temp_json"
-}
-
-generate_mode_reports() {
-  local report_dir="$1"
-  local mode="$2"
-  local all_benchmarks="$3"
-
-  echo "Generating $mode mode reports..."
-
-  # Create mode-specific output directory
-  local mode_dir="$report_dir/$mode"
-  mkdir -p "$mode_dir/benchmarks/images"
-
-  # Track which benchmarks have submissions for this mode
-  local mode_benchmarks=""
-
-  # Generate individual benchmark reports for this mode
-  for benchmark in $all_benchmarks; do
-    # Check if benchmark has submissions for this mode
-    local mode_submissions
-    if [ "$mode" = "base" ]; then
-      mode_submissions=$(find "$PROJECT_ROOT/submissions/$benchmark" -mindepth 1 -maxdepth 1 -type d -name "*_base" 2> /dev/null)
-    else
-      mode_submissions=$(find "$PROJECT_ROOT/submissions/$benchmark" -mindepth 1 -maxdepth 1 -type d \( -name "*_open" -o -name "*_open_*" \) 2> /dev/null)
-    fi
-
-    if [ -n "$mode_submissions" ]; then
-      echo "  Processing $benchmark ($mode mode)..."
-
-      # Generate charts and benchmark report filtered by mode
-      chart_files=$(generate_benchmark_report "$benchmark" "$mode_dir" "$mode") || true
-      if [ -n "$chart_files" ]; then
-        if [[ $DRY_RUN -eq 0 ]]; then
-          generate_individual_benchmark_report "$benchmark" "$mode_dir" "$chart_files" "$mode"
-        fi
-
-        # Add to mode benchmarks list
-        if [ -n "$mode_benchmarks" ]; then
-          mode_benchmarks="${mode_benchmarks}\n"
-        fi
-        mode_benchmarks="${mode_benchmarks}${benchmark}"
-      fi
-    fi
-  done
-
-  # Generate mode-specific index page
-  if [ -n "$mode_benchmarks" ]; then
-    generate_index_report "$mode_dir" "$(echo -e "$mode_benchmarks")" "$mode"
-    echo "  ✅ $mode mode index: $mode_dir/index.html"
-  else
-    echo "  ⚠️  No $mode mode submissions found"
-  fi
 }
 
 generate_no_submissions_report() {
@@ -988,33 +822,45 @@ if [ "$1" = "--all" ]; then
     exit 1
   fi
 
-  # Generate mode-specific reports (base and open)
-  generate_mode_reports "$report_dir" "base" "$all_benchmarks"
-  echo ""
-  generate_mode_reports "$report_dir" "open" "$all_benchmarks"
-  echo ""
-
-  # Generate landing page with mode explanations and benchmark links
-  # Collect benchmark names that have at least one submission
+  # Collect benchmarks that have submissions
   benchmarks_with_submissions=""
+
+  # Generate individual benchmark reports
   for benchmark in $all_benchmarks; do
+    # Check if benchmark has submissions
     if [ -d "$PROJECT_ROOT/submissions/$benchmark" ] && [ "$(find "$PROJECT_ROOT/submissions/$benchmark" -mindepth 1 -maxdepth 1 -type d ! -name "TEMPLATE" 2> /dev/null | wc -l)" -gt 0 ]; then
-      benchmarks_with_submissions="$benchmarks_with_submissions $benchmark"
+      echo "Processing $benchmark..."
+
+      # Generate charts and benchmark report
+      chart_files=$(generate_benchmark_report "$benchmark" "$report_dir") || true
+      if [ -n "$chart_files" ]; then
+        if [[ $DRY_RUN -eq 0 ]]; then
+          generate_individual_benchmark_report "$benchmark" "$report_dir" "$chart_files"
+        fi
+
+        # Add to benchmarks list
+        if [ -n "$benchmarks_with_submissions" ]; then
+          benchmarks_with_submissions="${benchmarks_with_submissions}\n"
+        fi
+        benchmarks_with_submissions="${benchmarks_with_submissions}${benchmark}"
+      fi
+    else
+      # Generate placeholder page for benchmark without submissions
+      echo "No submissions for $benchmark, creating placeholder..."
+      generate_no_submissions_report "$benchmark" "$report_dir"
     fi
   done
 
+  # Generate index page
   if [ -n "$benchmarks_with_submissions" ]; then
-    generate_landing_page "$report_dir" "$benchmarks_with_submissions" "$benchmarks_with_submissions"
-    echo "Generating landing page..."
+    generate_index_report "$report_dir" "$(echo -e "$benchmarks_with_submissions")"
     echo ""
     echo "✅ HTML reports generated:"
-    echo "   📄 $report_dir/index.html (landing page)"
-    echo "   📊 $report_dir/base/index.html (base mode index)"
-    echo "   🚀 $report_dir/open/index.html (open mode index)"
-    echo "   📈 Individual benchmark reports in $report_dir/{base,open}/benchmarks/"
-    echo "   🖼️  Chart images in $report_dir/{base,open}/benchmarks/images/"
+    echo "   📄 $report_dir/index.html (main index)"
+    echo "   📊 Individual benchmark reports in $report_dir/benchmarks/"
+    echo "   🖼️  Chart images in $report_dir/benchmarks/images/"
     echo ""
-    echo "Open the landing page with: xdg-open $report_dir/index.html 2>/dev/null || echo \"Open: $report_dir/index.html\""
+    echo "Open the main report with: xdg-open $report_dir/index.html 2>/dev/null || echo \"Open: $report_dir/index.html\""
   else
     echo "Error: No submissions found for report generation" >&2
     exit 1

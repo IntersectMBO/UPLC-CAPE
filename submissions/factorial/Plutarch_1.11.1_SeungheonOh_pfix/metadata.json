@@ -1,0 +1,18 @@
+{
+  "compiler": {
+    "name": "plutarch",
+    "version": "1.11.1"
+  },
+  "compilation_config": {
+    "target": "uplc",
+    "optimization_level": "basic"
+  },
+  "contributor": {
+    "name": "SeungheonOh"
+  },
+  "submission": {
+    "date": "2025-09-12T15:37:00Z",
+    "source_available": true,
+    "implementation_notes": "Factorial implementation using pfix' for recursion and conditional logic with pif'' for conditional branching"
+  }
+}

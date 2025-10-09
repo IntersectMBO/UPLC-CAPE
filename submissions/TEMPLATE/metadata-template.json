@@ -21,8 +21,6 @@
   },
   "submission": {
     "date": "<ISO-8601 timestamp>",
-    "mode": "<'base' or 'open'>",
-    "slug": "<optional: required for open mode, e.g., 'memoized', 'unrolled', 'default'>",
     "source_available": "<boolean>",
     "source_repository": "<optional string>",
     "implementation_notes": "<string>"

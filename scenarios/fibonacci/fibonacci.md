@@ -1,86 +1,10 @@
 # Fibonacci Benchmark Scenario
 
+> **For submission requirements, metrics explanation, and validation steps, see the [Submission Guide](../../doc/submission-guide.md)**
+
 ## Overview
 
-The Fibonacci benchmark is a **synthetic computational scenario** designed to measure the performance characteristics of recursive algorithms implemented as UPLC programs. This benchmark tests a compiler's ability to optimize recursive function calls, manage stack depth, and handle integer arithmetic operations efficiently.
-
-## Evaluation Modes
-
-This scenario supports two evaluation modes to serve different benchmarking needs:
-
-### Base Mode (Compiler Comparison)
-
-**Purpose**: Pure compiler-to-compiler comparison with fixed algorithm
-
-All "base" mode submissions MUST implement the prescribed naive recursive algorithm below:
-
-```haskell
-fibonacci :: Integer -> Integer
-fibonacci n
-  | n <= 1    = n
-  | otherwise = fibonacci (n - 1) + fibonacci (n - 2)
-```
-
-**Requirements:**
-
-- Naive recursive implementation matching the mathematical definition
-- No memoization or dynamic programming
-- No iterative loops or accumulator patterns
-- No algorithmic optimizations beyond compiler's automatic optimizations
-
-**Directory naming**: `submissions/fibonacci/{Compiler}_{Version}_{Author}_base/`
-
-**Use case**: Comparing how different compilers optimize the same recursive algorithm
-
-### Open Mode (Real-World Competition)
-
-**Purpose**: Showcase compiler ecosystem capabilities with any optimization technique
-
-**Allowed**:
-
-- Any algorithmic approach (recursive, iterative, memoized, closed-form)
-- Metaprogramming and code generation techniques
-- Loop unrolling, constant folding, or any compiler-specific optimizations
-- Multiple submissions per compiler/author using unique slugs
-
-**Directory naming**:
-
-- Generic implementation: `submissions/fibonacci/{Compiler}_{Version}_{Author}_open/`
-- Specific optimization: `submissions/fibonacci/{Compiler}_{Version}_{Author}_open_{slug}/`
-
-**Slug examples** (optional): `memoized`, `iterative`, `unrolled`, `closedform`
-
-**Use case**: Demonstrating best achievable performance for fibonacci computation
-
-### Mode Selection
-
-When creating a submission:
-
-```bash
-# Base mode (prescribed naive recursive algorithm)
-cape submission new fibonacci MyCompiler 1.0.0 handle --mode base
-
-# Open mode (generic/default optimization)
-cape submission new fibonacci MyCompiler 1.0.0 handle --mode open
-
-# Open mode (specific optimization with slug)
-cape submission new fibonacci MyCompiler 1.0.0 handle --mode open --slug memoized
-```
-
-Reports show both modes by default, or filter with `--mode base` or `--mode open`.
-
-## TL;DR
-
-Implement a Fibonacci function that computes **fibonacci(25) = 75025** and compile it as a fully-applied UPLC program.
-
-**Required Files**: Submit `fibonacci.uplc`, `metadata.json`, `metrics.json` to `submissions/fibonacci/{Compiler}_{Version}_{Handle}/`
-
-**Target**: `fibonacci(25)` → Expected result: `75025`  
-**Metrics**: CPU units, Memory units, Script size (bytes), Term size  
-**Constraints**: Plutus Core 1.1.0, Plutus V3 recommended, CEK machine budget limits  
-**Implementation**: Choose recursive, iterative, or memoized approach
-
----
+The Fibonacci benchmark is a synthetic computational scenario designed to measure the performance characteristics of algorithms implemented as UPLC programs. This open optimization scenario allows complete freedom in implementation approach, enabling compilers to showcase their best capabilities including optimization techniques, metaprogramming, and alternative algorithms.
 
 ## Exact Task
 
@@ -88,108 +12,28 @@ Implement a Fibonacci function and compile it as a **fully-applied UPLC program*
 
 ### Core Requirements
 
-1. **Function Implementation**: Create a function that computes Fibonacci numbers using the mathematical definition:
-   - `fibonacci(1) = 1`
-   - `fibonacci(2) = 1`
-   - `fibonacci(n) = fibonacci(n-1) + fibonacci(n-2)` for n > 2
+1. **Function Implementation**: Create a function that computes Fibonacci numbers using any method:
+   - Naive recursion: `fibonacci(n) = fibonacci(n-1) + fibonacci(n-2)`
+   - Iterative approach with accumulators
+   - Memoization or dynamic programming
+   - Closed-form solution (Binet's formula)
+   - Any other approach that correctly computes Fibonacci numbers
 
-2. **Full Application**: The UPLC program must be fully-applied with the target value (25) baked in during compilation, not passed as a parameter.
+2. **Full Application**: The UPLC program must be fully-applied with the target value (25) baked in during compilation, not passed as a parameter. The program should execute immediately to produce the result.
 
 3. **Target Computation**: `fibonacci(25)` must produce exactly `75025`
 
-### Implementation Approaches
+### Implementation Freedom
 
-**Base Mode**: Must use the prescribed naive recursive algorithm (see Evaluation Modes section above).
+You have complete freedom to:
 
-**Open Mode**: Complete freedom in implementation approach - recursive, iterative, memoized, closed-form, or any other method that correctly computes Fibonacci numbers. Choose the approach that showcases your compiler's best capabilities.
+- Choose any algorithmic approach (recursive, iterative, memoized, closed-form, etc.)
+- Use metaprogramming and code generation techniques
+- Apply loop unrolling, constant folding, or compiler-specific optimizations
+- Leverage your compiler's unique strengths and capabilities
+- Submit multiple variants with different optimization strategies (use variant suffixes: `_memoized`, `_iterative`, etc.)
 
----
-
-## Acceptance Criteria
-
-Your submission passes if:
-
-- ✅ **Correctness**: Program outputs exactly `75025`
-- ✅ **Budget Compliance**: Executes within CEK machine CPU and memory limits
-- ✅ **Determinism**: Produces identical results across multiple executions
-- ✅ **Self-Contained**: No external dependencies or parameters
-- ✅ **File Format**: Valid UPLC program that can be executed by the CEK evaluator
-
----
-
-## Metrics Recorded
-
-All submissions are measured on these standardized metrics:
-
-| Metric | Description | Purpose |
-| --- | --- | --- |
-| **CPU Units** | Total execution units consumed | Computational efficiency |
-| **Memory Units** | Peak memory usage during execution | Memory efficiency |
-| **Script Size** | Compiled UPLC script size in bytes | Code generation efficiency |
-| **Term Size** | UPLC term representation size | Optimization effectiveness |
-
-**Measurement Environment**: Standard CEK machine evaluator with default budget limits.
-
-### Performance Context
-
-**Why fibonacci(25)?**
-
-- **Computationally Significant**: ~242,785 recursive calls in naive implementation
-- **Budget Safe**: Fits comfortably within CEK machine limits
-- **Optimization Sensitive**: Large enough to show compiler differences
-- **Manageable**: Not so large as to create measurement difficulties
-
-**Expected Performance Ranges** (approximate):
-
-- **Recursive**: Higher CPU usage, demonstrates optimization capabilities
-- **Iterative**: Lower CPU usage, more predictable memory patterns
-- **Memoized**: Moderate CPU, higher memory usage
-
----
-
-## Submission Checklist
-
-Before submitting your implementation:
-
-- [ ] **Verify Result**: Program produces exactly `75025` when executed
-- [ ] **Test Budget**: Execution completes without budget exhaustion
-- [ ] **Prepare Files**:
-  - [ ] `fibonacci.uplc` - Your compiled UPLC program
-  - [ ] `metadata.json` - Compiler info, optimization settings, implementation notes
-  - [ ] `metrics.json` - Performance measurements (CPU, memory, script size, term size)
-  - [ ] `README.md` - Brief description of your approach
-- [ ] **Directory Structure**: Place in `submissions/fibonacci/{Compiler}_{Version}_{Handle}/`
-- [ ] **Schema Validation**: Ensure JSON files match required schemas
-
-### File Templates
-
-Use these templates from `submissions/TEMPLATE/`:
-
-- `metadata-template.json` for compiler and build information
-- `metrics-template.json` for performance measurements
-
----
-
-## Local Validation
-
-1. **Functional Test**: Execute your UPLC program and verify output is `75025`
-2. **Budget Test**: Ensure execution completes within CEK machine limits
-3. **Consistency Test**: Run multiple times to confirm deterministic behavior
-4. **Schema Test**: Validate JSON files against schemas in `submissions/TEMPLATE/`
-
-### Example Validation Commands
-
-```bash
-# Measure your UPLC program (if using the cape tool)
-cape submission measure .
-
-# Verify correctness and validate submission files
-cape submission verify submissions/fibonacci/YourCompiler_1.0.0_YourHandle/
-```
-
-See USAGE.md at the project root for the full CLI reference.
-
----
+**Goal**: Demonstrate the best achievable performance for computing fibonacci(25) using your compiler.
 
 ## Technical Constraints
 
@@ -197,25 +41,25 @@ See USAGE.md at the project root for the full CLI reference.
 - **Plutus Version**: V3 recommended (V1, V2 acceptable)
 - **Budget Limits**: Must complete within standard CEK machine execution limits
 - **No External Dependencies**: Program must be self-contained
-- **Deterministic**: Must produce consistent results
+- **Deterministic**: Must produce consistent results across multiple executions
+
+## Performance Context
+
+**Why fibonacci(25)?**
+
+- **Target Result**: Produces exactly 75025
+- **Computationally Significant**: ~242,785 recursive calls in naive implementation
+- **Budget Safe**: Fits comfortably within CEK machine limits for all approaches
+- **Optimization Sensitive**: Large enough to show optimization effectiveness
+- **Manageable**: Not so large as to create measurement difficulties
+
+**Expected Performance Characteristics** (approximate):
+
+- **Naive Recursive**: Higher CPU usage, demonstrates compiler's recursion optimization
+- **Iterative**: Lower CPU usage, predictable memory patterns
+- **Memoized**: Moderate CPU, higher memory usage, demonstrates cache optimization
+- **Closed-form**: Very low CPU, demonstrates constant-time computation if feasible
 
 ---
 
-## Verification Points
-
-### Correctness Verification
-
-1. **Base Cases**: `fibonacci(1) = 1` and `fibonacci(2) = 1`
-2. **Small Values**: `fibonacci(3) = 2`, `fibonacci(4) = 3`, `fibonacci(5) = 5`
-3. **Target Value**: `fibonacci(25) = 75025`
-
-### Performance Verification
-
-1. **CPU Budget Compliance**: Must execute within CEK machine limits
-2. **Memory Budget Compliance**: Must not exceed memory allocation limits
-3. **Script Size**: Should be reasonably compact for the computation performed
-4. **Execution Consistency**: Should produce identical results across multiple runs
-
----
-
-_This benchmark serves as both a correctness test and performance comparison tool, enabling compiler authors to validate their recursive function handling while providing standardized metrics for community comparison._
+_This benchmark enables compiler authors to showcase optimization capabilities and demonstrate ecosystem innovation for Fibonacci computation._

@@ -1,10 +1,13 @@
 # Base/Open Mode System with Submission Slugs
 
-- Status: proposed
+- Status: superseded
 - Date: 2025-10-06
+- Superseded by: [20251009-scenario-based-approach-replacing-mode-system.md](20251009-scenario-based-approach-replacing-mode-system.md)
 - Tags: benchmarking, submissions, evaluation-modes, compiler-comparison
 
 Technical Story: [Issue #59](https://github.com/IntersectMBO/UPLC-CAPE/issues/59)
+
+> **Note**: This ADR describes the base/open mode system that was implemented in PR #60 but subsequently replaced by a scenario-based approach (see superseding ADR). The mode system added unnecessary complexity; the scenario-based approach achieves the same goals more simply.
 
 ## Context and Problem Statement
 
