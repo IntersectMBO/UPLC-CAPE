@@ -1,0 +1,28 @@
+{
+  "compiler": {
+    "name": "opshin",
+    "version": "0.26.0",
+    "commit_hash": "95a521f279746017f95ea47e6b59b976d16fb175"
+  },
+  "compilation_config": {
+    "target": "uplc",
+    "flags": ["compile", "fac.py", "--lib", "factorial", "-fno-unwrap-input", "-fno-wrap-output", "-funique-variable-names", "-O3"],
+    "environment": {
+      "dependencies": {
+        "opshin": "0.26.0"
+      }
+    }
+  },
+  "contributor": {
+    "name": "Niels",
+    "contact": "niels@opshin.dev",
+    "organization": "OpShin"
+  },
+  "submission": {
+    "date": "2025-10-09T14:00:00Z",
+    "mode": "open",
+    "slug": "default",
+    "implementation_notes": "opshin",
+    "source_available": true
+  }
+}
