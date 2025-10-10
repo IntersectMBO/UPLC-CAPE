@@ -15,13 +15,10 @@ if [[ -z "${PROJECT_ROOT:-}" ]]; then
 fi
 
 # Cape Submission Aggregate - Generates CSV report of all benchmark submissions
-# Usage: cape submission aggregate [--mode <base|open>]
-#
-# Options:
-#   --mode <base|open>  Filter submissions by mode (base or open)
+# Usage: cape submission aggregate
 #
 # Output:
-#   CSV with mode column as 2nd field: benchmark,mode,timestamp,language,...
+#   CSV format: benchmark,timestamp,language,version,user,cpu_units,memory_units,script_size_bytes,term_size,submission_dir
 
 # Early help
 if cape_help_requested "$@"; then
@@ -30,24 +27,15 @@ if cape_help_requested "$@"; then
 fi
 
 # Parse arguments
-MODE_FILTER=""
 while [[ $# -gt 0 ]]; do
   case "$1" in
-    --mode)
-      MODE_FILTER="$2"
-      if [ "$MODE_FILTER" != "base" ] && [ "$MODE_FILTER" != "open" ]; then
-        echo "Error: --mode must be 'base' or 'open'" >&2
-        exit 1
-      fi
-      shift 2
-      ;;
     -h | --help | help)
       cape_render_help "${BASH_SOURCE[0]}"
       exit 0
       ;;
     *)
       echo "Error: Unknown argument '$1'" >&2
-      echo "Usage: cape submission aggregate [--mode <base|open>]" >&2
+      echo "Usage: cape submission aggregate" >&2
       exit 1
       ;;
   esac
@@ -60,22 +48,8 @@ if [ ! -d "$PROJECT_ROOT/submissions" ]; then
   exit 1
 fi
 
-# Function to determine submission mode from directory name
-get_submission_mode() {
-  local dir_name="$1"
-
-  if [[ "$dir_name" =~ _base$ ]]; then
-    echo "base"
-  elif [[ "$dir_name" =~ _open($|_) ]]; then
-    echo "open"
-  else
-    # Legacy submissions without suffix are treated as open mode
-    echo "open"
-  fi
-}
-
-# Output CSV header with mode as 2nd column
-echo "benchmark,mode,timestamp,language,version,user,cpu_units,memory_units,script_size_bytes,term_size,submission_dir"
+# Output CSV header
+echo "benchmark,timestamp,language,version,user,cpu_units,memory_units,script_size_bytes,term_size,submission_dir"
 
 # Process all submissions (NUL-delimited for filename safety)
 while IFS= read -r -d '' metadata_file; do
@@ -95,14 +69,6 @@ while IFS= read -r -d '' metadata_file; do
   # Extract actual submission directory name
   actual_submission_dir="$(basename "$submission_dir")"
 
-  # Determine submission mode from directory name
-  submission_mode=$(get_submission_mode "$actual_submission_dir")
-
-  # Apply mode filter if specified
-  if [ -n "$MODE_FILTER" ] && [ "$submission_mode" != "$MODE_FILTER" ]; then
-    continue
-  fi
-
   # Extract data from metadata.json using basic JSON parsing (be tolerant to missing fields)
   compiler_name=$(grep -o '"name"[[:space:]]*:[[:space:]]*"[^"]*"' "$metadata_file" | head -1 | cut -d '"' -f4 || true)
   compiler_version=$(grep -o '"version"[[:space:]]*:[[:space:]]*"[^"]*"' "$metadata_file" | head -1 | cut -d '"' -f4 || true)
@@ -121,7 +87,7 @@ while IFS= read -r -d '' metadata_file; do
   script_size_bytes=$(jq -r '.measurements.script_size_bytes // 0' "$metrics_file" 2> /dev/null || true)
   term_size=$(jq -r '.measurements.term_size // 0' "$metrics_file" 2> /dev/null || true)
 
-  # Escape any commas in string fields and output CSV row with mode as 2nd column
+  # Escape any commas in string fields and output CSV row
   benchmark=$(echo "$benchmark" | sed 's/,/\\,/g')
   timestamp=$(echo "$timestamp" | sed 's/,/\\,/g')
   compiler_name=$(echo "$compiler_name" | sed 's/,/\\,/g')
@@ -129,5 +95,5 @@ while IFS= read -r -d '' metadata_file; do
   contributor_name=$(echo "$contributor_name" | sed 's/,/\\,/g')
   actual_submission_dir=$(echo "$actual_submission_dir" | sed 's/,/\\,/g')
 
-  echo "$benchmark,$submission_mode,$timestamp,$compiler_name,$compiler_version,$contributor_name,$cpu_units,$memory_units,$script_size_bytes,$term_size,$actual_submission_dir"
+  echo "$benchmark,$timestamp,$compiler_name,$compiler_version,$contributor_name,$cpu_units,$memory_units,$script_size_bytes,$term_size,$actual_submission_dir"
 done < <(find "$PROJECT_ROOT/submissions" -name "metadata.json" -path "*/[!T]*/*" -print0 | sort -z)

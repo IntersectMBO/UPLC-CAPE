@@ -1,38 +1,35 @@
 Usage:
-  cape submission new <scenario> <language> <version> <github-handle> --mode <base|open> [--slug <name>]
+  cape submission new <scenario> <language> <version> <github-handle> [variant]
 
 Required Arguments:
   <scenario>          Benchmark name (must exist in scenarios/)
   <language>          Compiler/language name (letters/digits/hyphens only)
   <version>           Compiler version (e.g., 1.52.0.0 or 1.1.17)
   <github-handle>     Your GitHub handle (1-39 chars, alphanumeric and hyphens)
-  --mode <base|open>  Evaluation mode (REQUIRED)
-                      base: Prescribed algorithm (compiler comparison)
-                      open: Any optimization (real-world competition)
 
-Options:
-  --slug <name>       Optional for open mode (e.g., 'memoized', 'unrolled', 'pfix')
-                      Omit for generic/default implementation
-                      Not allowed for base mode
+Optional Arguments:
+  [variant]           Optional variant identifier (e.g., 'memoized', 'iterative', 'pfix')
+                      Use when submitting multiple optimization approaches for same scenario
+                      Lowercase letters, digits, and hyphens only
 
 Examples:
-  # Base mode (prescribed algorithm for compiler comparison)
-  cape submission new fibonacci Plinth 1.53.0 Unisay --mode base
+  # Generic/default implementation
+  cape submission new fibonacci Plinth 1.53.0 Unisay
 
-  # Open mode with generic/default implementation (no slug)
-  cape submission new fibonacci Aiken 1.1.17 KtorZ --mode open
+  # Prescribed algorithm scenario (use scenario-specific directory)
+  cape submission new fibonacci_naive_recursion Plinth 1.53.0 Unisay
 
-  # Open mode with specific optimization variant
-  cape submission new fibonacci Plutarch 1.11.1 SeungheonOh --mode open --slug memoized
+  # Open optimization with specific variant
+  cape submission new fibonacci Plutarch 1.11.1 SeungheonOh memoized
+  cape submission new factorial Plutarch 1.11.1 SeungheonOh pfix
 
 Directory Naming:
-  - Base mode: <language>_<version>_<github-handle>_base
-  - Open mode (generic): <language>_<version>_<github-handle>_open
-  - Open mode (with slug): <language>_<version>_<github-handle>_open_<slug>
+  - Generic: <language>_<version>_<github-handle>
+  - With variant: <language>_<version>_<github-handle>_<variant>
 
 Notes:
   - Scenario must exist in scenarios/<scenario>/
-  - Mode is REQUIRED - must explicitly choose base or open
-  - Slug is optional for open mode; use only for specific optimization variants
-  - Base mode requires implementing the exact algorithm prescribed in the scenario
+  - Variant is optional; use only when submitting multiple optimization approaches
+  - For prescribed algorithm benchmarks, use scenario-specific directories
+    (e.g., fibonacci_naive_recursion, factorial_naive_recursion)
   - GitHub handle rules: 1-39 chars, alphanumeric and hyphens, cannot start/end with '-'
