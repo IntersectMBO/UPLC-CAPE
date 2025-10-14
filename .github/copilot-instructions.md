@@ -292,7 +292,6 @@ Low-level (single files):
 - `{scenario}.uplc` - Fully-applied UPLC program
 - `metadata.json` - Compiler/contributor info
 - `metrics.json` - Performance measurements
-- `config.json` - Compilation configuration
 - `README.md` - Implementation notes
 - `source/` - Optional source code
 

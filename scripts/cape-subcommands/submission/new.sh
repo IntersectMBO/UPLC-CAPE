@@ -182,16 +182,6 @@ sed -e "s/<scenario>/$SCENARIO/g" -e "s/<submission-id>/$SUBMISSION_FOLDER/g" \
 mkdir -p "$SUBMISSION_PATH/source"
 echo "# Optional: Place your source code files here" > "$SUBMISSION_PATH/source/.gitkeep"
 
-# Create optional config.json template
-cat > "$SUBMISSION_PATH/config.json" << 'EOF'
-{
-  "comment": "Optional: Include compilation parameters that affect UPLC output",
-  "optimization_flags": [],
-  "compiler_settings": {},
-  "build_environment": {}
-}
-EOF
-
 echo "✅ Submission folder initialized successfully!"
 echo "📂 Path: $SUBMISSION_PATH"
 if [ -n "$VARIANT" ]; then
@@ -207,4 +197,3 @@ if [ -n "$VARIANT" ]; then
   echo "5. Document optimization approach for variant '$VARIANT'"
 fi
 echo "$([ -n "$VARIANT" ] && echo '6' || echo '5'). (Optional) Add source code to source/ directory"
-echo "$([ -n "$VARIANT" ] && echo '7' || echo '6'). (Optional) Update config.json with compilation parameters"

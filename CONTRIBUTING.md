@@ -32,10 +32,7 @@ The submission folder **must** contain:
 4. _(Optional)_ **`source/`**
    - Original source code (e.g. `fibonacci.plinth`) if you choose to publish it.
 
-5. _(Optional)_ **`config.json`**
-   - Compilation parameters (flags, optimization levels) that affect the generated UPLC.
-
-6. **`README.md`**
+5. **`README.md`**
    - Implementation notes using the template from `submissions/<template-name>/benchmark-README-template.md`.
 
 > Note: Templates are starting points for files you edit. Schemas are used by tooling to validate your JSON files.
@@ -93,7 +90,7 @@ For those who prefer not to modify the nix environment:
    cape submission verify --all
    ```
 
-4. (Optional) Add `source/` and `config.json` if you wish to share your source or compilation parameters.
+4. (Optional) Add `source/` if you wish to share your source code.
 5. Commit and push to your fork.
 6. Open a pull request against the `main` branch.
 
