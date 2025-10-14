@@ -205,6 +205,12 @@ verify_submission_dir() {
     cape_success "✓ metrics.json conforms to $(basename "$schema_metrics")"
   else
     cape_error "✗ metrics.json does not conform to $(basename "$schema_metrics")"
+    # Display detailed validation errors
+    local errors
+    errors=$(echo "$result" | jq -r '.errors[]? | "  - \(.path): \(.message)"' 2> /dev/null)
+    if [[ -n "$errors" ]]; then
+      echo "$errors" >&2
+    fi
     ok=0
   fi
 
@@ -222,6 +228,12 @@ verify_submission_dir() {
       cape_success "✓ metadata.json conforms to $(basename "$schema_metadata")"
     else
       cape_error "✗ metadata.json does not conform to $(basename "$schema_metadata")"
+      # Display detailed validation errors
+      local metadata_errors
+      metadata_errors=$(echo "$metadata_result" | jq -r '.errors[]? | "  - \(.path): \(.message)"' 2> /dev/null)
+      if [[ -n "$metadata_errors" ]]; then
+        echo "$metadata_errors" >&2
+      fi
       ok=0
     fi
   fi

@@ -184,7 +184,49 @@ The output includes formatted metrics, best value indicators, and submission met
    - Replace the placeholder UPLC with your fully-applied program (no parameters).
    - Path:
      - submissions/fibonacci/MyCompiler_1.0.0_myhandle/fibonacci.uplc
-   - The program should compute the scenario’s required result deterministically within budget.
+   - The program should compute the scenario's required result deterministically within budget.
+
+1. Provide metadata
+
+   Create `metadata.json` according to `submissions/TEMPLATE/metadata.schema.json` (see also `metadata-template.json`).
+
+   ```json
+   {
+     "compiler": {
+       "name": "MyCompiler",
+       "version": "1.0.0",
+       "commit_hash": "a1b2c3d4e5f6789012345678901234567890abcd"
+     },
+     "compilation_config": {
+       "target": "uplc",
+       "optimization_level": "O2",
+       "flags": ["--inline-functions", "--optimize-recursion"],
+       "environment": {
+         "dependencies": {
+           "plutus-tx": "1.52.0.0",
+           "plutus-core": "1.52.0.0"
+         }
+       }
+     },
+     "contributor": {
+       "name": "myhandle",
+       "organization": "MyOrganization",
+       "contact": "myhandle@example.com"
+     },
+     "submission": {
+       "date": "2025-01-15T00:00:00Z",
+       "source_available": true,
+       "source_repository": "https://github.com/myorg/mycompiler-submissions",
+       "source_commit_hash": "9876543210fedcba9876543210fedcba98765432",
+       "implementation_notes": "Optimized recursive implementation using memoization. See source/ directory for full code and build instructions."
+     }
+   }
+   ```
+
+   **For reproducibility**, include:
+   - `compiler.commit_hash`: Exact compiler version used
+   - `compilation_config.environment.dependencies`: All dependency versions
+   - `submission.source_repository` and `submission.source_commit_hash`: Link to source code with exact commit
 
 1. Verify and measure
 
@@ -276,32 +318,6 @@ The output includes formatted metrics, best value indicators, and submission met
        "notes": "Optional notes."
      }
      ```
-
-1. Provide metadata
-
-   Create `metadata.json` according to `submissions/TEMPLATE/metadata.schema.json` (see also `metadata-template.json`).
-
-   ```json
-   {
-     "compiler": {
-       "name": "MyCompiler",
-       "version": "1.0.0"
-     },
-     "compilation_config": {
-       "target": "uplc",
-       "optimization_level": "O2",
-       "flags": []
-     },
-     "contributor": {
-       "name": "myhandle"
-     },
-     "submission": {
-       "date": "2025-01-15T00:00:00Z",
-       "source_available": false,
-       "implementation_notes": "Brief explanation of approach."
-     }
-   }
-   ```
 
 1. Document
    - Add notes to README.md inside your submission folder (implementation choices, optimizations, caveats).

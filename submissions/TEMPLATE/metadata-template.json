@@ -22,7 +22,7 @@
   "submission": {
     "date": "<ISO-8601 timestamp>",
     "source_available": "<boolean>",
-    "source_repository": "<optional string>",
+    "source_repository": "<optional URI - must be valid URI format if provided>",
     "implementation_notes": "<string>"
   }
 }
