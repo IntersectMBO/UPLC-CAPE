@@ -280,6 +280,23 @@ main() {
     "verify help" "(cd \"$PROJECT_ROOT\" && PROJECT_ROOT=\"$SANDBOX_DIR\" bash \"$REPO_ROOT/scripts/cape-subcommands/submission/verify.sh\" --help)" 5 "" \
     "measure help" "(cd \"$PROJECT_ROOT\" && PROJECT_ROOT=\"$SANDBOX_DIR\" bash \"$REPO_ROOT/scripts/cape-subcommands/submission/measure.sh\" --help)" 5 ""
 
+  # Schema validation error reporting tests
+  test_group "schema validation error reporting" \
+    "create test submission for schema errors" \
+    "(cd \"$PROJECT_ROOT\" && PROJECT_ROOT=\"$SANDBOX_DIR\" bash \"$REPO_ROOT/scripts/cape-subcommands/submission/new.sh\" fibonacci SchemaTest 1.0 testuser)" 15 "" \
+    "create invalid metadata (wrong type for source_available)" \
+    "jq '.submission.source_available = \"true\"' $SANDBOX_DIR/submissions/fibonacci/SchemaTest_1.0_testuser/metadata.json > $SANDBOX_DIR/submissions/fibonacci/SchemaTest_1.0_testuser/metadata_tmp.json && mv $SANDBOX_DIR/submissions/fibonacci/SchemaTest_1.0_testuser/metadata_tmp.json $SANDBOX_DIR/submissions/fibonacci/SchemaTest_1.0_testuser/metadata.json" 5 "" \
+    "verify detects type error and shows details" \
+    "(cd \"$PROJECT_ROOT\" && PROJECT_ROOT=\"$SANDBOX_DIR\" bash \"$REPO_ROOT/scripts/cape-subcommands/submission/verify.sh\" $SANDBOX_DIR/submissions/fibonacci/SchemaTest_1.0_testuser 2>&1 | grep -q 'is not of type')" 15 "fail" \
+    "restore metadata and add extra properties" \
+    "(cd \"$PROJECT_ROOT\" && PROJECT_ROOT=\"$SANDBOX_DIR\" bash \"$REPO_ROOT/scripts/cape-subcommands/submission/new.sh\" fibonacci SchemaTest2 1.0 testuser2)" 15 "" \
+    "add invalid extra properties to metadata" \
+    "jq '.submission.mode = \"open\" | .submission.slug = \"test\"' $SANDBOX_DIR/submissions/fibonacci/SchemaTest2_1.0_testuser2/metadata.json > $SANDBOX_DIR/submissions/fibonacci/SchemaTest2_1.0_testuser2/metadata_tmp.json && mv $SANDBOX_DIR/submissions/fibonacci/SchemaTest2_1.0_testuser2/metadata_tmp.json $SANDBOX_DIR/submissions/fibonacci/SchemaTest2_1.0_testuser2/metadata.json" 5 "" \
+    "verify detects additional properties and shows details" \
+    "(cd \"$PROJECT_ROOT\" && PROJECT_ROOT=\"$SANDBOX_DIR\" bash \"$REPO_ROOT/scripts/cape-subcommands/submission/verify.sh\" $SANDBOX_DIR/submissions/fibonacci/SchemaTest2_1.0_testuser2 2>&1 | grep -q 'Additional properties')" 15 "fail" \
+    "cleanup schema test submissions" \
+    "rm -rf $SANDBOX_DIR/submissions/fibonacci/SchemaTest_1.0_testuser $SANDBOX_DIR/submissions/fibonacci/SchemaTest2_1.0_testuser2" 5 ""
+
   # Reporting and aggregation
   test_group "reporting" \
     "report help" "(cd \"$PROJECT_ROOT\" && PROJECT_ROOT=\"$SANDBOX_DIR\" bash \"$REPO_ROOT/scripts/cape-subcommands/submission/report.sh\" --help)" 5 "" \

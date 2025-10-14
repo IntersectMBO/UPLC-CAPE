@@ -184,7 +184,33 @@ The output includes formatted metrics, best value indicators, and submission met
    - Replace the placeholder UPLC with your fully-applied program (no parameters).
    - Path:
      - submissions/fibonacci/MyCompiler_1.0.0_myhandle/fibonacci.uplc
-   - The program should compute the scenario’s required result deterministically within budget.
+   - The program should compute the scenario's required result deterministically within budget.
+
+1. Provide metadata
+
+   Create `metadata.json` according to `submissions/TEMPLATE/metadata.schema.json` (see also `metadata-template.json`).
+
+   ```json
+   {
+     "compiler": {
+       "name": "MyCompiler",
+       "version": "1.0.0"
+     },
+     "compilation_config": {
+       "target": "uplc",
+       "optimization_level": "O2",
+       "flags": []
+     },
+     "contributor": {
+       "name": "myhandle"
+     },
+     "submission": {
+       "date": "2025-01-15T00:00:00Z",
+       "source_available": false,
+       "implementation_notes": "Brief explanation of approach."
+     }
+   }
+   ```
 
 1. Verify and measure
 
@@ -276,32 +302,6 @@ The output includes formatted metrics, best value indicators, and submission met
        "notes": "Optional notes."
      }
      ```
-
-1. Provide metadata
-
-   Create `metadata.json` according to `submissions/TEMPLATE/metadata.schema.json` (see also `metadata-template.json`).
-
-   ```json
-   {
-     "compiler": {
-       "name": "MyCompiler",
-       "version": "1.0.0"
-     },
-     "compilation_config": {
-       "target": "uplc",
-       "optimization_level": "O2",
-       "flags": []
-     },
-     "contributor": {
-       "name": "myhandle"
-     },
-     "submission": {
-       "date": "2025-01-15T00:00:00Z",
-       "source_available": false,
-       "implementation_notes": "Brief explanation of approach."
-     }
-   }
-   ```
 
 1. Document
    - Add notes to README.md inside your submission folder (implementation choices, optimizations, caveats).
