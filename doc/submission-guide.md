@@ -7,6 +7,7 @@ This guide provides common information for all UPLC-CAPE benchmark submissions, 
 - [Metrics Explained](#metrics-explained)
 - [Acceptance Criteria](#acceptance-criteria)
 - [Submission Requirements](#submission-requirements)
+- [Source Code Reproducibility](#source-code-reproducibility)
 - [File Structure](#file-structure)
 - [Validation Workflow](#validation-workflow)
 - [Common Checklist](#common-checklist)
@@ -110,6 +111,154 @@ submissions/fibonacci_naive_recursion/Plinth_1.45.0.0_Unisay/  # Prescribed algo
 ```
 
 **Variant suffixes** (optional): Use when submitting multiple optimization approaches for the same scenario (e.g., `_memoized`, `_iterative`, `_pfix`).
+
+---
+
+## Source Code Reproducibility
+
+Reproducibility is a core principle of UPLC-CAPE. Reviewers and future users must be able to verify that your UPLC program was compiled correctly from source code. This section explains how to provide source code in a reproducible manner.
+
+### Why Reproducibility Matters
+
+- **Verification**: Allows the community to verify UPLC output matches source compilation
+- **Trust**: Builds confidence in benchmark results
+- **Learning**: Helps others understand compilation techniques and optimizations
+- **Future-proofing**: Ensures submissions remain verifiable over time
+
+### Option 1: Inline Source (`source/` directory)
+
+Include source files directly in your submission's `source/` directory.
+
+**When to use:**
+
+- Simple, self-contained programs
+- Single-file implementations
+- No complex build dependencies
+
+**What to include:**
+
+- All source files needed for compilation
+- `README.md` with build instructions
+- Any configuration files (e.g., `cabal.project`, `package.json`)
+
+**Limitations:**
+
+- May not capture full development environment
+- Complex multi-project setups can be difficult to replicate
+- Large codebases add unnecessary repository bloat
+
+**Example structure:**
+
+```
+submissions/fibonacci/MyCompiler_1.0.0_myhandle/
+├── fibonacci.uplc
+├── metadata.json
+├── metrics.json
+├── README.md
+└── source/
+    ├── README.md           # Build instructions
+    ├── Fibonacci.hs        # Source file
+    └── cabal.project       # Build configuration
+```
+
+### Option 2: External Repository Reference (Recommended)
+
+Reference a dedicated external repository with version pinning using git tags or commits.
+
+**When to use:**
+
+- Multi-file projects
+- Complex build environments
+- Multiple related submissions
+- Existing open-source projects
+
+**Best practices:**
+
+1. **Use a dedicated repository** for CAPE submissions (avoid coupling to main project)
+2. **Pin to specific versions** using git tags or commit hashes
+3. **Provide direct clickable links** to exact source files
+4. **Include build instructions** in the repository
+5. **Keep repository public and stable** (avoid deletion or making private)
+
+**Example `source/README.md` with clickable links:**
+
+````markdown
+# MyCompiler Fibonacci Implementation
+
+**Source Code**: [Fibonacci.hs](https://github.com/username/cape-submissions/blob/v1.0.0/fibonacci/Fibonacci.hs)
+
+**Repository**: https://github.com/username/cape-submissions **Tag**: `v1.0.0` (commit: `abc123def456...`) **Path**: `fibonacci/Fibonacci.hs`
+
+This submission uses MyCompiler 1.0.0 with optimizations enabled.
+
+## Reproducing the Compilation
+
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/username/cape-submissions
+   cd cape-submissions
+   ```
+````
+
+2. Check out the specific version:
+
+   ```bash
+   git checkout v1.0.0
+   ```
+
+3. Follow build instructions in the repository README
+
+4. The compiled UPLC output should match `fibonacci.uplc` in this submission
+
+For detailed build instructions and environment setup, see the repository README.
+
+````
+
+**GitHub URL formats for version-pinned links:**
+
+- Single file: `https://github.com/{owner}/{repo}/blob/{tag-or-commit}/{path/to/file}`
+- Directory: `https://github.com/{owner}/{repo}/tree/{tag-or-commit}/{path/to/directory}`
+
+### Metadata Fields for Source Code
+
+Your `metadata.json` should include these fields in the `submission` object:
+
+- **`source_available`** (boolean, required): Whether source code is publicly available
+- **`source_repository`** (string, optional): URL to source code repository
+- **`source_commit_hash`** (string, optional): Full 40-character git commit hash
+
+**Example:**
+
+```json
+{
+  "submission": {
+    "date": "2025-01-15T00:00:00Z",
+    "source_available": true,
+    "source_repository": "https://github.com/username/cape-submissions",
+    "source_commit_hash": "abc123def456789abc123def456789abc123def4",
+    "implementation_notes": "Iterative implementation with tail-call optimization"
+  }
+}
+````
+
+### Anti-patterns to Avoid
+
+- ❌ **Referencing `main` branch without version**: Repository can evolve, breaking reproducibility
+- ❌ **Referencing repositories that may disappear**: Use stable, dedicated repositories
+- ❌ **Including source without build instructions**: Viewers won't be able to reproduce compilation
+- ❌ **Mixing submission source with unrelated code**: Use dedicated repository or clear path structure
+- ❌ **Omitting version information**: Always include tags or commit hashes for external repositories
+
+### Quick Reference: When to Use Each Approach
+
+| Factor | Inline Source | External Repository |
+| --- | --- | --- |
+| **Complexity** | Simple, single-file | Multi-file, complex builds |
+| **Build Setup** | Minimal dependencies | Complex environment |
+| **Multiple Submissions** | One-off submission | Series of related submissions |
+| **Repository Size** | Small source files | Large codebase |
+| **Maintenance** | Self-contained | Centralized updates |
+| **Recommendation** | Good for simple cases | **Preferred for most cases** |
 
 ---
 
