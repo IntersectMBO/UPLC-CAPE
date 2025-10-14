@@ -113,6 +113,11 @@
           "format": "uri",
           "description": "URL to source code repository (if source_available is true)"
         },
+        "source_commit_hash": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{40}$",
+          "description": "Full Git commit hash (40 characters) of the source code used for this submission"
+        },
         "implementation_notes": {
           "type": "string",
           "description": "Notes about the implementation approach, algorithms, or design decisions"

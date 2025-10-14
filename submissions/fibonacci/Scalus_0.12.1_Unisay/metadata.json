@@ -17,6 +17,7 @@
     "date": "2025-10-08T15:00:00Z",
     "source_available": true,
     "source_repository": "https://github.com/Unisay/scalus-cape-submissions",
+    "source_commit_hash": "51067e87539321aa77aea6ddd764cef94352202e",
     "implementation_notes": "Scalus with default options"
   }
 }

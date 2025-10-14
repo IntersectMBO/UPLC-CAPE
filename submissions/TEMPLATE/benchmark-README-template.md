@@ -16,9 +16,38 @@
 
 ## Reproducibility
 
+### Source Code
+
 - **Source Available**: `<true|false>`
-- **Source Repository**: `<URL or N/A>`
-- **Compilation Config**: describe any non-default parameters
+
+#### For Inline Source (if using `source/` directory):
+
+- **Source Location**: `source/` directory in this submission
+- **Build Instructions**: See `source/README.md`
+
+#### For External Repository (recommended approach):
+
+- **Direct Link**: [SourceFile.ext](https://github.com/username/repo/blob/{tag-or-commit}/path/to/file)
+- **Repository**: `<repository URL>`
+- **Tag/Commit**: `<git tag>` or `<commit hash>`
+- **Source Path**: `<path/to/file/in/repo>`
+- **Build Instructions**: See repository README
+
+Example (External Repository):
+
+```markdown
+- **Direct Link**: [Fibonacci.scala](https://github.com/username/scalus-cape-submissions/blob/v1.0.0/fibonacci/Fibonacci.scala)
+- **Repository**: https://github.com/username/scalus-cape-submissions
+- **Tag/Commit**: `v1.0.0` (commit: `abc123def456...`)
+- **Source Path**: `fibonacci/Fibonacci.scala`
+- **Build Instructions**: See repository README for compilation steps
+```
+
+### Compilation Configuration
+
+- **Optimization Level**: `<O0|O1|O2|O3|custom>`
+- **Compilation Flags**: `<flags used>`
+- **Notable Configuration**: Describe any non-default parameters
 
 ## Notes
 
