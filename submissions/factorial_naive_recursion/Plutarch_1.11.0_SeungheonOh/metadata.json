@@ -1,0 +1,21 @@
+{
+  "compiler": {
+    "name": "Plutarch",
+    "version": "1.11.0",
+    "commit_hash": "427e49b0cbfd2ff97cdc91522a09e06edd7a7fa6"
+  },
+  "compilation_config": {
+    "target": "uplc",
+    "flags": []
+  },
+  "contributor": {
+    "name": "SeungheonOh",
+    "organization": "Intersect MBO"
+  },
+  "submission": {
+    "date": "2025-10-14T12:00:00Z",
+    "source_available": true,
+    "source_repository": "https://github.com/Unisay/plutarch-cape-submissions",
+    "implementation_notes": "Plutarch naive recursive implementation using standard library pfix combinator"
+  }
+}
