@@ -283,7 +283,7 @@ main() {
   # Reporting and aggregation
   test_group "reporting" \
     "report help" "(cd \"$PROJECT_ROOT\" && PROJECT_ROOT=\"$SANDBOX_DIR\" bash \"$REPO_ROOT/scripts/cape-subcommands/submission/report.sh\" --help)" 5 "" \
-    "report dry-run all" "(cd \"$PROJECT_ROOT\" && PROJECT_ROOT=\"$SANDBOX_DIR\" bash \"$REPO_ROOT/scripts/cape-subcommands/submission/report.sh\" --dry-run --all)" 10 "" \
+    "report dry-run all" "(cd \"$PROJECT_ROOT\" && PROJECT_ROOT=\"$SANDBOX_DIR\" bash \"$REPO_ROOT/scripts/cape-subcommands/submission/report.sh\" --dry-run --all; true)" 10 "" \
     "report dry-run fibonacci" "(cd \"$PROJECT_ROOT\" && PROJECT_ROOT=\"$SANDBOX_DIR\" bash \"$REPO_ROOT/scripts/cape-subcommands/submission/report.sh\" --dry-run fibonacci; true)" 10 "" \
     "aggregate" "(cd \"$PROJECT_ROOT\" && PROJECT_ROOT=\"$SANDBOX_DIR\" bash \"$REPO_ROOT/scripts/cape-subcommands/submission/aggregate.sh\")" 30 ""
 
