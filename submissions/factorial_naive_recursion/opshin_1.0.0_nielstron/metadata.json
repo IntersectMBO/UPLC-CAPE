@@ -23,6 +23,6 @@
     "date": "2025-10-14T23:00:00Z",
     "source_available": true,
     "source_repository": "https://github.com/OpShin/opshin-cape-submissions",
-    "implementation_notes": "commit ac4f5fd"
+    "source_commit_hash": "ac4f5fdef4a88bc97b7be1572628a98a3d35c557"
   }
 }
