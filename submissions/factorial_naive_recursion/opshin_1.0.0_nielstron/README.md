@@ -7,7 +7,7 @@
 ## Implementation Details
 
 - **Compiler**: `opshin`
-- **Implementation Approach**: `iterative`
+- **Implementation Approach**: naive recursion as prescribed.
 
 ## Performance Results
 
