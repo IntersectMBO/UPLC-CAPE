@@ -1,6 +1,6 @@
 # Benchmark Implementation Notes
 
-**Scenario**: `factorial`
+**Scenario**: `factorial_naive_recursion`
 
 **Submission ID**: `opshin_1.0.0_nielstron`
 
