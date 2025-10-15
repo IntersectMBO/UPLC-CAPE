@@ -2,7 +2,7 @@
 
 **Scenario**: `factorial`
 
-**Submission ID**: `opshin_1.0.0_nielstron` (Format: `Language_Version_GitHubHandle`)
+**Submission ID**: `opshin_1.0.0_nielstron`
 
 ## Implementation Details
 
