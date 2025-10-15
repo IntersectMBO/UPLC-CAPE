@@ -1,0 +1,28 @@
+{
+  "compiler": {
+    "name": "opshin",
+    "version": "0.26.1",
+    "commit_hash": "db8a9858d453ec625e2a3ce1be98130cf20abbb2"
+  },
+  "compilation_config": {
+    "optimization_level": "O3",
+    "target": "uplc",
+    "flags": ["--lib", "fibonacci", "-fno-unwrap-input", "-fno-wrap-output", "-funique-variable-names", "-O3"],
+    "environment": {
+      "dependencies": {
+        "uplc": "1.3.0"
+      }
+    }
+  },
+  "contributor": {
+    "name": "Niels Mündler",
+    "organization": "OpShin",
+    "contact": "niels@opshin.dev"
+  },
+  "submission": {
+    "date": "2025-10-14T23:00:00Z",
+    "source_available": true,
+    "source_repository": "https://github.com/OpShin/opshin-cape-submissions",
+    "source_commit_hash": "e9d934532514e956425b16b630a584f060f91250"
+  }
+}
