@@ -1,6 +1,6 @@
 # Benchmark Implementation Notes
 
-**Scenario**: `factorial`
+**Scenario**: `fibonacci`
 
 **Submission ID**: `opshin_1.0.0_nielstron`
 
