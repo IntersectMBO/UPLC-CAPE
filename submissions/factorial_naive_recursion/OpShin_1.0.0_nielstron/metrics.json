@@ -72,7 +72,7 @@
     }
   ],
   "execution_environment": {
-    "evaluator": "<evaluator-version>"
+    "evaluator": "unknown"
   },
   "measurements": {
     "cpu_units": {
@@ -94,7 +94,8 @@
     "script_size_bytes": 88,
     "term_size": 104
   },
-  "scenario": "factorial",
-  "timestamp": "2025-10-14T21:38:30Z",
+  "scenario": "factorial_naive_recursion",
+  "timestamp": "2025-10-16T07:52:09Z",
   "version": "1.0.0",
+  "notes": "Generated using UPLC-CAPE measure tool"
 }
