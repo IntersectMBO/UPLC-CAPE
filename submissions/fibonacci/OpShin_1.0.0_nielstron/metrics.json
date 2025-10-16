@@ -79,7 +79,7 @@
     }
   ],
   "execution_environment": {
-    "evaluator": "<evaluator-version>"
+    "evaluator": "unknown"
   },
   "measurements": {
     "cpu_units": {
@@ -102,6 +102,7 @@
     "term_size": 285
   },
   "scenario": "fibonacci",
-  "timestamp": "2025-10-14T21:51:21Z",
+  "timestamp": "2025-10-16T07:55:04Z",
   "version": "1.0.0",
+  "notes": "Generated using UPLC-CAPE measure tool"
 }
