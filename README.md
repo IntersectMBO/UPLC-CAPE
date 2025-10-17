@@ -407,10 +407,25 @@ Common tools:
 
 - cape … (project CLI)
 - cabal build (builds all Haskell components: library, executables, tests)
-- treefmt (format all files)
+- treefmt (format all files, including UPLC)
 - fourmolu (Haskell formatting)
+- pretty-uplc (UPLC pretty-printing)
 - adr (Architecture Decision Records)
 - mmdc -i file.mmd (diagram generation, if available)
+
+### UPLC Formatting
+
+UPLC files can be pretty-printed for improved readability:
+
+```zsh
+# Format a single UPLC file in place
+pretty-uplc submissions/fibonacci/MyCompiler_1.0.0_handle/fibonacci.uplc
+
+# Format all UPLC files (and other files) via treefmt
+treefmt
+```
+
+The `treefmt` command automatically formats all file types including UPLC files (`.uplc`). The pretty-printing uses the `plutus` executable from the Plutus repository and is available in the nix development shell.
 
 ---
 
