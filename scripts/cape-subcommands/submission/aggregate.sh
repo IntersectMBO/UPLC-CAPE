@@ -49,7 +49,7 @@ if [ ! -d "$PROJECT_ROOT/submissions" ]; then
 fi
 
 # Output CSV header
-echo "benchmark,timestamp,language,version,user,cpu_units,memory_units,script_size_bytes,term_size,submission_dir"
+echo "benchmark,timestamp,language,version,user,variant,cpu_units,memory_units,script_size_bytes,term_size,submission_dir"
 
 # Process all submissions (NUL-delimited for filename safety)
 while IFS= read -r -d '' metadata_file; do
@@ -87,13 +87,18 @@ while IFS= read -r -d '' metadata_file; do
   script_size_bytes=$(jq -r '.measurements.script_size_bytes // 0' "$metrics_file" 2> /dev/null || true)
   term_size=$(jq -r '.measurements.term_size // 0' "$metrics_file" 2> /dev/null || true)
 
+  # Extract variant from submission directory name (format: Compiler_Version_Author[_Variant])
+  # Split by underscore and check if 4th element exists
+  variant=$(echo "$actual_submission_dir" | awk -F_ '{if (NF >= 4) print $4; else print "default"}')
+
   # Escape any commas in string fields and output CSV row
   benchmark=$(echo "$benchmark" | sed 's/,/\\,/g')
   timestamp=$(echo "$timestamp" | sed 's/,/\\,/g')
   compiler_name=$(echo "$compiler_name" | sed 's/,/\\,/g')
   compiler_version=$(echo "$compiler_version" | sed 's/,/\\,/g')
   contributor_name=$(echo "$contributor_name" | sed 's/,/\\,/g')
+  variant=$(echo "$variant" | sed 's/,/\\,/g')
   actual_submission_dir=$(echo "$actual_submission_dir" | sed 's/,/\\,/g')
 
-  echo "$benchmark,$timestamp,$compiler_name,$compiler_version,$contributor_name,$cpu_units,$memory_units,$script_size_bytes,$term_size,$actual_submission_dir"
+  echo "$benchmark,$timestamp,$compiler_name,$compiler_version,$contributor_name,$variant,$cpu_units,$memory_units,$script_size_bytes,$term_size,$actual_submission_dir"
 done < <(find "$PROJECT_ROOT/submissions" -name "metadata.json" -path "*/[!T]*/*" -print0 | sort -z)

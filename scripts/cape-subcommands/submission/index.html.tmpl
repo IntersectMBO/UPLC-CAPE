@@ -268,12 +268,13 @@
                             <tr>
                                 <th onclick="sortTable('{{.name}}', 0)">Compiler</th>
                                 <th onclick="sortTable('{{.name}}', 1)">Version</th>
-                                <th onclick="sortTable('{{.name}}', 2)">Author</th>
-                                <th onclick="sortTable('{{.name}}', 3)">Date</th>
-                                <th class="numeric" onclick="sortTable('{{.name}}', 4)">CPU Units</th>
-                                <th class="numeric" onclick="sortTable('{{.name}}', 5)">Memory Units</th>
-                                <th class="numeric" onclick="sortTable('{{.name}}', 6)">Script Size</th>
-                                <th class="numeric" onclick="sortTable('{{.name}}', 7)">Term Size</th>
+                                <th onclick="sortTable('{{.name}}', 2)">Variant</th>
+                                <th onclick="sortTable('{{.name}}', 3)">Author</th>
+                                <th onclick="sortTable('{{.name}}', 4)">Date</th>
+                                <th class="numeric" onclick="sortTable('{{.name}}', 5)">CPU Units</th>
+                                <th class="numeric" onclick="sortTable('{{.name}}', 6)">Memory Units</th>
+                                <th class="numeric" onclick="sortTable('{{.name}}', 7)">Script Size</th>
+                                <th class="numeric" onclick="sortTable('{{.name}}', 8)">Term Size</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -281,6 +282,7 @@
                             <tr data-cpu="{{.cpu_units.value}}" data-memory="{{.memory_units.value}}" data-script="{{.script_size.value}}" data-term="{{.term_size.value}}">
                                 <td>{{.compiler}}</td>
                                 <td>{{.version}}</td>
+                                <td>{{.variant}}</td>
                                 <td>{{.author}}</td>
                                 <td>{{.date}}</td>
                                 <td class="numeric">
@@ -386,11 +388,11 @@
             // Sort rows
             rows.sort((a, b) => {
                 let aVal, bVal;
-                
-                if (columnIndex >= 4) {
+
+                if (columnIndex >= 5) {
                     // Numeric columns - use data attributes
                     const metrics = ['cpu', 'memory', 'script', 'term'];
-                    const metric = metrics[columnIndex - 4];
+                    const metric = metrics[columnIndex - 5];
                     aVal = parseInt(a.dataset[metric]) || 0;
                     bVal = parseInt(b.dataset[metric]) || 0;
                 } else {
