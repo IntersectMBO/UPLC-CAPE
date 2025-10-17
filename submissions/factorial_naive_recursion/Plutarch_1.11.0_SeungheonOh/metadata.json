@@ -1,0 +1,22 @@
+{
+  "compiler": {
+    "name": "Plutarch",
+    "version": "1.11.0",
+    "commit_hash": "427e49b0cbfd2ff97cdc91522a09e06edd7a7fa6"
+  },
+  "compilation_config": {
+    "optimization_level": "default",
+    "target": "uplc",
+    "flags": []
+  },
+  "contributor": {
+    "name": "SeungheonOh"
+  },
+  "submission": {
+    "date": "2025-10-17T00:00:00Z",
+    "source_available": true,
+    "source_repository": "https://github.com/Unisay/plutarch-cape-submissions",
+    "source_commit_hash": "50d90c9e2a0b995f0a76842b01312951e0ea09e2",
+    "implementation_notes": "Naive recursive factorial implementation using pfix for recursion and pif for conditional branching, following the prescribed algorithm from the factorial_naive_recursion scenario specification"
+  }
+}
