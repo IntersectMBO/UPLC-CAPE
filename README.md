@@ -112,9 +112,11 @@ Latest benchmark reports: [UPLC-CAPE Reports](https://intersectmbo.github.io/UPL
 
 | Benchmark | Type | Description | Status |
 | --- | --- | --- | --- |
-| [Fibonacci](scenarios/fibonacci.md) | Synthetic | Recursive algorithm performance | Ready |
-| [Factorial](scenarios/factorial.md) | Synthetic | Recursive algorithm performance | Ready |
-| [Two-Party Escrow](scenarios/two-party-escrow.md) | Real-world | Smart contract escrow validator | Ready |
+| [Fibonacci](scenarios/fibonacci/fibonacci.md) | Synthetic | Recursive algorithm performance | Ready |
+| [Fibonacci (Naive Recursion)](scenarios/fibonacci_naive_recursion/fibonacci_naive_recursion.md) | Synthetic | Prescribed naive recursive algorithm for compiler optimization comparison | Ready |
+| [Factorial](scenarios/factorial/factorial.md) | Synthetic | Recursive algorithm performance | Ready |
+| [Factorial (Naive Recursion)](scenarios/factorial_naive_recursion/factorial_naive_recursion.md) | Synthetic | Prescribed naive recursive algorithm for compiler optimization comparison | Ready |
+| [Two-Party Escrow](scenarios/two-party-escrow/two-party-escrow.md) | Real-world | Smart contract escrow validator | Ready |
 | Streaming Payments | Real-world | Payment channel implementation | Planned |
 | Simple DAO Voting | Real-world | Governance mechanism | Planned |
 | Time-locked Staking | Real-world | Staking protocol | Planned |
