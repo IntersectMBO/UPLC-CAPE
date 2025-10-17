@@ -1,0 +1,101 @@
+{
+  "evaluations": [
+    {
+      "cpu_units": 471986,
+      "description": "Factorial of 0 should return 1 (mathematical definition)",
+      "execution_result": "success",
+      "memory_units": 2302,
+      "name": "factorial_0"
+    },
+    {
+      "cpu_units": 1200033,
+      "description": "Factorial of 1 should return 1",
+      "execution_result": "success",
+      "memory_units": 4908,
+      "name": "factorial_1"
+    },
+    {
+      "cpu_units": 1928080,
+      "description": "Factorial of 2 should return 2",
+      "execution_result": "success",
+      "memory_units": 7514,
+      "name": "factorial_2"
+    },
+    {
+      "cpu_units": 2656127,
+      "description": "Factorial of 3 should return 6",
+      "execution_result": "success",
+      "memory_units": 10120,
+      "name": "factorial_3"
+    },
+    {
+      "cpu_units": 3384174,
+      "description": "Factorial of 4 should return 24",
+      "execution_result": "success",
+      "memory_units": 12726,
+      "name": "factorial_4"
+    },
+    {
+      "cpu_units": 4112221,
+      "description": "Factorial of 5 should return 120",
+      "execution_result": "success",
+      "memory_units": 15332,
+      "name": "factorial_5"
+    },
+    {
+      "cpu_units": 6296362,
+      "description": "Factorial of 8 should return 40320",
+      "execution_result": "success",
+      "memory_units": 23150,
+      "name": "factorial_8"
+    },
+    {
+      "cpu_units": 7752456,
+      "description": "Factorial of 10 should return 3628800 (original benchmark target)",
+      "execution_result": "success",
+      "memory_units": 28362,
+      "name": "factorial_10"
+    },
+    {
+      "cpu_units": 9208550,
+      "description": "Factorial of 12 should return 479001600",
+      "execution_result": "success",
+      "memory_units": 33574,
+      "name": "factorial_12"
+    },
+    {
+      "cpu_units": 471986,
+      "description": "Factorial of negative number should return 1 based on current implementation (n <= 0 case)",
+      "execution_result": "success",
+      "memory_units": 2302,
+      "name": "factorial_negative"
+    }
+  ],
+  "execution_environment": {
+    "evaluator": "unknown"
+  },
+  "measurements": {
+    "cpu_units": {
+      "maximum": 9208550,
+      "median": 3020150,
+      "minimum": 471986,
+      "sum": 37481975,
+      "sum_negative": 0,
+      "sum_positive": 37481975
+    },
+    "memory_units": {
+      "maximum": 33574,
+      "median": 11423,
+      "minimum": 2302,
+      "sum": 140290,
+      "sum_negative": 0,
+      "sum_positive": 140290
+    },
+    "script_size_bytes": 40,
+    "term_size": 33
+  },
+  "scenario": "factorial",
+  "timestamp": "2025-10-17T12:21:06Z",
+  "version": "1.0.0",
+  "notes": "Generated using UPLC-CAPE measure tool"
+}

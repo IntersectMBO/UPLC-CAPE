@@ -79,7 +79,7 @@
     }
   ],
   "execution_environment": {
-    "evaluator": "PlutusTx.Eval-1.52.0.0"
+    "evaluator": "unknown"
   },
   "measurements": {
     "cpu_units": {
@@ -101,8 +101,8 @@
     "script_size_bytes": 47,
     "term_size": 41
   },
-  "scenario": "fibonacci_naive_recursion",
-  "timestamp": "2025-10-09T14:42:20Z",
+  "scenario": "fibonacci",
+  "timestamp": "2025-10-17T12:23:41Z",
   "version": "1.0.0",
-  "notes": "<optional notes>"
+  "notes": "Generated using UPLC-CAPE measure tool"
 }
