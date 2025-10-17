@@ -382,14 +382,14 @@ UPLC-CAPE/
 ## Version and Tooling Requirements
 
 - Development environment: Nix shell (`nix develop`) with optional direnv (`direnv allow`).
-- GHC: 9.6.6 (provided in Nix shell).
+- GHC: 9.6.7 (provided in Nix shell).
 - Plutus Core target: 1.1.0.
   - Use `plcVersion110` (for Haskell/PlutusTx code).
 - Package baselines (CHaP):
-  - plutus-core >= 1.52.0.0
-  - plutus-tx >= 1.52.0.0
-  - plutus-ledger-api >= 1.52.0.0
-  - plutus-tx-plugin >= 1.52.0.0
+  - plutus-core >= 1.45.0.0
+  - plutus-tx >= 1.45.0.0
+  - plutus-ledger-api >= 1.45.0.0
+  - plutus-tx-plugin >= 1.45.0.0
 
 ---
 
