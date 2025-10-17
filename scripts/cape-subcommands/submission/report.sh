@@ -255,7 +255,7 @@ set key off
 set auto x
 set yrange [0:$max_cpu_padded]
 EOF
-    # Add variant labels vertically on bars
+    # Add variant labels vertically on bars (skip "default")
     local i=1
     while read -r variant; do
       [ -n "$variant" ] || continue
@@ -263,7 +263,10 @@ EOF
       value=$(echo "$cpu_values" | sed -n "${i}p")
       local label_y
       label_y=$(awk -v v="$value" 'BEGIN{printf "%.0f", v*0.5}')
-      echo "set label \"$variant\" at $i,$label_y center rotate by 90 font 'Arial,10'" >> "$plot_file"
+      # Only add label if variant is not "default"
+      if [ "$variant" != "default" ]; then
+        echo "set label \"$variant\" at $i,$label_y center rotate by 90 font 'Arial,12' textcolor rgb 'gray30' front" >> "$plot_file"
+      fi
       ((i++))
     done <<< "$cpu_variants"
 
@@ -291,7 +294,10 @@ EOF
       [ -n "$label" ] || continue
       local value
       value=$(echo "$cpu_values" | sed -n "${i}p")
-      echo "$i $value $label" >> "$plot_file"
+      # Format label as two lines: "Compiler_Version\nContributor"
+      local display_label
+      display_label=$(echo "$label" | awk -F_ '{if (NF >= 4) NF = NF - 1; printf "%s_%s\\n\\n%s", $1, $2, $NF}')
+      echo "$i $value $display_label" >> "$plot_file"
       echo "e" >> "$plot_file"
       ((i++))
     done <<< "$cpu_labels"
@@ -326,7 +332,7 @@ set key off
 set auto x
 set yrange [0:$max_memory_padded]
 EOF
-    # Add variant labels vertically on bars
+    # Add variant labels vertically on bars (skip "default")
     local i=1
     while read -r variant; do
       [ -n "$variant" ] || continue
@@ -334,7 +340,10 @@ EOF
       value=$(echo "$memory_values" | sed -n "${i}p")
       local label_y
       label_y=$(awk -v v="$value" 'BEGIN{printf "%.0f", v*0.5}')
-      echo "set label \"$variant\" at $i,$label_y center rotate by 90 font 'Arial,10'" >> "$plot_file"
+      # Only add label if variant is not "default"
+      if [ "$variant" != "default" ]; then
+        echo "set label \"$variant\" at $i,$label_y center rotate by 90 font 'Arial,12' textcolor rgb 'gray30' front" >> "$plot_file"
+      fi
       ((i++))
     done <<< "$memory_variants"
 
@@ -362,7 +371,10 @@ EOF
       [ -n "$label" ] || continue
       local value
       value=$(echo "$memory_values" | sed -n "${i}p")
-      echo "$i $value $label" >> "$plot_file"
+      # Format label as two lines: "Compiler_Version\nContributor"
+      local display_label
+      display_label=$(echo "$label" | awk -F_ '{if (NF >= 4) NF = NF - 1; printf "%s_%s\\n\\n%s", $1, $2, $NF}')
+      echo "$i $value $display_label" >> "$plot_file"
       echo "e" >> "$plot_file"
       ((i++))
     done <<< "$memory_labels"
@@ -397,7 +409,7 @@ set key off
 set auto x
 set yrange [0:$max_script_size_padded]
 EOF
-    # Add variant labels vertically on bars
+    # Add variant labels vertically on bars (skip "default")
     local i=1
     while read -r variant; do
       [ -n "$variant" ] || continue
@@ -405,7 +417,10 @@ EOF
       value=$(echo "$script_values" | sed -n "${i}p")
       local label_y
       label_y=$(awk -v v="$value" 'BEGIN{printf "%.0f", v*0.5}')
-      echo "set label \"$variant\" at $i,$label_y center rotate by 90 font 'Arial,10'" >> "$plot_file"
+      # Only add label if variant is not "default"
+      if [ "$variant" != "default" ]; then
+        echo "set label \"$variant\" at $i,$label_y center rotate by 90 font 'Arial,12' textcolor rgb 'gray30' front" >> "$plot_file"
+      fi
       ((i++))
     done <<< "$script_variants"
 
@@ -433,7 +448,10 @@ EOF
       [ -n "$label" ] || continue
       local value
       value=$(echo "$script_values" | sed -n "${i}p")
-      echo "$i $value $label" >> "$plot_file"
+      # Format label as two lines: "Compiler_Version\nContributor"
+      local display_label
+      display_label=$(echo "$label" | awk -F_ '{if (NF >= 4) NF = NF - 1; printf "%s_%s\\n\\n%s", $1, $2, $NF}')
+      echo "$i $value $display_label" >> "$plot_file"
       echo "e" >> "$plot_file"
       ((i++))
     done <<< "$script_labels"
@@ -468,7 +486,7 @@ set key off
 set auto x
 set yrange [0:$max_term_size_padded]
 EOF
-    # Add variant labels vertically on bars
+    # Add variant labels vertically on bars (skip "default")
     local i=1
     while read -r variant; do
       [ -n "$variant" ] || continue
@@ -476,7 +494,10 @@ EOF
       value=$(echo "$term_values" | sed -n "${i}p")
       local label_y
       label_y=$(awk -v v="$value" 'BEGIN{printf "%.0f", v*0.5}')
-      echo "set label \"$variant\" at $i,$label_y center rotate by 90 font 'Arial,10'" >> "$plot_file"
+      # Only add label if variant is not "default"
+      if [ "$variant" != "default" ]; then
+        echo "set label \"$variant\" at $i,$label_y center rotate by 90 font 'Arial,12' textcolor rgb 'gray30' front" >> "$plot_file"
+      fi
       ((i++))
     done <<< "$term_variants"
 
@@ -504,7 +525,10 @@ EOF
       [ -n "$label" ] || continue
       local value
       value=$(echo "$term_values" | sed -n "${i}p")
-      echo "$i $value $label" >> "$plot_file"
+      # Format label as two lines: "Compiler_Version\nContributor"
+      local display_label
+      display_label=$(echo "$label" | awk -F_ '{if (NF >= 4) NF = NF - 1; printf "%s_%s\\n\\n%s", $1, $2, $NF}')
+      echo "$i $value $display_label" >> "$plot_file"
       echo "e" >> "$plot_file"
       ((i++))
     done <<< "$term_labels"
