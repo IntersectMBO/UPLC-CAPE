@@ -112,9 +112,11 @@ Latest benchmark reports: [UPLC-CAPE Reports](https://intersectmbo.github.io/UPL
 
 | Benchmark | Type | Description | Status |
 | --- | --- | --- | --- |
-| [Fibonacci](scenarios/fibonacci.md) | Synthetic | Recursive algorithm performance | Ready |
-| [Factorial](scenarios/factorial.md) | Synthetic | Recursive algorithm performance | Ready |
-| [Two-Party Escrow](scenarios/two-party-escrow.md) | Real-world | Smart contract escrow validator | Ready |
+| [Fibonacci](scenarios/fibonacci/fibonacci.md) | Synthetic | Recursive algorithm performance | Ready |
+| [Fibonacci (Naive Recursion)](scenarios/fibonacci_naive_recursion/fibonacci_naive_recursion.md) | Synthetic | Prescribed naive recursive algorithm for compiler optimization comparison | Ready |
+| [Factorial](scenarios/factorial/factorial.md) | Synthetic | Recursive algorithm performance | Ready |
+| [Factorial (Naive Recursion)](scenarios/factorial_naive_recursion/factorial_naive_recursion.md) | Synthetic | Prescribed naive recursive algorithm for compiler optimization comparison | Ready |
+| [Two-Party Escrow](scenarios/two-party-escrow/two-party-escrow.md) | Real-world | Smart contract escrow validator | Ready |
 | Streaming Payments | Real-world | Payment channel implementation | Planned |
 | Simple DAO Voting | Real-world | Governance mechanism | Planned |
 | Time-locked Staking | Real-world | Staking protocol | Planned |
@@ -380,14 +382,14 @@ UPLC-CAPE/
 ## Version and Tooling Requirements
 
 - Development environment: Nix shell (`nix develop`) with optional direnv (`direnv allow`).
-- GHC: 9.6.6 (provided in Nix shell).
+- GHC: 9.6.7 (provided in Nix shell).
 - Plutus Core target: 1.1.0.
   - Use `plcVersion110` (for Haskell/PlutusTx code).
 - Package baselines (CHaP):
-  - plutus-core >= 1.52.0.0
-  - plutus-tx >= 1.52.0.0
-  - plutus-ledger-api >= 1.52.0.0
-  - plutus-tx-plugin >= 1.52.0.0
+  - plutus-core >= 1.45.0.0
+  - plutus-tx >= 1.45.0.0
+  - plutus-ledger-api >= 1.45.0.0
+  - plutus-tx-plugin >= 1.45.0.0
 
 ---
 
