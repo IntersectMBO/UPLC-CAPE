@@ -1,13 +1,20 @@
 {
   "compiler": {
-    "name": "opshin",
+    "name": "OpShin",
     "version": "0.26.1",
     "commit_hash": "db8a9858d453ec625e2a3ce1be98130cf20abbb2"
   },
   "compilation_config": {
     "optimization_level": "O3",
     "target": "uplc",
-    "flags": ["--lib", "fibonacci", "-fno-unwrap-input", "-fno-wrap-output", "-funique-variable-names", "-O3"],
+    "flags": [
+      "--lib",
+      "fibonacci",
+      "-fno-unwrap-input",
+      "-fno-wrap-output",
+      "-funique-variable-names",
+      "-O3"
+    ],
     "environment": {
       "dependencies": {
         "uplc": "1.3.0"

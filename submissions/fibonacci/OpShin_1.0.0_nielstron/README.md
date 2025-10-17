@@ -6,7 +6,7 @@
 
 ## Implementation Details
 
-- **Compiler**: `opshin`
+- **Compiler**: `OpShin`
 - **Implementation Approach**: `iterative`
 
 ## Performance Results
