@@ -1,0 +1,7 @@
+name = "UPLC-CAPE/fibonacci"
+version = "main"
+compiler = "v1.1.19"
+plutus = "v3"
+description = "An implementation of fibonacci with pre-calculated results."
+dependencies = []
+[config]
