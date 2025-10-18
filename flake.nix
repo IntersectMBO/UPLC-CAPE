@@ -105,12 +105,11 @@
           ];
 
           # Build tools and dependencies
+          # Note: GHC and cabal-install are provided automatically by shellFor
           buildInputs =
             with pkgs;
             [
               # Haskell development tools
-              cabal-install
-              haskell.compiler.ghc966
               fourmolu
               haskellPackages.cabal-fmt
               haskellPackages.hlint
