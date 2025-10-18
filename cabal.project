@@ -10,8 +10,8 @@ repository cardano-haskell-packages
     d4a35cd3121aa00d18544bb0ac01c3e1691d618f462c46129271bccf39f7e8ee
 
 index-state:
-  -- Updated via cabal update on 2025-10-18
-  , hackage.haskell.org 2025-10-18T01:29:22Z
+  -- Using index-state available in haskell.nix binary cache (from nix flake update)
+  , hackage.haskell.org 2025-10-17T00:26:22Z
   -- Bump this if you need newer packages from CHaP
   , cardano-haskell-packages 2025-10-17T15:10:00Z
 
