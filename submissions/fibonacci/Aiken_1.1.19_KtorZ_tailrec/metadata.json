@@ -1,0 +1,25 @@
+{
+  "compiler": {
+    "name": "Aiken",
+    "version": "v1.1.19",
+    "commit_hash": "f49151c65dcf8f8483843509e3721c38d194e34e"
+  },
+  "compilation_config": {
+    "optimization_level": "Aiken",
+    "target": "uplc",
+    "flags": ["Aiken"],
+    "environment": {
+      "dependencies": {}
+    }
+  },
+  "contributor": {
+    "name": "Matthias Benkort",
+    "organization": "Cardano Foundation",
+    "contact": "@KtorZ"
+  },
+  "submission": {
+    "date": "2025-10-18T12:14:19.225Z",
+    "source_available": true,
+    "implementation_notes": "A less naive implementation accumulating a bit of the final result on each iteration (i.e. tail recursive)."
+  }
+}
