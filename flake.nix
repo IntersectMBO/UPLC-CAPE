@@ -257,13 +257,9 @@
               libsodium
               secp256k1
               libblst
-            ]
-            ++ pkgs.lib.optionals (!isDarwin) [
-              uplcMusl
-              plcMusl
-              pirMusl
-              plutusMusl
             ];
+            # Note: uplcMusl/plcMusl/pirMusl/plutusMusl not included in dev shell
+            # as they require building Agda. Use nix build .#packages.* for those.
 
           # Note: Built executables (measure, plinth-submissions) are NOT added to buildInputs
           # to avoid triggering their build (which includes heavy deps like Agda).
