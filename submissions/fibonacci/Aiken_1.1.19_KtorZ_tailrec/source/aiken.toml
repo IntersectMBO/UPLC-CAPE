@@ -1,0 +1,7 @@
+name = "UPLC-CAPE/fibonacci"
+version = "main"
+compiler = "v1.1.19"
+plutus = "v3"
+description = "A tail-rec optimised implementation of the fibonacci sequence"
+dependencies = []
+[config]
