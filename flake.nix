@@ -81,10 +81,9 @@
             "https://chap.intersectmbo.org/" = CHaP;
           };
 
-          # Use index-state compatible with available caches
-          # cabal.project specifies 2025-10-09, but cache only has up to 2025-09-12
-          index-state = "2025-09-12T00:00:00Z";
-          index-sha256 = "sha256-SRNJj9C18LQbd6vtCQsn3Y/7Pn1X972lP6njE/qzL2s=";
+          # Use index-state matching cabal.project (updated via cabal update)
+          index-state = "2025-10-18T01:29:22Z";
+          index-sha256 = "sha256-1/aYISCvm3l4JXipGSmmCL0DgIcrz0dvANmev/Uk2JI=";
 
           modules = [
             {
