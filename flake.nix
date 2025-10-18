@@ -263,12 +263,11 @@
               plcMusl
               pirMusl
               plutusMusl
-            ]
-            ++ [
-              # Add built executables to PATH
-              measureExe
-              plinthSubmissionsExe
             ];
+
+          # Note: Built executables (measure, plinth-submissions) are NOT added to buildInputs
+          # to avoid triggering their build (which includes heavy deps like Agda).
+          # Use 'cabal build' and 'cabal run' in the dev shell instead.
 
           shellHook = ''
             # Install log4brains via npx when needed
@@ -291,7 +290,7 @@
 
             # Show environment info
             echo "💻 Development Environment: haskell.nix with binary caches"
-            echo "📦 Packages: measure, plinth-submissions available in PATH"
+            echo "📦 Build with: cabal build exe:measure exe:plinth-submissions"
             echo ""
           '';
         };
