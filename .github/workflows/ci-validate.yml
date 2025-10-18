@@ -40,4 +40,8 @@ jobs:
         run: nix flake check --accept-flake-config
 
       - name: Verify all submissions
-        run: nix develop --accept-flake-config --command cape submission verify --all
+        run: |
+          nix develop --accept-flake-config --command bash -c "
+            export PATH='$PWD/result/bin:$PWD/result-1/bin:$PATH'
+            cape submission verify --all
+          "
