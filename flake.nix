@@ -81,9 +81,8 @@
             "https://chap.intersectmbo.org/" = CHaP;
           };
 
-          # Use index-state matching cabal.project (updated via cabal update)
-          index-state = "2025-10-18T01:29:22Z";
-          index-sha256 = "sha256-1/aYISCvm3l4JXipGSmmCL0DgIcrz0dvANmev/Uk2JI=";
+          # Note: index-state is read from cabal.project automatically
+          # Only specify here if you need to override it
 
           modules = [
             {
