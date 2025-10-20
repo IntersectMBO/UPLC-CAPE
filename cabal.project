@@ -10,11 +10,10 @@ repository cardano-haskell-packages
     d4a35cd3121aa00d18544bb0ac01c3e1691d618f462c46129271bccf39f7e8ee
 
 index-state:
-  -- Bump both the following dates if you need newer packages from Hackage
-  , hackage.haskell.org 2025-10-09T07:34:14Z
+  -- Using index-state available in haskell.nix binary cache (from nix flake update)
+  , hackage.haskell.org 2025-10-17T00:26:22Z
   -- Bump this if you need newer packages from CHaP
-  -- Latest index with Plutus 1.45 (released 2025-04-16)
-  , cardano-haskell-packages 2025-10-07T11:20:00Z
+  , cardano-haskell-packages 2025-10-17T15:10:00Z
 
 packages:
   ./.

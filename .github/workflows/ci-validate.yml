@@ -12,16 +12,8 @@ jobs:
     name: Build and Test
     runs-on: ubuntu-latest
     steps:
-      - name: Free Disk Space
-        uses: jlumbroso/free-disk-space@main
-        with:
-          tool-cache: false
-          android: true
-          dotnet: true
-          haskell: true
-          large-packages: true
-          docker-images: true
-          swap-storage: true
+      - name: Nothing but Nix - Optimize disk space
+        uses: wimpysworld/nothing-but-nix@v1
 
       - name: Checkout
         uses: actions/checkout@v4
@@ -38,8 +30,14 @@ jobs:
           name: uplc-cape
           authToken: ${{ secrets.CACHIX_AUTH_TOKEN }}
 
-      - name: Run test suite
-        run: nix develop --accept-flake-config --command cape test
+      - name: Build measure executable
+        run: nix build .#measure --accept-flake-config -o result
+
+      - name: Build plinth-submissions executable
+        run: nix build .#plinth-submissions --accept-flake-config -o result-plinth
+
+      - name: Run Haskell test suite
+        run: nix flake check --accept-flake-config
 
       - name: Verify all submissions
-        run: nix develop --accept-flake-config --command cape submission verify --all
+        run: nix develop --accept-flake-config --command bash -c "echo 'Checking result/bin:' && ls -lh result/bin/ && export PATH=\"\$PWD/result/bin:\$PATH\" && cape submission verify --all --verbose"
