@@ -175,6 +175,13 @@ cape_each_submission_dir() {
 # Returns either a direct binary path or "cabal run measure --"
 cape_measure_binary() {
   local binary_path
+
+  # First, check if measure is available in PATH (e.g., from nix build)
+  if binary_path=$(command -v measure 2> /dev/null) && [[ -x "$binary_path" ]]; then
+    echo "$binary_path"
+    return
+  fi
+
   # Try to get the binary path from cabal
   if binary_path=$(cd "$PROJECT_ROOT" && cabal list-bin measure 2> /dev/null) && [[ -x "$binary_path" ]]; then
     echo "$binary_path"
