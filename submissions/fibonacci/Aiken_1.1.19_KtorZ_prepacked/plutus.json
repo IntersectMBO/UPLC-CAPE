@@ -1,0 +1,13 @@
+{
+  "preamble": {
+    "title": "UPLC-CAPE/fibonacci",
+    "description": "An implementation of fibonacci with pre-calculated results.",
+    "version": "main",
+    "plutusVersion": "v3",
+    "compiler": {
+      "name": "Aiken",
+      "version": "v1.1.19+f49151c"
+    }
+  },
+  "validators": []
+}
