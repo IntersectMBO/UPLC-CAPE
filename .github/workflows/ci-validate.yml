@@ -12,16 +12,8 @@ jobs:
     name: Build and Test
     runs-on: ubuntu-latest
     steps:
-      - name: Free Disk Space
-        uses: jlumbroso/free-disk-space@main
-        with:
-          tool-cache: false
-          android: true
-          dotnet: true
-          haskell: true
-          large-packages: true
-          docker-images: true
-          swap-storage: true
+      - name: Nothing but Nix - Optimize disk space
+        uses: wimpysworld/nothing-but-nix@v1
 
       - name: Checkout
         uses: actions/checkout@v4
