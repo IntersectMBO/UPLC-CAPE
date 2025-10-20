@@ -253,19 +253,21 @@ set xtics rotate by -45
 set grid y
 set key off
 set auto x
-set yrange [0:$max_cpu_padded]
+set logscale y
+set yrange [*:*]
 EOF
     # Add variant labels vertically on bars (skip "default")
+    # For log scale: place all labels at graph center (geometric mean of min/max)
+    local min_cpu
+    min_cpu=$(echo "$cpu_values" | head -1)
+    local label_y_center
+    label_y_center=$(awk -v min="$min_cpu" -v max="$max_cpu" 'BEGIN{printf "%.0f", sqrt(min*max)}')
     local i=1
     while read -r variant; do
       [ -n "$variant" ] || continue
-      local value
-      value=$(echo "$cpu_values" | sed -n "${i}p")
-      local label_y
-      label_y=$(awk -v v="$value" 'BEGIN{printf "%.0f", v*0.5}')
       # Only add label if variant is not "default"
       if [ "$variant" != "default" ]; then
-        echo "set label \"$variant\" at $i,$label_y center rotate by 90 font 'Arial,12' textcolor rgb 'gray30' front" >> "$plot_file"
+        echo "set label \"$variant\" at $i,$label_y_center center rotate by 90 font 'Arial,12' textcolor rgb 'gray30' front" >> "$plot_file"
       fi
       ((i++))
     done <<< "$cpu_variants"
@@ -330,19 +332,21 @@ set xtics rotate by -45
 set grid y
 set key off
 set auto x
-set yrange [0:$max_memory_padded]
+set logscale y
+set yrange [*:*]
 EOF
     # Add variant labels vertically on bars (skip "default")
+    # For log scale: place all labels at graph center (geometric mean of min/max)
+    local min_memory
+    min_memory=$(echo "$memory_values" | head -1)
+    local label_y_center
+    label_y_center=$(awk -v min="$min_memory" -v max="$max_memory" 'BEGIN{printf "%.0f", sqrt(min*max)}')
     local i=1
     while read -r variant; do
       [ -n "$variant" ] || continue
-      local value
-      value=$(echo "$memory_values" | sed -n "${i}p")
-      local label_y
-      label_y=$(awk -v v="$value" 'BEGIN{printf "%.0f", v*0.5}')
       # Only add label if variant is not "default"
       if [ "$variant" != "default" ]; then
-        echo "set label \"$variant\" at $i,$label_y center rotate by 90 font 'Arial,12' textcolor rgb 'gray30' front" >> "$plot_file"
+        echo "set label \"$variant\" at $i,$label_y_center center rotate by 90 font 'Arial,12' textcolor rgb 'gray30' front" >> "$plot_file"
       fi
       ((i++))
     done <<< "$memory_variants"
@@ -407,19 +411,21 @@ set xtics rotate by -45
 set grid y
 set key off
 set auto x
-set yrange [0:$max_script_size_padded]
+set logscale y
+set yrange [*:*]
 EOF
     # Add variant labels vertically on bars (skip "default")
+    # For log scale: place all labels at graph center (geometric mean of min/max)
+    local min_script_size
+    min_script_size=$(echo "$script_values" | head -1)
+    local label_y_center
+    label_y_center=$(awk -v min="$min_script_size" -v max="$max_script_size" 'BEGIN{printf "%.0f", sqrt(min*max)}')
     local i=1
     while read -r variant; do
       [ -n "$variant" ] || continue
-      local value
-      value=$(echo "$script_values" | sed -n "${i}p")
-      local label_y
-      label_y=$(awk -v v="$value" 'BEGIN{printf "%.0f", v*0.5}')
       # Only add label if variant is not "default"
       if [ "$variant" != "default" ]; then
-        echo "set label \"$variant\" at $i,$label_y center rotate by 90 font 'Arial,12' textcolor rgb 'gray30' front" >> "$plot_file"
+        echo "set label \"$variant\" at $i,$label_y_center center rotate by 90 font 'Arial,12' textcolor rgb 'gray30' front" >> "$plot_file"
       fi
       ((i++))
     done <<< "$script_variants"
@@ -484,19 +490,21 @@ set xtics rotate by -45
 set grid y
 set key off
 set auto x
-set yrange [0:$max_term_size_padded]
+set logscale y
+set yrange [*:*]
 EOF
     # Add variant labels vertically on bars (skip "default")
+    # For log scale: place all labels at graph center (geometric mean of min/max)
+    local min_term_size
+    min_term_size=$(echo "$term_values" | head -1)
+    local label_y_center
+    label_y_center=$(awk -v min="$min_term_size" -v max="$max_term_size" 'BEGIN{printf "%.0f", sqrt(min*max)}')
     local i=1
     while read -r variant; do
       [ -n "$variant" ] || continue
-      local value
-      value=$(echo "$term_values" | sed -n "${i}p")
-      local label_y
-      label_y=$(awk -v v="$value" 'BEGIN{printf "%.0f", v*0.5}')
       # Only add label if variant is not "default"
       if [ "$variant" != "default" ]; then
-        echo "set label \"$variant\" at $i,$label_y center rotate by 90 font 'Arial,12' textcolor rgb 'gray30' front" >> "$plot_file"
+        echo "set label \"$variant\" at $i,$label_y_center center rotate by 90 font 'Arial,12' textcolor rgb 'gray30' front" >> "$plot_file"
       fi
       ((i++))
     done <<< "$term_variants"
