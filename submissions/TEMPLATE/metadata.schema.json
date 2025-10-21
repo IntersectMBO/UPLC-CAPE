@@ -76,24 +76,27 @@
       "required": ["target"],
       "additionalProperties": false
     },
-    "contributor": {
-      "type": "object",
-      "description": "Information about the contributor (all fields optional for privacy)",
-      "properties": {
-        "name": {
-          "type": "string",
-          "description": "Name or handle of the contributor"
+    "contributors": {
+      "type": "array",
+      "description": "Information about the contributors (all fields optional for privacy)",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Name or handle of the contributor"
+          },
+          "organization": {
+            "type": "string",
+            "description": "Organization or company affiliation"
+          },
+          "contact": {
+            "type": "string",
+            "description": "Contact information (email, GitHub handle, etc.)"
+          }
         },
-        "organization": {
-          "type": "string",
-          "description": "Organization or company affiliation"
-        },
-        "contact": {
-          "type": "string",
-          "description": "Contact information (email, GitHub handle, etc.)"
-        }
-      },
-      "additionalProperties": false
+        "additionalProperties": false
+      }
     },
     "submission": {
       "type": "object",

@@ -43,7 +43,7 @@ A **Submission** represents a complete implementation of a scenario by a specifi
 - `compiler_info`: Information about the compiler used
 - `compilation_config`: Configuration used during compilation
 - `benchmark_results`: Performance measurements
-- `contributor_info`: Information about who submitted this implementation
+- `contributors_info`: Information about who submitted this implementation
 - `submission_id`: Unique identifier (format: `{compiler}_{version}_{contributor}`)
 - `submission_date`: When the submission was created
 
@@ -121,7 +121,7 @@ erDiagram
     SUBMISSION }o--|| COMPILER : "produced by"
     SUBMISSION ||--|| COMPILATION_CONFIG : "uses"
     SUBMISSION ||--|| BENCHMARK_RESULTS : "measured by"
-    SUBMISSION }o--|| CONTRIBUTOR : "submitted by"
+    SUBMISSION }o--o{ CONTRIBUTOR : "submitted by"
 
     SCENARIO {
         string name PK
@@ -187,11 +187,11 @@ erDiagram
    - Each submission is produced by exactly one compiler name-version combination
    - Different versions of the same compiler tool are treated as distinct entities
 
-3. **Contributor to Submission**: One-to-Many
+3. **Contributor to Submission**: Many-to-Many
    - A contributor can submit multiple implementations for different scenarios
    - A contributor can submit multiple implementations for the same scenario using different compilers
    - Multiple contributors can submit implementations using the same compiler for the same scenario, provided the implementations differ in their UPLC programs or compilation configurations
-   - Each submission is associated with exactly one contributor
+   - Each submission can be associated with one or more contributors (to support collaborative work)
 
 ### Multiple Submissions per Compiler
 

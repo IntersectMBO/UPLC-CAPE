@@ -12,10 +12,12 @@
       "dependencies": {}
     }
   },
-  "contributor": {
-    "name": "KtorZ",
-    "organization": "Cardano Foundation"
-  },
+  "contributors": [
+    {
+      "name": "KtorZ",
+      "organization": "Cardano Foundation"
+    }
+  ],
   "submission": {
     "date": "2025-07-24T19:35:38.551Z",
     "source_available": true,

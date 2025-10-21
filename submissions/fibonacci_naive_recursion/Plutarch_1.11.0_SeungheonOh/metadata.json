@@ -9,9 +9,11 @@
     "target": "uplc",
     "flags": []
   },
-  "contributor": {
-    "name": "SeungheonOh"
-  },
+  "contributors": [
+    {
+      "name": "SeungheonOh"
+    }
+  ],
   "submission": {
     "date": "2025-10-17T00:00:00Z",
     "source_available": true,

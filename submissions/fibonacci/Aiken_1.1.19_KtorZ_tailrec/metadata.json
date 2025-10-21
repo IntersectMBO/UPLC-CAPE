@@ -12,11 +12,13 @@
       "dependencies": {}
     }
   },
-  "contributor": {
-    "name": "Matthias Benkort",
-    "organization": "Cardano Foundation",
-    "contact": "@KtorZ"
-  },
+  "contributors": [
+    {
+      "name": "Matthias Benkort",
+      "organization": "Cardano Foundation",
+      "contact": "@KtorZ"
+    }
+  ],
   "submission": {
     "date": "2025-10-18T12:14:19.225Z",
     "source_available": true,

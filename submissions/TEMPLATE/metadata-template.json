@@ -14,11 +14,13 @@
       }
     }
   },
-  "contributor": {
-    "name": "<optional string>",
-    "organization": "<optional string>",
-    "contact": "<optional string>"
-  },
+  "contributors": [
+    {
+      "name": "<optional string>",
+      "organization": "<optional string>",
+      "contact": "<optional string>"
+    }
+  ],
   "submission": {
     "date": "<ISO-8601 timestamp>",
     "source_available": "<boolean>",

@@ -16,10 +16,12 @@
       }
     }
   },
-  "contributor": {
-    "name": "Unisay",
-    "organization": "UPLC-CAPE Project"
-  },
+  "contributors": [
+    {
+      "name": "Unisay",
+      "organization": "UPLC-CAPE Project"
+    }
+  ],
   "submission": {
     "date": "2025-10-08T00:00:00Z",
     "source_available": true,

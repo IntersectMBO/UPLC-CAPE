@@ -285,11 +285,13 @@ Use `submissions/TEMPLATE/metadata-template.json` as a starting point:
       }
     }
   },
-  "contributor": {
-    "name": "myhandle", // All contributor fields optional
-    "organization": "My Company",
-    "contact": "me@example.com"
-  },
+  "contributors": [
+    {
+      "name": "myhandle", // All contributor fields optional
+      "organization": "My Company",
+      "contact": "me@example.com"
+    }
+  ],
   "submission": {
     "date": "2025-01-15T00:00:00Z",
     "source_available": true,

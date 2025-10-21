@@ -9,10 +9,12 @@
     "target": "uplc",
     "flags": ["Scalus"]
   },
-  "contributor": {
-    "name": "Unisay",
-    "organization": "Intersect MBO"
-  },
+  "contributors": [
+    {
+      "name": "Unisay",
+      "organization": "Intersect MBO"
+    }
+  ],
   "submission": {
     "date": "2025-10-08T15:00:00Z",
     "source_available": true,
