@@ -21,11 +21,13 @@
       }
     }
   },
-  "contributor": {
-    "name": "Niels Mündler",
-    "organization": "OpShin",
-    "contact": "niels@opshin.dev"
-  },
+  "contributors": [
+    {
+      "name": "Niels Mündler",
+      "organization": "OpShin",
+      "contact": "niels@opshin.dev"
+    }
+  ],
   "submission": {
     "date": "2025-10-14T23:00:00Z",
     "source_available": true,

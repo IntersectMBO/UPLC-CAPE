@@ -47,7 +47,7 @@ Validates the structure of submission metadata files that contain information ab
 
 **Optional fields:**
 
-- `contributor`: Contributor information (all subfields optional for privacy)
+- `contributors`: Array of contributor information (all subfields optional for privacy)
 - `source_repository`: URL to source repository (if source_available is true)
 
 ## Usage

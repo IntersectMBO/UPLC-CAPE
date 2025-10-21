@@ -78,7 +78,7 @@ scripts/           # CAPE CLI tools
 {
   "compiler": {"name": "Aiken", "version": "1.0.8", "commit_hash": "abc123"},
   "compilation_config": {"optimization_level": "O2", "target": "uplc"},
-  "contributor": {"name": "myhandle"},
+  "contributors": [{"name": "myhandle"}],
   "submission": {"date": "2025-07-18T10:00:00Z", "source_available": true}
 }
 ```

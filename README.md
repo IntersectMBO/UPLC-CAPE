@@ -210,11 +210,13 @@ The output includes formatted metrics, best value indicators, and submission met
          }
        }
      },
-     "contributor": {
-       "name": "myhandle",
-       "organization": "MyOrganization",
-       "contact": "myhandle@example.com"
-     },
+     "contributors": [
+       {
+         "name": "myhandle",
+         "organization": "MyOrganization",
+         "contact": "myhandle@example.com"
+       }
+     ],
      "submission": {
        "date": "2025-01-15T00:00:00Z",
        "source_available": true,
