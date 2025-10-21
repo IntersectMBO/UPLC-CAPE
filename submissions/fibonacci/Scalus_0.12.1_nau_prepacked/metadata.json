@@ -1,0 +1,26 @@
+{
+  "compiler": {
+    "name": "Scalus",
+    "version": "0.12.1",
+    "commit_hash": "7f6afb4da0b7688e0c9e3ee3aab87ed6ec1187bd"
+  },
+  "compilation_config": {
+    "optimization_level": "Scalus",
+    "target": "uplc",
+    "flags": ["Scalus"]
+  },
+  "contributors": [
+    {
+      "name": "Alexander Nemish",
+      "organization": "Lantr.io",
+      "contact": "@nau"
+    }
+  ],
+  "submission": {
+    "date": "2025-10-21T22:00:00Z",
+    "source_available": true,
+    "source_repository": "https://github.com/Unisay/scalus-cape-submissions",
+    "source_commit_hash": "1a5de418409fd92d3d3fea1bdf28dea1451ace64",
+    "implementation_notes": "Optimized prepacked implementation using pre-computed Fibonacci numbers stored in a ByteString for O(1) constant-time lookup. Pre-computed values for fib(0) through fib(25), each encoded as 3 bytes in big-endian format."
+  }
+}
