@@ -14,12 +14,9 @@
 
 - See [metrics.json](metrics.json) for detailed performance measurements
 
-## Reproducibility
+## Source Code
 
-- **Source Available**: true
-- **Source Repository**: <https://github.com/Unisay/scalus-cape-submissions>
-- **Source Path**: `src/fibonacci_prepacked/FibonacciPrepacked.scala`
-- **Build Instructions**: `sbt "runMain fibonacci_prepacked.compileFibonacciPrepacked"`
+- See [source/README.md](source/README.md) for source code and reproducibility instructions
 
 ## Notes
 
