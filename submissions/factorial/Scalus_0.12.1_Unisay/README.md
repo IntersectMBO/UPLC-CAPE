@@ -21,12 +21,6 @@ def factorial(n: BigInt): BigInt =
 - **Optimization:** Space efficient through accumulator pattern
 - **Edge case:** factorial(n) = 1 for n ≤ 0
 
-## Build
+## Source Code
 
-```bash
-sbt "runMain factorial.compileFactorialOpen"
-```
-
-## Output
-
-`submissions/factorial/Scalus_0.12.1_Unisay/factorial.uplc`
+- See [source/README.md](source/README.md) for source code and reproducibility instructions

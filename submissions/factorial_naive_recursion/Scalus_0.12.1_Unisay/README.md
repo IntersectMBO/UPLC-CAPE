@@ -18,12 +18,6 @@ def factorial(n: BigInt): BigInt =
 - **Optimization:** None (as prescribed by scenario specification)
 - **Edge case:** factorial(n) = 1 for n ≤ 0
 
-## Build
+## Source Code
 
-```bash
-sbt "runMain factorial.compileFactorialBase"
-```
-
-## Output
-
-`submissions/factorial_naive_recursion/Scalus_0.12.1_Unisay/factorial_naive_recursion.uplc`
+- See [source/README.md](source/README.md) for source code and reproducibility instructions

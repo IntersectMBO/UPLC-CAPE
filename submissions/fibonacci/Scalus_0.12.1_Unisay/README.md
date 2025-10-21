@@ -14,12 +14,9 @@
 
 - See [metrics.json](metrics.json) for detailed performance measurements
 
-## Reproducibility
+## Source Code
 
-- **Source Available**: true
-- **Source Repository**: <https://github.com/Unisay/scalus-cape-submissions>
-- **Source Path**: `fibonacci/FibonacciOpen.scala`
-- **Compilation Config**: default
+- See [source/README.md](source/README.md) for source code and reproducibility instructions
 
 ## Notes
 
