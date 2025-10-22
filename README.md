@@ -106,6 +106,21 @@ cape submission new two-party-escrow MyCompiler 1.0.0 myhandle
 
 Latest benchmark reports: [UPLC-CAPE Reports](https://intersectmbo.github.io/UPLC-CAPE/)
 
+### PR Preview Sites
+
+Pull requests that modify submission data automatically get isolated preview sites for review:
+
+- **Preview URL pattern**: `https://intersectmbo.github.io/UPLC-CAPE/pr-<number>/`
+- **Example**: PR #42 → `https://intersectmbo.github.io/UPLC-CAPE/pr-42/`
+- **Trigger conditions**: Previews only generate when `.uplc` or `metadata.json` files change in the `submissions/` directory
+- **Automatic updates**: Preview refreshes on every push to the PR branch
+- **Automatic cleanup**: Preview is removed when the PR is closed or merged
+- **Comment notification**: A sticky comment appears on the PR with the direct preview link
+
+**Note**: PRs that only modify documentation, README files, or code outside `submissions/` will not trigger preview generation.
+
+For implementation details, see [ADR: PR Preview Deployment](doc/adr/20251022-pr-preview-deployment-to-github-pages.md).
+
 ---
 
 ## Available benchmark scenarios
