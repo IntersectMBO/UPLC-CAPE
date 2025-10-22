@@ -22,6 +22,11 @@ cape submission aggregate              # Generate CSV report
 cape submission report fibonacci       # Generate HTML report with charts for benchmark
 cape submission report --all           # Generate HTML reports for all benchmarks
 
+# PR PREVIEWS
+# Note: PRs with submission data changes automatically get preview sites at:
+# https://intersectmbo.github.io/UPLC-CAPE/pr-<number>/
+# See README.md "PR Preview Sites" section for details
+
 # HELP
 cape --help                           # Main help
 cape benchmark --help                 # Command help
