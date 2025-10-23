@@ -86,7 +86,7 @@ jobs:
 
   preview:
     name: Deploy PR Preview
-    needs: build-measure
+    needs: [build-measure, validate]
     runs-on: ubuntu-latest
     # Only run on PRs (not workflow_dispatch)
     if: github.event_name == 'pull_request'
