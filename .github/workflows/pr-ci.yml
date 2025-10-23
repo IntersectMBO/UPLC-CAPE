@@ -1,14 +1,12 @@
-name: PR Preview Deployment
+name: PR CI
 
 on:
   pull_request:
-    types: [opened, synchronize, reopened]
-    paths:
-      - "submissions/**"
+  workflow_dispatch:
 
-# Allow only one concurrent deployment per PR
+# Cancel in-progress runs for the same PR
 concurrency:
-  group: pr-preview-${{ github.event.pull_request.number }}
+  group: pr-ci-${{ github.event.pull_request.number || github.run_id }}
   cancel-in-progress: true
 
 permissions:
@@ -16,9 +14,82 @@ permissions:
   pull-requests: write
 
 jobs:
-  deploy-preview:
-    name: Deploy PR Preview
+  build-measure:
+    name: Build Measure Executable
     runs-on: ubuntu-latest
+    steps:
+      - name: Nothing but Nix - Optimize disk space
+        uses: wimpysworld/nothing-but-nix@main
+
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install Nix
+        uses: cachix/install-nix-action@v31
+        with:
+          extra_nix_config: |
+            accept-flake-config = true
+
+      - name: Use Cachix (pull/push if token provided)
+        uses: cachix/cachix-action@v15
+        with:
+          name: uplc-cape
+          authToken: ${{ secrets.CACHIX_AUTH_TOKEN }}
+
+      - name: Build measure executable
+        run: nix build .#measure --accept-flake-config -o result
+
+      - name: Upload measure executable
+        uses: actions/upload-artifact@v4
+        with:
+          name: measure-executable
+          path: result/bin/measure
+          retention-days: 1
+
+  validate:
+    name: Build and Test
+    needs: build-measure
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install Nix
+        uses: cachix/install-nix-action@v31
+        with:
+          extra_nix_config: |
+            accept-flake-config = true
+
+      - name: Use Cachix (pull/push if token provided)
+        uses: cachix/cachix-action@v15
+        with:
+          name: uplc-cape
+          authToken: ${{ secrets.CACHIX_AUTH_TOKEN }}
+
+      - name: Download measure executable
+        uses: actions/download-artifact@v4
+        with:
+          name: measure-executable
+          path: result/bin
+
+      - name: Make measure executable
+        run: chmod +x result/bin/measure
+
+      - name: Build plinth-submissions executable
+        run: nix build .#plinth-submissions --accept-flake-config -o result-plinth
+
+      - name: Run Haskell test suite
+        run: nix flake check --accept-flake-config
+
+      - name: Verify all submissions
+        run: nix develop --accept-flake-config --command bash -c "echo 'Checking result/bin:' && ls -lh result/bin/ && export PATH=\"\$PWD/result/bin:\$PATH\" && cape submission verify --all --verbose"
+
+  preview:
+    name: Deploy PR Preview
+    needs: [build-measure, validate]
+    runs-on: ubuntu-latest
+    # Only run on PRs (not workflow_dispatch)
+    if: github.event_name == 'pull_request'
     steps:
       - name: Checkout PR branch
         uses: actions/checkout@v4
@@ -37,27 +108,30 @@ jobs:
             echo "has_changes=false" >> $GITHUB_OUTPUT
           fi
 
-      - name: Nothing but Nix - Optimize disk space
-        if: steps.check_changes.outputs.has_changes == 'true'
-        uses: wimpysworld/nothing-but-nix@v1
-
       - name: Install Nix
         if: steps.check_changes.outputs.has_changes == 'true'
-        uses: cachix/install-nix-action@v27
+        uses: cachix/install-nix-action@v31
         with:
           extra_nix_config: |
             accept-flake-config = true
 
       - name: Use Cachix (pull/push if token provided)
         if: steps.check_changes.outputs.has_changes == 'true'
-        uses: cachix/cachix-action@v14
+        uses: cachix/cachix-action@v15
         with:
           name: uplc-cape
           authToken: ${{ secrets.CACHIX_AUTH_TOKEN }}
 
-      - name: Build measure executable
+      - name: Download measure executable
         if: steps.check_changes.outputs.has_changes == 'true'
-        run: nix build .#measure --accept-flake-config -o result
+        uses: actions/download-artifact@v4
+        with:
+          name: measure-executable
+          path: result/bin
+
+      - name: Make measure executable
+        if: steps.check_changes.outputs.has_changes == 'true'
+        run: chmod +x result/bin/measure
 
       - name: Measure all submissions
         if: steps.check_changes.outputs.has_changes == 'true'

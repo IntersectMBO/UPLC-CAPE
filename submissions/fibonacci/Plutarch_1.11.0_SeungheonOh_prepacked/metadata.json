@@ -1,0 +1,24 @@
+{
+  "compiler": {
+    "name": "Plutarch",
+    "version": "1.11.0",
+    "commit_hash": "427e49b0cbfd2ff97cdc91522a09e06edd7a7fa6"
+  },
+  "compilation_config": {
+    "optimization_level": "Plutarch",
+    "target": "uplc",
+    "flags": ["Plutarch"]
+  },
+  "contributors": [
+    {
+      "name": "SeungheonOh"
+    }
+  ],
+  "submission": {
+    "date": "2025-10-21T00:00:00Z",
+    "source_available": true,
+    "source_repository": "https://github.com/Unisay/plutarch-cape-submissions",
+    "source_commit_hash": "454a9d474cfc6e7936a6b4ee3e1a90a2f2000200",
+    "implementation_notes": "Prepacked fibonacci implementation"
+  }
+}
