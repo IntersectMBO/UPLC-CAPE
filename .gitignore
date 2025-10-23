@@ -6,3 +6,5 @@ dist-newstyle/
 .hspec-failures
 .envrc.local
 build-and-deploy.sh
+result
+result-*
