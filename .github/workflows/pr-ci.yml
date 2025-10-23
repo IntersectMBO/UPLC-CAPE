@@ -19,19 +19,19 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Nothing but Nix - Optimize disk space
-        uses: wimpysworld/nothing-but-nix@v1
+        uses: wimpysworld/nothing-but-nix@main
 
       - name: Checkout
         uses: actions/checkout@v4
 
       - name: Install Nix
-        uses: cachix/install-nix-action@v27
+        uses: cachix/install-nix-action@v31
         with:
           extra_nix_config: |
             accept-flake-config = true
 
       - name: Use Cachix (pull/push if token provided)
-        uses: cachix/cachix-action@v14
+        uses: cachix/cachix-action@v15
         with:
           name: uplc-cape
           authToken: ${{ secrets.CACHIX_AUTH_TOKEN }}
@@ -55,13 +55,13 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Install Nix
-        uses: cachix/install-nix-action@v27
+        uses: cachix/install-nix-action@v31
         with:
           extra_nix_config: |
             accept-flake-config = true
 
       - name: Use Cachix (pull/push if token provided)
-        uses: cachix/cachix-action@v14
+        uses: cachix/cachix-action@v15
         with:
           name: uplc-cape
           authToken: ${{ secrets.CACHIX_AUTH_TOKEN }}
@@ -110,14 +110,14 @@ jobs:
 
       - name: Install Nix
         if: steps.check_changes.outputs.has_changes == 'true'
-        uses: cachix/install-nix-action@v27
+        uses: cachix/install-nix-action@v31
         with:
           extra_nix_config: |
             accept-flake-config = true
 
       - name: Use Cachix (pull/push if token provided)
         if: steps.check_changes.outputs.has_changes == 'true'
-        uses: cachix/cachix-action@v14
+        uses: cachix/cachix-action@v15
         with:
           name: uplc-cape
           authToken: ${{ secrets.CACHIX_AUTH_TOKEN }}
