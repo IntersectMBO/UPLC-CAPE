@@ -82,6 +82,8 @@
     "evaluator": "unknown"
   },
   "measurements": {
+    "block_cpu_budget_pct": 485.386118045,
+    "block_memory_budget_pct": 1294.200035483871,
     "cpu_units": {
       "maximum": 194154447218,
       "median": 11763758,
@@ -90,6 +92,7 @@
       "sum_negative": 0,
       "sum_positive": 213452041630
     },
+    "execution_fee_lovelace": 66290690,
     "memory_units": {
       "maximum": 802404022,
       "median": 49172,
@@ -98,11 +101,17 @@
       "sum_negative": 0,
       "sum_positive": 882162862
     },
+    "reference_script_fee_lovelace": 765,
     "script_size_bytes": 51,
-    "term_size": 49
+    "scripts_per_block": 0,
+    "scripts_per_tx": 0,
+    "term_size": 49,
+    "total_fee_lovelace": 66291455,
+    "tx_cpu_budget_pct": 1941.54447218,
+    "tx_memory_budget_pct": 5731.4573
   },
   "scenario": "fibonacci_naive_recursion",
-  "timestamp": "2025-10-09T14:42:19Z",
+  "timestamp": "2025-10-23T14:41:58Z",
   "version": "1.0.0",
   "notes": "Generated using UPLC-CAPE measure tool"
 }

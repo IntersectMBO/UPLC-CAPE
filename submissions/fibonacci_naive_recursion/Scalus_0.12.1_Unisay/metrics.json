@@ -82,6 +82,8 @@
     "evaluator": "<evaluator-version>"
   },
   "measurements": {
+    "block_cpu_budget_pct": 368.350423085,
+    "block_memory_budget_pct": 918.8171387096775,
     "cpu_units": {
       "maximum": 147340169234,
       "median": 8632244,
@@ -90,6 +92,7 @@
       "sum_negative": 0,
       "sum_positive": 161982627770
     },
+    "execution_fee_lovelace": 47815713,
     "memory_units": {
       "maximum": 569666626,
       "median": 34156,
@@ -98,11 +101,17 @@
       "sum_negative": 0,
       "sum_positive": 626287090
     },
+    "reference_script_fee_lovelace": 1155,
     "script_size_bytes": 77,
-    "term_size": 71
+    "scripts_per_block": 0,
+    "scripts_per_tx": 0,
+    "term_size": 71,
+    "total_fee_lovelace": 47816868,
+    "tx_cpu_budget_pct": 1473.40169234,
+    "tx_memory_budget_pct": 4069.0473285714284
   },
   "scenario": "fibonacci_naive_recursion",
-  "timestamp": "2025-10-09T14:42:21Z",
+  "timestamp": "2025-10-23T14:41:59Z",
   "version": "1.0.0",
   "notes": "<optional notes>"
 }
