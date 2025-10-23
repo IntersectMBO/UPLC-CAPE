@@ -123,6 +123,30 @@
       }
     },
     {
+      "name": "fibonacci_100",
+      "description": "Fibonacci of 100 should return 354224848179261915075",
+      "input": {
+        "type": "uplc",
+        "value": "(con integer 100)"
+      },
+      "expected": {
+        "type": "value",
+        "content": "(con integer 354224848179261915075)"
+      }
+    },
+    {
+      "name": "fibonacci_217",
+      "description": "Fibonacci of 217 should return 1001919737325604309473206237898433933302481297",
+      "input": {
+        "type": "uplc",
+        "value": "(con integer 217)"
+      },
+      "expected": {
+        "type": "value",
+        "content": "(con integer 1001919737325604309473206237898433933302481297)"
+      }
+    },
+    {
       "name": "fibonacci_negative",
       "description": "Fibonacci of negative number should return the negative number itself based on current implementation",
       "input": {

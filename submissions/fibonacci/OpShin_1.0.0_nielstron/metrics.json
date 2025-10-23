@@ -71,6 +71,20 @@
       "name": "fibonacci_25"
     },
     {
+      "cpu_units": 235581218,
+      "description": "Fibonacci of 100 should return 354224848179261915075",
+      "execution_result": "success",
+      "memory_units": 1269211,
+      "name": "fibonacci_100"
+    },
+    {
+      "cpu_units": 507522713,
+      "description": "Fibonacci of 217 should return 1001919737325604309473206237898433933302481297",
+      "execution_result": "success",
+      "memory_units": 2732561,
+      "name": "fibonacci_217"
+    },
+    {
       "cpu_units": 1289439,
       "description": "Fibonacci of negative number should return the negative number itself based on current implementation",
       "execution_result": "success",
@@ -83,26 +97,26 @@
   },
   "measurements": {
     "cpu_units": {
-      "maximum": 61296653,
-      "median": 14821553,
+      "maximum": 507522713,
+      "median": 21792818,
       "minimum": 1289439,
-      "sum": 240131414,
+      "sum": 983235345,
       "sum_negative": 0,
-      "sum_positive": 240131414
+      "sum_positive": 983235345
     },
     "memory_units": {
-      "maximum": 331254,
-      "median": 81134,
+      "maximum": 2732561,
+      "median": 118652,
       "minimum": 7402,
-      "sum": 1306476,
+      "sum": 5308248,
       "sum_negative": 0,
-      "sum_positive": 1306476
+      "sum_positive": 5308248
     },
     "script_size_bytes": 227,
     "term_size": 285
   },
   "scenario": "fibonacci",
-  "timestamp": "2025-10-16T07:55:04Z",
+  "timestamp": "2025-10-21T13:11:26Z",
   "version": "1.0.0",
   "notes": "Generated using UPLC-CAPE measure tool"
 }
