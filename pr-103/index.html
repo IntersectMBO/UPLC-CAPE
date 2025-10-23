@@ -1,0 +1,985 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UPLC-CAPE Performance Reports</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f8f9fa;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 30px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        /* Benchmark Summary Table Styles */
+        .benchmark-summary {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 40px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        .benchmark-summary h2 {
+            color: #667eea;
+            margin-bottom: 20px;
+        }
+        .controls {
+            margin-bottom: 15px;
+            text-align: right;
+        }
+        .controls button {
+            background-color: #667eea;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-left: 10px;
+            transition: background-color 0.3s ease;
+        }
+        .controls button:hover {
+            background-color: #5a67d8;
+        }
+        
+        /* Expandable Benchmark Sections */
+        .benchmark-section {
+            margin-bottom: 15px;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        .benchmark-header {
+            padding: 15px 20px;
+            background-color: #f8f9fa;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: background-color 0.2s ease;
+        }
+        .benchmark-header:hover {
+            background-color: #e9ecef;
+        }
+        .benchmark-header .name {
+            font-weight: 600;
+            color: #495057;
+            display: flex;
+            align-items: center;
+        }
+        .benchmark-header .name a {
+            color: #667eea;
+            text-decoration: underline;
+            margin-left: 5px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            text-transform: capitalize;
+        }
+        .benchmark-header .name a:hover {
+            color: #5a67d8;
+        }
+        .benchmark-header .name a::before {
+            content: "📊";
+            font-size: 0.9em;
+            margin-right: 5px;
+        }
+        .benchmark-header .toggle {
+            font-family: monospace;
+            margin-right: 10px;
+            user-select: none;
+        }
+        .benchmark-header .count {
+            color: #6c757d;
+            font-size: 0.9em;
+        }
+        .benchmark-content {
+            display: none;
+            padding: 0;
+            background-color: white;
+            animation: slideDown 0.3s ease;
+        }
+        .benchmark-content.expanded {
+            display: block;
+        }
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        /* Submission Table Styles */
+        .submission-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .submission-table th {
+            background-color: #f8f9fa;
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+            color: #495057;
+            border-bottom: 2px solid #dee2e6;
+            position: sticky;
+            top: 0;
+            cursor: pointer;
+            user-select: none;
+        }
+        .submission-table th:hover {
+            background-color: #e9ecef;
+        }
+        .submission-table th.numeric {
+            text-align: right;
+        }
+        .submission-table td {
+            padding: 12px;
+            border-bottom: 1px solid #dee2e6;
+        }
+        .submission-table td.numeric {
+            text-align: right;
+            font-family: 'Monaco', 'Menlo', monospace;
+        }
+        .submission-table tr:hover {
+            background-color: #f8f9fa;
+        }
+        .submission-table tr:last-child td {
+            border-bottom: none;
+        }
+        
+        /* Best value indicators */
+        .best-value {
+            color: #28a745;
+            font-weight: 600;
+        }
+        .best-value::after {
+            content: " ⭐";
+            font-size: 0.8em;
+        }
+        
+        /* Empty state */
+        .no-submissions {
+            padding: 20px;
+            text-align: center;
+            color: #6c757d;
+            font-style: italic;
+        }
+        
+        .footer {
+            text-align: center;
+            margin-top: 50px;
+            padding: 20px;
+            color: #6c757d;
+            border-top: 1px solid #e9ecef;
+        }
+        .timestamp {
+            text-align: center;
+            font-style: italic;
+            color: #6c757d;
+            margin-bottom: 40px;
+        }
+        
+        /* Tooltip styles */
+        .tooltip {
+            position: relative;
+            display: inline-block;
+        }
+        .tooltip .tooltiptext {
+            visibility: hidden;
+            background-color: #555;
+            color: #fff;
+            text-align: center;
+            border-radius: 6px;
+            padding: 5px 10px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            transform: translateX(-50%);
+            opacity: 0;
+            transition: opacity 0.3s;
+            white-space: nowrap;
+            font-size: 0.9em;
+        }
+        .tooltip:hover .tooltiptext {
+            visibility: visible;
+            opacity: 1;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🚀 UPLC-CAPE Performance Reports</h1>
+        <p>Comparative Artifact Performance Evaluation for UPLC Programs</p>
+        <p>Performance comparison of UPLC programs across different compilers</p>
+    </div>
+
+    <div class="timestamp">
+        Generated on: 2025-10-23 07:48:01 UTC
+    </div>
+    
+    <!-- Benchmark Summary Table -->
+    <div class="benchmark-summary">
+        <h2>📊 Benchmark Submissions</h2>
+        <div class="controls">
+            <button onclick="expandAll()">Expand All</button>
+            <button onclick="collapseAll()">Collapse All</button>
+        </div>
+        
+        <div id="benchmark-table">
+            
+            <div class="benchmark-section">
+                <div class="benchmark-header" onclick="toggleBenchmark('factorial')">
+                    <div class="name">
+                        <span class="toggle" id="toggle-factorial">▶</span>
+                        <a href="benchmarks/factorial.html" onclick="event.stopPropagation()">factorial</a>
+                    </div>
+                    <div class="count">
+                        
+                            (3 submissions)
+                        
+                    </div>
+                </div>
+                <div class="benchmark-content" id="content-factorial">
+                    
+                    <table class="submission-table" id="table-factorial">
+                        <thead>
+                            <tr>
+                                <th onclick="sortTable('factorial', 0)">Compiler</th>
+                                <th onclick="sortTable('factorial', 1)">Version</th>
+                                <th onclick="sortTable('factorial', 2)">Variant</th>
+                                <th onclick="sortTable('factorial', 3)">Author</th>
+                                <th onclick="sortTable('factorial', 4)">Date</th>
+                                <th class="numeric" onclick="sortTable('factorial', 5)">CPU Units</th>
+                                <th class="numeric" onclick="sortTable('factorial', 6)">Memory Units</th>
+                                <th class="numeric" onclick="sortTable('factorial', 7)">Script Size</th>
+                                <th class="numeric" onclick="sortTable('factorial', 8)">Term Size</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            
+                            <tr data-cpu="37001975" data-memory="137290" data-script="65" data-term="57">
+                                <td>Plutarch</td>
+                                <td>1.11.0</td>
+                                <td>exbudget</td>
+                                <td>SeungheonOh</td>
+                                <td>2025-10-17</td>
+                                <td class="numeric">
+                                    <span class="tooltip">
+                                        <span class="cpu-value">37.00M</span>
+                                        <span class="tooltiptext">37001975</span>
+                                    </span>
+                                </td>
+                                <td class="numeric">
+                                    <span class="tooltip">
+                                        <span class="memory-value">137.29K</span>
+                                        <span class="tooltiptext">137290</span>
+                                    </span>
+                                </td>
+                                <td class="numeric script-value">65</td>
+                                <td class="numeric term-value">57</td>
+                            </tr>
+                            
+                            <tr data-cpu="37481975" data-memory="140290" data-script="40" data-term="33">
+                                <td>Plutarch</td>
+                                <td>1.11.0</td>
+                                <td>size</td>
+                                <td>SeungheonOh</td>
+                                <td>2025-10-17</td>
+                                <td class="numeric">
+                                    <span class="tooltip">
+                                        <span class="cpu-value">37.48M</span>
+                                        <span class="tooltiptext">37481975</span>
+                                    </span>
+                                </td>
+                                <td class="numeric">
+                                    <span class="tooltip">
+                                        <span class="memory-value">140.29K</span>
+                                        <span class="tooltiptext">140290</span>
+                                    </span>
+                                </td>
+                                <td class="numeric script-value">40</td>
+                                <td class="numeric term-value">33</td>
+                            </tr>
+                            
+                            <tr data-cpu="37481975" data-memory="140290" data-script="40" data-term="33">
+                                <td>Scalus</td>
+                                <td>0.12.1</td>
+                                <td>default</td>
+                                <td>Unisay</td>
+                                <td>2025-10-08</td>
+                                <td class="numeric">
+                                    <span class="tooltip">
+                                        <span class="cpu-value">37.48M</span>
+                                        <span class="tooltiptext">37481975</span>
+                                    </span>
+                                </td>
+                                <td class="numeric">
+                                    <span class="tooltip">
+                                        <span class="memory-value">140.29K</span>
+                                        <span class="tooltiptext">140290</span>
+                                    </span>
+                                </td>
+                                <td class="numeric script-value">40</td>
+                                <td class="numeric term-value">33</td>
+                            </tr>
+                            
+                        </tbody>
+                    </table>
+                    
+                </div>
+            </div>
+            
+            <div class="benchmark-section">
+                <div class="benchmark-header" onclick="toggleBenchmark('factorial_naive_recursion')">
+                    <div class="name">
+                        <span class="toggle" id="toggle-factorial_naive_recursion">▶</span>
+                        <a href="benchmarks/factorial_naive_recursion.html" onclick="event.stopPropagation()">factorial_naive_recursion</a>
+                    </div>
+                    <div class="count">
+                        
+                            (4 submissions)
+                        
+                    </div>
+                </div>
+                <div class="benchmark-content" id="content-factorial_naive_recursion">
+                    
+                    <table class="submission-table" id="table-factorial_naive_recursion">
+                        <thead>
+                            <tr>
+                                <th onclick="sortTable('factorial_naive_recursion', 0)">Compiler</th>
+                                <th onclick="sortTable('factorial_naive_recursion', 1)">Version</th>
+                                <th onclick="sortTable('factorial_naive_recursion', 2)">Variant</th>
+                                <th onclick="sortTable('factorial_naive_recursion', 3)">Author</th>
+                                <th onclick="sortTable('factorial_naive_recursion', 4)">Date</th>
+                                <th class="numeric" onclick="sortTable('factorial_naive_recursion', 5)">CPU Units</th>
+                                <th class="numeric" onclick="sortTable('factorial_naive_recursion', 6)">Memory Units</th>
+                                <th class="numeric" onclick="sortTable('factorial_naive_recursion', 7)">Script Size</th>
+                                <th class="numeric" onclick="sortTable('factorial_naive_recursion', 8)">Term Size</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            
+                            <tr data-cpu="72921975" data-memory="361790" data-script="88" data-term="104">
+                                <td>OpShin</td>
+                                <td>0.26.1</td>
+                                <td>default</td>
+                                <td>Niels Mündler</td>
+                                <td>2025-10-16</td>
+                                <td class="numeric">
+                                    <span class="tooltip">
+                                        <span class="cpu-value">72.92M</span>
+                                        <span class="tooltiptext">72921975</span>
+                                    </span>
+                                </td>
+                                <td class="numeric">
+                                    <span class="tooltip">
+                                        <span class="memory-value">361.79K</span>
+                                        <span class="tooltiptext">361790</span>
+                                    </span>
+                                </td>
+                                <td class="numeric script-value">88</td>
+                                <td class="numeric term-value">104</td>
+                            </tr>
+                            
+                            <tr data-cpu="42281975" data-memory="170290" data-script="42" data-term="40">
+                                <td>Plinth</td>
+                                <td>1.45.0.0</td>
+                                <td>default</td>
+                                <td>Unisay</td>
+                                <td>2025-10-09</td>
+                                <td class="numeric">
+                                    <span class="tooltip">
+                                        <span class="cpu-value">42.28M</span>
+                                        <span class="tooltiptext">42281975</span>
+                                    </span>
+                                </td>
+                                <td class="numeric">
+                                    <span class="tooltip">
+                                        <span class="memory-value">170.29K</span>
+                                        <span class="tooltiptext">170290</span>
+                                    </span>
+                                </td>
+                                <td class="numeric script-value">42</td>
+                                <td class="numeric term-value">40</td>
+                            </tr>
+                            
+                            <tr data-cpu="42281975" data-memory="170290" data-script="52" data-term="47">
+                                <td>Plutarch</td>
+                                <td>1.11.0</td>
+                                <td>default</td>
+                                <td>SeungheonOh</td>
+                                <td>2025-10-17</td>
+                                <td class="numeric">
+                                    <span class="tooltip">
+                                        <span class="cpu-value">42.28M</span>
+                                        <span class="tooltiptext">42281975</span>
+                                    </span>
+                                </td>
+                                <td class="numeric">
+                                    <span class="tooltip">
+                                        <span class="memory-value">170.29K</span>
+                                        <span class="tooltiptext">170290</span>
+                                    </span>
+                                </td>
+                                <td class="numeric script-value">52</td>
+                                <td class="numeric term-value">47</td>
+                            </tr>
+                            
+                            <tr data-cpu="42521975" data-memory="171790" data-script="57" data-term="53">
+                                <td>Scalus</td>
+                                <td>0.12.1</td>
+                                <td>default</td>
+                                <td>Unisay</td>
+                                <td>2025-10-09</td>
+                                <td class="numeric">
+                                    <span class="tooltip">
+                                        <span class="cpu-value">42.52M</span>
+                                        <span class="tooltiptext">42521975</span>
+                                    </span>
+                                </td>
+                                <td class="numeric">
+                                    <span class="tooltip">
+                                        <span class="memory-value">171.79K</span>
+                                        <span class="tooltiptext">171790</span>
+                                    </span>
+                                </td>
+                                <td class="numeric script-value">57</td>
+                                <td class="numeric term-value">53</td>
+                            </tr>
+                            
+                        </tbody>
+                    </table>
+                    
+                </div>
+            </div>
+            
+            <div class="benchmark-section">
+                <div class="benchmark-header" onclick="toggleBenchmark('fibonacci')">
+                    <div class="name">
+                        <span class="toggle" id="toggle-fibonacci">▶</span>
+                        <a href="benchmarks/fibonacci.html" onclick="event.stopPropagation()">fibonacci</a>
+                    </div>
+                    <div class="count">
+                        
+                            (8 submissions)
+                        
+                    </div>
+                </div>
+                <div class="benchmark-content" id="content-fibonacci">
+                    
+                    <table class="submission-table" id="table-fibonacci">
+                        <thead>
+                            <tr>
+                                <th onclick="sortTable('fibonacci', 0)">Compiler</th>
+                                <th onclick="sortTable('fibonacci', 1)">Version</th>
+                                <th onclick="sortTable('fibonacci', 2)">Variant</th>
+                                <th onclick="sortTable('fibonacci', 3)">Author</th>
+                                <th onclick="sortTable('fibonacci', 4)">Date</th>
+                                <th class="numeric" onclick="sortTable('fibonacci', 5)">CPU Units</th>
+                                <th class="numeric" onclick="sortTable('fibonacci', 6)">Memory Units</th>
+                                <th class="numeric" onclick="sortTable('fibonacci', 7)">Script Size</th>
+                                <th class="numeric" onclick="sortTable('fibonacci', 8)">Term Size</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            
+                            <tr data-cpu="22521989" data-memory="49432" data-script="124" data-term="45">
+                                <td>Aiken</td>
+                                <td>v1.1.19</td>
+                                <td>prepacked</td>
+                                <td>Matthias Benkort</td>
+                                <td>2025-10-18</td>
+                                <td class="numeric">
+                                    <span class="tooltip">
+                                        <span class="cpu-value">22.52M</span>
+                                        <span class="tooltiptext">22521989</span>
+                                    </span>
+                                </td>
+                                <td class="numeric">
+                                    <span class="tooltip">
+                                        <span class="memory-value">49.43K</span>
+                                        <span class="tooltiptext">49432</span>
+                                    </span>
+                                </td>
+                                <td class="numeric script-value">124</td>
+                                <td class="numeric term-value">45</td>
+                            </tr>
+                            
+                            <tr data-cpu="67838022" data-memory="256986" data-script="77" data-term="64">
+                                <td>Aiken</td>
+                                <td>v1.1.19</td>
+                                <td>tailrec</td>
+                                <td>Matthias Benkort</td>
+                                <td>2025-10-18</td>
+                                <td class="numeric">
+                                    <span class="tooltip">
+                                        <span class="cpu-value">67.84M</span>
+                                        <span class="tooltiptext">67838022</span>
+                                    </span>
+                                </td>
+                                <td class="numeric">
+                                    <span class="tooltip">
+                                        <span class="memory-value">256.99K</span>
+                                        <span class="tooltiptext">256986</span>
+                                    </span>
+                                </td>
+                                <td class="numeric script-value">77</td>
+                                <td class="numeric term-value">64</td>
+                            </tr>
+                            
+                            <tr data-cpu="240131414" data-memory="1306476" data-script="227" data-term="285">
+                                <td>OpShin</td>
+                                <td>0.26.1</td>
+                                <td>default</td>
+                                <td>Niels Mündler</td>
+                                <td>2025-10-16</td>
+                                <td class="numeric">
+                                    <span class="tooltip">
+                                        <span class="cpu-value">240.13M</span>
+                                        <span class="tooltiptext">240131414</span>
+                                    </span>
+                                </td>
+                                <td class="numeric">
+                                    <span class="tooltip">
+                                        <span class="memory-value">1.31M</span>
+                                        <span class="tooltiptext">1306476</span>
+                                    </span>
+                                </td>
+                                <td class="numeric script-value">227</td>
+                                <td class="numeric term-value">285</td>
+                            </tr>
+                            
+                            <tr data-cpu="175015705630" data-memory="641935762" data-script="81" data-term="73">
+                                <td>Plutarch</td>
+                                <td>1.11.0</td>
+                                <td>exbudget</td>
+                                <td>SeungheonOh</td>
+                                <td>2025-10-17</td>
+                                <td class="numeric">
+                                    <span class="tooltip">
+                                        <span class="cpu-value">175.02B</span>
+                                        <span class="tooltiptext">175015705630</span>
+                                    </span>
+                                </td>
+                                <td class="numeric">
+                                    <span class="tooltip">
+                                        <span class="memory-value">641.94M</span>
+                                        <span class="tooltiptext">641935762</span>
+                                    </span>
+                                </td>
+                                <td class="numeric script-value">81</td>
+                                <td class="numeric term-value">73</td>
+                            </tr>
+                            
+                            <tr data-cpu="16459951" data-memory="30485" data-script="118" data-term="28">
+                                <td>Plutarch</td>
+                                <td>1.11.0</td>
+                                <td>prepacked</td>
+                                <td>SeungheonOh</td>
+                                <td>2025-10-21</td>
+                                <td class="numeric">
+                                    <span class="tooltip">
+                                        <span class="cpu-value">16.46M</span>
+                                        <span class="tooltiptext">16459951</span>
+                                    </span>
+                                </td>
+                                <td class="numeric">
+                                    <span class="tooltip">
+                                        <span class="memory-value">30.48K</span>
+                                        <span class="tooltiptext">30485</span>
+                                    </span>
+                                </td>
+                                <td class="numeric script-value">118</td>
+                                <td class="numeric term-value">28</td>
+                            </tr>
+                            
+                            <tr data-cpu="175016233630" data-memory="641939062" data-script="47" data-term="41">
+                                <td>Plutarch</td>
+                                <td>1.11.0</td>
+                                <td>size</td>
+                                <td>SeungheonOh</td>
+                                <td>2025-10-17</td>
+                                <td class="numeric">
+                                    <span class="tooltip">
+                                        <span class="cpu-value">175.02B</span>
+                                        <span class="tooltiptext">175016233630</span>
+                                    </span>
+                                </td>
+                                <td class="numeric">
+                                    <span class="tooltip">
+                                        <span class="memory-value">641.94M</span>
+                                        <span class="tooltiptext">641939062</span>
+                                    </span>
+                                </td>
+                                <td class="numeric script-value">47</td>
+                                <td class="numeric term-value">41</td>
+                            </tr>
+                            
+                            <tr data-cpu="175016233630" data-memory="641939062" data-script="47" data-term="41">
+                                <td>Scalus</td>
+                                <td>0.12.1</td>
+                                <td>default</td>
+                                <td>Unisay</td>
+                                <td>2025-10-08</td>
+                                <td class="numeric">
+                                    <span class="tooltip">
+                                        <span class="cpu-value">175.02B</span>
+                                        <span class="tooltiptext">175016233630</span>
+                                    </span>
+                                </td>
+                                <td class="numeric">
+                                    <span class="tooltip">
+                                        <span class="memory-value">641.94M</span>
+                                        <span class="tooltiptext">641939062</span>
+                                    </span>
+                                </td>
+                                <td class="numeric script-value">47</td>
+                                <td class="numeric term-value">41</td>
+                            </tr>
+                            
+                            <tr data-cpu="17845279" data-memory="31792" data-script="118" data-term="28">
+                                <td>Scalus</td>
+                                <td>0.12.1</td>
+                                <td>prepacked</td>
+                                <td>Alexander Nemish</td>
+                                <td>2025-10-21</td>
+                                <td class="numeric">
+                                    <span class="tooltip">
+                                        <span class="cpu-value">17.85M</span>
+                                        <span class="tooltiptext">17845279</span>
+                                    </span>
+                                </td>
+                                <td class="numeric">
+                                    <span class="tooltip">
+                                        <span class="memory-value">31.79K</span>
+                                        <span class="tooltiptext">31792</span>
+                                    </span>
+                                </td>
+                                <td class="numeric script-value">118</td>
+                                <td class="numeric term-value">28</td>
+                            </tr>
+                            
+                        </tbody>
+                    </table>
+                    
+                </div>
+            </div>
+            
+            <div class="benchmark-section">
+                <div class="benchmark-header" onclick="toggleBenchmark('fibonacci_naive_recursion')">
+                    <div class="name">
+                        <span class="toggle" id="toggle-fibonacci_naive_recursion">▶</span>
+                        <a href="benchmarks/fibonacci_naive_recursion.html" onclick="event.stopPropagation()">fibonacci_naive_recursion</a>
+                    </div>
+                    <div class="count">
+                        
+                            (4 submissions)
+                        
+                    </div>
+                </div>
+                <div class="benchmark-content" id="content-fibonacci_naive_recursion">
+                    
+                    <table class="submission-table" id="table-fibonacci_naive_recursion">
+                        <thead>
+                            <tr>
+                                <th onclick="sortTable('fibonacci_naive_recursion', 0)">Compiler</th>
+                                <th onclick="sortTable('fibonacci_naive_recursion', 1)">Version</th>
+                                <th onclick="sortTable('fibonacci_naive_recursion', 2)">Variant</th>
+                                <th onclick="sortTable('fibonacci_naive_recursion', 3)">Author</th>
+                                <th onclick="sortTable('fibonacci_naive_recursion', 4)">Date</th>
+                                <th class="numeric" onclick="sortTable('fibonacci_naive_recursion', 5)">CPU Units</th>
+                                <th class="numeric" onclick="sortTable('fibonacci_naive_recursion', 6)">Memory Units</th>
+                                <th class="numeric" onclick="sortTable('fibonacci_naive_recursion', 7)">Script Size</th>
+                                <th class="numeric" onclick="sortTable('fibonacci_naive_recursion', 8)">Term Size</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            
+                            <tr data-cpu="170746089630" data-memory="615250662" data-script="86" data-term="79">
+                                <td>Aiken</td>
+                                <td>1.1.17</td>
+                                <td>default</td>
+                                <td>KtorZ</td>
+                                <td>2025-10-09</td>
+                                <td class="numeric">
+                                    <span class="tooltip">
+                                        <span class="cpu-value">170.75B</span>
+                                        <span class="tooltiptext">170746089630</span>
+                                    </span>
+                                </td>
+                                <td class="numeric">
+                                    <span class="tooltip">
+                                        <span class="memory-value">615.25M</span>
+                                        <span class="tooltiptext">615250662</span>
+                                    </span>
+                                </td>
+                                <td class="numeric script-value">86</td>
+                                <td class="numeric term-value">79</td>
+                            </tr>
+                            
+                            <tr data-cpu="213452041630" data-memory="882162862" data-script="51" data-term="49">
+                                <td>Plinth</td>
+                                <td>1.45.0.0</td>
+                                <td>default</td>
+                                <td>Unisay</td>
+                                <td>2025-10-09</td>
+                                <td class="numeric">
+                                    <span class="tooltip">
+                                        <span class="cpu-value">213.45B</span>
+                                        <span class="tooltiptext">213452041630</span>
+                                    </span>
+                                </td>
+                                <td class="numeric">
+                                    <span class="tooltip">
+                                        <span class="memory-value">882.16M</span>
+                                        <span class="tooltiptext">882162862</span>
+                                    </span>
+                                </td>
+                                <td class="numeric script-value">51</td>
+                                <td class="numeric term-value">49</td>
+                            </tr>
+                            
+                            <tr data-cpu="200639929630" data-memory="802087162" data-script="57" data-term="53">
+                                <td>Plutarch</td>
+                                <td>1.11.0</td>
+                                <td>default</td>
+                                <td>SeungheonOh</td>
+                                <td>2025-10-17</td>
+                                <td class="numeric">
+                                    <span class="tooltip">
+                                        <span class="cpu-value">200.64B</span>
+                                        <span class="tooltiptext">200639929630</span>
+                                    </span>
+                                </td>
+                                <td class="numeric">
+                                    <span class="tooltip">
+                                        <span class="memory-value">802.09M</span>
+                                        <span class="tooltiptext">802087162</span>
+                                    </span>
+                                </td>
+                                <td class="numeric script-value">57</td>
+                                <td class="numeric term-value">53</td>
+                            </tr>
+                            
+                            <tr data-cpu="161982627770" data-memory="626287090" data-script="77" data-term="71">
+                                <td>Scalus</td>
+                                <td>0.12.1</td>
+                                <td>default</td>
+                                <td>Unisay</td>
+                                <td>2025-10-09</td>
+                                <td class="numeric">
+                                    <span class="tooltip">
+                                        <span class="cpu-value">161.98B</span>
+                                        <span class="tooltiptext">161982627770</span>
+                                    </span>
+                                </td>
+                                <td class="numeric">
+                                    <span class="tooltip">
+                                        <span class="memory-value">626.29M</span>
+                                        <span class="tooltiptext">626287090</span>
+                                    </span>
+                                </td>
+                                <td class="numeric script-value">77</td>
+                                <td class="numeric term-value">71</td>
+                            </tr>
+                            
+                        </tbody>
+                    </table>
+                    
+                </div>
+            </div>
+            
+            <div class="benchmark-section">
+                <div class="benchmark-header" onclick="toggleBenchmark('two-party-escrow')">
+                    <div class="name">
+                        <span class="toggle" id="toggle-two-party-escrow">▶</span>
+                        <a href="benchmarks/two-party-escrow.html" onclick="event.stopPropagation()">two-party-escrow</a>
+                    </div>
+                    <div class="count">
+                        
+                            (1 submission)
+                        
+                    </div>
+                </div>
+                <div class="benchmark-content" id="content-two-party-escrow">
+                    
+                    <table class="submission-table" id="table-two-party-escrow">
+                        <thead>
+                            <tr>
+                                <th onclick="sortTable('two-party-escrow', 0)">Compiler</th>
+                                <th onclick="sortTable('two-party-escrow', 1)">Version</th>
+                                <th onclick="sortTable('two-party-escrow', 2)">Variant</th>
+                                <th onclick="sortTable('two-party-escrow', 3)">Author</th>
+                                <th onclick="sortTable('two-party-escrow', 4)">Date</th>
+                                <th class="numeric" onclick="sortTable('two-party-escrow', 5)">CPU Units</th>
+                                <th class="numeric" onclick="sortTable('two-party-escrow', 6)">Memory Units</th>
+                                <th class="numeric" onclick="sortTable('two-party-escrow', 7)">Script Size</th>
+                                <th class="numeric" onclick="sortTable('two-party-escrow', 8)">Term Size</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            
+                            <tr data-cpu="2393038216" data-memory="9158210" data-script="3939" data-term="4257">
+                                <td>Plinth</td>
+                                <td>1.45.0.0</td>
+                                <td>default</td>
+                                <td>Unisay</td>
+                                <td>2025-10-08</td>
+                                <td class="numeric">
+                                    <span class="tooltip">
+                                        <span class="cpu-value">2.39B</span>
+                                        <span class="tooltiptext">2393038216</span>
+                                    </span>
+                                </td>
+                                <td class="numeric">
+                                    <span class="tooltip">
+                                        <span class="memory-value">9.16M</span>
+                                        <span class="tooltiptext">9158210</span>
+                                    </span>
+                                </td>
+                                <td class="numeric script-value">3939</td>
+                                <td class="numeric term-value">4257</td>
+                            </tr>
+                            
+                        </tbody>
+                    </table>
+                    
+                </div>
+            </div>
+            
+        </div>
+    </div>
+    
+    
+    <div class="footer">
+        <p>Generated by UPLC-CAPE • <a href="https://github.com/IntersectMBO/UPLC-CAPE">View on GitHub</a></p>
+    </div>
+    
+    <script>
+        // Toggle benchmark expansion
+        function toggleBenchmark(benchmarkName) {
+            const content = document.getElementById('content-' + benchmarkName);
+            const toggle = document.getElementById('toggle-' + benchmarkName);
+            
+            if (content.classList.contains('expanded')) {
+                content.classList.remove('expanded');
+                toggle.textContent = '▶';
+            } else {
+                content.classList.add('expanded');
+                toggle.textContent = '▼';
+            }
+            
+            // Save state to localStorage
+            const expandedBenchmarks = JSON.parse(localStorage.getItem('expandedBenchmarks') || '[]');
+            const index = expandedBenchmarks.indexOf(benchmarkName);
+            if (content.classList.contains('expanded')) {
+                if (index === -1) expandedBenchmarks.push(benchmarkName);
+            } else {
+                if (index > -1) expandedBenchmarks.splice(index, 1);
+            }
+            localStorage.setItem('expandedBenchmarks', JSON.stringify(expandedBenchmarks));
+        }
+        
+        // Expand all benchmarks
+        function expandAll() {
+            document.querySelectorAll('.benchmark-content').forEach(content => {
+                content.classList.add('expanded');
+                const benchmarkName = content.id.replace('content-', '');
+                document.getElementById('toggle-' + benchmarkName).textContent = '▼';
+            });
+            
+            // Save state
+            const allBenchmarks = Array.from(document.querySelectorAll('.benchmark-section'))
+                .map(section => section.querySelector('.benchmark-content').id.replace('content-', ''));
+            localStorage.setItem('expandedBenchmarks', JSON.stringify(allBenchmarks));
+        }
+        
+        // Collapse all benchmarks
+        function collapseAll() {
+            document.querySelectorAll('.benchmark-content').forEach(content => {
+                content.classList.remove('expanded');
+                const benchmarkName = content.id.replace('content-', '');
+                document.getElementById('toggle-' + benchmarkName).textContent = '▶';
+            });
+            localStorage.setItem('expandedBenchmarks', JSON.stringify([]));
+        }
+        
+        
+        // Sort table
+        function sortTable(benchmarkName, columnIndex) {
+            const table = document.getElementById('table-' + benchmarkName);
+            const tbody = table.querySelector('tbody');
+            const rows = Array.from(tbody.querySelectorAll('tr'));
+            
+            // Determine sort direction
+            const th = table.querySelectorAll('th')[columnIndex];
+            const isAscending = th.dataset.sortDir !== 'asc';
+            th.dataset.sortDir = isAscending ? 'asc' : 'desc';
+            
+            // Clear other column sort indicators
+            table.querySelectorAll('th').forEach((header, idx) => {
+                if (idx !== columnIndex) delete header.dataset.sortDir;
+            });
+            
+            // Sort rows
+            rows.sort((a, b) => {
+                let aVal, bVal;
+
+                if (columnIndex >= 5) {
+                    // Numeric columns - use data attributes
+                    const metrics = ['cpu', 'memory', 'script', 'term'];
+                    const metric = metrics[columnIndex - 5];
+                    aVal = parseInt(a.dataset[metric]) || 0;
+                    bVal = parseInt(b.dataset[metric]) || 0;
+                } else {
+                    // Text columns
+                    aVal = a.children[columnIndex].textContent.trim();
+                    bVal = b.children[columnIndex].textContent.trim();
+                }
+                
+                if (typeof aVal === 'number') {
+                    return isAscending ? aVal - bVal : bVal - aVal;
+                } else {
+                    return isAscending ? 
+                        aVal.localeCompare(bVal) : 
+                        bVal.localeCompare(aVal);
+                }
+            });
+            
+            // Re-append sorted rows
+            rows.forEach(row => tbody.appendChild(row));
+        }
+        
+        // Restore expanded state from localStorage
+        document.addEventListener('DOMContentLoaded', function() {
+            const expandedBenchmarks = JSON.parse(localStorage.getItem('expandedBenchmarks') || '[]');
+            expandedBenchmarks.forEach(benchmarkName => {
+                const content = document.getElementById('content-' + benchmarkName);
+                const toggle = document.getElementById('toggle-' + benchmarkName);
+                if (content && toggle) {
+                    content.classList.add('expanded');
+                    toggle.textContent = '▼';
+                }
+            });
+        });
+    </script>
+</body>
+</html>
