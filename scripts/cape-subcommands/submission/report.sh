@@ -23,9 +23,23 @@ if cape_help_requested "$@"; then
 fi
 
 # Use shared logging (respect NO_COLOR already handled in lib)
-log_info() { cape_info "$1"; }
+# IMPORTANT: log_info must go to stderr to avoid contaminating function return values
+log_info() { cape_info "$1" >&2; }
 log_warn() { cape_warn "$1"; }
 log_err() { cape_error "$1"; }
+
+# Escape special characters for gnuplot enhanced mode
+# In enhanced mode, @ escapes the next character to treat it literally
+gnuplot_escape() {
+  echo "$1" | sed 's/_/@_/g'
+}
+
+# Format submission directory name for display on charts
+# Input: Compiler_Version_Contributor (or Compiler_Version_Variant_Contributor)
+# Output: Compiler_Version\n\nContributor (raw, no escaping - xtics use noenhanced mode)
+format_submission_label() {
+  echo "$1" | awk -F_ '{if (NF >= 4) NF = NF - 1; printf "%s_%s\\n\\n%s", $1, $2, $NF}'
+}
 
 # Use shared temp helpers
 cape_enable_tmp_cleanup
@@ -70,10 +84,10 @@ if [ ! -d "$PROJECT_ROOT/submissions" ]; then
   exit 1
 fi
 
-# Validate benchmark name pattern when provided (lowercase, hyphens allowed)
-valid_benchmark_name() { [[ $1 =~ ^[a-z][a-z0-9-]*[a-z0-9]$|^[a-z]$ ]]; }
+# Validate benchmark name pattern when provided (lowercase, underscores/hyphens allowed)
+valid_benchmark_name() { [[ $1 =~ ^[a-z][a-z0-9_-]*[a-z0-9]$|^[a-z]$ ]]; }
 
-# CSV format: benchmark,timestamp,language,version,user,variant,cpu_units,memory_units,script_size_bytes,term_size,submission_dir
+# CSV format: benchmark,timestamp,language,version,user,variant,cpu_units,memory_units,script_size_bytes,term_size,execution_fee_lovelace,reference_script_fee_lovelace,total_fee_lovelace,tx_memory_budget_pct,tx_cpu_budget_pct,block_memory_budget_pct,block_cpu_budget_pct,scripts_per_tx,scripts_per_block,submission_dir
 # Field positions:
 #   1: benchmark
 #   2: timestamp
@@ -85,7 +99,49 @@ valid_benchmark_name() { [[ $1 =~ ^[a-z][a-z0-9-]*[a-z0-9]$|^[a-z]$ ]]; }
 #   8: memory_units
 #   9: script_size_bytes
 #  10: term_size
-#  11: submission_dir
+#  11: execution_fee_lovelace
+#  12: reference_script_fee_lovelace
+#  13: total_fee_lovelace
+#  14: tx_memory_budget_pct
+#  15: tx_cpu_budget_pct
+#  16: block_memory_budget_pct
+#  17: block_cpu_budget_pct
+#  18: scripts_per_tx
+#  19: scripts_per_block
+#  20: submission_dir
+
+# CSV column mapping - use these to reference columns by name
+declare -A CSV_COL=(
+  [benchmark]=1
+  [timestamp]=2
+  [language]=3
+  [version]=4
+  [user]=5
+  [variant]=6
+  [cpu_units]=7
+  [memory_units]=8
+  [script_size_bytes]=9
+  [term_size]=10
+  [execution_fee_lovelace]=11
+  [reference_script_fee_lovelace]=12
+  [total_fee_lovelace]=13
+  [tx_memory_budget_pct]=14
+  [tx_cpu_budget_pct]=15
+  [block_memory_budget_pct]=16
+  [block_cpu_budget_pct]=17
+  [scripts_per_tx]=18
+  [scripts_per_block]=19
+  [submission_dir]=20
+)
+
+# Helper function to extract a CSV field by column name
+# Usage: csv_field "$line" "column_name"
+csv_field() {
+  local line="$1"
+  local col_name="$2"
+  local col_num="${CSV_COL[$col_name]}"
+  echo "$line" | cut -d, -f"$col_num"
+}
 
 # Prepare report directory
 report_dir="$PROJECT_ROOT/report"
@@ -98,8 +154,11 @@ if [[ $KEEP_EXISTING -eq 0 ]]; then
 fi
 if [[ $DRY_RUN -eq 1 ]]; then
   log_info "[dry-run] Would create '$report_dir/benchmarks/images'"
+  log_info "[dry-run] Would copy logo to '$report_dir/uplc-cape-logo.png'"
 else
   mkdir -p "$report_dir/benchmarks/images"
+  # Copy logo to report directory
+  cp -f "$PROJECT_ROOT/uplc-cape-logo.png" "$report_dir/uplc-cape-logo.png"
 fi
 
 generate_benchmark_report() {
@@ -116,9 +175,7 @@ generate_benchmark_report() {
   fi
 
   # Filter out invalid CSV entries (those with empty numeric fields or template placeholders)
-  # CSV format: benchmark,timestamp,language,version,user,variant,cpu_units,memory_units,script_size_bytes,term_size,submission_dir
-  # Field positions: cpu_units=7, memory_units=8, script_size_bytes=9, term_size=10
-  valid_csv_data=$(echo "$csv_data" | grep -v '<.*>' | awk -F, '$7 != "" && $8 != "" && $9 != "" && $10 != ""')
+  valid_csv_data=$(echo "$csv_data" | grep -v '<.*>' | awk -F, -v cpu="${CSV_COL[cpu_units]}" -v mem="${CSV_COL[memory_units]}" -v size="${CSV_COL[script_size_bytes]}" -v term="${CSV_COL[term_size]}" '$cpu != "" && $mem != "" && $size != "" && $term != ""')
   if [ -z "$valid_csv_data" ]; then
     echo "No valid submissions found for benchmark: $benchmark (all entries have missing data)" >&2
     return 1
@@ -196,9 +253,8 @@ generate_benchmark_report() {
   )
 
   # Assign colors using distinct palette
-  # Field 11 is submission_dir (used as label)
   local all_labels
-  all_labels=$(echo "$csv_data" | awk -F, '{print $11}')
+  all_labels=$(echo "$csv_data" | awk -F, -v col="${CSV_COL[submission_dir]}" '{print $col}')
   while read -r label; do
     [ -n "$label" ] || continue
     local color_spec
@@ -228,12 +284,11 @@ generate_benchmark_report() {
   local chart_prefix="${benchmark}_"
 
   # CPU Units chart
-  # Field 7 is cpu_units, field 6 is variant, field 11 is submission_dir (label)
   local cpu_sorted_data cpu_labels cpu_values cpu_variants max_cpu max_cpu_padded
-  cpu_sorted_data=$(echo "$csv_data" | sort -t, -k7,7n)
-  cpu_labels=$(echo "$cpu_sorted_data" | awk -F, '{print $11}')
-  cpu_values=$(echo "$cpu_sorted_data" | awk -F, '{print $7}')
-  cpu_variants=$(echo "$cpu_sorted_data" | awk -F, '{print $6}')
+  cpu_sorted_data=$(echo "$csv_data" | sort -t, -k${CSV_COL[cpu_units]},${CSV_COL[cpu_units]}n)
+  cpu_labels=$(echo "$cpu_sorted_data" | awk -F, -v col="${CSV_COL[submission_dir]}" '{print $col}')
+  cpu_values=$(echo "$cpu_sorted_data" | awk -F, -v col="${CSV_COL[cpu_units]}" '{print $col}')
+  cpu_variants=$(echo "$cpu_sorted_data" | awk -F, -v col="${CSV_COL[variant]}" '{print $col}')
   max_cpu=$(echo "$cpu_values" | tail -1)
   max_cpu_padded=$(awk -v m="$max_cpu" 'BEGIN{printf "%.0f", (m==""?0:m)*1.03}')
 
@@ -242,14 +297,14 @@ generate_benchmark_report() {
   else
     cat > "$plot_file" << EOF
 set terminal png size 800,600 enhanced font 'Arial,12'
+set bmargin 10
+set tmargin 3
 set output "$output_dir/benchmarks/images/${chart_prefix}cpu_units.png"
-set title 'CPU Units Comparison - $benchmark (Lower is Better)'
-set xlabel 'Submissions'
 set ylabel 'CPU Units'
 set style data boxes
-set style fill solid 0.8
+set style fill solid 1.0 border -1
 set boxwidth 0.6
-set xtics rotate by -45
+set xtics rotate by -45 noenhanced
 set grid y
 set key off
 set auto x
@@ -298,7 +353,7 @@ EOF
       value=$(echo "$cpu_values" | sed -n "${i}p")
       # Format label as two lines: "Compiler_Version\nContributor"
       local display_label
-      display_label=$(echo "$label" | awk -F_ '{if (NF >= 4) NF = NF - 1; printf "%s_%s\\n\\n%s", $1, $2, $NF}')
+      display_label=$(format_submission_label "$label")
       echo "$i $value $display_label" >> "$plot_file"
       echo "e" >> "$plot_file"
       ((i++))
@@ -307,12 +362,11 @@ EOF
   fi
 
   # Memory Units chart
-  # Field 8 is memory_units, field 6 is variant, field 11 is submission_dir (label)
   local memory_sorted_data memory_labels memory_values memory_variants max_memory max_memory_padded
-  memory_sorted_data=$(echo "$csv_data" | sort -t, -k8,8n)
-  memory_labels=$(echo "$memory_sorted_data" | awk -F, '{print $11}')
-  memory_values=$(echo "$memory_sorted_data" | awk -F, '{print $8}')
-  memory_variants=$(echo "$memory_sorted_data" | awk -F, '{print $6}')
+  memory_sorted_data=$(echo "$csv_data" | sort -t, -k${CSV_COL[memory_units]},${CSV_COL[memory_units]}n)
+  memory_labels=$(echo "$memory_sorted_data" | awk -F, -v col="${CSV_COL[submission_dir]}" '{print $col}')
+  memory_values=$(echo "$memory_sorted_data" | awk -F, -v col="${CSV_COL[memory_units]}" '{print $col}')
+  memory_variants=$(echo "$memory_sorted_data" | awk -F, -v col="${CSV_COL[variant]}" '{print $col}')
   max_memory=$(echo "$memory_values" | tail -1)
   max_memory_padded=$(awk -v m="$max_memory" 'BEGIN{printf "%.0f", (m==""?0:m)*1.03}')
 
@@ -321,14 +375,14 @@ EOF
   else
     cat > "$plot_file" << EOF
 set terminal png size 800,600 enhanced font 'Arial,12'
+set bmargin 10
+set tmargin 3
 set output "$output_dir/benchmarks/images/${chart_prefix}memory_units.png"
-set title 'Memory Units Comparison - $benchmark (Lower is Better)'
-set xlabel 'Submissions'
 set ylabel 'Memory Units'
 set style data boxes
-set style fill solid 0.8
+set style fill solid 1.0 border -1
 set boxwidth 0.6
-set xtics rotate by -45
+set xtics rotate by -45 noenhanced
 set grid y
 set key off
 set auto x
@@ -377,7 +431,7 @@ EOF
       value=$(echo "$memory_values" | sed -n "${i}p")
       # Format label as two lines: "Compiler_Version\nContributor"
       local display_label
-      display_label=$(echo "$label" | awk -F_ '{if (NF >= 4) NF = NF - 1; printf "%s_%s\\n\\n%s", $1, $2, $NF}')
+      display_label=$(format_submission_label "$label")
       echo "$i $value $display_label" >> "$plot_file"
       echo "e" >> "$plot_file"
       ((i++))
@@ -386,12 +440,11 @@ EOF
   fi
 
   # Script Size chart
-  # Field 9 is script_size_bytes, field 6 is variant, field 11 is submission_dir (label)
   local script_sorted_data script_labels script_values script_variants max_script_size max_script_size_padded
-  script_sorted_data=$(echo "$csv_data" | sort -t, -k9,9n)
-  script_labels=$(echo "$script_sorted_data" | awk -F, '{print $11}')
-  script_values=$(echo "$script_sorted_data" | awk -F, '{print $9}')
-  script_variants=$(echo "$script_sorted_data" | awk -F, '{print $6}')
+  script_sorted_data=$(echo "$csv_data" | sort -t, -k${CSV_COL[script_size_bytes]},${CSV_COL[script_size_bytes]}n)
+  script_labels=$(echo "$script_sorted_data" | awk -F, -v col="${CSV_COL[submission_dir]}" '{print $col}')
+  script_values=$(echo "$script_sorted_data" | awk -F, -v col="${CSV_COL[script_size_bytes]}" '{print $col}')
+  script_variants=$(echo "$script_sorted_data" | awk -F, -v col="${CSV_COL[variant]}" '{print $col}')
   max_script_size=$(echo "$script_values" | tail -1)
   max_script_size_padded=$(awk -v m="$max_script_size" 'BEGIN{printf "%.0f", (m==""?0:m)*1.03}')
 
@@ -400,14 +453,14 @@ EOF
   else
     cat > "$plot_file" << EOF
 set terminal png size 800,600 enhanced font 'Arial,12'
+set bmargin 10
+set tmargin 3
 set output "$output_dir/benchmarks/images/${chart_prefix}script_size.png"
-set title 'Script Size Comparison - $benchmark (Lower is Better)'
-set xlabel 'Submissions'
 set ylabel 'Size (bytes)'
 set style data boxes
-set style fill solid 0.8
+set style fill solid 1.0 border -1
 set boxwidth 0.6
-set xtics rotate by -45
+set xtics rotate by -45 noenhanced
 set grid y
 set key off
 set auto x
@@ -456,7 +509,7 @@ EOF
       value=$(echo "$script_values" | sed -n "${i}p")
       # Format label as two lines: "Compiler_Version\nContributor"
       local display_label
-      display_label=$(echo "$label" | awk -F_ '{if (NF >= 4) NF = NF - 1; printf "%s_%s\\n\\n%s", $1, $2, $NF}')
+      display_label=$(format_submission_label "$label")
       echo "$i $value $display_label" >> "$plot_file"
       echo "e" >> "$plot_file"
       ((i++))
@@ -465,12 +518,11 @@ EOF
   fi
 
   # Term Size chart
-  # Field 10 is term_size, field 6 is variant, field 11 is submission_dir (label)
   local term_sorted_data term_labels term_values term_variants max_term_size max_term_size_padded
-  term_sorted_data=$(echo "$csv_data" | sort -t, -k10,10n)
-  term_labels=$(echo "$term_sorted_data" | awk -F, '{print $11}')
-  term_values=$(echo "$term_sorted_data" | awk -F, '{print $10}')
-  term_variants=$(echo "$term_sorted_data" | awk -F, '{print $6}')
+  term_sorted_data=$(echo "$csv_data" | sort -t, -k${CSV_COL[term_size]},${CSV_COL[term_size]}n)
+  term_labels=$(echo "$term_sorted_data" | awk -F, -v col="${CSV_COL[submission_dir]}" '{print $col}')
+  term_values=$(echo "$term_sorted_data" | awk -F, -v col="${CSV_COL[term_size]}" '{print $col}')
+  term_variants=$(echo "$term_sorted_data" | awk -F, -v col="${CSV_COL[variant]}" '{print $col}')
   max_term_size=$(echo "$term_values" | tail -1)
   max_term_size_padded=$(awk -v m="$max_term_size" 'BEGIN{printf "%.0f", (m==""?0:m)*1.03}')
 
@@ -479,14 +531,14 @@ EOF
   else
     cat > "$plot_file" << EOF
 set terminal png size 800,600 enhanced font 'Arial,12'
+set bmargin 10
+set tmargin 3
 set output "$output_dir/benchmarks/images/${chart_prefix}term_size.png"
-set title 'Term Size Comparison - $benchmark (Lower is Better)'
-set xlabel 'Submissions'
 set ylabel 'AST Nodes'
 set style data boxes
-set style fill solid 0.8
+set style fill solid 1.0 border -1
 set boxwidth 0.6
-set xtics rotate by -45
+set xtics rotate by -45 noenhanced
 set grid y
 set key off
 set auto x
@@ -535,7 +587,7 @@ EOF
       value=$(echo "$term_values" | sed -n "${i}p")
       # Format label as two lines: "Compiler_Version\nContributor"
       local display_label
-      display_label=$(echo "$label" | awk -F_ '{if (NF >= 4) NF = NF - 1; printf "%s_%s\\n\\n%s", $1, $2, $NF}')
+      display_label=$(format_submission_label "$label")
       echo "$i $value $display_label" >> "$plot_file"
       echo "e" >> "$plot_file"
       ((i++))
@@ -543,8 +595,545 @@ EOF
     gnuplot "$plot_file"
   fi
 
+  # Total Fee (ADA) chart
+  local fee_sorted_data fee_labels fee_values fee_variants max_fee max_fee_padded
+  fee_sorted_data=$(echo "$csv_data" | sort -t, -k${CSV_COL[total_fee_lovelace]},${CSV_COL[total_fee_lovelace]}n)
+  fee_labels=$(echo "$fee_sorted_data" | awk -F, -v col="${CSV_COL[submission_dir]}" '{print $col}')
+  fee_values=$(echo "$fee_sorted_data" | awk -F, -v col="${CSV_COL[total_fee_lovelace]}" '{printf "%.6f\n", $col/1000000}')
+  fee_variants=$(echo "$fee_sorted_data" | awk -F, -v col="${CSV_COL[variant]}" '{print $col}')
+  max_fee=$(echo "$fee_values" | tail -1)
+  max_fee_padded=$(awk -v m="$max_fee" 'BEGIN{printf "%.6f", (m==""?0:m)*1.03}')
+
+  # Determine if log scale is needed based on value range
+  local min_fee max_fee_calc fee_ratio use_log_scale fee_scale_label
+  min_fee=$(echo "$fee_values" | head -1)
+  max_fee_calc=$(echo "$fee_values" | tail -1)
+
+  # Calculate ratio, handling edge cases
+  if [ -n "$min_fee" ] && [ -n "$max_fee_calc" ] && [ "$(echo "$min_fee > 0" | bc -l)" -eq 1 ]; then
+    fee_ratio=$(echo "scale=2; $max_fee_calc / $min_fee" | bc -l)
+    # Use log scale if ratio > 100 (more than 2 orders of magnitude)
+    if [ "$(echo "$fee_ratio > 100" | bc -l)" -eq 1 ]; then
+      use_log_scale=true
+      fee_scale_label="Log Scale"
+    else
+      use_log_scale=false
+      fee_scale_label="Linear Scale"
+    fi
+  else
+    use_log_scale=false
+    fee_scale_label="Linear Scale"
+  fi
+
+  if [[ $DRY_RUN -eq 1 ]]; then
+    log_info "[dry-run] Would generate total fee chart: ${output_dir}/benchmarks/images/${chart_prefix}total_fee.png (${fee_scale_label})"
+  else
+    plot_file="$temp_dir/plot_fee.gp"
+    cat > "$plot_file" << EOF
+set terminal png size 800,600 enhanced font 'Arial,12'
+set bmargin 10
+set tmargin 3
+set output "$output_dir/benchmarks/images/${chart_prefix}total_fee.png"
+set ylabel "Total Fee (Ada)"
+set style fill solid 1.0 border -1
+set boxwidth 0.8
+set xtics rotate by -45 noenhanced
+set grid y
+set key off
+set auto x
+EOF
+
+    if [ "$use_log_scale" = true ]; then
+      cat >> "$plot_file" << EOF
+set logscale y
+set yrange [*:*]
+EOF
+    else
+      cat >> "$plot_file" << EOF
+set yrange [0:$max_fee_padded]
+EOF
+    fi
+    local plot_cmd="plot "
+    local i=1
+    local first=true
+    while read -r label; do
+      [ -n "$label" ] || continue
+      local value color_spec
+      value=$(echo "$fee_values" | sed -n "${i}p")
+      color_spec=$(grep "^${label}:" "$color_map_file" | cut -d: -f2)
+      if [ "$first" = "false" ]; then
+        plot_cmd="$plot_cmd, "
+      fi
+      first=false
+      plot_cmd="$plot_cmd'-' using 1:2:xtic(3) with boxes lc rgb \"$color_spec\" notitle"
+      ((i++))
+    done <<< "$fee_labels"
+    echo "$plot_cmd" >> "$plot_file"
+
+    local i=1
+    while read -r label; do
+      [ -n "$label" ] || continue
+      local value
+      value=$(echo "$fee_values" | sed -n "${i}p")
+      local display_label
+      display_label=$(format_submission_label "$label")
+      echo "$i $value $display_label" >> "$plot_file"
+      echo "e" >> "$plot_file"
+      ((i++))
+    done <<< "$fee_labels"
+    gnuplot "$plot_file"
+  fi
+
+  # Transaction Memory Budget % chart
+  local mem_budget_sorted_data mem_budget_labels mem_budget_values mem_budget_cpu_values
+  mem_budget_sorted_data=$(echo "$csv_data" | sort -t, -k${CSV_COL[tx_memory_budget_pct]},${CSV_COL[tx_memory_budget_pct]}n)
+  mem_budget_labels=$(echo "$mem_budget_sorted_data" | awk -F, -v col="${CSV_COL[submission_dir]}" '{print $col}')
+  mem_budget_values=$(echo "$mem_budget_sorted_data" | awk -F, -v col="${CSV_COL[tx_memory_budget_pct]}" '{print $col}')
+  mem_budget_cpu_values=$(echo "$mem_budget_sorted_data" | awk -F, -v col="${CSV_COL[tx_cpu_budget_pct]}" '{print $col}')
+
+  # Calculate Y-axis range from non-exceeding memory submissions only (≤100%)
+  local mem_viable_max
+  mem_viable_max=$(echo "$mem_budget_values" | awk '{if($1<=100) print $1}' | sort -n | tail -1)
+
+  # If no viable submissions (all exceed 100%), fall back to normal range
+  local mem_max_padded
+  if [ -z "$mem_viable_max" ]; then
+    local mem_max
+    mem_max=$(echo "$mem_budget_values" | sort -n | tail -1)
+    mem_max_padded=$(awk -v m="$mem_max" 'BEGIN{printf "%.2f", (m==""?0:m)*1.03}')
+  else
+    # Use 110% of max viable submission for better visualization
+    mem_max_padded=$(awk -v m="$mem_viable_max" 'BEGIN{printf "%.2f", m*1.1}')
+  fi
+
+  # Check if any submission exceeds 100%
+  local mem_has_exceeding
+  mem_has_exceeding=$(paste <(echo "$mem_budget_values") <(echo "$mem_budget_cpu_values") \
+    | awk '{if($1>100 || $2>100) print "1"}' | head -1)
+
+  if [[ $DRY_RUN -eq 1 ]]; then
+    log_info "[dry-run] Would generate memory budget chart: ${output_dir}/benchmarks/images/${chart_prefix}tx_budget_mem.png"
+  else
+    plot_file="$temp_dir/plot_tx_budget_mem.gp"
+    cat > "$plot_file" << EOF
+set terminal png size 800,600 enhanced font 'Arial,12'
+set bmargin 10
+set tmargin 3
+set output "$output_dir/benchmarks/images/${chart_prefix}tx_budget_mem.png"
+set ylabel "Budget Usage (%)"
+set style fill solid 1.0 border -1
+set boxwidth 0.8
+set xtics rotate by -45 noenhanced
+set grid ytics
+set yrange [0:$mem_max_padded]
+set key top left
+# Add reference line at 50%
+set arrow from graph 0, first 50 to graph 1, first 50 nohead lc rgb "orange" lw 2 dt 2
+# Add reference line at 100% (transaction limit)
+set arrow from graph 0, first 100 to graph 1, first 100 nohead lc rgb "red" lw 2 dt 1
+EOF
+
+    # Build plot command
+    local plot_cmd="plot "
+    local i=1
+    local first=true
+    while read -r label; do
+      [ -n "$label" ] || continue
+      local mem_value cpu_value color_spec
+      mem_value=$(echo "$mem_budget_values" | sed -n "${i}p")
+      cpu_value=$(echo "$mem_budget_cpu_values" | sed -n "${i}p")
+      color_spec=$(grep "^${label}:" "$color_map_file" | cut -d: -f2)
+      local exceeds
+      exceeds=$(awk -v m="$mem_value" -v c="$cpu_value" 'BEGIN{print (m>100 || c>100)?"1":"0"}')
+
+      if [ "$first" = "false" ]; then
+        plot_cmd="$plot_cmd, "
+      fi
+      first=false
+
+      # Use hatched pattern if this submission exceeds on either metric
+      if [ "$exceeds" = "1" ]; then
+        plot_cmd="$plot_cmd'-' using 1:2:xtic(3) with boxes lc rgb \"$color_spec\" fs pattern 4 notitle"
+      else
+        plot_cmd="$plot_cmd'-' using 1:2:xtic(3) with boxes lc rgb \"$color_spec\" fs solid notitle"
+      fi
+      ((i++))
+    done <<< "$mem_budget_labels"
+
+    # Add legend entry only if there are exceeding submissions
+    if [ -n "$mem_has_exceeding" ]; then
+      plot_cmd="$plot_cmd, NaN with boxes lc rgb \"#888888\" fs pattern 4 title 'Exceeds limit (>100%)'"
+    fi
+
+    # Add legend entries for reference lines
+    plot_cmd="$plot_cmd, NaN with lines lc rgb \"red\" lw 2 dt 1 title '100% tx limit'"
+    plot_cmd="$plot_cmd, NaN with lines lc rgb \"orange\" lw 2 dt 2 title '50% threshold'"
+
+    # Add text labels for exceeding memory values
+    local i=1
+    while read -r label; do
+      [ -n "$label" ] || continue
+      local mem_value color_spec
+      mem_value=$(echo "$mem_budget_values" | sed -n "${i}p")
+      color_spec=$(grep "^${label}:" "$color_map_file" | cut -d: -f2)
+
+      if awk -v m="$mem_value" 'BEGIN{exit(m>100?0:1)}'; then
+        local label_text
+        label_text=$(awk -v m="$mem_value" 'BEGIN{printf "%.0f%%", m}')
+        plot_cmd="$plot_cmd, '-' using 1:2:3 with labels offset 0,1 font \"Arial,10\" textcolor rgb \"$color_spec\" notitle"
+      fi
+
+      ((i++))
+    done <<< "$mem_budget_labels"
+
+    echo "$plot_cmd" >> "$plot_file"
+
+    # Bar data
+    local i=1
+    while read -r label; do
+      [ -n "$label" ] || continue
+      local mem_value
+      mem_value=$(echo "$mem_budget_values" | sed -n "${i}p")
+      # Cap display value at Y-max for visual consistency
+      local display_value
+      display_value=$(awk -v m="$mem_value" -v max="$mem_max_padded" 'BEGIN{print (m>max)?max:m}')
+      local display_label
+      display_label=$(format_submission_label "$label")
+      echo "$i $display_value \"$display_label\"" >> "$plot_file"
+      echo "e" >> "$plot_file"
+      ((i++))
+    done <<< "$mem_budget_labels"
+
+    # Text label data for exceeding memory values
+    local i=1
+    while read -r label; do
+      [ -n "$label" ] || continue
+      local mem_value
+      mem_value=$(echo "$mem_budget_values" | sed -n "${i}p")
+
+      if awk -v m="$mem_value" 'BEGIN{exit(m>100?0:1)}'; then
+        local label_text
+        label_text=$(awk -v m="$mem_value" 'BEGIN{printf "%.0f%%", m}')
+        echo "$i $mem_max_padded \"$label_text\"" >> "$plot_file"
+        echo "e" >> "$plot_file"
+      fi
+
+      ((i++))
+    done <<< "$mem_budget_labels"
+
+    gnuplot "$plot_file"
+  fi
+
+  # Transaction CPU Budget % chart
+  local cpu_budget_sorted_data cpu_budget_labels cpu_budget_values cpu_budget_mem_values
+  cpu_budget_sorted_data=$(echo "$csv_data" | sort -t, -k${CSV_COL[tx_cpu_budget_pct]},${CSV_COL[tx_cpu_budget_pct]}n)
+  cpu_budget_labels=$(echo "$cpu_budget_sorted_data" | awk -F, -v col="${CSV_COL[submission_dir]}" '{print $col}')
+  cpu_budget_values=$(echo "$cpu_budget_sorted_data" | awk -F, -v col="${CSV_COL[tx_cpu_budget_pct]}" '{print $col}')
+  cpu_budget_mem_values=$(echo "$cpu_budget_sorted_data" | awk -F, -v col="${CSV_COL[tx_memory_budget_pct]}" '{print $col}')
+
+  # Calculate Y-axis range from non-exceeding CPU submissions only (≤100%)
+  local cpu_viable_max
+  cpu_viable_max=$(echo "$cpu_budget_values" | awk '{if($1<=100) print $1}' | sort -n | tail -1)
+
+  # If no viable submissions (all exceed 100%), fall back to normal range
+  local cpu_max_padded
+  if [ -z "$cpu_viable_max" ]; then
+    local cpu_max
+    cpu_max=$(echo "$cpu_budget_values" | sort -n | tail -1)
+    cpu_max_padded=$(awk -v m="$cpu_max" 'BEGIN{printf "%.2f", (m==""?0:m)*1.03}')
+  else
+    # Use 110% of max viable submission for better visualization
+    cpu_max_padded=$(awk -v m="$cpu_viable_max" 'BEGIN{printf "%.2f", m*1.1}')
+  fi
+
+  # Check if any submission exceeds 100%
+  local cpu_has_exceeding
+  cpu_has_exceeding=$(paste <(echo "$cpu_budget_values") <(echo "$cpu_budget_mem_values") \
+    | awk '{if($1>100 || $2>100) print "1"}' | head -1)
+
+  if [[ $DRY_RUN -eq 1 ]]; then
+    log_info "[dry-run] Would generate CPU budget chart: ${output_dir}/benchmarks/images/${chart_prefix}tx_budget_cpu.png"
+  else
+    plot_file="$temp_dir/plot_tx_budget_cpu.gp"
+    cat > "$plot_file" << EOF
+set terminal png size 800,600 enhanced font 'Arial,12'
+set bmargin 10
+set tmargin 3
+set output "$output_dir/benchmarks/images/${chart_prefix}tx_budget_cpu.png"
+set ylabel "Budget Usage (%)"
+set style fill solid 1.0 border -1
+set boxwidth 0.8
+set xtics rotate by -45 noenhanced
+set grid ytics
+set yrange [0:$cpu_max_padded]
+set key top left
+# Add reference line at 50%
+set arrow from graph 0, first 50 to graph 1, first 50 nohead lc rgb "orange" lw 2 dt 2
+# Add reference line at 100% (transaction limit)
+set arrow from graph 0, first 100 to graph 1, first 100 nohead lc rgb "red" lw 2 dt 1
+EOF
+
+    # Build plot command
+    local plot_cmd="plot "
+    local i=1
+    local first=true
+    while read -r label; do
+      [ -n "$label" ] || continue
+      local cpu_value mem_value color_spec
+      cpu_value=$(echo "$cpu_budget_values" | sed -n "${i}p")
+      mem_value=$(echo "$cpu_budget_mem_values" | sed -n "${i}p")
+      color_spec=$(grep "^${label}:" "$color_map_file" | cut -d: -f2)
+      local exceeds
+      exceeds=$(awk -v m="$mem_value" -v c="$cpu_value" 'BEGIN{print (m>100 || c>100)?"1":"0"}')
+
+      if [ "$first" = "false" ]; then
+        plot_cmd="$plot_cmd, "
+      fi
+      first=false
+
+      # Use hatched pattern if this submission exceeds on either metric
+      if [ "$exceeds" = "1" ]; then
+        plot_cmd="$plot_cmd'-' using 1:2:xtic(3) with boxes lc rgb \"$color_spec\" fs pattern 4 notitle"
+      else
+        plot_cmd="$plot_cmd'-' using 1:2:xtic(3) with boxes lc rgb \"$color_spec\" fs solid notitle"
+      fi
+      ((i++))
+    done <<< "$cpu_budget_labels"
+
+    # Add legend entry only if there are exceeding submissions
+    if [ -n "$cpu_has_exceeding" ]; then
+      plot_cmd="$plot_cmd, NaN with boxes lc rgb \"#888888\" fs pattern 4 title 'Exceeds limit (>100%)'"
+    fi
+
+    # Add legend entries for reference lines
+    plot_cmd="$plot_cmd, NaN with lines lc rgb \"red\" lw 2 dt 1 title '100% tx limit'"
+    plot_cmd="$plot_cmd, NaN with lines lc rgb \"orange\" lw 2 dt 2 title '50% threshold'"
+
+    # Add text labels for exceeding CPU values
+    local i=1
+    while read -r label; do
+      [ -n "$label" ] || continue
+      local cpu_value color_spec
+      cpu_value=$(echo "$cpu_budget_values" | sed -n "${i}p")
+      color_spec=$(grep "^${label}:" "$color_map_file" | cut -d: -f2)
+
+      if awk -v c="$cpu_value" 'BEGIN{exit(c>100?0:1)}'; then
+        local label_text
+        label_text=$(awk -v c="$cpu_value" 'BEGIN{printf "%.0f%%", c}')
+        plot_cmd="$plot_cmd, '-' using 1:2:3 with labels offset 0,1 font \"Arial,10\" textcolor rgb \"$color_spec\" notitle"
+      fi
+
+      ((i++))
+    done <<< "$cpu_budget_labels"
+
+    echo "$plot_cmd" >> "$plot_file"
+
+    # Bar data
+    local i=1
+    while read -r label; do
+      [ -n "$label" ] || continue
+      local cpu_value
+      cpu_value=$(echo "$cpu_budget_values" | sed -n "${i}p")
+      # Cap display value at Y-max for visual consistency
+      local display_value
+      display_value=$(awk -v c="$cpu_value" -v max="$cpu_max_padded" 'BEGIN{print (c>max)?max:c}')
+      local display_label
+      display_label=$(format_submission_label "$label")
+      echo "$i $display_value \"$display_label\"" >> "$plot_file"
+      echo "e" >> "$plot_file"
+      ((i++))
+    done <<< "$cpu_budget_labels"
+
+    # Text label data for exceeding CPU values
+    local i=1
+    while read -r label; do
+      [ -n "$label" ] || continue
+      local cpu_value
+      cpu_value=$(echo "$cpu_budget_values" | sed -n "${i}p")
+
+      if awk -v c="$cpu_value" 'BEGIN{exit(c>100?0:1)}'; then
+        local label_text
+        label_text=$(awk -v c="$cpu_value" 'BEGIN{printf "%.0f%%", c}')
+        echo "$i $cpu_max_padded \"$label_text\"" >> "$plot_file"
+        echo "e" >> "$plot_file"
+      fi
+
+      ((i++))
+    done <<< "$cpu_budget_labels"
+
+    gnuplot "$plot_file"
+  fi
+
+  # Scripts per Transaction (capacity) chart
+  # Include ALL submissions, sorted by capacity (descending, higher is better)
+  local capacity_sorted_data capacity_labels capacity_values
+  capacity_sorted_data=$(echo "$csv_data" | sort -t, -k${CSV_COL[scripts_per_tx]},${CSV_COL[scripts_per_tx]}nr)
+  capacity_labels=$(echo "$capacity_sorted_data" | awk -F, -v col="${CSV_COL[submission_dir]}" '{print $col}')
+  capacity_values=$(echo "$capacity_sorted_data" | awk -F, -v col="${CSV_COL[scripts_per_tx]}" '{print $col}')
+
+  # Calculate Y-axis range from non-zero capacity submissions only (>0)
+  local capacity_viable_max capacity_viable_min
+  capacity_viable_max=$(echo "$capacity_values" | awk '{if($1>0) print $1}' | sort -n | tail -1)
+  capacity_viable_min=$(echo "$capacity_values" | awk '{if($1>0) print $1}' | sort -n | head -1)
+
+  # If no viable submissions (all zero capacity), use 1 as max
+  local max_capacity_padded
+  if [ -z "$capacity_viable_max" ]; then
+    max_capacity_padded=1
+  else
+    # Use 110% of max viable submission for better visualization
+    max_capacity_padded=$(awk -v m="$capacity_viable_max" 'BEGIN{printf "%.0f", m*1.1}')
+  fi
+
+  # Check if any submission has zero capacity (exceeds transaction limits)
+  local capacity_has_exceeding
+  capacity_has_exceeding=$(echo "$capacity_values" | awk '{if($1==0) print "1"}' | head -1)
+
+  # Determine if log scale is needed based on value range
+  local capacity_ratio use_capacity_log_scale capacity_scale_label
+  if [ -n "$capacity_viable_min" ] && [ -n "$capacity_viable_max" ] && [ "$(echo "$capacity_viable_min > 0" | bc -l)" -eq 1 ]; then
+    capacity_ratio=$(echo "scale=2; $capacity_viable_max / $capacity_viable_min" | bc -l)
+    # Use log scale if ratio > 100 (more than 2 orders of magnitude)
+    if [ "$(echo "$capacity_ratio > 100" | bc -l)" -eq 1 ]; then
+      use_capacity_log_scale=true
+      capacity_scale_label="Log Scale"
+    else
+      use_capacity_log_scale=false
+      capacity_scale_label="Linear Scale"
+    fi
+  else
+    use_capacity_log_scale=false
+    capacity_scale_label="Linear Scale"
+  fi
+
+  if [[ $DRY_RUN -eq 1 ]]; then
+    log_info "[dry-run] Would generate capacity chart: ${output_dir}/benchmarks/images/${chart_prefix}scripts_per_tx.png"
+  else
+    plot_file="$temp_dir/plot_capacity.gp"
+    cat > "$plot_file" << EOF
+set terminal png size 800,600 enhanced font 'Arial,12'
+set bmargin 10
+set tmargin 3
+set output "$output_dir/benchmarks/images/${chart_prefix}scripts_per_tx.png"
+set ylabel "Scripts per Transaction"
+set style fill solid 1.0 border -1
+set boxwidth 0.8
+set xtics rotate by -45 noenhanced
+set grid y
+set auto x
+EOF
+
+    if [ "$use_capacity_log_scale" = true ]; then
+      cat >> "$plot_file" << EOF
+set logscale y
+set yrange [*:*]
+set key off
+EOF
+    else
+      cat >> "$plot_file" << EOF
+set yrange [0:$max_capacity_padded]
+EOF
+      # Add legend for exceeded limits if applicable
+      if [ -n "$capacity_has_exceeding" ]; then
+        cat >> "$plot_file" << EOF
+set key top left
+EOF
+      else
+        cat >> "$plot_file" << EOF
+set key off
+EOF
+      fi
+    fi
+
+    # Build plot command with conditional hatching for zero capacity
+    local plot_cmd="plot "
+    local i=1
+    local first=true
+    while read -r label; do
+      [ -n "$label" ] || continue
+      local capacity_value color_spec
+      capacity_value=$(echo "$capacity_values" | sed -n "${i}p")
+      color_spec=$(grep "^${label}:" "$color_map_file" | cut -d: -f2)
+
+      if [ "$first" = "false" ]; then
+        plot_cmd="$plot_cmd, "
+      fi
+      first=false
+
+      # Use hatched pattern if capacity is zero (exceeds transaction limits)
+      if [ "$capacity_value" = "0" ]; then
+        plot_cmd="$plot_cmd'-' using 1:2:xtic(3) with boxes lc rgb \"$color_spec\" fs pattern 4 notitle"
+      else
+        plot_cmd="$plot_cmd'-' using 1:2:xtic(3) with boxes lc rgb \"$color_spec\" fs solid notitle"
+      fi
+      ((i++))
+    done <<< "$capacity_labels"
+
+    # Add legend entry if any submission exceeds limits
+    if [ -n "$capacity_has_exceeding" ]; then
+      plot_cmd="$plot_cmd, NaN with boxes lc rgb \"#888888\" fs pattern 4 title 'Exceeds limits (0)'"
+    fi
+
+    # Add text labels for zero-capacity bars (displayed at top of chart)
+    local i=1
+    local has_zero_labels=false
+    while read -r label; do
+      [ -n "$label" ] || continue
+      local capacity_value
+      capacity_value=$(echo "$capacity_values" | sed -n "${i}p")
+      if [ "$capacity_value" = "0" ]; then
+        has_zero_labels=true
+        break
+      fi
+      ((i++))
+    done <<< "$capacity_labels"
+
+    if [ "$has_zero_labels" = true ]; then
+      plot_cmd="$plot_cmd, '-' using 1:2:3 with labels offset 0,1 font 'Arial,10' notitle"
+    fi
+
+    echo "$plot_cmd" >> "$plot_file"
+
+    # Generate data blocks for each bar
+    local i=1
+    while read -r label; do
+      [ -n "$label" ] || continue
+      local capacity_value display_label display_value
+      capacity_value=$(echo "$capacity_values" | sed -n "${i}p")
+      display_label=$(format_submission_label "$label")
+
+      # Display zero-capacity bars at full height for visibility
+      if [ "$capacity_value" = "0" ]; then
+        display_value="$max_capacity_padded"
+      else
+        display_value="$capacity_value"
+      fi
+
+      echo "$i $display_value $display_label" >> "$plot_file"
+      echo "e" >> "$plot_file"
+      ((i++))
+    done <<< "$capacity_labels"
+
+    # Add text labels data block for zero values
+    if [ "$has_zero_labels" = true ]; then
+      local i=1
+      while read -r label; do
+        [ -n "$label" ] || continue
+        local capacity_value
+        capacity_value=$(echo "$capacity_values" | sed -n "${i}p")
+        if [ "$capacity_value" = "0" ]; then
+          echo "$i $max_capacity_padded 0" >> "$plot_file"
+        fi
+        ((i++))
+      done <<< "$capacity_labels"
+      echo "e" >> "$plot_file"
+    fi
+
+    gnuplot "$plot_file"
+  fi
+
   # Return chart file names for HTML generation
-  echo "${chart_prefix}cpu_units.png,${chart_prefix}memory_units.png,${chart_prefix}script_size.png,${chart_prefix}term_size.png"
+  echo "${chart_prefix}cpu_units.png,${chart_prefix}memory_units.png,${chart_prefix}script_size.png,${chart_prefix}term_size.png,${chart_prefix}total_fee.png,${chart_prefix}tx_budget_mem.png,${chart_prefix}tx_budget_cpu.png,${chart_prefix}scripts_per_tx.png"
 }
 
 generate_individual_benchmark_report() {
@@ -553,21 +1142,29 @@ generate_individual_benchmark_report() {
   local chart_files="$3"
 
   # Parse chart files manually to avoid array issues
-  local chart1 chart2 chart3 chart4
+  local chart1 chart2 chart3 chart4 chart5 chart6 chart7 chart8
   chart1=$(echo "$chart_files" | cut -d, -f1)
   chart2=$(echo "$chart_files" | cut -d, -f2)
   chart3=$(echo "$chart_files" | cut -d, -f3)
   chart4=$(echo "$chart_files" | cut -d, -f4)
+  chart5=$(echo "$chart_files" | cut -d, -f5)
+  chart6=$(echo "$chart_files" | cut -d, -f6)
+  chart7=$(echo "$chart_files" | cut -d, -f7)
+  chart8=$(echo "$chart_files" | cut -d, -f8)
 
   # Get CSV data for this benchmark to create the data table
   local csv_data valid_csv_data
   csv_data=$($CAPE_CMD submission aggregate | grep "^$benchmark," || true)
 
   # Filter out invalid CSV entries (those with empty numeric fields or template placeholders)
-  # CSV format: benchmark,timestamp,language,version,user,variant,cpu_units,memory_units,script_size_bytes,term_size,submission_dir
-  # Field positions: cpu_units=7, memory_units=8, script_size_bytes=9, term_size=10
-  valid_csv_data=$(echo "$csv_data" | grep -v '<.*>' | awk -F, '$7 != "" && $8 != "" && $9 != "" && $10 != ""')
+  valid_csv_data=$(echo "$csv_data" | grep -v '<.*>' | awk -F, -v cpu="${CSV_COL[cpu_units]}" -v mem="${CSV_COL[memory_units]}" -v size="${CSV_COL[script_size_bytes]}" -v term="${CSV_COL[term_size]}" '$cpu != "" && $mem != "" && $size != "" && $term != ""')
   csv_data="$valid_csv_data"
+
+  # Check for exceeding conditions to show in HTML subtitles
+  local has_cpu_exceeding has_mem_exceeding has_capacity_exceeding
+  has_cpu_exceeding=$(echo "$csv_data" | awk -F, -v col="${CSV_COL[tx_cpu_budget_pct]}" '{if($col>100) print "1"}' | head -1)
+  has_mem_exceeding=$(echo "$csv_data" | awk -F, -v col="${CSV_COL[tx_memory_budget_pct]}" '{if($col>100) print "1"}' | head -1)
+  has_capacity_exceeding=$(echo "$csv_data" | awk -F, -v col="${CSV_COL[scripts_per_tx]}" '{if($col==0) print "1"}' | head -1)
 
   # Create JSON data for template
   local temp_json
@@ -576,34 +1173,48 @@ generate_individual_benchmark_report() {
 {
   "benchmark": "$benchmark",
   "timestamp": "$(date '+%Y-%m-%d %H:%M:%S %Z')",
+  "has_cpu_exceeding": $([ -n "$has_cpu_exceeding" ] && echo "true" || echo "false"),
+  "has_mem_exceeding": $([ -n "$has_mem_exceeding" ] && echo "true" || echo "false"),
+  "has_capacity_exceeding": $([ -n "$has_capacity_exceeding" ] && echo "true" || echo "false"),
   "charts": {
     "cpu_units": "$chart1",
     "memory_units": "$chart2",
     "script_size": "$chart3",
-    "term_size": "$chart4"
+    "term_size": "$chart4",
+    "total_fee": "$chart5",
+    "tx_budget_mem": "$chart6",
+    "tx_budget_cpu": "$chart7",
+    "scripts_per_tx": "$chart8"
   },
   "submissions": [
 EOF
 
   # Generate JSON for submissions table - sorted by CPU units (ascending)
-  # CSV data is already filtered and valid from above
-  # CSV format: benchmark,timestamp,language,version,user,variant,cpu_units,memory_units,script_size_bytes,term_size,submission_dir
   local table_sorted_data first
-  table_sorted_data=$(echo "$csv_data" | sort -t, -k7,7n)
+  table_sorted_data=$(echo "$csv_data" | sort -t, -k${CSV_COL[cpu_units]},${CSV_COL[cpu_units]}n)
   first=true
   while IFS= read -r line; do
     if [ -n "$line" ]; then
-      local timestamp language version user variant cpu_units memory_units script_size term_size submission_dir
-      timestamp=$(echo "$line" | cut -d, -f2)
-      language=$(echo "$line" | cut -d, -f3)
-      version=$(echo "$line" | cut -d, -f4)
-      user=$(echo "$line" | cut -d, -f5)
-      variant=$(echo "$line" | cut -d, -f6)
-      cpu_units=$(echo "$line" | cut -d, -f7)
-      memory_units=$(echo "$line" | cut -d, -f8)
-      script_size=$(echo "$line" | cut -d, -f9)
-      term_size=$(echo "$line" | cut -d, -f10)
-      submission_dir=$(echo "$line" | cut -d, -f11)
+      local timestamp language version user variant cpu_units memory_units script_size term_size execution_fee_lovelace reference_script_fee_lovelace total_fee_lovelace tx_memory_budget_pct tx_cpu_budget_pct block_memory_budget_pct block_cpu_budget_pct scripts_per_tx scripts_per_block submission_dir
+      timestamp=$(csv_field "$line" "timestamp")
+      language=$(csv_field "$line" "language")
+      version=$(csv_field "$line" "version")
+      user=$(csv_field "$line" "user")
+      variant=$(csv_field "$line" "variant")
+      cpu_units=$(csv_field "$line" "cpu_units")
+      memory_units=$(csv_field "$line" "memory_units")
+      script_size=$(csv_field "$line" "script_size_bytes")
+      term_size=$(csv_field "$line" "term_size")
+      execution_fee_lovelace=$(csv_field "$line" "execution_fee_lovelace")
+      reference_script_fee_lovelace=$(csv_field "$line" "reference_script_fee_lovelace")
+      total_fee_lovelace=$(csv_field "$line" "total_fee_lovelace")
+      tx_memory_budget_pct=$(csv_field "$line" "tx_memory_budget_pct")
+      tx_cpu_budget_pct=$(csv_field "$line" "tx_cpu_budget_pct")
+      block_memory_budget_pct=$(csv_field "$line" "block_memory_budget_pct")
+      block_cpu_budget_pct=$(csv_field "$line" "block_cpu_budget_pct")
+      scripts_per_tx=$(csv_field "$line" "scripts_per_tx")
+      scripts_per_block=$(csv_field "$line" "scripts_per_block")
+      submission_dir=$(csv_field "$line" "submission_dir")
 
       # Skip entries with empty numeric fields
       if [ -z "$cpu_units" ] || [ -z "$memory_units" ] || [ -z "$script_size" ] || [ -z "$term_size" ]; then
@@ -614,6 +1225,10 @@ EOF
         echo "," >> "$temp_json"
       fi
       first=false
+
+      # Calculate ADA from lovelace (1 ADA = 1,000,000 lovelace)
+      local total_fee_ada
+      total_fee_ada=$(awk -v lovelace="$total_fee_lovelace" 'BEGIN{printf "%.2f", lovelace/1000000}')
 
       cat >> "$temp_json" << EOF
     {
@@ -626,6 +1241,16 @@ EOF
       "memory_units": $memory_units,
       "script_size": $script_size,
       "term_size": $term_size,
+      "execution_fee_lovelace": $execution_fee_lovelace,
+      "reference_script_fee_lovelace": $reference_script_fee_lovelace,
+      "total_fee_lovelace": $total_fee_lovelace,
+      "total_fee_ada": $total_fee_ada,
+      "tx_memory_budget_pct": $tx_memory_budget_pct,
+      "tx_cpu_budget_pct": $tx_cpu_budget_pct,
+      "block_memory_budget_pct": $block_memory_budget_pct,
+      "block_cpu_budget_pct": $block_cpu_budget_pct,
+      "scripts_per_tx": $scripts_per_tx,
+      "scripts_per_block": $scripts_per_block,
       "submission_dir": "$submission_dir"
     }
 EOF
@@ -670,7 +1295,7 @@ build_filtered_stats() {
 
   # Get unique benchmarks from CSV (skip header)
   local benchmarks
-  benchmarks=$(echo "$csv_data" | tail -n +2 | cut -d, -f1 | sort -u)
+  benchmarks=$(echo "$csv_data" | tail -n +2 | awk -F, -v col="${CSV_COL[benchmark]}" '{print $col}' | sort -u)
 
   local first_benchmark=true
   for benchmark in $benchmarks; do
@@ -696,26 +1321,36 @@ build_filtered_stats() {
     while IFS= read -r line; do
       if [ -z "$line" ]; then continue; fi
 
-      # Parse CSV fields (benchmark,timestamp,language,version,user,variant,cpu_units,memory_units,script_size_bytes,term_size,submission_dir)
-      local timestamp language version user variant cpu_units memory_units script_size term_size
-      timestamp=$(echo "$line" | cut -d, -f2)
-      language=$(echo "$line" | cut -d, -f3)
-      version=$(echo "$line" | cut -d, -f4)
-      user=$(echo "$line" | cut -d, -f5)
-      variant=$(echo "$line" | cut -d, -f6)
-      cpu_units=$(echo "$line" | cut -d, -f7)
-      memory_units=$(echo "$line" | cut -d, -f8)
-      script_size=$(echo "$line" | cut -d, -f9)
-      term_size=$(echo "$line" | cut -d, -f10)
+      # Parse CSV fields using column mapping
+      local timestamp language version user variant cpu_units memory_units script_size term_size execution_fee_lovelace reference_script_fee_lovelace total_fee_lovelace tx_memory_budget_pct tx_cpu_budget_pct block_memory_budget_pct block_cpu_budget_pct scripts_per_tx scripts_per_block
+      timestamp=$(csv_field "$line" "timestamp")
+      language=$(csv_field "$line" "language")
+      version=$(csv_field "$line" "version")
+      user=$(csv_field "$line" "user")
+      variant=$(csv_field "$line" "variant")
+      cpu_units=$(csv_field "$line" "cpu_units")
+      memory_units=$(csv_field "$line" "memory_units")
+      script_size=$(csv_field "$line" "script_size_bytes")
+      term_size=$(csv_field "$line" "term_size")
+      execution_fee_lovelace=$(csv_field "$line" "execution_fee_lovelace")
+      reference_script_fee_lovelace=$(csv_field "$line" "reference_script_fee_lovelace")
+      total_fee_lovelace=$(csv_field "$line" "total_fee_lovelace")
+      tx_memory_budget_pct=$(csv_field "$line" "tx_memory_budget_pct")
+      tx_cpu_budget_pct=$(csv_field "$line" "tx_cpu_budget_pct")
+      block_memory_budget_pct=$(csv_field "$line" "block_memory_budget_pct")
+      block_cpu_budget_pct=$(csv_field "$line" "block_cpu_budget_pct")
+      scripts_per_tx=$(csv_field "$line" "scripts_per_tx")
+      scripts_per_block=$(csv_field "$line" "scripts_per_block")
 
       # Extract date from timestamp
       local date_only
       date_only=$(echo "$timestamp" | cut -d'T' -f1)
 
       # Format numbers for display
-      local cpu_formatted memory_formatted
+      local cpu_formatted memory_formatted total_fee_ada
       cpu_formatted=$(format_number_short "$cpu_units")
       memory_formatted=$(format_number_short "$memory_units")
+      total_fee_ada=$(awk -v lovelace="$total_fee_lovelace" 'BEGIN{printf "%.6f", lovelace/1000000}')
 
       if [ "$first_submission" = "false" ]; then
         echo ','
@@ -749,7 +1384,23 @@ build_filtered_stats() {
             "value": $term_size,
             "formatted": "$term_size",
             "is_best": false
-          }
+          },
+          "total_fee_lovelace": {
+            "value": $total_fee_lovelace,
+            "formatted": "$total_fee_lovelace",
+            "is_best": false
+          },
+          "total_fee_ada": {
+            "value": $total_fee_ada,
+            "formatted": "$total_fee_ada",
+            "is_best": false
+          },
+          "tx_memory_budget_pct": $tx_memory_budget_pct,
+          "tx_cpu_budget_pct": $tx_cpu_budget_pct,
+          "block_memory_budget_pct": $block_memory_budget_pct,
+          "block_cpu_budget_pct": $block_cpu_budget_pct,
+          "scripts_per_tx": $scripts_per_tx,
+          "scripts_per_block": $scripts_per_block
         }
 EOF
     done <<< "$benchmark_csv"
@@ -861,7 +1512,10 @@ generate_no_submissions_report() {
     "cpu_units": "",
     "memory_units": "",
     "script_size": "",
-    "term_size": ""
+    "term_size": "",
+    "total_fee": "",
+    "tx_budget": "",
+    "scripts_per_tx": ""
   },
   "submissions": [],
   "has_submissions": false
@@ -921,18 +1575,25 @@ if [ "$1" = "--all" ]; then
       echo "Processing $benchmark..."
 
       # Generate charts and benchmark report
-      chart_files=$(generate_benchmark_report "$benchmark" "$report_dir") || true
-      if [ -n "$chart_files" ]; then
-        if [[ $DRY_RUN -eq 0 ]]; then
-          generate_individual_benchmark_report "$benchmark" "$report_dir" "$chart_files"
-        fi
-
-        # Add to benchmarks list
-        if [ -n "$benchmarks_with_submissions" ]; then
-          benchmarks_with_submissions="${benchmarks_with_submissions}\n"
-        fi
-        benchmarks_with_submissions="${benchmarks_with_submissions}${benchmark}"
+      if ! chart_files=$(generate_benchmark_report "$benchmark" "$report_dir"); then
+        echo "❌ Error: Failed to generate report for benchmark '$benchmark'" >&2
+        exit 1
       fi
+
+      if [ -z "$chart_files" ]; then
+        echo "❌ Error: generate_benchmark_report returned empty chart files for '$benchmark'" >&2
+        exit 1
+      fi
+
+      if [[ $DRY_RUN -eq 0 ]]; then
+        generate_individual_benchmark_report "$benchmark" "$report_dir" "$chart_files"
+      fi
+
+      # Add to benchmarks list
+      if [ -n "$benchmarks_with_submissions" ]; then
+        benchmarks_with_submissions="${benchmarks_with_submissions}\n"
+      fi
+      benchmarks_with_submissions="${benchmarks_with_submissions}${benchmark}"
     else
       # Generate placeholder page for benchmark without submissions
       echo "No submissions for $benchmark, creating placeholder..."
@@ -978,14 +1639,18 @@ else
   # Check if benchmark has submissions
   if [ -d "$PROJECT_ROOT/submissions/$benchmark" ] && [ "$(find "$PROJECT_ROOT/submissions/$benchmark" -mindepth 1 -maxdepth 1 -type d ! -name "TEMPLATE" 2> /dev/null | wc -l)" -gt 0 ]; then
     # Generate charts for the benchmark with submissions
-    chart_files=$(generate_benchmark_report "$benchmark" "$report_dir") || true
-    if [ -n "$chart_files" ]; then
-      # Generate individual benchmark report page with charts
-      generate_individual_benchmark_report "$benchmark" "$report_dir" "$chart_files"
-    else
-      echo "Error: Failed to generate report for benchmark '$benchmark'" >&2
+    if ! chart_files=$(generate_benchmark_report "$benchmark" "$report_dir"); then
+      echo "❌ Error: Failed to generate report for benchmark '$benchmark'" >&2
       exit 1
     fi
+
+    if [ -z "$chart_files" ]; then
+      echo "❌ Error: generate_benchmark_report returned empty chart files for '$benchmark'" >&2
+      exit 1
+    fi
+
+    # Generate individual benchmark report page with charts
+    generate_individual_benchmark_report "$benchmark" "$report_dir" "$chart_files"
   else
     # Generate placeholder page for benchmark without submissions
     echo "No submissions found for benchmark: $benchmark. Creating placeholder page."
