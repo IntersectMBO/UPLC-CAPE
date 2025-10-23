@@ -15,13 +15,28 @@
             background-color: #f8f9fa;
         }
         .header {
-            text-align: center;
             margin-bottom: 40px;
-            padding: 30px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border-radius: 10px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 20px 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+        }
+        .header img {
+            width: 150px;
+            height: auto;
+            flex-shrink: 0;
+        }
+        .header-text {
+            flex-grow: 0;
+        }
+        .header h1 {
+            color: #333;
+            margin: 0 0 10px 0;
+        }
+        .header p {
+            color: #6c757d;
+            margin: 5px 0;
         }
         
         /* Benchmark Summary Table Styles */
@@ -226,15 +241,13 @@
 </head>
 <body>
     <div class="header">
-        <h1>🚀 UPLC-CAPE Performance Reports</h1>
-        <p>Comparative Artifact Performance Evaluation for UPLC Programs</p>
-        <p>Performance comparison of UPLC programs across different compilers</p>
+        <img src="uplc-cape-logo.png" alt="UPLC-CAPE Logo">
+        <div class="header-text">
+            <h1>UPLC-CAPE Performance Reports</h1>
+            <p>Performance comparison of UPLC programs across different compilers</p>
+        </div>
     </div>
 
-    <div class="timestamp">
-        Generated on: 2025-10-23 13:04:28 CEST
-    </div>
-    
     <!-- Benchmark Summary Table -->
     <div class="benchmark-summary">
         <h2>📊 Benchmark Submissions</h2>
@@ -266,11 +279,10 @@
                                 <th onclick="sortTable('factorial', 1)">Version</th>
                                 <th onclick="sortTable('factorial', 2)">Variant</th>
                                 <th onclick="sortTable('factorial', 3)">Author</th>
-                                <th onclick="sortTable('factorial', 4)">Date</th>
-                                <th class="numeric" onclick="sortTable('factorial', 5)">CPU Units</th>
-                                <th class="numeric" onclick="sortTable('factorial', 6)">Memory Units</th>
-                                <th class="numeric" onclick="sortTable('factorial', 7)">Script Size</th>
-                                <th class="numeric" onclick="sortTable('factorial', 8)">Term Size</th>
+                                <th class="numeric" onclick="sortTable('factorial', 4)">CPU Units</th>
+                                <th class="numeric" onclick="sortTable('factorial', 5)">Memory Units</th>
+                                <th class="numeric" onclick="sortTable('factorial', 6)">Script Size</th>
+                                <th class="numeric" onclick="sortTable('factorial', 7)">Term Size</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -280,7 +292,6 @@
                                 <td>1.11.0</td>
                                 <td>exbudget</td>
                                 <td>SeungheonOh</td>
-                                <td>2025-10-17</td>
                                 <td class="numeric">
                                     <span class="tooltip">
                                         <span class="cpu-value">37.00M</span>
@@ -302,7 +313,6 @@
                                 <td>1.11.0</td>
                                 <td>size</td>
                                 <td>SeungheonOh</td>
-                                <td>2025-10-17</td>
                                 <td class="numeric">
                                     <span class="tooltip">
                                         <span class="cpu-value">37.48M</span>
@@ -324,7 +334,6 @@
                                 <td>0.12.1</td>
                                 <td>default</td>
                                 <td>Unisay</td>
-                                <td>2025-10-08</td>
                                 <td class="numeric">
                                     <span class="tooltip">
                                         <span class="cpu-value">37.48M</span>
@@ -368,11 +377,10 @@
                                 <th onclick="sortTable('factorial_naive_recursion', 1)">Version</th>
                                 <th onclick="sortTable('factorial_naive_recursion', 2)">Variant</th>
                                 <th onclick="sortTable('factorial_naive_recursion', 3)">Author</th>
-                                <th onclick="sortTable('factorial_naive_recursion', 4)">Date</th>
-                                <th class="numeric" onclick="sortTable('factorial_naive_recursion', 5)">CPU Units</th>
-                                <th class="numeric" onclick="sortTable('factorial_naive_recursion', 6)">Memory Units</th>
-                                <th class="numeric" onclick="sortTable('factorial_naive_recursion', 7)">Script Size</th>
-                                <th class="numeric" onclick="sortTable('factorial_naive_recursion', 8)">Term Size</th>
+                                <th class="numeric" onclick="sortTable('factorial_naive_recursion', 4)">CPU Units</th>
+                                <th class="numeric" onclick="sortTable('factorial_naive_recursion', 5)">Memory Units</th>
+                                <th class="numeric" onclick="sortTable('factorial_naive_recursion', 6)">Script Size</th>
+                                <th class="numeric" onclick="sortTable('factorial_naive_recursion', 7)">Term Size</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -382,7 +390,6 @@
                                 <td>0.26.1</td>
                                 <td>default</td>
                                 <td>Niels Mündler</td>
-                                <td>2025-10-16</td>
                                 <td class="numeric">
                                     <span class="tooltip">
                                         <span class="cpu-value">72.92M</span>
@@ -404,7 +411,6 @@
                                 <td>1.45.0.0</td>
                                 <td>default</td>
                                 <td>Unisay</td>
-                                <td>2025-10-09</td>
                                 <td class="numeric">
                                     <span class="tooltip">
                                         <span class="cpu-value">42.28M</span>
@@ -426,7 +432,6 @@
                                 <td>1.11.0</td>
                                 <td>default</td>
                                 <td>SeungheonOh</td>
-                                <td>2025-10-17</td>
                                 <td class="numeric">
                                     <span class="tooltip">
                                         <span class="cpu-value">42.28M</span>
@@ -448,7 +453,6 @@
                                 <td>0.12.1</td>
                                 <td>default</td>
                                 <td>Unisay</td>
-                                <td>2025-10-09</td>
                                 <td class="numeric">
                                     <span class="tooltip">
                                         <span class="cpu-value">42.52M</span>
@@ -492,11 +496,10 @@
                                 <th onclick="sortTable('fibonacci', 1)">Version</th>
                                 <th onclick="sortTable('fibonacci', 2)">Variant</th>
                                 <th onclick="sortTable('fibonacci', 3)">Author</th>
-                                <th onclick="sortTable('fibonacci', 4)">Date</th>
-                                <th class="numeric" onclick="sortTable('fibonacci', 5)">CPU Units</th>
-                                <th class="numeric" onclick="sortTable('fibonacci', 6)">Memory Units</th>
-                                <th class="numeric" onclick="sortTable('fibonacci', 7)">Script Size</th>
-                                <th class="numeric" onclick="sortTable('fibonacci', 8)">Term Size</th>
+                                <th class="numeric" onclick="sortTable('fibonacci', 4)">CPU Units</th>
+                                <th class="numeric" onclick="sortTable('fibonacci', 5)">Memory Units</th>
+                                <th class="numeric" onclick="sortTable('fibonacci', 6)">Script Size</th>
+                                <th class="numeric" onclick="sortTable('fibonacci', 7)">Term Size</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -506,7 +509,6 @@
                                 <td>v1.1.19</td>
                                 <td>prepacked</td>
                                 <td>Matthias Benkort</td>
-                                <td>2025-10-18</td>
                                 <td class="numeric">
                                     <span class="tooltip">
                                         <span class="cpu-value">22.52M</span>
@@ -528,7 +530,6 @@
                                 <td>v1.1.19</td>
                                 <td>tailrec</td>
                                 <td>Matthias Benkort</td>
-                                <td>2025-10-18</td>
                                 <td class="numeric">
                                     <span class="tooltip">
                                         <span class="cpu-value">67.84M</span>
@@ -550,7 +551,6 @@
                                 <td>0.26.1</td>
                                 <td>default</td>
                                 <td>Niels Mündler</td>
-                                <td>2025-10-16</td>
                                 <td class="numeric">
                                     <span class="tooltip">
                                         <span class="cpu-value">240.13M</span>
@@ -572,7 +572,6 @@
                                 <td>1.11.0</td>
                                 <td>exbudget</td>
                                 <td>SeungheonOh</td>
-                                <td>2025-10-17</td>
                                 <td class="numeric">
                                     <span class="tooltip">
                                         <span class="cpu-value">175.02B</span>
@@ -594,7 +593,6 @@
                                 <td>1.11.0</td>
                                 <td>prepacked</td>
                                 <td>SeungheonOh</td>
-                                <td>2025-10-23</td>
                                 <td class="numeric">
                                     <span class="tooltip">
                                         <span class="cpu-value">16.46M</span>
@@ -616,7 +614,6 @@
                                 <td>1.11.0</td>
                                 <td>size</td>
                                 <td>SeungheonOh</td>
-                                <td>2025-10-17</td>
                                 <td class="numeric">
                                     <span class="tooltip">
                                         <span class="cpu-value">175.02B</span>
@@ -638,7 +635,6 @@
                                 <td>0.12.1</td>
                                 <td>prepacked</td>
                                 <td>Alexander Nemish</td>
-                                <td>2025-10-23</td>
                                 <td class="numeric">
                                     <span class="tooltip">
                                         <span class="cpu-value">16.46M</span>
@@ -660,7 +656,6 @@
                                 <td>0.12.1</td>
                                 <td>default</td>
                                 <td>Unisay</td>
-                                <td>2025-10-08</td>
                                 <td class="numeric">
                                     <span class="tooltip">
                                         <span class="cpu-value">175.02B</span>
@@ -704,11 +699,10 @@
                                 <th onclick="sortTable('fibonacci_naive_recursion', 1)">Version</th>
                                 <th onclick="sortTable('fibonacci_naive_recursion', 2)">Variant</th>
                                 <th onclick="sortTable('fibonacci_naive_recursion', 3)">Author</th>
-                                <th onclick="sortTable('fibonacci_naive_recursion', 4)">Date</th>
-                                <th class="numeric" onclick="sortTable('fibonacci_naive_recursion', 5)">CPU Units</th>
-                                <th class="numeric" onclick="sortTable('fibonacci_naive_recursion', 6)">Memory Units</th>
-                                <th class="numeric" onclick="sortTable('fibonacci_naive_recursion', 7)">Script Size</th>
-                                <th class="numeric" onclick="sortTable('fibonacci_naive_recursion', 8)">Term Size</th>
+                                <th class="numeric" onclick="sortTable('fibonacci_naive_recursion', 4)">CPU Units</th>
+                                <th class="numeric" onclick="sortTable('fibonacci_naive_recursion', 5)">Memory Units</th>
+                                <th class="numeric" onclick="sortTable('fibonacci_naive_recursion', 6)">Script Size</th>
+                                <th class="numeric" onclick="sortTable('fibonacci_naive_recursion', 7)">Term Size</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -718,7 +712,6 @@
                                 <td>1.1.17</td>
                                 <td>default</td>
                                 <td>KtorZ</td>
-                                <td>2025-10-09</td>
                                 <td class="numeric">
                                     <span class="tooltip">
                                         <span class="cpu-value">170.75B</span>
@@ -740,7 +733,6 @@
                                 <td>1.45.0.0</td>
                                 <td>default</td>
                                 <td>Unisay</td>
-                                <td>2025-10-09</td>
                                 <td class="numeric">
                                     <span class="tooltip">
                                         <span class="cpu-value">213.45B</span>
@@ -762,7 +754,6 @@
                                 <td>1.11.0</td>
                                 <td>default</td>
                                 <td>SeungheonOh</td>
-                                <td>2025-10-17</td>
                                 <td class="numeric">
                                     <span class="tooltip">
                                         <span class="cpu-value">200.64B</span>
@@ -784,7 +775,6 @@
                                 <td>0.12.1</td>
                                 <td>default</td>
                                 <td>Unisay</td>
-                                <td>2025-10-09</td>
                                 <td class="numeric">
                                     <span class="tooltip">
                                         <span class="cpu-value">161.98B</span>
@@ -828,11 +818,10 @@
                                 <th onclick="sortTable('two-party-escrow', 1)">Version</th>
                                 <th onclick="sortTable('two-party-escrow', 2)">Variant</th>
                                 <th onclick="sortTable('two-party-escrow', 3)">Author</th>
-                                <th onclick="sortTable('two-party-escrow', 4)">Date</th>
-                                <th class="numeric" onclick="sortTable('two-party-escrow', 5)">CPU Units</th>
-                                <th class="numeric" onclick="sortTable('two-party-escrow', 6)">Memory Units</th>
-                                <th class="numeric" onclick="sortTable('two-party-escrow', 7)">Script Size</th>
-                                <th class="numeric" onclick="sortTable('two-party-escrow', 8)">Term Size</th>
+                                <th class="numeric" onclick="sortTable('two-party-escrow', 4)">CPU Units</th>
+                                <th class="numeric" onclick="sortTable('two-party-escrow', 5)">Memory Units</th>
+                                <th class="numeric" onclick="sortTable('two-party-escrow', 6)">Script Size</th>
+                                <th class="numeric" onclick="sortTable('two-party-escrow', 7)">Term Size</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -842,7 +831,6 @@
                                 <td>1.45.0.0</td>
                                 <td>default</td>
                                 <td>Unisay</td>
-                                <td>2025-10-08</td>
                                 <td class="numeric">
                                     <span class="tooltip">
                                         <span class="cpu-value">2.39B</span>
@@ -870,7 +858,7 @@
     
     
     <div class="footer">
-        <p>Generated by UPLC-CAPE • <a href="https://github.com/IntersectMBO/UPLC-CAPE">View on GitHub</a></p>
+        <p>Generated by UPLC-CAPE on 2025-10-23 20:36:31 CEST • <a href="https://github.com/IntersectMBO/UPLC-CAPE">View on GitHub</a></p>
     </div>
     
     <script>
@@ -943,10 +931,10 @@
             rows.sort((a, b) => {
                 let aVal, bVal;
 
-                if (columnIndex >= 5) {
+                if (columnIndex >= 4) {
                     // Numeric columns - use data attributes
                     const metrics = ['cpu', 'memory', 'script', 'term'];
-                    const metric = metrics[columnIndex - 5];
+                    const metric = metrics[columnIndex - 4];
                     aVal = parseInt(a.dataset[metric]) || 0;
                     bVal = parseInt(b.dataset[metric]) || 0;
                 } else {
