@@ -31,7 +31,7 @@ The key difference from the size-optimized variant is that this version duplicat
 
 - `source/Main.hs` - Plutarch implementation with custom combinators
 - `source/README.md` - Reproducibility instructions
-- `fibonacci.uplc` - Compiled UPLC program
+- `fibonacci_exbudget.uplc` - Compiled UPLC program
 
 ## Compilation
 

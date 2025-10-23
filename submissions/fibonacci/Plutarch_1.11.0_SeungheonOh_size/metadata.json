@@ -18,7 +18,7 @@
     "date": "2025-10-17T00:00:00Z",
     "source_available": true,
     "source_repository": "https://github.com/Unisay/plutarch-cape-submissions",
-    "source_commit_hash": "50d90c9e2a0b995f0a76842b01312951e0ea09e2",
+    "source_commit_hash": "994cc9eff4a63e62509ba6b25cedafcbe4680824",
     "implementation_notes": "Size-optimized fibonacci implementation using custom pfix' (inlines recursion point) and pif'' (avoids hoisting IfThenElse builtin) combinators to minimize script size"
   }
 }
