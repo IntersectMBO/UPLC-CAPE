@@ -76,6 +76,7 @@ library
     Cape.Error
     Cape.Fixture
     Cape.PrettyResult
+    Cape.Protocol.Parameters
     Cape.ScriptContextBuilder
     Cape.Tests
     Cape.Verify
@@ -146,6 +147,7 @@ test-suite cape-tests
   type:               exitcode-stdio-1.0
   main-is:            Spec.hs
   other-modules:
+    Cape.Protocol.ParametersSpec
     Cape.ScriptContextBuilderSpec
     Cape.TestsSpec
     FactorialSpec
