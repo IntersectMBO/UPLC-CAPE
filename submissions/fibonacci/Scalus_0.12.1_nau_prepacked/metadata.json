@@ -20,7 +20,7 @@
     "date": "2025-10-21T22:00:00Z",
     "source_available": true,
     "source_repository": "https://github.com/Unisay/scalus-cape-submissions",
-    "source_commit_hash": "1a5de418409fd92d3d3fea1bdf28dea1451ace64",
+    "source_commit_hash": "894f7a979a67f0981a1e798df5d42b24dc3c97c9",
     "implementation_notes": "Optimized prepacked implementation using pre-computed Fibonacci numbers stored in a ByteString for O(1) constant-time lookup. Pre-computed values for fib(0) through fib(25), each encoded as 3 bytes in big-endian format."
   }
 }
