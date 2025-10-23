@@ -28,7 +28,7 @@ This size-optimized variant prioritizes:
 
 - `source/Main.hs` - Plutarch implementation with custom combinators
 - `source/README.md` - Reproducibility instructions
-- `fibonacci.uplc` - Compiled UPLC program
+- `fibonacci_size.uplc` - Compiled UPLC program
 
 ## Compilation
 

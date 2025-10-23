@@ -19,7 +19,7 @@
 
 - **Source Available**: true
 - **Source Repository**: <https://github.com/Unisay/plutarch-cape-submissions>
-- **Source Path**: `exe/fibonacci-prepack/Main.hs`
+- **Source Path**: `exe/fibonacci-prepacked/Main.hs`
 - **Compilation Config**: default
 
 ## Notes

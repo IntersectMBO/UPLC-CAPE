@@ -1,10 +1,10 @@
 # Plutarch Fibonacci Size-Optimized Implementation
 
-**Source Code**: [exe/fibonacci-size/Main.hs](https://github.com/Unisay/plutarch-cape-submissions/blob/50d90c9e2a0b995f0a76842b01312951e0ea09e2/exe/fibonacci-size/Main.hs)
+**Source Code**: [exe/fibonacci-size/Main.hs](https://github.com/Unisay/plutarch-cape-submissions/blob/994cc9eff4a63e62509ba6b25cedafcbe4680824/exe/fibonacci-size/Main.hs)
 
 **Repository**: <https://github.com/Unisay/plutarch-cape-submissions>
 
-**Commit**: `50d90c9e2a0b995f0a76842b01312951e0ea09e2`
+**Commit**: `994cc9eff4a63e62509ba6b25cedafcbe4680824`
 
 **Path**: `exe/fibonacci-size/Main.hs`
 
@@ -31,7 +31,7 @@ These optimizations reduce the total script size at the cost of slightly higher 
 2. Check out the specific commit:
 
    ```bash
-   git checkout 50d90c9e2a0b995f0a76842b01312951e0ea09e2
+   git checkout 994cc9eff4a63e62509ba6b25cedafcbe4680824
    ```
 
 3. Enter the Nix development environment:
@@ -47,6 +47,6 @@ These optimizations reduce the total script size at the cost of slightly higher 
    cabal run fibonacci-size
    ```
 
-5. The compiled UPLC output should match `fibonacci.uplc` in this submission
+5. The compiled UPLC output should match `fibonacci_size.uplc` in this submission
 
 For detailed build instructions and environment setup, see the repository README.
