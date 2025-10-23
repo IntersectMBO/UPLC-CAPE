@@ -1,10 +1,10 @@
 # Plutarch Fibonacci Prepacked Implementation
 
-**Source Code**: [exe/fibonacci-prepacked/Main.hs](https://github.com/Unisay/plutarch-cape-submissions/blob/994cc9eff4a63e62509ba6b25cedafcbe4680824/exe/fibonacci-prepacked/Main.hs)
+**Source Code**: [exe/fibonacci-prepacked/Main.hs](https://github.com/Unisay/plutarch-cape-submissions/blob/ff41428357febfe4497e7973597535ff06834cd0/exe/fibonacci-prepacked/Main.hs)
 
 **Repository**: <https://github.com/Unisay/plutarch-cape-submissions>
 
-**Commit**: `994cc9eff4a63e62509ba6b25cedafcbe4680824`
+**Commit**: `ff41428357febfe4497e7973597535ff06834cd0`
 
 **Path**: `exe/fibonacci-prepacked/Main.hs`
 
@@ -26,7 +26,7 @@ This implementation prepacked first 25 fibonacci numbers.
 2. Check out the specific commit:
 
    ```bash
-   git checkout 994cc9eff4a63e62509ba6b25cedafcbe4680824
+   git checkout ff41428357febfe4497e7973597535ff06834cd0
    ```
 
 3. Enter the Nix development environment:

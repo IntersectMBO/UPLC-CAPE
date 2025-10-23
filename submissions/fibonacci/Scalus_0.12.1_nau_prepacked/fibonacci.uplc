@@ -6,7 +6,7 @@
       (case
         (constr
           0
-          [ [ (builtin lessThanInteger) x-0 ] (con integer 0) ]
+          [ [ (builtin lessThanEqualsInteger) x-0 ] (con integer 0) ]
           (delay x-0)
           (delay
             [
