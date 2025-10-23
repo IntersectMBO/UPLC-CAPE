@@ -345,12 +345,25 @@ The output includes formatted metrics, best value indicators, and submission met
 
 ## Metrics Explained
 
-| Metric       | Description                         | Measurement        |
-| ------------ | ----------------------------------- | ------------------ |
-| CPU Units    | Computational cost for execution    | CEK machine steps  |
-| Memory Units | Memory consumption during execution | CEK machine memory |
-| Script Size  | Size of serialized UPLC script      | Bytes              |
-| Term Size    | Size of the UPLC term               | AST nodes          |
+UPLC-CAPE collects both **raw measurements** (CPU, memory, script size, term size) and **derived metrics** (fees, budget utilization, capacity).
+
+**Quick Reference:**
+
+| Metric | Description | Type |
+| --- | --- | --- |
+| CPU Units | Computational cost (CEK machine steps) | Raw measurement |
+| Memory Units | Memory consumption (CEK machine memory) | Raw measurement |
+| Script Size | Serialized UPLC size (bytes) | Raw measurement |
+| Term Size | AST complexity (node count) | Raw measurement |
+| Execution Fee | Runtime cost in lovelace | Derived (Conway) |
+| Reference Script Fee | Storage cost in lovelace (tiered) | Derived (Conway) |
+| Total Fee | Combined execution + storage cost | Derived (Conway) |
+| Budget Utilization | % of tx/block budgets consumed | Derived (Conway) |
+| Capacity (tx/block) | Max script executions per tx/block | Derived (Conway) |
+
+**📖 For comprehensive metrics documentation, see [doc/metrics.md](doc/metrics.md)**
+
+This includes detailed formulas, protocol parameters, aggregation strategies, and interpretation guidelines.
 
 ---
 
