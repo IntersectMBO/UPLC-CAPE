@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UPLC-CAPE Performance Report - fibonacci</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f8f9fa;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 30px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .nav {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .nav a {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #667eea;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            margin: 0 10px;
+            transition: background-color 0.3s ease;
+        }
+        .nav a:hover {
+            background-color: #5a67d8;
+        }
+
+        /* Breadcrumb Navigation */
+        .breadcrumb {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #6c757d;
+            font-size: 0.95em;
+        }
+        .breadcrumb a {
+            color: #667eea;
+            text-decoration: none;
+        }
+        .breadcrumb a:hover {
+            text-decoration: underline;
+        }
+        .breadcrumb-separator {
+            margin: 0 8px;
+        }
+
+        .benchmark-section {
+            background: white;
+            margin-bottom: 40px;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        .benchmark-title {
+            color: #667eea;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 10px;
+            margin-bottom: 30px;
+        }
+        .chart-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+        .chart-container {
+            text-align: center;
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid #e9ecef;
+        }
+        .chart-container img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 6px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+        .chart-title {
+            font-size: 1.1em;
+            font-weight: 600;
+            color: #495057;
+            margin-bottom: 15px;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 50px;
+            padding: 20px;
+            color: #6c757d;
+            border-top: 1px solid #e9ecef;
+        }
+        .timestamp {
+            font-style: italic;
+            color: #6c757d;
+            margin-bottom: 20px;
+        }
+        .data-table {
+            background: white;
+            margin-top: 40px;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            overflow-x: auto;
+        }
+        .data-table h3 {
+            color: #667eea;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9em;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #e9ecef;
+        }
+        th {
+            background-color: #f8f9fa;
+            font-weight: 600;
+            color: #495057;
+            position: sticky;
+            top: 0;
+        }
+        td {
+            color: #6c757d;
+        }
+        tr:hover {
+            background-color: #f8f9fa;
+        }
+        .numeric {
+            text-align: right;
+            font-family: 'Courier New', monospace;
+        }
+        table a {
+            text-decoration: none;
+            cursor: pointer;
+            text-align: center;
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🚀 UPLC-CAPE Performance Report - fibonacci</h1>
+        <p>Performance comparison of UPLC programs across different compilers</p>
+    </div>
+
+    <div class="breadcrumb">
+        <a href="../index.html">Home</a>
+        <span class="breadcrumb-separator">→</span>
+        <span>fibonacci</span>
+    </div>
+
+    <div class="nav">
+        <a href="../index.html">← Back to All Benchmarks</a>
+    </div>
+
+    <div class="timestamp">
+        Generated on: 2025-10-23 08:08:30 UTC
+    </div>
+    
+    <div class="benchmark-section">
+        <h2 class="benchmark-title">📊 fibonacci benchmark report</h2>
+        <div class="chart-grid">
+            <div class="chart-container">
+                <div class="chart-title">💻 CPU Units</div>
+                <img src="images/fibonacci_cpu_units.png" alt="CPU Units comparison for fibonacci">
+            </div>
+            <div class="chart-container">
+                <div class="chart-title">🧠 Memory Units</div>
+                <img src="images/fibonacci_memory_units.png" alt="Memory Units comparison for fibonacci">
+            </div>
+            <div class="chart-container">
+                <div class="chart-title">📦 Script Size</div>
+                <img src="images/fibonacci_script_size.png" alt="Script Size comparison for fibonacci">
+            </div>
+            <div class="chart-container">
+                <div class="chart-title">🌳 Term Size</div>
+                <img src="images/fibonacci_term_size.png" alt="Term Size comparison for fibonacci">
+            </div>
+        </div>
+    </div>
+    
+    <div class="data-table">
+        <h3>📋 Performance Data</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Timestamp</th>
+                    <th>Language</th>
+                    <th>Version</th>
+                    <th>Variant</th>
+                    <th>User</th>
+                    <th class="numeric">CPU Units</th>
+                    <th class="numeric">Memory Units</th>
+                    <th class="numeric">Script Size (bytes)</th>
+                    <th class="numeric">Term Size (nodes)</th>
+                    <th>Source</th>
+                    <th>UPLC</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>2025-10-21T02:22:26Z</td>
+                    <td>Plutarch</td>
+                    <td>1.11.0</td>
+                    <td>prepacked</td>
+                    <td>SeungheonOh</td>
+                    <td class="numeric">16459951</td>
+                    <td class="numeric">30485</td>
+                    <td class="numeric">118</td>
+                    <td class="numeric">28</td>
+                    <td><a href="https://github.com/IntersectMBO/UPLC-CAPE/blob/main/submissions/fibonacci/Plutarch_1.11.0_SeungheonOh_prepacked/source/README.md" target="_blank" rel="noopener">📁</a></td>
+                    <td><a href="https://github.com/IntersectMBO/UPLC-CAPE/blob/main/submissions/fibonacci/Plutarch_1.11.0_SeungheonOh_prepacked/fibonacci.uplc" target="_blank" rel="noopener">🔗</a></td>
+                </tr>
+                <tr>
+                    <td>2025-10-21T20:12:40Z</td>
+                    <td>Scalus</td>
+                    <td>0.12.1</td>
+                    <td>prepacked</td>
+                    <td>Alexander Nemish</td>
+                    <td class="numeric">17845279</td>
+                    <td class="numeric">31792</td>
+                    <td class="numeric">118</td>
+                    <td class="numeric">28</td>
+                    <td><a href="https://github.com/IntersectMBO/UPLC-CAPE/blob/main/submissions/fibonacci/Scalus_0.12.1_nau_prepacked/source/README.md" target="_blank" rel="noopener">📁</a></td>
+                    <td><a href="https://github.com/IntersectMBO/UPLC-CAPE/blob/main/submissions/fibonacci/Scalus_0.12.1_nau_prepacked/fibonacci.uplc" target="_blank" rel="noopener">🔗</a></td>
+                </tr>
+                <tr>
+                    <td>2025-10-18T12:29:30Z</td>
+                    <td>Aiken</td>
+                    <td>v1.1.19</td>
+                    <td>prepacked</td>
+                    <td>Matthias Benkort</td>
+                    <td class="numeric">22521989</td>
+                    <td class="numeric">49432</td>
+                    <td class="numeric">124</td>
+                    <td class="numeric">45</td>
+                    <td><a href="https://github.com/IntersectMBO/UPLC-CAPE/blob/main/submissions/fibonacci/Aiken_1.1.19_KtorZ_prepacked/source/README.md" target="_blank" rel="noopener">📁</a></td>
+                    <td><a href="https://github.com/IntersectMBO/UPLC-CAPE/blob/main/submissions/fibonacci/Aiken_1.1.19_KtorZ_prepacked/fibonacci.uplc" target="_blank" rel="noopener">🔗</a></td>
+                </tr>
+                <tr>
+                    <td>2025-10-18T12:09:45Z</td>
+                    <td>Aiken</td>
+                    <td>v1.1.19</td>
+                    <td>tailrec</td>
+                    <td>Matthias Benkort</td>
+                    <td class="numeric">67838022</td>
+                    <td class="numeric">256986</td>
+                    <td class="numeric">77</td>
+                    <td class="numeric">64</td>
+                    <td><a href="https://github.com/IntersectMBO/UPLC-CAPE/blob/main/submissions/fibonacci/Aiken_1.1.19_KtorZ_tailrec/source/README.md" target="_blank" rel="noopener">📁</a></td>
+                    <td><a href="https://github.com/IntersectMBO/UPLC-CAPE/blob/main/submissions/fibonacci/Aiken_1.1.19_KtorZ_tailrec/fibonacci.uplc" target="_blank" rel="noopener">🔗</a></td>
+                </tr>
+                <tr>
+                    <td>2025-10-16T07:55:04Z</td>
+                    <td>OpShin</td>
+                    <td>0.26.1</td>
+                    <td>default</td>
+                    <td>Niels Mündler</td>
+                    <td class="numeric">240131414</td>
+                    <td class="numeric">1306476</td>
+                    <td class="numeric">227</td>
+                    <td class="numeric">285</td>
+                    <td><a href="https://github.com/IntersectMBO/UPLC-CAPE/blob/main/submissions/fibonacci/OpShin_1.0.0_nielstron/source/README.md" target="_blank" rel="noopener">📁</a></td>
+                    <td><a href="https://github.com/IntersectMBO/UPLC-CAPE/blob/main/submissions/fibonacci/OpShin_1.0.0_nielstron/fibonacci.uplc" target="_blank" rel="noopener">🔗</a></td>
+                </tr>
+                <tr>
+                    <td>2025-10-17T12:24:37Z</td>
+                    <td>Plutarch</td>
+                    <td>1.11.0</td>
+                    <td>exbudget</td>
+                    <td>SeungheonOh</td>
+                    <td class="numeric">175015705630</td>
+                    <td class="numeric">641935762</td>
+                    <td class="numeric">81</td>
+                    <td class="numeric">73</td>
+                    <td><a href="https://github.com/IntersectMBO/UPLC-CAPE/blob/main/submissions/fibonacci/Plutarch_1.11.0_SeungheonOh_exbudget/source/README.md" target="_blank" rel="noopener">📁</a></td>
+                    <td><a href="https://github.com/IntersectMBO/UPLC-CAPE/blob/main/submissions/fibonacci/Plutarch_1.11.0_SeungheonOh_exbudget/fibonacci.uplc" target="_blank" rel="noopener">🔗</a></td>
+                </tr>
+                <tr>
+                    <td>2025-10-08T13:30:18Z</td>
+                    <td>Scalus</td>
+                    <td>0.12.1</td>
+                    <td>default</td>
+                    <td>Unisay</td>
+                    <td class="numeric">175016233630</td>
+                    <td class="numeric">641939062</td>
+                    <td class="numeric">47</td>
+                    <td class="numeric">41</td>
+                    <td><a href="https://github.com/IntersectMBO/UPLC-CAPE/blob/main/submissions/fibonacci/Scalus_0.12.1_Unisay/source/README.md" target="_blank" rel="noopener">📁</a></td>
+                    <td><a href="https://github.com/IntersectMBO/UPLC-CAPE/blob/main/submissions/fibonacci/Scalus_0.12.1_Unisay/fibonacci.uplc" target="_blank" rel="noopener">🔗</a></td>
+                </tr>
+                <tr>
+                    <td>2025-10-17T12:23:41Z</td>
+                    <td>Plutarch</td>
+                    <td>1.11.0</td>
+                    <td>size</td>
+                    <td>SeungheonOh</td>
+                    <td class="numeric">175016233630</td>
+                    <td class="numeric">641939062</td>
+                    <td class="numeric">47</td>
+                    <td class="numeric">41</td>
+                    <td><a href="https://github.com/IntersectMBO/UPLC-CAPE/blob/main/submissions/fibonacci/Plutarch_1.11.0_SeungheonOh_size/source/README.md" target="_blank" rel="noopener">📁</a></td>
+                    <td><a href="https://github.com/IntersectMBO/UPLC-CAPE/blob/main/submissions/fibonacci/Plutarch_1.11.0_SeungheonOh_size/fibonacci.uplc" target="_blank" rel="noopener">🔗</a></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    
+    <div class="footer">
+        <p>Generated by UPLC-CAPE • <a href="https://github.com/IntersectMBO/UPLC-CAPE">View on GitHub</a></p>
+    </div>
+</body>
+</html>
