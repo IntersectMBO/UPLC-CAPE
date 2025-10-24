@@ -1,0 +1,2106 @@
+<!DOCTYPE html><html lang="en"><head><meta name="theme-color" content="#2176AE"/><link rel="preconnect" href="https://fonts.gstatic.com"/><link rel="stylesheet" data-href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&amp;display=swap"/><link rel="stylesheet" data-href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@300;400;500;700&amp;display=swap"/><meta charSet="utf-8"/><meta name="viewport" content="minimum-scale=1, initial-scale=1, width=device-width"/><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico"/><meta name="og:image" content="/l4b-static/Log4brains-og.png"/><title>Base/Open Mode System with Submission Slugs ADR - Architecture knowledge base of UPLC-CAPE</title><meta name="next-head-count" content="5"/><link rel="preload" href="/_next/static/css/f4b1bfe580d32a3f533d.css" as="style"/><link rel="stylesheet" href="/_next/static/css/f4b1bfe580d32a3f533d.css" data-n-g=""/><noscript data-n-css=""></noscript><link rel="preload" href="/_next/static/chunks/webpack-50bee04d1dc61f8adf5b.js" as="script"/><link rel="preload" href="/_next/static/chunks/framework.b33896d72531466bcf17.js" as="script"/><link rel="preload" href="/_next/static/chunks/commons.c0189e8448b4d4bdffa1.js" as="script"/><link rel="preload" href="/_next/static/chunks/main-d0427bd7c9d85889a938.js" as="script"/><link rel="preload" href="/_next/static/chunks/a3e17150ead73d62fba7a33a50672ae3f72841a5.6fca93b3d6d0634b51bf.js" as="script"/><link rel="preload" href="/_next/static/chunks/pages/_app-796f4c8086e869be38c4.js" as="script"/><link rel="preload" href="/_next/static/chunks/364bddfb.28847971f0e02b167249.js" as="script"/><link rel="preload" href="/_next/static/chunks/3da477db.e49cd5277ed36ace32c1.js" as="script"/><link rel="preload" href="/_next/static/chunks/3b07cb59.4f0af644828e83722dc4.js" as="script"/><link rel="preload" href="/_next/static/chunks/b4e962f4.986fa92c462dd01807e1.js" as="script"/><link rel="preload" href="/_next/static/chunks/45d2d314fc8da5e3d79852782e4a432ad4da6771.d0cee093fe28a3e30dcc.js" as="script"/><link rel="preload" href="/_next/static/chunks/pages/adr/%5B...slug%5D-9f67d10c628dcc0d3aa2.js" as="script"/><style id="jss-server-side">html {
+  max-width: 100%;
+  box-sizing: border-box;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+*, *::before, *::after {
+  box-sizing: inherit;
+}
+strong, b {
+  font-weight: 700;
+}
+body {
+  color: rgba(0, 0, 0, 0.87);
+  margin: 0;
+  padding: 0 !important;
+  font-size: 0.875rem;
+  max-width: 100%;
+  font-family: "Roboto", "Helvetica", "Arial", sans-serif;
+  font-weight: 400;
+  line-height: 1.43;
+  letter-spacing: 0.01071em;
+  background-color: #fff;
+}
+@media print {
+  body {
+    background-color: #fff;
+  }
+}
+  body::backdrop {
+    background-color: #fff;
+  }
+  blockquote {
+    color: #9e9e9e;
+    margin: 0;
+    padding: 0 1em;
+    border-left: 0.25em solid #F8F8F8;
+  }
+  .MuiSvgIcon-root {
+    fill: currentColor;
+    width: 1em;
+    height: 1em;
+    display: inline-block;
+    font-size: 1.5rem;
+    transition: fill 200ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
+    flex-shrink: 0;
+    user-select: none;
+  }
+  .MuiSvgIcon-colorPrimary {
+    color: #2176AE;
+  }
+  .MuiSvgIcon-colorSecondary {
+    color: #FF007B;
+  }
+  .MuiSvgIcon-colorAction {
+    color: rgba(0, 0, 0, 0.54);
+  }
+  .MuiSvgIcon-colorError {
+    color: #ff1744;
+  }
+  .MuiSvgIcon-colorDisabled {
+    color: rgba(0, 0, 0, 0.26);
+  }
+  .MuiSvgIcon-fontSizeInherit {
+    font-size: inherit;
+  }
+  .MuiSvgIcon-fontSizeSmall {
+    font-size: 1.25rem;
+  }
+  .MuiSvgIcon-fontSizeLarge {
+    font-size: 2.1875rem;
+  }
+  .MuiTooltip-popper {
+    z-index: 1500;
+    pointer-events: none;
+  }
+  .MuiTooltip-popperInteractive {
+    pointer-events: auto;
+  }
+  .MuiTooltip-popperArrow[x-placement*="bottom"] .MuiTooltip-arrow {
+    top: 0;
+    left: 0;
+    margin-top: -0.71em;
+    margin-left: 4px;
+    margin-right: 4px;
+  }
+  .MuiTooltip-popperArrow[x-placement*="top"] .MuiTooltip-arrow {
+    left: 0;
+    bottom: 0;
+    margin-left: 4px;
+    margin-right: 4px;
+    margin-bottom: -0.71em;
+  }
+  .MuiTooltip-popperArrow[x-placement*="right"] .MuiTooltip-arrow {
+    left: 0;
+    width: 0.71em;
+    height: 1em;
+    margin-top: 4px;
+    margin-left: -0.71em;
+    margin-bottom: 4px;
+  }
+  .MuiTooltip-popperArrow[x-placement*="left"] .MuiTooltip-arrow {
+    right: 0;
+    width: 0.71em;
+    height: 1em;
+    margin-top: 4px;
+    margin-right: -0.71em;
+    margin-bottom: 4px;
+  }
+  .MuiTooltip-popperArrow[x-placement*="left"] .MuiTooltip-arrow::before {
+    transform-origin: 0 0;
+  }
+  .MuiTooltip-popperArrow[x-placement*="right"] .MuiTooltip-arrow::before {
+    transform-origin: 100% 100%;
+  }
+  .MuiTooltip-popperArrow[x-placement*="top"] .MuiTooltip-arrow::before {
+    transform-origin: 100% 0;
+  }
+  .MuiTooltip-popperArrow[x-placement*="bottom"] .MuiTooltip-arrow::before {
+    transform-origin: 0 100%;
+  }
+  .MuiTooltip-tooltip {
+    color: #fff;
+    padding: 4px 8px;
+    font-size: 0.625rem;
+    max-width: 300px;
+    word-wrap: break-word;
+    font-family: "Roboto", "Helvetica", "Arial", sans-serif;
+    font-weight: 500;
+    line-height: 1.4em;
+    border-radius: 4px;
+    background-color: rgba(97, 97, 97, 0.9);
+  }
+  .MuiTooltip-tooltipArrow {
+    margin: 0;
+    position: relative;
+  }
+  .MuiTooltip-arrow {
+    color: rgba(97, 97, 97, 0.9);
+    width: 1em;
+    height: 0.71em;
+    overflow: hidden;
+    position: absolute;
+    box-sizing: border-box;
+  }
+  .MuiTooltip-arrow::before {
+    width: 100%;
+    height: 100%;
+    margin: auto;
+    content: "";
+    display: block;
+    transform: rotate(45deg);
+    background-color: currentColor;
+  }
+  .MuiTooltip-touch {
+    padding: 8px 16px;
+    font-size: 0.875rem;
+    font-weight: 400;
+    line-height: 1.14286em;
+  }
+  .MuiTooltip-tooltipPlacementLeft {
+    margin: 0 24px ;
+    transform-origin: right center;
+  }
+@media (min-width:900px) {
+  .MuiTooltip-tooltipPlacementLeft {
+    margin: 0 14px;
+  }
+}
+  .MuiTooltip-tooltipPlacementRight {
+    margin: 0 24px;
+    transform-origin: left center;
+  }
+@media (min-width:900px) {
+  .MuiTooltip-tooltipPlacementRight {
+    margin: 0 14px;
+  }
+}
+  .MuiTooltip-tooltipPlacementTop {
+    margin: 24px 0;
+    transform-origin: center bottom;
+  }
+@media (min-width:900px) {
+  .MuiTooltip-tooltipPlacementTop {
+    margin: 14px 0;
+  }
+}
+  .MuiTooltip-tooltipPlacementBottom {
+    margin: 24px 0;
+    transform-origin: center top;
+  }
+@media (min-width:900px) {
+  .MuiTooltip-tooltipPlacementBottom {
+    margin: 14px 0;
+  }
+}
+  .MuiButtonBase-root {
+    color: inherit;
+    border: 0;
+    cursor: pointer;
+    margin: 0;
+    display: inline-flex;
+    outline: 0;
+    padding: 0;
+    position: relative;
+    align-items: center;
+    user-select: none;
+    border-radius: 0;
+    vertical-align: middle;
+    -moz-appearance: none;
+    justify-content: center;
+    text-decoration: none;
+    background-color: transparent;
+    -webkit-appearance: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .MuiButtonBase-root::-moz-focus-inner {
+    border-style: none;
+  }
+  .MuiButtonBase-root.Mui-disabled {
+    cursor: default;
+    pointer-events: none;
+  }
+@media print {
+  .MuiButtonBase-root {
+    color-adjust: exact;
+  }
+}
+  .MuiButton-root {
+    color: rgba(0, 0, 0, 0.87);
+    padding: 6px 16px;
+    font-size: 0.875rem;
+    min-width: 64px;
+    box-sizing: border-box;
+    transition: background-color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,box-shadow 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,border 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
+    font-family: "Roboto", "Helvetica", "Arial", sans-serif;
+    font-weight: 500;
+    line-height: 1.75;
+    border-radius: 4px;
+    letter-spacing: 0.02857em;
+    text-transform: uppercase;
+  }
+  .MuiButton-root:hover {
+    text-decoration: none;
+    background-color: rgba(0, 0, 0, 0.04);
+  }
+  .MuiButton-root.Mui-disabled {
+    color: rgba(0, 0, 0, 0.26);
+  }
+@media (hover: none) {
+  .MuiButton-root:hover {
+    background-color: transparent;
+  }
+}
+  .MuiButton-root:hover.Mui-disabled {
+    background-color: transparent;
+  }
+  .MuiButton-label {
+    width: 100%;
+    display: inherit;
+    align-items: inherit;
+    justify-content: inherit;
+  }
+  .MuiButton-text {
+    padding: 6px 8px;
+  }
+  .MuiButton-textPrimary {
+    color: #2176AE;
+  }
+  .MuiButton-textPrimary:hover {
+    background-color: rgba(33, 118, 174, 0.04);
+  }
+@media (hover: none) {
+  .MuiButton-textPrimary:hover {
+    background-color: transparent;
+  }
+}
+  .MuiButton-textSecondary {
+    color: #FF007B;
+  }
+  .MuiButton-textSecondary:hover {
+    background-color: rgba(255, 0, 123, 0.04);
+  }
+@media (hover: none) {
+  .MuiButton-textSecondary:hover {
+    background-color: transparent;
+  }
+}
+  .MuiButton-outlined {
+    border: 1px solid rgba(0, 0, 0, 0.23);
+    padding: 5px 15px;
+  }
+  .MuiButton-outlined.Mui-disabled {
+    border: 1px solid rgba(0, 0, 0, 0.12);
+  }
+  .MuiButton-outlinedPrimary {
+    color: #2176AE;
+    border: 1px solid rgba(33, 118, 174, 0.5);
+  }
+  .MuiButton-outlinedPrimary:hover {
+    border: 1px solid #2176AE;
+    background-color: rgba(33, 118, 174, 0.04);
+  }
+@media (hover: none) {
+  .MuiButton-outlinedPrimary:hover {
+    background-color: transparent;
+  }
+}
+  .MuiButton-outlinedSecondary {
+    color: #FF007B;
+    border: 1px solid rgba(255, 0, 123, 0.5);
+  }
+  .MuiButton-outlinedSecondary:hover {
+    border: 1px solid #FF007B;
+    background-color: rgba(255, 0, 123, 0.04);
+  }
+  .MuiButton-outlinedSecondary.Mui-disabled {
+    border: 1px solid rgba(0, 0, 0, 0.26);
+  }
+@media (hover: none) {
+  .MuiButton-outlinedSecondary:hover {
+    background-color: transparent;
+  }
+}
+  .MuiButton-contained {
+    color: rgba(0, 0, 0, 0.87);
+    box-shadow: 0px 3px 1px -2px rgba(0,0,0,0.2),0px 2px 2px 0px rgba(0,0,0,0.14),0px 1px 5px 0px rgba(0,0,0,0.12);
+    background-color: #e0e0e0;
+  }
+  .MuiButton-contained:hover {
+    box-shadow: 0px 2px 4px -1px rgba(0,0,0,0.2),0px 4px 5px 0px rgba(0,0,0,0.14),0px 1px 10px 0px rgba(0,0,0,0.12);
+    background-color: #d5d5d5;
+  }
+  .MuiButton-contained.Mui-focusVisible {
+    box-shadow: 0px 3px 5px -1px rgba(0,0,0,0.2),0px 6px 10px 0px rgba(0,0,0,0.14),0px 1px 18px 0px rgba(0,0,0,0.12);
+  }
+  .MuiButton-contained:active {
+    box-shadow: 0px 5px 5px -3px rgba(0,0,0,0.2),0px 8px 10px 1px rgba(0,0,0,0.14),0px 3px 14px 2px rgba(0,0,0,0.12);
+  }
+  .MuiButton-contained.Mui-disabled {
+    color: rgba(0, 0, 0, 0.26);
+    box-shadow: none;
+    background-color: rgba(0, 0, 0, 0.12);
+  }
+@media (hover: none) {
+  .MuiButton-contained:hover {
+    box-shadow: 0px 3px 1px -2px rgba(0,0,0,0.2),0px 2px 2px 0px rgba(0,0,0,0.14),0px 1px 5px 0px rgba(0,0,0,0.12);
+    background-color: #e0e0e0;
+  }
+}
+  .MuiButton-contained:hover.Mui-disabled {
+    background-color: rgba(0, 0, 0, 0.12);
+  }
+  .MuiButton-containedPrimary {
+    color: #fff;
+    background-color: #2176AE;
+  }
+  .MuiButton-containedPrimary:hover {
+    background-color: rgb(23, 82, 121);
+  }
+@media (hover: none) {
+  .MuiButton-containedPrimary:hover {
+    background-color: #2176AE;
+  }
+}
+  .MuiButton-containedSecondary {
+    color: #fff;
+    background-color: #FF007B;
+  }
+  .MuiButton-containedSecondary:hover {
+    background-color: rgb(178, 0, 86);
+  }
+@media (hover: none) {
+  .MuiButton-containedSecondary:hover {
+    background-color: #FF007B;
+  }
+}
+  .MuiButton-disableElevation {
+    box-shadow: none;
+  }
+  .MuiButton-disableElevation:hover {
+    box-shadow: none;
+  }
+  .MuiButton-disableElevation.Mui-focusVisible {
+    box-shadow: none;
+  }
+  .MuiButton-disableElevation:active {
+    box-shadow: none;
+  }
+  .MuiButton-disableElevation.Mui-disabled {
+    box-shadow: none;
+  }
+  .MuiButton-colorInherit {
+    color: inherit;
+    border-color: currentColor;
+  }
+  .MuiButton-textSizeSmall {
+    padding: 4px 5px;
+    font-size: 0.8125rem;
+  }
+  .MuiButton-textSizeLarge {
+    padding: 8px 11px;
+    font-size: 0.9375rem;
+  }
+  .MuiButton-outlinedSizeSmall {
+    padding: 3px 9px;
+    font-size: 0.8125rem;
+  }
+  .MuiButton-outlinedSizeLarge {
+    padding: 7px 21px;
+    font-size: 0.9375rem;
+  }
+  .MuiButton-containedSizeSmall {
+    padding: 4px 10px;
+    font-size: 0.8125rem;
+  }
+  .MuiButton-containedSizeLarge {
+    padding: 8px 22px;
+    font-size: 0.9375rem;
+  }
+  .MuiButton-fullWidth {
+    width: 100%;
+  }
+  .MuiButton-startIcon {
+    display: inherit;
+    margin-left: -4px;
+    margin-right: 8px;
+  }
+  .MuiButton-startIcon.MuiButton-iconSizeSmall {
+    margin-left: -2px;
+  }
+  .MuiButton-endIcon {
+    display: inherit;
+    margin-left: 8px;
+    margin-right: -4px;
+  }
+  .MuiButton-endIcon.MuiButton-iconSizeSmall {
+    margin-right: -2px;
+  }
+  .MuiButton-iconSizeSmall > *:first-child {
+    font-size: 18px;
+  }
+  .MuiButton-iconSizeMedium > *:first-child {
+    font-size: 20px;
+  }
+  .MuiButton-iconSizeLarge > *:first-child {
+    font-size: 22px;
+  }
+@media (min-width:0px) and (max-width:899.95px) {
+  .jss27 {
+    display: none;
+  }
+}
+@media (min-width:0px) {
+  .jss28 {
+    display: none;
+  }
+}
+@media (max-width:899.95px) {
+  .jss29 {
+    display: none;
+  }
+}
+@media (min-width:900px) and (max-width:1059.95px) {
+  .jss30 {
+    display: none;
+  }
+}
+@media (min-width:900px) {
+  .jss31 {
+    display: none;
+  }
+}
+@media (max-width:1059.95px) {
+  .jss32 {
+    display: none;
+  }
+}
+@media (min-width:1060px) and (max-width:1279.95px) {
+  .jss33 {
+    display: none;
+  }
+}
+@media (min-width:1060px) {
+  .jss34 {
+    display: none;
+  }
+}
+@media (max-width:1279.95px) {
+  .jss35 {
+    display: none;
+  }
+}
+@media (min-width:1280px) and (max-width:1919.95px) {
+  .jss36 {
+    display: none;
+  }
+}
+@media (min-width:1280px) {
+  .jss37 {
+    display: none;
+  }
+}
+@media (max-width:1919.95px) {
+  .jss38 {
+    display: none;
+  }
+}
+@media (min-width:1920px) {
+  .jss39 {
+    display: none;
+  }
+}
+@media (min-width:1920px) {
+  .jss40 {
+    display: none;
+  }
+}
+@media (min-width:0px) {
+  .jss41 {
+    display: none;
+  }
+}
+  .MuiDivider-root {
+    border: none;
+    height: 1px;
+    margin: 0;
+    flex-shrink: 0;
+    background-color: rgba(0, 0, 0, 0.12);
+  }
+  .MuiDivider-absolute {
+    left: 0;
+    width: 100%;
+    bottom: 0;
+    position: absolute;
+  }
+  .MuiDivider-inset {
+    margin-left: 72px;
+  }
+  .MuiDivider-light {
+    background-color: rgba(0, 0, 0, 0.08);
+  }
+  .MuiDivider-middle {
+    margin-left: 16px;
+    margin-right: 16px;
+  }
+  .MuiDivider-vertical {
+    width: 1px;
+    height: 100%;
+  }
+  .MuiDivider-flexItem {
+    height: auto;
+    align-self: stretch;
+  }
+  .MuiTypography-root {
+    margin: 0;
+  }
+  .MuiTypography-body2 {
+    font-size: 0.875rem;
+    font-family: "Roboto", "Helvetica", "Arial", sans-serif;
+    font-weight: 400;
+    line-height: 1.43;
+    letter-spacing: 0.01071em;
+  }
+  .MuiTypography-body1 {
+    font-size: 1rem;
+    font-family: "Roboto", "Helvetica", "Arial", sans-serif;
+    font-weight: 400;
+    line-height: 1.5;
+    letter-spacing: 0.00938em;
+  }
+  .MuiTypography-caption {
+    font-size: 0.75rem;
+    font-family: "Roboto", "Helvetica", "Arial", sans-serif;
+    font-weight: 400;
+    line-height: 1.66;
+    letter-spacing: 0.03333em;
+  }
+  .MuiTypography-button {
+    font-size: 0.875rem;
+    font-family: "Roboto", "Helvetica", "Arial", sans-serif;
+    font-weight: 500;
+    line-height: 1.75;
+    letter-spacing: 0.02857em;
+    text-transform: uppercase;
+  }
+  .MuiTypography-h1 {
+    font-size: 3.5rem;
+    font-family: "Roboto Slab", "Noto Serif", "Times New Roman", serif;
+    font-weight: 300;
+    line-height: 1.167;
+    letter-spacing: -0.01562em;
+  }
+@media (min-width:900px) {
+  .MuiTypography-h1 {
+    font-size: 5.3556rem;
+  }
+}
+@media (min-width:1060px) {
+  .MuiTypography-h1 {
+    font-size: 5.5698rem;
+  }
+}
+@media (min-width:1280px) {
+  .MuiTypography-h1 {
+    font-size: 5.9983rem;
+  }
+}
+  .MuiTypography-h2 {
+    font-size: 2.375rem;
+    font-family: "Roboto Slab", "Noto Serif", "Times New Roman", serif;
+    font-weight: 300;
+    line-height: 1.2;
+    letter-spacing: -0.00833em;
+  }
+@media (min-width:900px) {
+  .MuiTypography-h2 {
+    font-size: 3.3333rem;
+  }
+}
+@media (min-width:1060px) {
+  .MuiTypography-h2 {
+    font-size: 3.5417rem;
+  }
+}
+@media (min-width:1280px) {
+  .MuiTypography-h2 {
+    font-size: 3.75rem;
+  }
+}
+  .MuiTypography-h3 {
+    font-size: 2rem;
+    font-family: "Roboto Slab", "Noto Serif", "Times New Roman", serif;
+    font-weight: 400;
+    line-height: 1.1;
+    letter-spacing: 0em;
+  }
+@media (min-width:900px) {
+  .MuiTypography-h3 {
+    font-size: 2.7273rem;
+  }
+}
+@media (min-width:1060px) {
+  .MuiTypography-h3 {
+    font-size: 2.7273rem;
+  }
+}
+@media (min-width:1280px) {
+  .MuiTypography-h3 {
+    font-size: 2.9545rem;
+  }
+}
+  .MuiTypography-h4 {
+    font-size: 1.5625rem;
+    font-family: "Roboto Slab", "Noto Serif", "Times New Roman", serif;
+    font-weight: 400;
+    line-height: 1.235;
+    letter-spacing: 0.00735em;
+  }
+@media (min-width:900px) {
+  .MuiTypography-h4 {
+    font-size: 2.0243rem;
+  }
+}
+@media (min-width:1060px) {
+  .MuiTypography-h4 {
+    font-size: 2.0243rem;
+  }
+}
+@media (min-width:1280px) {
+  .MuiTypography-h4 {
+    font-size: 2.0243rem;
+  }
+}
+  .MuiTypography-h5 {
+    font-size: 1.25rem;
+    font-family: "Roboto Slab", "Noto Serif", "Times New Roman", serif;
+    font-weight: 400;
+    line-height: 1.334;
+    letter-spacing: 0em;
+  }
+@media (min-width:900px) {
+  .MuiTypography-h5 {
+    font-size: 1.4993rem;
+  }
+}
+@media (min-width:1060px) {
+  .MuiTypography-h5 {
+    font-size: 1.4993rem;
+  }
+}
+@media (min-width:1280px) {
+  .MuiTypography-h5 {
+    font-size: 1.4993rem;
+  }
+}
+  .MuiTypography-h6 {
+    font-size: 1.125rem;
+    font-family: "Roboto Slab", "Noto Serif", "Times New Roman", serif;
+    font-weight: 500;
+    line-height: 1.6;
+    letter-spacing: 0.0075em;
+  }
+@media (min-width:900px) {
+  .MuiTypography-h6 {
+    font-size: 1.25rem;
+  }
+}
+@media (min-width:1060px) {
+  .MuiTypography-h6 {
+    font-size: 1.25rem;
+  }
+}
+@media (min-width:1280px) {
+  .MuiTypography-h6 {
+    font-size: 1.25rem;
+  }
+}
+  .MuiTypography-subtitle1 {
+    font-size: 1rem;
+    font-family: "Roboto", "Helvetica", "Arial", sans-serif;
+    font-weight: 400;
+    line-height: 1.75;
+    letter-spacing: 0.00938em;
+  }
+  .MuiTypography-subtitle2 {
+    font-size: 0.875rem;
+    font-family: "Roboto", "Helvetica", "Arial", sans-serif;
+    font-weight: 500;
+    line-height: 1.57;
+    letter-spacing: 0.00714em;
+  }
+  .MuiTypography-overline {
+    font-size: 0.75rem;
+    font-family: "Roboto", "Helvetica", "Arial", sans-serif;
+    font-weight: 400;
+    line-height: 2.66;
+    letter-spacing: 0.08333em;
+    text-transform: uppercase;
+  }
+  .MuiTypography-srOnly {
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    position: absolute;
+  }
+  .MuiTypography-alignLeft {
+    text-align: left;
+  }
+  .MuiTypography-alignCenter {
+    text-align: center;
+  }
+  .MuiTypography-alignRight {
+    text-align: right;
+  }
+  .MuiTypography-alignJustify {
+    text-align: justify;
+  }
+  .MuiTypography-noWrap {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+  .MuiTypography-gutterBottom {
+    margin-bottom: 0.35em;
+  }
+  .MuiTypography-paragraph {
+    margin-bottom: 16px;
+  }
+  .MuiTypography-colorInherit {
+    color: inherit;
+  }
+  .MuiTypography-colorPrimary {
+    color: #2176AE;
+  }
+  .MuiTypography-colorSecondary {
+    color: #FF007B;
+  }
+  .MuiTypography-colorTextPrimary {
+    color: rgba(0, 0, 0, 0.87);
+  }
+  .MuiTypography-colorTextSecondary {
+    color: rgba(0, 0, 0, 0.54);
+  }
+  .MuiTypography-colorError {
+    color: #ff1744;
+  }
+  .MuiTypography-displayInline {
+    display: inline;
+  }
+  .MuiTypography-displayBlock {
+    display: block;
+  }
+  .MuiLink-root:hover {
+    color: rgb(23, 82, 121);
+  }
+  .MuiLink-underlineNone {
+    text-decoration: none;
+  }
+  .MuiLink-underlineHover {
+    text-decoration: none;
+  }
+  .MuiLink-underlineHover:hover {
+    text-decoration: underline;
+  }
+  .MuiLink-underlineAlways {
+    text-decoration: underline;
+  }
+  .MuiLink-button {
+    border: 0;
+    cursor: pointer;
+    margin: 0;
+    outline: 0;
+    padding: 0;
+    position: relative;
+    user-select: none;
+    border-radius: 0;
+    vertical-align: middle;
+    -moz-appearance: none;
+    background-color: transparent;
+    -webkit-appearance: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .MuiLink-button::-moz-focus-inner {
+    border-style: none;
+  }
+  .MuiLink-button.Mui-focusVisible {
+    outline: auto;
+  }
+  .MuiPaper-root {
+    color: rgba(0, 0, 0, 0.87);
+    transition: box-shadow 300ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
+    background-color: #fff;
+  }
+  .MuiPaper-rounded {
+    border-radius: 4px;
+  }
+  .MuiPaper-outlined {
+    border: 1px solid rgba(0, 0, 0, 0.12);
+  }
+  .MuiPaper-elevation0 {
+    box-shadow: none;
+  }
+  .MuiPaper-elevation1 {
+    box-shadow: 0px 2px 1px -1px rgba(0,0,0,0.2),0px 1px 1px 0px rgba(0,0,0,0.14),0px 1px 3px 0px rgba(0,0,0,0.12);
+  }
+  .MuiPaper-elevation2 {
+    box-shadow: 0px 3px 1px -2px rgba(0,0,0,0.2),0px 2px 2px 0px rgba(0,0,0,0.14),0px 1px 5px 0px rgba(0,0,0,0.12);
+  }
+  .MuiPaper-elevation3 {
+    box-shadow: 0px 3px 3px -2px rgba(0,0,0,0.2),0px 3px 4px 0px rgba(0,0,0,0.14),0px 1px 8px 0px rgba(0,0,0,0.12);
+  }
+  .MuiPaper-elevation4 {
+    box-shadow: 0px 2px 4px -1px rgba(0,0,0,0.2),0px 4px 5px 0px rgba(0,0,0,0.14),0px 1px 10px 0px rgba(0,0,0,0.12);
+  }
+  .MuiPaper-elevation5 {
+    box-shadow: 0px 3px 5px -1px rgba(0,0,0,0.2),0px 5px 8px 0px rgba(0,0,0,0.14),0px 1px 14px 0px rgba(0,0,0,0.12);
+  }
+  .MuiPaper-elevation6 {
+    box-shadow: 0px 3px 5px -1px rgba(0,0,0,0.2),0px 6px 10px 0px rgba(0,0,0,0.14),0px 1px 18px 0px rgba(0,0,0,0.12);
+  }
+  .MuiPaper-elevation7 {
+    box-shadow: 0px 4px 5px -2px rgba(0,0,0,0.2),0px 7px 10px 1px rgba(0,0,0,0.14),0px 2px 16px 1px rgba(0,0,0,0.12);
+  }
+  .MuiPaper-elevation8 {
+    box-shadow: 0px 5px 5px -3px rgba(0,0,0,0.2),0px 8px 10px 1px rgba(0,0,0,0.14),0px 3px 14px 2px rgba(0,0,0,0.12);
+  }
+  .MuiPaper-elevation9 {
+    box-shadow: 0px 5px 6px -3px rgba(0,0,0,0.2),0px 9px 12px 1px rgba(0,0,0,0.14),0px 3px 16px 2px rgba(0,0,0,0.12);
+  }
+  .MuiPaper-elevation10 {
+    box-shadow: 0px 6px 6px -3px rgba(0,0,0,0.2),0px 10px 14px 1px rgba(0,0,0,0.14),0px 4px 18px 3px rgba(0,0,0,0.12);
+  }
+  .MuiPaper-elevation11 {
+    box-shadow: 0px 6px 7px -4px rgba(0,0,0,0.2),0px 11px 15px 1px rgba(0,0,0,0.14),0px 4px 20px 3px rgba(0,0,0,0.12);
+  }
+  .MuiPaper-elevation12 {
+    box-shadow: 0px 7px 8px -4px rgba(0,0,0,0.2),0px 12px 17px 2px rgba(0,0,0,0.14),0px 5px 22px 4px rgba(0,0,0,0.12);
+  }
+  .MuiPaper-elevation13 {
+    box-shadow: 0px 7px 8px -4px rgba(0,0,0,0.2),0px 13px 19px 2px rgba(0,0,0,0.14),0px 5px 24px 4px rgba(0,0,0,0.12);
+  }
+  .MuiPaper-elevation14 {
+    box-shadow: 0px 7px 9px -4px rgba(0,0,0,0.2),0px 14px 21px 2px rgba(0,0,0,0.14),0px 5px 26px 4px rgba(0,0,0,0.12);
+  }
+  .MuiPaper-elevation15 {
+    box-shadow: 0px 8px 9px -5px rgba(0,0,0,0.2),0px 15px 22px 2px rgba(0,0,0,0.14),0px 6px 28px 5px rgba(0,0,0,0.12);
+  }
+  .MuiPaper-elevation16 {
+    box-shadow: 0px 8px 10px -5px rgba(0,0,0,0.2),0px 16px 24px 2px rgba(0,0,0,0.14),0px 6px 30px 5px rgba(0,0,0,0.12);
+  }
+  .MuiPaper-elevation17 {
+    box-shadow: 0px 8px 11px -5px rgba(0,0,0,0.2),0px 17px 26px 2px rgba(0,0,0,0.14),0px 6px 32px 5px rgba(0,0,0,0.12);
+  }
+  .MuiPaper-elevation18 {
+    box-shadow: 0px 9px 11px -5px rgba(0,0,0,0.2),0px 18px 28px 2px rgba(0,0,0,0.14),0px 7px 34px 6px rgba(0,0,0,0.12);
+  }
+  .MuiPaper-elevation19 {
+    box-shadow: 0px 9px 12px -6px rgba(0,0,0,0.2),0px 19px 29px 2px rgba(0,0,0,0.14),0px 7px 36px 6px rgba(0,0,0,0.12);
+  }
+  .MuiPaper-elevation20 {
+    box-shadow: 0px 10px 13px -6px rgba(0,0,0,0.2),0px 20px 31px 3px rgba(0,0,0,0.14),0px 8px 38px 7px rgba(0,0,0,0.12);
+  }
+  .MuiPaper-elevation21 {
+    box-shadow: 0px 10px 13px -6px rgba(0,0,0,0.2),0px 21px 33px 3px rgba(0,0,0,0.14),0px 8px 40px 7px rgba(0,0,0,0.12);
+  }
+  .MuiPaper-elevation22 {
+    box-shadow: 0px 10px 14px -6px rgba(0,0,0,0.2),0px 22px 35px 3px rgba(0,0,0,0.14),0px 8px 42px 7px rgba(0,0,0,0.12);
+  }
+  .MuiPaper-elevation23 {
+    box-shadow: 0px 11px 14px -7px rgba(0,0,0,0.2),0px 23px 36px 3px rgba(0,0,0,0.14),0px 9px 44px 8px rgba(0,0,0,0.12);
+  }
+  .MuiPaper-elevation24 {
+    box-shadow: 0px 11px 15px -7px rgba(0,0,0,0.2),0px 24px 38px 3px rgba(0,0,0,0.14),0px 9px 46px 8px rgba(0,0,0,0.12);
+  }
+  .MuiIconButton-root {
+    flex: 0 0 auto;
+    color: rgba(0, 0, 0, 0.54);
+    padding: 12px;
+    overflow: visible;
+    font-size: 1.5rem;
+    text-align: center;
+    transition: background-color 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
+    border-radius: 50%;
+  }
+  .MuiIconButton-root:hover {
+    background-color: rgba(0, 0, 0, 0.04);
+  }
+  .MuiIconButton-root.Mui-disabled {
+    color: rgba(0, 0, 0, 0.26);
+    background-color: transparent;
+  }
+@media (hover: none) {
+  .MuiIconButton-root:hover {
+    background-color: transparent;
+  }
+}
+  .MuiIconButton-edgeStart {
+    margin-left: -12px;
+  }
+  .MuiIconButton-sizeSmall.MuiIconButton-edgeStart {
+    margin-left: -3px;
+  }
+  .MuiIconButton-edgeEnd {
+    margin-right: -12px;
+  }
+  .MuiIconButton-sizeSmall.MuiIconButton-edgeEnd {
+    margin-right: -3px;
+  }
+  .MuiIconButton-colorInherit {
+    color: inherit;
+  }
+  .MuiIconButton-colorPrimary {
+    color: #2176AE;
+  }
+  .MuiIconButton-colorPrimary:hover {
+    background-color: rgba(33, 118, 174, 0.04);
+  }
+@media (hover: none) {
+  .MuiIconButton-colorPrimary:hover {
+    background-color: transparent;
+  }
+}
+  .MuiIconButton-colorSecondary {
+    color: #FF007B;
+  }
+  .MuiIconButton-colorSecondary:hover {
+    background-color: rgba(255, 0, 123, 0.04);
+  }
+@media (hover: none) {
+  .MuiIconButton-colorSecondary:hover {
+    background-color: transparent;
+  }
+}
+  .MuiIconButton-sizeSmall {
+    padding: 3px;
+    font-size: 1.125rem;
+  }
+  .MuiIconButton-label {
+    width: 100%;
+    display: flex;
+    align-items: inherit;
+    justify-content: inherit;
+  }
+  .MuiAlert-root {
+    display: flex;
+    padding: 6px 16px;
+    font-size: 0.875rem;
+    font-family: "Roboto", "Helvetica", "Arial", sans-serif;
+    font-weight: 400;
+    line-height: 1.43;
+    border-radius: 4px;
+    letter-spacing: 0.01071em;
+    background-color: transparent;
+  }
+  .MuiAlert-standardSuccess {
+    color: rgb(30, 70, 32);
+    background-color: rgb(237, 247, 237);
+  }
+  .MuiAlert-standardSuccess .MuiAlert-icon {
+    color: #4caf50;
+  }
+  .MuiAlert-standardInfo {
+    color: rgb(13, 60, 97);
+    background-color: rgb(232, 244, 253);
+  }
+  .MuiAlert-standardInfo .MuiAlert-icon {
+    color: #2196f3;
+  }
+  .MuiAlert-standardWarning {
+    color: rgb(102, 60, 0);
+    background-color: rgb(255, 244, 229);
+  }
+  .MuiAlert-standardWarning .MuiAlert-icon {
+    color: #ff9800;
+  }
+  .MuiAlert-standardError {
+    color: rgb(102, 9, 27);
+    background-color: rgb(255, 231, 236);
+  }
+  .MuiAlert-standardError .MuiAlert-icon {
+    color: #ff1744;
+  }
+  .MuiAlert-outlinedSuccess {
+    color: rgb(30, 70, 32);
+    border: 1px solid #4caf50;
+  }
+  .MuiAlert-outlinedSuccess .MuiAlert-icon {
+    color: #4caf50;
+  }
+  .MuiAlert-outlinedInfo {
+    color: rgb(13, 60, 97);
+    border: 1px solid #2196f3;
+  }
+  .MuiAlert-outlinedInfo .MuiAlert-icon {
+    color: #2196f3;
+  }
+  .MuiAlert-outlinedWarning {
+    color: rgb(102, 60, 0);
+    border: 1px solid #ff9800;
+  }
+  .MuiAlert-outlinedWarning .MuiAlert-icon {
+    color: #ff9800;
+  }
+  .MuiAlert-outlinedError {
+    color: rgb(102, 9, 27);
+    border: 1px solid #ff1744;
+  }
+  .MuiAlert-outlinedError .MuiAlert-icon {
+    color: #ff1744;
+  }
+  .MuiAlert-filledSuccess {
+    color: #fff;
+    font-weight: 500;
+    background-color: #4caf50;
+  }
+  .MuiAlert-filledInfo {
+    color: #fff;
+    font-weight: 500;
+    background-color: #2196f3;
+  }
+  .MuiAlert-filledWarning {
+    color: #fff;
+    font-weight: 500;
+    background-color: #ff9800;
+  }
+  .MuiAlert-filledError {
+    color: #fff;
+    font-weight: 500;
+    background-color: #ff1744;
+  }
+  .MuiAlert-icon {
+    display: flex;
+    opacity: 0.9;
+    padding: 7px 0;
+    font-size: 22px;
+    margin-right: 12px;
+  }
+  .MuiAlert-message {
+    padding: 8px 0;
+  }
+  .MuiAlert-action {
+    display: flex;
+    align-items: center;
+    margin-left: auto;
+    margin-right: -8px;
+    padding-left: 16px;
+  }
+  .MuiAppBar-root {
+    width: 100%;
+    display: flex;
+    z-index: 1100;
+    box-sizing: border-box;
+    flex-shrink: 0;
+    flex-direction: column;
+  }
+  .MuiAppBar-positionFixed {
+    top: 0;
+    left: auto;
+    right: 0;
+    position: fixed;
+  }
+@media print {
+  .MuiAppBar-positionFixed {
+    position: absolute;
+  }
+}
+  .MuiAppBar-positionAbsolute {
+    top: 0;
+    left: auto;
+    right: 0;
+    position: absolute;
+  }
+  .MuiAppBar-positionSticky {
+    top: 0;
+    left: auto;
+    right: 0;
+    position: sticky;
+  }
+  .MuiAppBar-positionStatic {
+    position: static;
+  }
+  .MuiAppBar-positionRelative {
+    position: relative;
+  }
+  .MuiAppBar-colorDefault {
+    color: rgba(0, 0, 0, 0.87);
+    background-color: #f5f5f5;
+  }
+  .MuiAppBar-colorPrimary {
+    color: #fff;
+    background-color: #2176AE;
+  }
+  .MuiAppBar-colorSecondary {
+    color: #fff;
+    background-color: #FF007B;
+  }
+  .MuiAppBar-colorInherit {
+    color: inherit;
+  }
+  .MuiAppBar-colorTransparent {
+    color: inherit;
+    background-color: transparent;
+  }
+  .MuiBackdrop-root {
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    z-index: -1;
+    position: fixed;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(0, 0, 0, 0.5);
+    -webkit-tap-highlight-color: transparent;
+  }
+  .MuiBackdrop-invisible {
+    background-color: transparent;
+  }
+  .MuiButtonGroup-root {
+    display: inline-flex;
+    border-radius: 4px;
+  }
+  .MuiButtonGroup-contained {
+    box-shadow: 0px 3px 1px -2px rgba(0,0,0,0.2),0px 2px 2px 0px rgba(0,0,0,0.14),0px 1px 5px 0px rgba(0,0,0,0.12);
+  }
+  .MuiButtonGroup-disableElevation {
+    box-shadow: none;
+  }
+  .MuiButtonGroup-fullWidth {
+    width: 100%;
+  }
+  .MuiButtonGroup-vertical {
+    flex-direction: column;
+  }
+  .MuiButtonGroup-grouped {
+    min-width: 40px;
+  }
+  .MuiButtonGroup-groupedHorizontal:not(:first-child) {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+  }
+  .MuiButtonGroup-groupedHorizontal:not(:last-child) {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+  }
+  .MuiButtonGroup-groupedVertical:not(:first-child) {
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+  }
+  .MuiButtonGroup-groupedVertical:not(:last-child) {
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+  }
+  .MuiButtonGroup-groupedTextHorizontal:not(:last-child) {
+    border-right: 1px solid rgba(0, 0, 0, 0.23);
+  }
+  .MuiButtonGroup-groupedTextVertical:not(:last-child) {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.23);
+  }
+  .MuiButtonGroup-groupedTextPrimary:not(:last-child) {
+    border-color: rgba(33, 118, 174, 0.5);
+  }
+  .MuiButtonGroup-groupedTextSecondary:not(:last-child) {
+    border-color: rgba(255, 0, 123, 0.5);
+  }
+  .MuiButtonGroup-groupedOutlinedHorizontal:not(:first-child) {
+    margin-left: -1px;
+  }
+  .MuiButtonGroup-groupedOutlinedHorizontal:not(:last-child) {
+    border-right-color: transparent;
+  }
+  .MuiButtonGroup-groupedOutlinedVertical:not(:first-child) {
+    margin-top: -1px;
+  }
+  .MuiButtonGroup-groupedOutlinedVertical:not(:last-child) {
+    border-bottom-color: transparent;
+  }
+  .MuiButtonGroup-groupedOutlinedPrimary:hover {
+    border-color: #2176AE;
+  }
+  .MuiButtonGroup-groupedOutlinedSecondary:hover {
+    border-color: #FF007B;
+  }
+  .MuiButtonGroup-groupedContained {
+    box-shadow: none;
+  }
+  .MuiButtonGroup-groupedContainedHorizontal:not(:last-child) {
+    border-right: 1px solid #bdbdbd;
+  }
+  .MuiButtonGroup-groupedContainedHorizontal:not(:last-child).Mui-disabled {
+    border-right: 1px solid rgba(0, 0, 0, 0.26);
+  }
+  .MuiButtonGroup-groupedContainedVertical:not(:last-child) {
+    border-bottom: 1px solid #bdbdbd;
+  }
+  .MuiButtonGroup-groupedContainedVertical:not(:last-child).Mui-disabled {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.26);
+  }
+  .MuiButtonGroup-groupedContainedPrimary:not(:last-child) {
+    border-color: rgb(23, 82, 121);
+  }
+  .MuiButtonGroup-groupedContainedSecondary:not(:last-child) {
+    border-color: rgb(178, 0, 86);
+  }
+  .MuiChip-root {
+    color: rgba(0, 0, 0, 0.87);
+    border: none;
+    cursor: default;
+    height: 32px;
+    display: inline-flex;
+    outline: 0;
+    padding: 0;
+    font-size: 0.8125rem;
+    box-sizing: border-box;
+    transition: background-color 300ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,box-shadow 300ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
+    align-items: center;
+    font-family: "Roboto", "Helvetica", "Arial", sans-serif;
+    white-space: nowrap;
+    border-radius: 16px;
+    vertical-align: middle;
+    justify-content: center;
+    text-decoration: none;
+    background-color: #e0e0e0;
+  }
+  .MuiChip-root.Mui-disabled {
+    opacity: 0.5;
+    pointer-events: none;
+  }
+  .MuiChip-root .MuiChip-avatar {
+    color: #616161;
+    width: 24px;
+    height: 24px;
+    font-size: 0.75rem;
+    margin-left: 5px;
+    margin-right: -6px;
+  }
+  .MuiChip-root .MuiChip-avatarColorPrimary {
+    color: #fff;
+    background-color: rgb(23, 82, 121);
+  }
+  .MuiChip-root .MuiChip-avatarColorSecondary {
+    color: #fff;
+    background-color: rgb(178, 0, 86);
+  }
+  .MuiChip-root .MuiChip-avatarSmall {
+    width: 18px;
+    height: 18px;
+    font-size: 0.625rem;
+    margin-left: 4px;
+    margin-right: -4px;
+  }
+  .MuiChip-sizeSmall {
+    height: 24px;
+  }
+  .MuiChip-colorPrimary {
+    color: #fff;
+    background-color: #2176AE;
+  }
+  .MuiChip-colorSecondary {
+    color: #fff;
+    background-color: #FF007B;
+  }
+  .MuiChip-clickable {
+    cursor: pointer;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .MuiChip-clickable:hover, .MuiChip-clickable:focus {
+    background-color: rgb(206, 206, 206);
+  }
+  .MuiChip-clickable:active {
+    box-shadow: 0px 2px 1px -1px rgba(0,0,0,0.2),0px 1px 1px 0px rgba(0,0,0,0.14),0px 1px 3px 0px rgba(0,0,0,0.12);
+  }
+  .MuiChip-clickableColorPrimary:hover, .MuiChip-clickableColorPrimary:focus {
+    background-color: rgb(50, 128, 180);
+  }
+  .MuiChip-clickableColorSecondary:hover, .MuiChip-clickableColorSecondary:focus {
+    background-color: rgb(255, 20, 133);
+  }
+  .MuiChip-deletable:focus {
+    background-color: rgb(206, 206, 206);
+  }
+  .MuiChip-deletableColorPrimary:focus {
+    background-color: rgb(77, 145, 190);
+  }
+  .MuiChip-deletableColorSecondary:focus {
+    background-color: rgb(255, 51, 149);
+  }
+  .MuiChip-outlined {
+    border: 1px solid rgba(0, 0, 0, 0.23);
+    background-color: transparent;
+  }
+  .MuiChip-clickable.MuiChip-outlined:hover, .MuiChip-clickable.MuiChip-outlined:focus, .MuiChip-deletable.MuiChip-outlined:focus {
+    background-color: rgba(0, 0, 0, 0.04);
+  }
+  .MuiChip-outlined .MuiChip-avatar {
+    margin-left: 4px;
+  }
+  .MuiChip-outlined .MuiChip-avatarSmall {
+    margin-left: 2px;
+  }
+  .MuiChip-outlined .MuiChip-icon {
+    margin-left: 4px;
+  }
+  .MuiChip-outlined .MuiChip-iconSmall {
+    margin-left: 2px;
+  }
+  .MuiChip-outlined .MuiChip-deleteIcon {
+    margin-right: 5px;
+  }
+  .MuiChip-outlined .MuiChip-deleteIconSmall {
+    margin-right: 3px;
+  }
+  .MuiChip-outlinedPrimary {
+    color: #2176AE;
+    border: 1px solid #2176AE;
+  }
+  .MuiChip-clickable.MuiChip-outlinedPrimary:hover, .MuiChip-clickable.MuiChip-outlinedPrimary:focus, .MuiChip-deletable.MuiChip-outlinedPrimary:focus {
+    background-color: rgba(33, 118, 174, 0.04);
+  }
+  .MuiChip-outlinedSecondary {
+    color: #FF007B;
+    border: 1px solid #FF007B;
+  }
+  .MuiChip-clickable.MuiChip-outlinedSecondary:hover, .MuiChip-clickable.MuiChip-outlinedSecondary:focus, .MuiChip-deletable.MuiChip-outlinedSecondary:focus {
+    background-color: rgba(255, 0, 123, 0.04);
+  }
+  .MuiChip-icon {
+    color: #616161;
+    margin-left: 5px;
+    margin-right: -6px;
+  }
+  .MuiChip-iconSmall {
+    width: 18px;
+    height: 18px;
+    margin-left: 4px;
+    margin-right: -4px;
+  }
+  .MuiChip-iconColorPrimary {
+    color: inherit;
+  }
+  .MuiChip-iconColorSecondary {
+    color: inherit;
+  }
+  .MuiChip-label {
+    overflow: hidden;
+    white-space: nowrap;
+    padding-left: 12px;
+    padding-right: 12px;
+    text-overflow: ellipsis;
+  }
+  .MuiChip-labelSmall {
+    padding-left: 8px;
+    padding-right: 8px;
+  }
+  .MuiChip-deleteIcon {
+    color: rgba(0, 0, 0, 0.26);
+    width: 22px;
+    cursor: pointer;
+    height: 22px;
+    margin: 0 5px 0 -6px;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .MuiChip-deleteIcon:hover {
+    color: rgba(0, 0, 0, 0.4);
+  }
+  .MuiChip-deleteIconSmall {
+    width: 16px;
+    height: 16px;
+    margin-left: -4px;
+    margin-right: 4px;
+  }
+  .MuiChip-deleteIconColorPrimary {
+    color: rgba(255, 255, 255, 0.7);
+  }
+  .MuiChip-deleteIconColorPrimary:hover, .MuiChip-deleteIconColorPrimary:active {
+    color: #fff;
+  }
+  .MuiChip-deleteIconColorSecondary {
+    color: rgba(255, 255, 255, 0.7);
+  }
+  .MuiChip-deleteIconColorSecondary:hover, .MuiChip-deleteIconColorSecondary:active {
+    color: #fff;
+  }
+  .MuiChip-deleteIconOutlinedColorPrimary {
+    color: rgba(33, 118, 174, 0.7);
+  }
+  .MuiChip-deleteIconOutlinedColorPrimary:hover, .MuiChip-deleteIconOutlinedColorPrimary:active {
+    color: #2176AE;
+  }
+  .MuiChip-deleteIconOutlinedColorSecondary {
+    color: rgba(255, 0, 123, 0.7);
+  }
+  .MuiChip-deleteIconOutlinedColorSecondary:hover, .MuiChip-deleteIconOutlinedColorSecondary:active {
+    color: #FF007B;
+  }
+  .MuiCircularProgress-root {
+    display: inline-block;
+  }
+  .MuiCircularProgress-static {
+    transition: transform 300ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
+  }
+  .MuiCircularProgress-indeterminate {
+    animation: MuiCircularProgress-keyframes-circular-rotate 1.4s linear infinite;
+  }
+  .MuiCircularProgress-determinate {
+    transition: transform 300ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
+  }
+  .MuiCircularProgress-colorPrimary {
+    color: #2176AE;
+  }
+  .MuiCircularProgress-colorSecondary {
+    color: #FF007B;
+  }
+  .MuiCircularProgress-svg {
+    display: block;
+  }
+  .MuiCircularProgress-circle {
+    stroke: currentColor;
+  }
+  .MuiCircularProgress-circleStatic {
+    transition: stroke-dashoffset 300ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
+  }
+  .MuiCircularProgress-circleIndeterminate {
+    animation: MuiCircularProgress-keyframes-circular-dash 1.4s ease-in-out infinite;
+    stroke-dasharray: 80px, 200px;
+    stroke-dashoffset: 0px;
+  }
+  .MuiCircularProgress-circleDeterminate {
+    transition: stroke-dashoffset 300ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
+  }
+@keyframes MuiCircularProgress-keyframes-circular-rotate {
+  0% {
+    transform-origin: 50% 50%;
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+@keyframes MuiCircularProgress-keyframes-circular-dash {
+  0% {
+    stroke-dasharray: 1px, 200px;
+    stroke-dashoffset: 0px;
+  }
+  50% {
+    stroke-dasharray: 100px, 200px;
+    stroke-dashoffset: -15px;
+  }
+  100% {
+    stroke-dasharray: 100px, 200px;
+    stroke-dashoffset: -125px;
+  }
+}
+  .MuiCircularProgress-circleDisableShrink {
+    animation: none;
+  }
+  .MuiDrawer-docked {
+    flex: 0 0 auto;
+  }
+  .MuiDrawer-paper {
+    top: 0;
+    flex: 1 0 auto;
+    height: 100%;
+    display: flex;
+    outline: 0;
+    z-index: 1200;
+    position: fixed;
+    overflow-y: auto;
+    flex-direction: column;
+    -webkit-overflow-scrolling: touch;
+  }
+  .MuiDrawer-paperAnchorLeft {
+    left: 0;
+    right: auto;
+  }
+  .MuiDrawer-paperAnchorRight {
+    left: auto;
+    right: 0;
+  }
+  .MuiDrawer-paperAnchorTop {
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: auto;
+    height: auto;
+    max-height: 100%;
+  }
+  .MuiDrawer-paperAnchorBottom {
+    top: auto;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: auto;
+    max-height: 100%;
+  }
+  .MuiDrawer-paperAnchorDockedLeft {
+    border-right: 1px solid rgba(0, 0, 0, 0.12);
+  }
+  .MuiDrawer-paperAnchorDockedTop {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+  }
+  .MuiDrawer-paperAnchorDockedRight {
+    border-left: 1px solid rgba(0, 0, 0, 0.12);
+  }
+  .MuiDrawer-paperAnchorDockedBottom {
+    border-top: 1px solid rgba(0, 0, 0, 0.12);
+  }
+  .MuiList-root {
+    margin: 0;
+    padding: 0;
+    position: relative;
+    list-style: none;
+  }
+  .MuiList-padding {
+    padding-top: 8px;
+    padding-bottom: 8px;
+  }
+  .MuiList-subheader {
+    padding-top: 0;
+  }
+  .MuiSnackbar-root {
+    left: 8px;
+    right: 8px;
+    display: flex;
+    z-index: 1400;
+    position: fixed;
+    align-items: center;
+    justify-content: center;
+  }
+  .MuiSnackbar-anchorOriginTopCenter {
+    top: 8px;
+  }
+@media (min-width:900px) {
+  .MuiSnackbar-anchorOriginTopCenter {
+    top: 24px;
+    left: 50%;
+    right: auto;
+    transform: translateX(-50%);
+  }
+}
+  .MuiSnackbar-anchorOriginBottomCenter {
+    bottom: 8px;
+  }
+@media (min-width:900px) {
+  .MuiSnackbar-anchorOriginBottomCenter {
+    left: 50%;
+    right: auto;
+    bottom: 24px;
+    transform: translateX(-50%);
+  }
+}
+  .MuiSnackbar-anchorOriginTopRight {
+    top: 8px;
+    justify-content: flex-end;
+  }
+@media (min-width:900px) {
+  .MuiSnackbar-anchorOriginTopRight {
+    top: 24px;
+    left: auto;
+    right: 24px;
+  }
+}
+  .MuiSnackbar-anchorOriginBottomRight {
+    bottom: 8px;
+    justify-content: flex-end;
+  }
+@media (min-width:900px) {
+  .MuiSnackbar-anchorOriginBottomRight {
+    left: auto;
+    right: 24px;
+    bottom: 24px;
+  }
+}
+  .MuiSnackbar-anchorOriginTopLeft {
+    top: 8px;
+    justify-content: flex-start;
+  }
+@media (min-width:900px) {
+  .MuiSnackbar-anchorOriginTopLeft {
+    top: 24px;
+    left: 24px;
+    right: auto;
+  }
+}
+  .MuiSnackbar-anchorOriginBottomLeft {
+    bottom: 8px;
+    justify-content: flex-start;
+  }
+@media (min-width:900px) {
+  .MuiSnackbar-anchorOriginBottomLeft {
+    left: 24px;
+    right: auto;
+    bottom: 24px;
+  }
+}
+  .MuiToolbar-root {
+    display: flex;
+    position: relative;
+    align-items: center;
+  }
+  .MuiToolbar-gutters {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+@media (min-width:900px) {
+  .MuiToolbar-gutters {
+    padding-left: 24px;
+    padding-right: 24px;
+  }
+}
+  .MuiToolbar-regular {
+    min-height: 56px;
+  }
+@media (min-width:0px) and (orientation: landscape) {
+  .MuiToolbar-regular {
+    min-height: 48px;
+  }
+}
+@media (min-width:900px) {
+  .MuiToolbar-regular {
+    min-height: 64px;
+  }
+}
+  .MuiToolbar-dense {
+    min-height: 48px;
+  }
+  .jss80 {
+    height: 18px;
+    font-size: 0.74rem;
+    font-weight: 500;
+    vertical-align: text-bottom;
+  }
+  .jss81 {
+    padding: 0 6px;
+  }
+  .jss82 {
+    color: #424242;
+  }
+  .jss83 {
+    color: #283593;
+  }
+  .jss84 {
+    color: #d84315;
+  }
+  .jss85 {
+    color: #558b2f;
+  }
+  .jss86 {
+    color: #6d4c41;
+  }
+  .jss87 {
+    color: #6d4c41;
+  }
+  .jss95 {
+    text-decoration: line-through;
+  }
+  .jss96 {
+    text-decoration: line-through;
+  }
+  .jss97 {
+    text-decoration: line-through;
+  }
+  .jss88:hover .jss89 {
+    visibility: visible;
+  }
+  .jss89 {
+    color: inherit;
+    visibility: hidden;
+    margin-left: 0.3ch;
+  }
+  .jss89:hover {
+    color: #2176AE;
+  }
+  .jss90 {
+    padding: 3px;
+    border-radius: 4px;
+    background-color: #F8F8F8;
+  }
+  .jss98 > ul {
+    padding: 0 !important;
+  }
+  .jss99 {
+    font-weight: 700;
+    padding-bottom: 8px;
+  }
+  .jss100 {
+    padding-left: 1rem;
+    list-style-type: none;
+  }
+  .jss71 {
+    display: flex;
+  }
+  .jss72 {
+    flex-grow: 0.5;
+  }
+@media (max-width:1279.95px) {
+  .jss72 {
+    display: none;
+  }
+}
+  .jss73 {
+    flex-grow: 1;
+    padding-left: 16px;
+    overflow-wrap: anywhere;
+    padding-right: 16px;
+  }
+@media (min-width:1060px) {
+  .jss73 {
+    flex-grow: 0;
+    flex-basis: 782px;
+    flex-shrink: 0;
+    padding-left: 32px;
+    padding-right: 32px;
+  }
+}
+  .jss73 img {
+    max-width: 100%;
+  }
+  .jss74 {
+    flex-grow: 1;
+    flex-basis: 180px;
+  }
+@media (max-width:1279.95px) {
+  .jss74 {
+    display: none;
+  }
+}
+  .jss75 {
+    top: 112px;
+    position: sticky;
+    min-width: 20ch;
+    align-self: flex-start;
+    padding-left: 16px;
+  }
+  .jss43 {
+    padding: 0;
+  }
+  .jss44 {
+    display: block;
+  }
+  .jss45:hover .jss57 {
+    background-color: #2176AE;
+  }
+  .jss46 .jss57 {
+    background-color: #FF007B;
+  }
+  .jss46 .jss44 {
+    color: #FF007B;
+  }
+  .jss46 .jss44:hover {
+    color: #FF007B;
+  }
+  .jss46:hover .jss57 {
+    background-color: #FF007B;
+  }
+  .jss47 {
+    flex: 0 0 calc(12ch - 11.5px);
+  }
+  .jss48 {
+    flex: 0 0 12ch;
+  }
+  .jss49 {
+    width: 35px;
+    height: 35px;
+  }
+  .jss50 {
+    color: #9e9e9e;
+    font-size: 0.8rem;
+  }
+  .jss51 {
+    margin-left: -1ch;
+  }
+  .jss52 {
+    vertical-align: middle;
+  }
+  .jss53 {
+    margin-right: 0.5ch;
+  }
+  .jss54 {
+    color: #616161;
+    font-size: 0.8rem;
+    white-space: pre;
+    vertical-align: text-top;
+  }
+  .jss55 {
+    flex: 0 0 calc(12ch - 12px);
+  }
+  .jss56 {
+    padding-bottom: 16px;
+  }
+  .jss58 {
+    background-color: #FF007B;
+  }
+  .jss62 {
+    text-decoration: line-through;
+  }
+  .jss63 {
+    text-decoration: line-through;
+  }
+  .jss64 {
+    text-decoration: line-through;
+  }
+  .jss1 {
+    display: flex;
+  }
+  .jss2 {
+    flex-grow: 0.5;
+  }
+@media (max-width:1279.95px) {
+  .jss2 {
+    display: none;
+  }
+}
+  .jss3 {
+    flex-grow: 1;
+    padding-left: 32px;
+    padding-right: 32px;
+  }
+@media (min-width:1060px) {
+  .jss3 {
+    flex-grow: 0;
+    flex-basis: 782px;
+    flex-shrink: 0;
+  }
+}
+  .jss4 {
+    flex-grow: 1;
+    flex-basis: 180px;
+  }
+@media (max-width:1279.95px) {
+  .jss4 {
+    display: none;
+  }
+}
+  .jss5 {
+    z-index: 1201;
+  }
+@media (min-width:900px) {
+  .jss6 {
+    display: none;
+  }
+}
+  .jss7 {
+    display: none;
+  }
+@media (min-width:900px) {
+  .jss7 {
+    width: 356px;
+    cursor: pointer;
+    display: flex;
+    flex-grow: 0;
+    align-items: center;
+    flex-shrink: 0;
+  }
+}
+  .jss8 {
+    color: inherit;
+    display: block;
+    margin-left: 16px;
+  }
+  .jss8:hover {
+    color: inherit;
+  }
+  .jss9 {
+    z-index: 1298;
+  }
+  .jss10 {
+    width: 100%;
+    z-index: 1299;
+    transition: width 300ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
+  }
+@media (min-width:1060px) {
+  .jss10 {
+    width: 70%;
+  }
+}
+  .jss11 {
+    width: 100%;
+  }
+@media (min-width:900px) {
+  .jss12 {
+    width: 380px;
+    flex-shrink: 0;
+  }
+}
+  .jss13 {
+    width: 380px;
+  }
+  .jss14 {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+@media (min-width:900px) {
+  .jss14 {
+    padding-top: 48px;
+  }
+}
+  .jss15 {
+    visibility: visible;
+    justify-content: space-between;
+  }
+@media (min-width:900px) {
+  .jss15 {
+    visibility: hidden;
+  }
+}
+  .jss16 {
+    overflow: auto;
+    flex-grow: 1;
+    flex-shrink: 1;
+  }
+  .jss16::-webkit-scrollbar {
+    width: 6px;
+    background-color: [object Object];
+  }
+  .jss16::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    background-color: #bdbdbd;
+    -webkit-box-shadow: inset 0 0 2px rgba(0,0,0,.3);
+  }
+  .jss17 {
+    flex-grow: 0;
+    flex-shrink: 0;
+  }
+  .jss18 {
+    display: flex;
+    padding-left: 16px;
+    padding-right: 24px;
+    padding-bottom: 4px;
+    justify-content: space-between;
+  }
+@media (min-width:900px) {
+  .jss18 {
+    padding-left: 24px;
+  }
+}
+  .jss19 {
+    font-weight: 700;
+  }
+  .jss20 {
+    align-self: center;
+    margin-top: 30vh;
+  }
+  .jss21 {
+    flex-grow: 1;
+    padding-top: 16px;
+  }
+@media (min-width:900px) {
+  .jss21 {
+    padding-top: 48px;
+  }
+}
+  .jss22 {
+    min-height: calc(100vh - 35px - 72px);
+  }
+@media (min-width:900px) {
+  .jss22 {
+    min-height: calc(100vh - 35px - 112px);
+  }
+}
+  .jss23 {
+    color: #9e9e9e;
+    height: 35px;
+    display: flex;
+    margin-top: 48px;
+    background-color: #f5f5f5;
+  }
+  .jss24 {
+    font-size: 0.77rem;
+  }
+  .jss25 {
+    color: #757575;
+    font-size: 0.8rem;
+  }
+  .jss25:hover {
+    color: #424242;
+  }
+  .jss26 {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  .jss76 {
+    color: #616161;
+    display: flex;
+    justify-content: space-between;
+  }
+  .jss77 {
+    display: flex;
+  }
+  .jss77 > * {
+    margin-left: 4px;
+    margin-right: 4px;
+  }
+  .jss77 > *:first-child {
+    margin-left: 0;
+  }
+  .jss77 > *:last-child {
+    margin-right: 0;
+  }
+  .jss78 {
+    vertical-align: middle;
+  }
+  .jss79 {
+    color: #757575;
+  }
+  .jss65 {
+    margin-top: 8px;
+    margin-bottom: 32px;
+  }
+  .jss66 {
+    margin-bottom: 24px;
+  }
+  .jss67 {
+    margin-top: 96px;
+  }
+  .jss68 {
+    display: flex;
+    margin-top: 8px;
+    justify-content: space-between;
+  }
+  .jss70 {
+    color: #757575;
+    font-size: 0.77rem;
+    text-align: center;
+  }</style><style data-href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap">@font-face{font-family:'Roboto';font-style:normal;font-weight:300;font-stretch:normal;font-display:swap;src:url(https://fonts.gstatic.com/s/roboto/v49/KFOMCnqEu92Fr1ME7kSn66aGLdTylUAMQXC89YmC2DPNWuaabWmQ.woff) format('woff')}@font-face{font-family:'Roboto';font-style:normal;font-weight:400;font-stretch:normal;font-display:swap;src:url(https://fonts.gstatic.com/s/roboto/v49/KFOMCnqEu92Fr1ME7kSn66aGLdTylUAMQXC89YmC2DPNWubEbWmQ.woff) format('woff')}@font-face{font-family:'Roboto';font-style:normal;font-weight:500;font-stretch:normal;font-display:swap;src:url(https://fonts.gstatic.com/s/roboto/v49/KFOMCnqEu92Fr1ME7kSn66aGLdTylUAMQXC89YmC2DPNWub2bWmQ.woff) format('woff')}@font-face{font-family:'Roboto';font-style:normal;font-weight:700;font-stretch:normal;font-display:swap;src:url(https://fonts.gstatic.com/s/roboto/v49/KFOMCnqEu92Fr1ME7kSn66aGLdTylUAMQXC89YmC2DPNWuYjammQ.woff) format('woff')}@font-face{font-family:'Roboto';font-style:normal;font-weight:300;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/roboto/v49/KFO7CnqEu92Fr1ME7kSn66aGLdTylUAMa3GUBHMdazTgWw.woff2) format('woff2');unicode-range:U+0460-052F,U+1C80-1C8A,U+20B4,U+2DE0-2DFF,U+A640-A69F,U+FE2E-FE2F}@font-face{font-family:'Roboto';font-style:normal;font-weight:300;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/roboto/v49/KFO7CnqEu92Fr1ME7kSn66aGLdTylUAMa3iUBHMdazTgWw.woff2) format('woff2');unicode-range:U+0301,U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116}@font-face{font-family:'Roboto';font-style:normal;font-weight:300;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/roboto/v49/KFO7CnqEu92Fr1ME7kSn66aGLdTylUAMa3CUBHMdazTgWw.woff2) format('woff2');unicode-range:U+1F00-1FFF}@font-face{font-family:'Roboto';font-style:normal;font-weight:300;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/roboto/v49/KFO7CnqEu92Fr1ME7kSn66aGLdTylUAMa3-UBHMdazTgWw.woff2) format('woff2');unicode-range:U+0370-0377,U+037A-037F,U+0384-038A,U+038C,U+038E-03A1,U+03A3-03FF}@font-face{font-family:'Roboto';font-style:normal;font-weight:300;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/roboto/v49/KFO7CnqEu92Fr1ME7kSn66aGLdTylUAMawCUBHMdazTgWw.woff2) format('woff2');unicode-range:U+0302-0303,U+0305,U+0307-0308,U+0310,U+0312,U+0315,U+031A,U+0326-0327,U+032C,U+032F-0330,U+0332-0333,U+0338,U+033A,U+0346,U+034D,U+0391-03A1,U+03A3-03A9,U+03B1-03C9,U+03D1,U+03D5-03D6,U+03F0-03F1,U+03F4-03F5,U+2016-2017,U+2034-2038,U+203C,U+2040,U+2043,U+2047,U+2050,U+2057,U+205F,U+2070-2071,U+2074-208E,U+2090-209C,U+20D0-20DC,U+20E1,U+20E5-20EF,U+2100-2112,U+2114-2115,U+2117-2121,U+2123-214F,U+2190,U+2192,U+2194-21AE,U+21B0-21E5,U+21F1-21F2,U+21F4-2211,U+2213-2214,U+2216-22FF,U+2308-230B,U+2310,U+2319,U+231C-2321,U+2336-237A,U+237C,U+2395,U+239B-23B7,U+23D0,U+23DC-23E1,U+2474-2475,U+25AF,U+25B3,U+25B7,U+25BD,U+25C1,U+25CA,U+25CC,U+25FB,U+266D-266F,U+27C0-27FF,U+2900-2AFF,U+2B0E-2B11,U+2B30-2B4C,U+2BFE,U+3030,U+FF5B,U+FF5D,U+1D400-1D7FF,U+1EE00-1EEFF}@font-face{font-family:'Roboto';font-style:normal;font-weight:300;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/roboto/v49/KFO7CnqEu92Fr1ME7kSn66aGLdTylUAMaxKUBHMdazTgWw.woff2) format('woff2');unicode-range:U+0001-000C,U+000E-001F,U+007F-009F,U+20DD-20E0,U+20E2-20E4,U+2150-218F,U+2190,U+2192,U+2194-2199,U+21AF,U+21E6-21F0,U+21F3,U+2218-2219,U+2299,U+22C4-22C6,U+2300-243F,U+2440-244A,U+2460-24FF,U+25A0-27BF,U+2800-28FF,U+2921-2922,U+2981,U+29BF,U+29EB,U+2B00-2BFF,U+4DC0-4DFF,U+FFF9-FFFB,U+10140-1018E,U+10190-1019C,U+101A0,U+101D0-101FD,U+102E0-102FB,U+10E60-10E7E,U+1D2C0-1D2D3,U+1D2E0-1D37F,U+1F000-1F0FF,U+1F100-1F1AD,U+1F1E6-1F1FF,U+1F30D-1F30F,U+1F315,U+1F31C,U+1F31E,U+1F320-1F32C,U+1F336,U+1F378,U+1F37D,U+1F382,U+1F393-1F39F,U+1F3A7-1F3A8,U+1F3AC-1F3AF,U+1F3C2,U+1F3C4-1F3C6,U+1F3CA-1F3CE,U+1F3D4-1F3E0,U+1F3ED,U+1F3F1-1F3F3,U+1F3F5-1F3F7,U+1F408,U+1F415,U+1F41F,U+1F426,U+1F43F,U+1F441-1F442,U+1F444,U+1F446-1F449,U+1F44C-1F44E,U+1F453,U+1F46A,U+1F47D,U+1F4A3,U+1F4B0,U+1F4B3,U+1F4B9,U+1F4BB,U+1F4BF,U+1F4C8-1F4CB,U+1F4D6,U+1F4DA,U+1F4DF,U+1F4E3-1F4E6,U+1F4EA-1F4ED,U+1F4F7,U+1F4F9-1F4FB,U+1F4FD-1F4FE,U+1F503,U+1F507-1F50B,U+1F50D,U+1F512-1F513,U+1F53E-1F54A,U+1F54F-1F5FA,U+1F610,U+1F650-1F67F,U+1F687,U+1F68D,U+1F691,U+1F694,U+1F698,U+1F6AD,U+1F6B2,U+1F6B9-1F6BA,U+1F6BC,U+1F6C6-1F6CF,U+1F6D3-1F6D7,U+1F6E0-1F6EA,U+1F6F0-1F6F3,U+1F6F7-1F6FC,U+1F700-1F7FF,U+1F800-1F80B,U+1F810-1F847,U+1F850-1F859,U+1F860-1F887,U+1F890-1F8AD,U+1F8B0-1F8BB,U+1F8C0-1F8C1,U+1F900-1F90B,U+1F93B,U+1F946,U+1F984,U+1F996,U+1F9E9,U+1FA00-1FA6F,U+1FA70-1FA7C,U+1FA80-1FA89,U+1FA8F-1FAC6,U+1FACE-1FADC,U+1FADF-1FAE9,U+1FAF0-1FAF8,U+1FB00-1FBFF}@font-face{font-family:'Roboto';font-style:normal;font-weight:300;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/roboto/v49/KFO7CnqEu92Fr1ME7kSn66aGLdTylUAMa3OUBHMdazTgWw.woff2) format('woff2');unicode-range:U+0102-0103,U+0110-0111,U+0128-0129,U+0168-0169,U+01A0-01A1,U+01AF-01B0,U+0300-0301,U+0303-0304,U+0308-0309,U+0323,U+0329,U+1EA0-1EF9,U+20AB}@font-face{font-family:'Roboto';font-style:normal;font-weight:300;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/roboto/v49/KFO7CnqEu92Fr1ME7kSn66aGLdTylUAMa3KUBHMdazTgWw.woff2) format('woff2');unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF}@font-face{font-family:'Roboto';font-style:normal;font-weight:300;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/roboto/v49/KFO7CnqEu92Fr1ME7kSn66aGLdTylUAMa3yUBHMdazQ.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}@font-face{font-family:'Roboto';font-style:normal;font-weight:400;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/roboto/v49/KFO7CnqEu92Fr1ME7kSn66aGLdTylUAMa3GUBHMdazTgWw.woff2) format('woff2');unicode-range:U+0460-052F,U+1C80-1C8A,U+20B4,U+2DE0-2DFF,U+A640-A69F,U+FE2E-FE2F}@font-face{font-family:'Roboto';font-style:normal;font-weight:400;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/roboto/v49/KFO7CnqEu92Fr1ME7kSn66aGLdTylUAMa3iUBHMdazTgWw.woff2) format('woff2');unicode-range:U+0301,U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116}@font-face{font-family:'Roboto';font-style:normal;font-weight:400;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/roboto/v49/KFO7CnqEu92Fr1ME7kSn66aGLdTylUAMa3CUBHMdazTgWw.woff2) format('woff2');unicode-range:U+1F00-1FFF}@font-face{font-family:'Roboto';font-style:normal;font-weight:400;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/roboto/v49/KFO7CnqEu92Fr1ME7kSn66aGLdTylUAMa3-UBHMdazTgWw.woff2) format('woff2');unicode-range:U+0370-0377,U+037A-037F,U+0384-038A,U+038C,U+038E-03A1,U+03A3-03FF}@font-face{font-family:'Roboto';font-style:normal;font-weight:400;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/roboto/v49/KFO7CnqEu92Fr1ME7kSn66aGLdTylUAMawCUBHMdazTgWw.woff2) format('woff2');unicode-range:U+0302-0303,U+0305,U+0307-0308,U+0310,U+0312,U+0315,U+031A,U+0326-0327,U+032C,U+032F-0330,U+0332-0333,U+0338,U+033A,U+0346,U+034D,U+0391-03A1,U+03A3-03A9,U+03B1-03C9,U+03D1,U+03D5-03D6,U+03F0-03F1,U+03F4-03F5,U+2016-2017,U+2034-2038,U+203C,U+2040,U+2043,U+2047,U+2050,U+2057,U+205F,U+2070-2071,U+2074-208E,U+2090-209C,U+20D0-20DC,U+20E1,U+20E5-20EF,U+2100-2112,U+2114-2115,U+2117-2121,U+2123-214F,U+2190,U+2192,U+2194-21AE,U+21B0-21E5,U+21F1-21F2,U+21F4-2211,U+2213-2214,U+2216-22FF,U+2308-230B,U+2310,U+2319,U+231C-2321,U+2336-237A,U+237C,U+2395,U+239B-23B7,U+23D0,U+23DC-23E1,U+2474-2475,U+25AF,U+25B3,U+25B7,U+25BD,U+25C1,U+25CA,U+25CC,U+25FB,U+266D-266F,U+27C0-27FF,U+2900-2AFF,U+2B0E-2B11,U+2B30-2B4C,U+2BFE,U+3030,U+FF5B,U+FF5D,U+1D400-1D7FF,U+1EE00-1EEFF}@font-face{font-family:'Roboto';font-style:normal;font-weight:400;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/roboto/v49/KFO7CnqEu92Fr1ME7kSn66aGLdTylUAMaxKUBHMdazTgWw.woff2) format('woff2');unicode-range:U+0001-000C,U+000E-001F,U+007F-009F,U+20DD-20E0,U+20E2-20E4,U+2150-218F,U+2190,U+2192,U+2194-2199,U+21AF,U+21E6-21F0,U+21F3,U+2218-2219,U+2299,U+22C4-22C6,U+2300-243F,U+2440-244A,U+2460-24FF,U+25A0-27BF,U+2800-28FF,U+2921-2922,U+2981,U+29BF,U+29EB,U+2B00-2BFF,U+4DC0-4DFF,U+FFF9-FFFB,U+10140-1018E,U+10190-1019C,U+101A0,U+101D0-101FD,U+102E0-102FB,U+10E60-10E7E,U+1D2C0-1D2D3,U+1D2E0-1D37F,U+1F000-1F0FF,U+1F100-1F1AD,U+1F1E6-1F1FF,U+1F30D-1F30F,U+1F315,U+1F31C,U+1F31E,U+1F320-1F32C,U+1F336,U+1F378,U+1F37D,U+1F382,U+1F393-1F39F,U+1F3A7-1F3A8,U+1F3AC-1F3AF,U+1F3C2,U+1F3C4-1F3C6,U+1F3CA-1F3CE,U+1F3D4-1F3E0,U+1F3ED,U+1F3F1-1F3F3,U+1F3F5-1F3F7,U+1F408,U+1F415,U+1F41F,U+1F426,U+1F43F,U+1F441-1F442,U+1F444,U+1F446-1F449,U+1F44C-1F44E,U+1F453,U+1F46A,U+1F47D,U+1F4A3,U+1F4B0,U+1F4B3,U+1F4B9,U+1F4BB,U+1F4BF,U+1F4C8-1F4CB,U+1F4D6,U+1F4DA,U+1F4DF,U+1F4E3-1F4E6,U+1F4EA-1F4ED,U+1F4F7,U+1F4F9-1F4FB,U+1F4FD-1F4FE,U+1F503,U+1F507-1F50B,U+1F50D,U+1F512-1F513,U+1F53E-1F54A,U+1F54F-1F5FA,U+1F610,U+1F650-1F67F,U+1F687,U+1F68D,U+1F691,U+1F694,U+1F698,U+1F6AD,U+1F6B2,U+1F6B9-1F6BA,U+1F6BC,U+1F6C6-1F6CF,U+1F6D3-1F6D7,U+1F6E0-1F6EA,U+1F6F0-1F6F3,U+1F6F7-1F6FC,U+1F700-1F7FF,U+1F800-1F80B,U+1F810-1F847,U+1F850-1F859,U+1F860-1F887,U+1F890-1F8AD,U+1F8B0-1F8BB,U+1F8C0-1F8C1,U+1F900-1F90B,U+1F93B,U+1F946,U+1F984,U+1F996,U+1F9E9,U+1FA00-1FA6F,U+1FA70-1FA7C,U+1FA80-1FA89,U+1FA8F-1FAC6,U+1FACE-1FADC,U+1FADF-1FAE9,U+1FAF0-1FAF8,U+1FB00-1FBFF}@font-face{font-family:'Roboto';font-style:normal;font-weight:400;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/roboto/v49/KFO7CnqEu92Fr1ME7kSn66aGLdTylUAMa3OUBHMdazTgWw.woff2) format('woff2');unicode-range:U+0102-0103,U+0110-0111,U+0128-0129,U+0168-0169,U+01A0-01A1,U+01AF-01B0,U+0300-0301,U+0303-0304,U+0308-0309,U+0323,U+0329,U+1EA0-1EF9,U+20AB}@font-face{font-family:'Roboto';font-style:normal;font-weight:400;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/roboto/v49/KFO7CnqEu92Fr1ME7kSn66aGLdTylUAMa3KUBHMdazTgWw.woff2) format('woff2');unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF}@font-face{font-family:'Roboto';font-style:normal;font-weight:400;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/roboto/v49/KFO7CnqEu92Fr1ME7kSn66aGLdTylUAMa3yUBHMdazQ.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}@font-face{font-family:'Roboto';font-style:normal;font-weight:500;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/roboto/v49/KFO7CnqEu92Fr1ME7kSn66aGLdTylUAMa3GUBHMdazTgWw.woff2) format('woff2');unicode-range:U+0460-052F,U+1C80-1C8A,U+20B4,U+2DE0-2DFF,U+A640-A69F,U+FE2E-FE2F}@font-face{font-family:'Roboto';font-style:normal;font-weight:500;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/roboto/v49/KFO7CnqEu92Fr1ME7kSn66aGLdTylUAMa3iUBHMdazTgWw.woff2) format('woff2');unicode-range:U+0301,U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116}@font-face{font-family:'Roboto';font-style:normal;font-weight:500;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/roboto/v49/KFO7CnqEu92Fr1ME7kSn66aGLdTylUAMa3CUBHMdazTgWw.woff2) format('woff2');unicode-range:U+1F00-1FFF}@font-face{font-family:'Roboto';font-style:normal;font-weight:500;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/roboto/v49/KFO7CnqEu92Fr1ME7kSn66aGLdTylUAMa3-UBHMdazTgWw.woff2) format('woff2');unicode-range:U+0370-0377,U+037A-037F,U+0384-038A,U+038C,U+038E-03A1,U+03A3-03FF}@font-face{font-family:'Roboto';font-style:normal;font-weight:500;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/roboto/v49/KFO7CnqEu92Fr1ME7kSn66aGLdTylUAMawCUBHMdazTgWw.woff2) format('woff2');unicode-range:U+0302-0303,U+0305,U+0307-0308,U+0310,U+0312,U+0315,U+031A,U+0326-0327,U+032C,U+032F-0330,U+0332-0333,U+0338,U+033A,U+0346,U+034D,U+0391-03A1,U+03A3-03A9,U+03B1-03C9,U+03D1,U+03D5-03D6,U+03F0-03F1,U+03F4-03F5,U+2016-2017,U+2034-2038,U+203C,U+2040,U+2043,U+2047,U+2050,U+2057,U+205F,U+2070-2071,U+2074-208E,U+2090-209C,U+20D0-20DC,U+20E1,U+20E5-20EF,U+2100-2112,U+2114-2115,U+2117-2121,U+2123-214F,U+2190,U+2192,U+2194-21AE,U+21B0-21E5,U+21F1-21F2,U+21F4-2211,U+2213-2214,U+2216-22FF,U+2308-230B,U+2310,U+2319,U+231C-2321,U+2336-237A,U+237C,U+2395,U+239B-23B7,U+23D0,U+23DC-23E1,U+2474-2475,U+25AF,U+25B3,U+25B7,U+25BD,U+25C1,U+25CA,U+25CC,U+25FB,U+266D-266F,U+27C0-27FF,U+2900-2AFF,U+2B0E-2B11,U+2B30-2B4C,U+2BFE,U+3030,U+FF5B,U+FF5D,U+1D400-1D7FF,U+1EE00-1EEFF}@font-face{font-family:'Roboto';font-style:normal;font-weight:500;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/roboto/v49/KFO7CnqEu92Fr1ME7kSn66aGLdTylUAMaxKUBHMdazTgWw.woff2) format('woff2');unicode-range:U+0001-000C,U+000E-001F,U+007F-009F,U+20DD-20E0,U+20E2-20E4,U+2150-218F,U+2190,U+2192,U+2194-2199,U+21AF,U+21E6-21F0,U+21F3,U+2218-2219,U+2299,U+22C4-22C6,U+2300-243F,U+2440-244A,U+2460-24FF,U+25A0-27BF,U+2800-28FF,U+2921-2922,U+2981,U+29BF,U+29EB,U+2B00-2BFF,U+4DC0-4DFF,U+FFF9-FFFB,U+10140-1018E,U+10190-1019C,U+101A0,U+101D0-101FD,U+102E0-102FB,U+10E60-10E7E,U+1D2C0-1D2D3,U+1D2E0-1D37F,U+1F000-1F0FF,U+1F100-1F1AD,U+1F1E6-1F1FF,U+1F30D-1F30F,U+1F315,U+1F31C,U+1F31E,U+1F320-1F32C,U+1F336,U+1F378,U+1F37D,U+1F382,U+1F393-1F39F,U+1F3A7-1F3A8,U+1F3AC-1F3AF,U+1F3C2,U+1F3C4-1F3C6,U+1F3CA-1F3CE,U+1F3D4-1F3E0,U+1F3ED,U+1F3F1-1F3F3,U+1F3F5-1F3F7,U+1F408,U+1F415,U+1F41F,U+1F426,U+1F43F,U+1F441-1F442,U+1F444,U+1F446-1F449,U+1F44C-1F44E,U+1F453,U+1F46A,U+1F47D,U+1F4A3,U+1F4B0,U+1F4B3,U+1F4B9,U+1F4BB,U+1F4BF,U+1F4C8-1F4CB,U+1F4D6,U+1F4DA,U+1F4DF,U+1F4E3-1F4E6,U+1F4EA-1F4ED,U+1F4F7,U+1F4F9-1F4FB,U+1F4FD-1F4FE,U+1F503,U+1F507-1F50B,U+1F50D,U+1F512-1F513,U+1F53E-1F54A,U+1F54F-1F5FA,U+1F610,U+1F650-1F67F,U+1F687,U+1F68D,U+1F691,U+1F694,U+1F698,U+1F6AD,U+1F6B2,U+1F6B9-1F6BA,U+1F6BC,U+1F6C6-1F6CF,U+1F6D3-1F6D7,U+1F6E0-1F6EA,U+1F6F0-1F6F3,U+1F6F7-1F6FC,U+1F700-1F7FF,U+1F800-1F80B,U+1F810-1F847,U+1F850-1F859,U+1F860-1F887,U+1F890-1F8AD,U+1F8B0-1F8BB,U+1F8C0-1F8C1,U+1F900-1F90B,U+1F93B,U+1F946,U+1F984,U+1F996,U+1F9E9,U+1FA00-1FA6F,U+1FA70-1FA7C,U+1FA80-1FA89,U+1FA8F-1FAC6,U+1FACE-1FADC,U+1FADF-1FAE9,U+1FAF0-1FAF8,U+1FB00-1FBFF}@font-face{font-family:'Roboto';font-style:normal;font-weight:500;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/roboto/v49/KFO7CnqEu92Fr1ME7kSn66aGLdTylUAMa3OUBHMdazTgWw.woff2) format('woff2');unicode-range:U+0102-0103,U+0110-0111,U+0128-0129,U+0168-0169,U+01A0-01A1,U+01AF-01B0,U+0300-0301,U+0303-0304,U+0308-0309,U+0323,U+0329,U+1EA0-1EF9,U+20AB}@font-face{font-family:'Roboto';font-style:normal;font-weight:500;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/roboto/v49/KFO7CnqEu92Fr1ME7kSn66aGLdTylUAMa3KUBHMdazTgWw.woff2) format('woff2');unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF}@font-face{font-family:'Roboto';font-style:normal;font-weight:500;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/roboto/v49/KFO7CnqEu92Fr1ME7kSn66aGLdTylUAMa3yUBHMdazQ.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}@font-face{font-family:'Roboto';font-style:normal;font-weight:700;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/roboto/v49/KFO7CnqEu92Fr1ME7kSn66aGLdTylUAMa3GUBHMdazTgWw.woff2) format('woff2');unicode-range:U+0460-052F,U+1C80-1C8A,U+20B4,U+2DE0-2DFF,U+A640-A69F,U+FE2E-FE2F}@font-face{font-family:'Roboto';font-style:normal;font-weight:700;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/roboto/v49/KFO7CnqEu92Fr1ME7kSn66aGLdTylUAMa3iUBHMdazTgWw.woff2) format('woff2');unicode-range:U+0301,U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116}@font-face{font-family:'Roboto';font-style:normal;font-weight:700;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/roboto/v49/KFO7CnqEu92Fr1ME7kSn66aGLdTylUAMa3CUBHMdazTgWw.woff2) format('woff2');unicode-range:U+1F00-1FFF}@font-face{font-family:'Roboto';font-style:normal;font-weight:700;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/roboto/v49/KFO7CnqEu92Fr1ME7kSn66aGLdTylUAMa3-UBHMdazTgWw.woff2) format('woff2');unicode-range:U+0370-0377,U+037A-037F,U+0384-038A,U+038C,U+038E-03A1,U+03A3-03FF}@font-face{font-family:'Roboto';font-style:normal;font-weight:700;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/roboto/v49/KFO7CnqEu92Fr1ME7kSn66aGLdTylUAMawCUBHMdazTgWw.woff2) format('woff2');unicode-range:U+0302-0303,U+0305,U+0307-0308,U+0310,U+0312,U+0315,U+031A,U+0326-0327,U+032C,U+032F-0330,U+0332-0333,U+0338,U+033A,U+0346,U+034D,U+0391-03A1,U+03A3-03A9,U+03B1-03C9,U+03D1,U+03D5-03D6,U+03F0-03F1,U+03F4-03F5,U+2016-2017,U+2034-2038,U+203C,U+2040,U+2043,U+2047,U+2050,U+2057,U+205F,U+2070-2071,U+2074-208E,U+2090-209C,U+20D0-20DC,U+20E1,U+20E5-20EF,U+2100-2112,U+2114-2115,U+2117-2121,U+2123-214F,U+2190,U+2192,U+2194-21AE,U+21B0-21E5,U+21F1-21F2,U+21F4-2211,U+2213-2214,U+2216-22FF,U+2308-230B,U+2310,U+2319,U+231C-2321,U+2336-237A,U+237C,U+2395,U+239B-23B7,U+23D0,U+23DC-23E1,U+2474-2475,U+25AF,U+25B3,U+25B7,U+25BD,U+25C1,U+25CA,U+25CC,U+25FB,U+266D-266F,U+27C0-27FF,U+2900-2AFF,U+2B0E-2B11,U+2B30-2B4C,U+2BFE,U+3030,U+FF5B,U+FF5D,U+1D400-1D7FF,U+1EE00-1EEFF}@font-face{font-family:'Roboto';font-style:normal;font-weight:700;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/roboto/v49/KFO7CnqEu92Fr1ME7kSn66aGLdTylUAMaxKUBHMdazTgWw.woff2) format('woff2');unicode-range:U+0001-000C,U+000E-001F,U+007F-009F,U+20DD-20E0,U+20E2-20E4,U+2150-218F,U+2190,U+2192,U+2194-2199,U+21AF,U+21E6-21F0,U+21F3,U+2218-2219,U+2299,U+22C4-22C6,U+2300-243F,U+2440-244A,U+2460-24FF,U+25A0-27BF,U+2800-28FF,U+2921-2922,U+2981,U+29BF,U+29EB,U+2B00-2BFF,U+4DC0-4DFF,U+FFF9-FFFB,U+10140-1018E,U+10190-1019C,U+101A0,U+101D0-101FD,U+102E0-102FB,U+10E60-10E7E,U+1D2C0-1D2D3,U+1D2E0-1D37F,U+1F000-1F0FF,U+1F100-1F1AD,U+1F1E6-1F1FF,U+1F30D-1F30F,U+1F315,U+1F31C,U+1F31E,U+1F320-1F32C,U+1F336,U+1F378,U+1F37D,U+1F382,U+1F393-1F39F,U+1F3A7-1F3A8,U+1F3AC-1F3AF,U+1F3C2,U+1F3C4-1F3C6,U+1F3CA-1F3CE,U+1F3D4-1F3E0,U+1F3ED,U+1F3F1-1F3F3,U+1F3F5-1F3F7,U+1F408,U+1F415,U+1F41F,U+1F426,U+1F43F,U+1F441-1F442,U+1F444,U+1F446-1F449,U+1F44C-1F44E,U+1F453,U+1F46A,U+1F47D,U+1F4A3,U+1F4B0,U+1F4B3,U+1F4B9,U+1F4BB,U+1F4BF,U+1F4C8-1F4CB,U+1F4D6,U+1F4DA,U+1F4DF,U+1F4E3-1F4E6,U+1F4EA-1F4ED,U+1F4F7,U+1F4F9-1F4FB,U+1F4FD-1F4FE,U+1F503,U+1F507-1F50B,U+1F50D,U+1F512-1F513,U+1F53E-1F54A,U+1F54F-1F5FA,U+1F610,U+1F650-1F67F,U+1F687,U+1F68D,U+1F691,U+1F694,U+1F698,U+1F6AD,U+1F6B2,U+1F6B9-1F6BA,U+1F6BC,U+1F6C6-1F6CF,U+1F6D3-1F6D7,U+1F6E0-1F6EA,U+1F6F0-1F6F3,U+1F6F7-1F6FC,U+1F700-1F7FF,U+1F800-1F80B,U+1F810-1F847,U+1F850-1F859,U+1F860-1F887,U+1F890-1F8AD,U+1F8B0-1F8BB,U+1F8C0-1F8C1,U+1F900-1F90B,U+1F93B,U+1F946,U+1F984,U+1F996,U+1F9E9,U+1FA00-1FA6F,U+1FA70-1FA7C,U+1FA80-1FA89,U+1FA8F-1FAC6,U+1FACE-1FADC,U+1FADF-1FAE9,U+1FAF0-1FAF8,U+1FB00-1FBFF}@font-face{font-family:'Roboto';font-style:normal;font-weight:700;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/roboto/v49/KFO7CnqEu92Fr1ME7kSn66aGLdTylUAMa3OUBHMdazTgWw.woff2) format('woff2');unicode-range:U+0102-0103,U+0110-0111,U+0128-0129,U+0168-0169,U+01A0-01A1,U+01AF-01B0,U+0300-0301,U+0303-0304,U+0308-0309,U+0323,U+0329,U+1EA0-1EF9,U+20AB}@font-face{font-family:'Roboto';font-style:normal;font-weight:700;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/roboto/v49/KFO7CnqEu92Fr1ME7kSn66aGLdTylUAMa3KUBHMdazTgWw.woff2) format('woff2');unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF}@font-face{font-family:'Roboto';font-style:normal;font-weight:700;font-stretch:100%;font-display:swap;src:url(https://fonts.gstatic.com/s/roboto/v49/KFO7CnqEu92Fr1ME7kSn66aGLdTylUAMa3yUBHMdazQ.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}</style><style data-href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@300;400;500;700&display=swap">@font-face{font-family:'Roboto Slab';font-style:normal;font-weight:300;font-display:swap;src:url(https://fonts.gstatic.com/s/robotoslab/v36/BngbUXZYTXPIvIBgJJSb6s3BzlRRfKOFbvjo0oSWaw.woff) format('woff')}@font-face{font-family:'Roboto Slab';font-style:normal;font-weight:400;font-display:swap;src:url(https://fonts.gstatic.com/s/robotoslab/v36/BngbUXZYTXPIvIBgJJSb6s3BzlRRfKOFbvjojISWaw.woff) format('woff')}@font-face{font-family:'Roboto Slab';font-style:normal;font-weight:500;font-display:swap;src:url(https://fonts.gstatic.com/s/robotoslab/v36/BngbUXZYTXPIvIBgJJSb6s3BzlRRfKOFbvjovoSWaw.woff) format('woff')}@font-face{font-family:'Roboto Slab';font-style:normal;font-weight:700;font-display:swap;src:url(https://fonts.gstatic.com/s/robotoslab/v36/BngbUXZYTXPIvIBgJJSb6s3BzlRRfKOFbvjoa4OWaw.woff) format('woff')}@font-face{font-family:'Roboto Slab';font-style:normal;font-weight:300;font-display:swap;src:url(https://fonts.gstatic.com/s/robotoslab/v36/BngMUXZYTXPIvIBgJJSb6ufA5qWr4xCCQ_k.woff2) format('woff2');unicode-range:U+0460-052F,U+1C80-1C8A,U+20B4,U+2DE0-2DFF,U+A640-A69F,U+FE2E-FE2F}@font-face{font-family:'Roboto Slab';font-style:normal;font-weight:300;font-display:swap;src:url(https://fonts.gstatic.com/s/robotoslab/v36/BngMUXZYTXPIvIBgJJSb6ufJ5qWr4xCCQ_k.woff2) format('woff2');unicode-range:U+0301,U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116}@font-face{font-family:'Roboto Slab';font-style:normal;font-weight:300;font-display:swap;src:url(https://fonts.gstatic.com/s/robotoslab/v36/BngMUXZYTXPIvIBgJJSb6ufB5qWr4xCCQ_k.woff2) format('woff2');unicode-range:U+1F00-1FFF}@font-face{font-family:'Roboto Slab';font-style:normal;font-weight:300;font-display:swap;src:url(https://fonts.gstatic.com/s/robotoslab/v36/BngMUXZYTXPIvIBgJJSb6ufO5qWr4xCCQ_k.woff2) format('woff2');unicode-range:U+0370-0377,U+037A-037F,U+0384-038A,U+038C,U+038E-03A1,U+03A3-03FF}@font-face{font-family:'Roboto Slab';font-style:normal;font-weight:300;font-display:swap;src:url(https://fonts.gstatic.com/s/robotoslab/v36/BngMUXZYTXPIvIBgJJSb6ufC5qWr4xCCQ_k.woff2) format('woff2');unicode-range:U+0102-0103,U+0110-0111,U+0128-0129,U+0168-0169,U+01A0-01A1,U+01AF-01B0,U+0300-0301,U+0303-0304,U+0308-0309,U+0323,U+0329,U+1EA0-1EF9,U+20AB}@font-face{font-family:'Roboto Slab';font-style:normal;font-weight:300;font-display:swap;src:url(https://fonts.gstatic.com/s/robotoslab/v36/BngMUXZYTXPIvIBgJJSb6ufD5qWr4xCCQ_k.woff2) format('woff2');unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF}@font-face{font-family:'Roboto Slab';font-style:normal;font-weight:300;font-display:swap;src:url(https://fonts.gstatic.com/s/robotoslab/v36/BngMUXZYTXPIvIBgJJSb6ufN5qWr4xCC.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}@font-face{font-family:'Roboto Slab';font-style:normal;font-weight:400;font-display:swap;src:url(https://fonts.gstatic.com/s/robotoslab/v36/BngMUXZYTXPIvIBgJJSb6ufA5qWr4xCCQ_k.woff2) format('woff2');unicode-range:U+0460-052F,U+1C80-1C8A,U+20B4,U+2DE0-2DFF,U+A640-A69F,U+FE2E-FE2F}@font-face{font-family:'Roboto Slab';font-style:normal;font-weight:400;font-display:swap;src:url(https://fonts.gstatic.com/s/robotoslab/v36/BngMUXZYTXPIvIBgJJSb6ufJ5qWr4xCCQ_k.woff2) format('woff2');unicode-range:U+0301,U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116}@font-face{font-family:'Roboto Slab';font-style:normal;font-weight:400;font-display:swap;src:url(https://fonts.gstatic.com/s/robotoslab/v36/BngMUXZYTXPIvIBgJJSb6ufB5qWr4xCCQ_k.woff2) format('woff2');unicode-range:U+1F00-1FFF}@font-face{font-family:'Roboto Slab';font-style:normal;font-weight:400;font-display:swap;src:url(https://fonts.gstatic.com/s/robotoslab/v36/BngMUXZYTXPIvIBgJJSb6ufO5qWr4xCCQ_k.woff2) format('woff2');unicode-range:U+0370-0377,U+037A-037F,U+0384-038A,U+038C,U+038E-03A1,U+03A3-03FF}@font-face{font-family:'Roboto Slab';font-style:normal;font-weight:400;font-display:swap;src:url(https://fonts.gstatic.com/s/robotoslab/v36/BngMUXZYTXPIvIBgJJSb6ufC5qWr4xCCQ_k.woff2) format('woff2');unicode-range:U+0102-0103,U+0110-0111,U+0128-0129,U+0168-0169,U+01A0-01A1,U+01AF-01B0,U+0300-0301,U+0303-0304,U+0308-0309,U+0323,U+0329,U+1EA0-1EF9,U+20AB}@font-face{font-family:'Roboto Slab';font-style:normal;font-weight:400;font-display:swap;src:url(https://fonts.gstatic.com/s/robotoslab/v36/BngMUXZYTXPIvIBgJJSb6ufD5qWr4xCCQ_k.woff2) format('woff2');unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF}@font-face{font-family:'Roboto Slab';font-style:normal;font-weight:400;font-display:swap;src:url(https://fonts.gstatic.com/s/robotoslab/v36/BngMUXZYTXPIvIBgJJSb6ufN5qWr4xCC.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}@font-face{font-family:'Roboto Slab';font-style:normal;font-weight:500;font-display:swap;src:url(https://fonts.gstatic.com/s/robotoslab/v36/BngMUXZYTXPIvIBgJJSb6ufA5qWr4xCCQ_k.woff2) format('woff2');unicode-range:U+0460-052F,U+1C80-1C8A,U+20B4,U+2DE0-2DFF,U+A640-A69F,U+FE2E-FE2F}@font-face{font-family:'Roboto Slab';font-style:normal;font-weight:500;font-display:swap;src:url(https://fonts.gstatic.com/s/robotoslab/v36/BngMUXZYTXPIvIBgJJSb6ufJ5qWr4xCCQ_k.woff2) format('woff2');unicode-range:U+0301,U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116}@font-face{font-family:'Roboto Slab';font-style:normal;font-weight:500;font-display:swap;src:url(https://fonts.gstatic.com/s/robotoslab/v36/BngMUXZYTXPIvIBgJJSb6ufB5qWr4xCCQ_k.woff2) format('woff2');unicode-range:U+1F00-1FFF}@font-face{font-family:'Roboto Slab';font-style:normal;font-weight:500;font-display:swap;src:url(https://fonts.gstatic.com/s/robotoslab/v36/BngMUXZYTXPIvIBgJJSb6ufO5qWr4xCCQ_k.woff2) format('woff2');unicode-range:U+0370-0377,U+037A-037F,U+0384-038A,U+038C,U+038E-03A1,U+03A3-03FF}@font-face{font-family:'Roboto Slab';font-style:normal;font-weight:500;font-display:swap;src:url(https://fonts.gstatic.com/s/robotoslab/v36/BngMUXZYTXPIvIBgJJSb6ufC5qWr4xCCQ_k.woff2) format('woff2');unicode-range:U+0102-0103,U+0110-0111,U+0128-0129,U+0168-0169,U+01A0-01A1,U+01AF-01B0,U+0300-0301,U+0303-0304,U+0308-0309,U+0323,U+0329,U+1EA0-1EF9,U+20AB}@font-face{font-family:'Roboto Slab';font-style:normal;font-weight:500;font-display:swap;src:url(https://fonts.gstatic.com/s/robotoslab/v36/BngMUXZYTXPIvIBgJJSb6ufD5qWr4xCCQ_k.woff2) format('woff2');unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF}@font-face{font-family:'Roboto Slab';font-style:normal;font-weight:500;font-display:swap;src:url(https://fonts.gstatic.com/s/robotoslab/v36/BngMUXZYTXPIvIBgJJSb6ufN5qWr4xCC.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}@font-face{font-family:'Roboto Slab';font-style:normal;font-weight:700;font-display:swap;src:url(https://fonts.gstatic.com/s/robotoslab/v36/BngMUXZYTXPIvIBgJJSb6ufA5qWr4xCCQ_k.woff2) format('woff2');unicode-range:U+0460-052F,U+1C80-1C8A,U+20B4,U+2DE0-2DFF,U+A640-A69F,U+FE2E-FE2F}@font-face{font-family:'Roboto Slab';font-style:normal;font-weight:700;font-display:swap;src:url(https://fonts.gstatic.com/s/robotoslab/v36/BngMUXZYTXPIvIBgJJSb6ufJ5qWr4xCCQ_k.woff2) format('woff2');unicode-range:U+0301,U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116}@font-face{font-family:'Roboto Slab';font-style:normal;font-weight:700;font-display:swap;src:url(https://fonts.gstatic.com/s/robotoslab/v36/BngMUXZYTXPIvIBgJJSb6ufB5qWr4xCCQ_k.woff2) format('woff2');unicode-range:U+1F00-1FFF}@font-face{font-family:'Roboto Slab';font-style:normal;font-weight:700;font-display:swap;src:url(https://fonts.gstatic.com/s/robotoslab/v36/BngMUXZYTXPIvIBgJJSb6ufO5qWr4xCCQ_k.woff2) format('woff2');unicode-range:U+0370-0377,U+037A-037F,U+0384-038A,U+038C,U+038E-03A1,U+03A3-03FF}@font-face{font-family:'Roboto Slab';font-style:normal;font-weight:700;font-display:swap;src:url(https://fonts.gstatic.com/s/robotoslab/v36/BngMUXZYTXPIvIBgJJSb6ufC5qWr4xCCQ_k.woff2) format('woff2');unicode-range:U+0102-0103,U+0110-0111,U+0128-0129,U+0168-0169,U+01A0-01A1,U+01AF-01B0,U+0300-0301,U+0303-0304,U+0308-0309,U+0323,U+0329,U+1EA0-1EF9,U+20AB}@font-face{font-family:'Roboto Slab';font-style:normal;font-weight:700;font-display:swap;src:url(https://fonts.gstatic.com/s/robotoslab/v36/BngMUXZYTXPIvIBgJJSb6ufD5qWr4xCCQ_k.woff2) format('woff2');unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF}@font-face{font-family:'Roboto Slab';font-style:normal;font-weight:700;font-display:swap;src:url(https://fonts.gstatic.com/s/robotoslab/v36/BngMUXZYTXPIvIBgJJSb6ufN5qWr4xCC.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}</style></head><body><div id="__next"><div class="jss1"><header class="MuiPaper-root MuiAppBar-root MuiAppBar-positionFixed MuiAppBar-colorPrimary jss5 mui-fixed MuiPaper-elevation4"><div class="MuiToolbar-root MuiToolbar-regular MuiToolbar-gutters"><button class="MuiButtonBase-root MuiIconButton-root jss6 MuiIconButton-colorInherit MuiIconButton-edgeStart" tabindex="0" type="button" aria-label="open drawer"><span class="MuiIconButton-label"><svg class="MuiSvgIcon-root" focusable="false" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"></path></svg></span></button><div class="jss7"><div><img src="/l4b-static/Log4brains-logo-dark.png" alt="Log4brains logo" width="50" height="50"/></div><div><a class="MuiTypography-root MuiLink-root MuiLink-underlineNone jss8 MuiTypography-h6 MuiTypography-colorPrimary MuiTypography-noWrap" href="/">UPLC-CAPE</a><a class="MuiTypography-root MuiLink-root MuiLink-underlineNone jss8 MuiTypography-body2 MuiTypography-colorPrimary MuiTypography-noWrap" href="/">Architecture knowledge base</a></div></div><div class="jss2"></div><div class="jss3"><div class="MuiBackdrop-root jss9" aria-hidden="true" style="opacity:0;visibility:hidden"></div></div><div class="jss4"></div></div></header><nav class="jss12" aria-label="architecture decision records list"><div class="jss31"></div><div class="jss29"><div class="MuiDrawer-root MuiDrawer-docked"><div class="MuiPaper-root MuiDrawer-paper jss13 MuiDrawer-paperAnchorLeft MuiDrawer-paperAnchorDockedLeft MuiPaper-elevation0"><div class="jss14"><div class="MuiToolbar-root MuiToolbar-regular jss15 MuiToolbar-gutters"><div></div><a class="MuiButtonBase-root MuiIconButton-root MuiIconButton-colorInherit MuiIconButton-sizeSmall" tabindex="0" aria-disabled="false" aria-label="go to homepage" title="Architecture knowledge base of UPLC-CAPE" href="/"><span class="MuiIconButton-label"><img src="/l4b-static/Log4brains-logo.png" alt="Log4brains logo" width="40" height="40"/></span></a><button class="MuiButtonBase-root MuiIconButton-root MuiIconButton-colorInherit MuiIconButton-sizeSmall" tabindex="0" type="button" aria-label="close drawer" title="Close"><span class="MuiIconButton-label"><svg class="MuiSvgIcon-root MuiSvgIcon-fontSizeSmall" focusable="false" viewBox="0 0 24 24" aria-hidden="true"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"></path></svg></span></button></div><div class="jss18"><h6 class="MuiTypography-root jss19 MuiTypography-subtitle2">Decision log</h6><div class="MuiCircularProgress-root MuiCircularProgress-colorPrimary MuiCircularProgress-indeterminate" style="width:13px;height:13px;opacity:0;visibility:hidden" role="progressbar"><svg class="MuiCircularProgress-svg" viewBox="22 22 44 44"><circle class="MuiCircularProgress-circle MuiCircularProgress-circleIndeterminate" cx="44" cy="44" r="20.2" fill="none" stroke-width="3.6"></circle></svg></div></div><div class="MuiCircularProgress-root jss20 MuiCircularProgress-colorPrimary MuiCircularProgress-indeterminate" style="width:30px;height:30px" role="progressbar"><svg class="MuiCircularProgress-svg" viewBox="22 22 44 44"><circle class="MuiCircularProgress-circle MuiCircularProgress-circleIndeterminate" cx="44" cy="44" r="20.2" fill="none" stroke-width="3.6"></circle></svg></div><ul class="MuiList-root jss17 MuiList-padding"></ul></div></div></div></div></nav><div class="jss21"><div class="MuiToolbar-root MuiToolbar-regular MuiToolbar-gutters"></div><main class="jss22"><div class="jss71"><div class="jss72"></div><div class="jss73"><h3 class="MuiTypography-root MuiTypography-h3 MuiTypography-gutterBottom">Base/Open Mode System with Submission Slugs</h3><hr class="MuiDivider-root"/><div class="jss65 jss76"><div><div class="jss77"><p class="MuiTypography-root MuiTypography-body2" title="Publication date"><svg class="MuiSvgIcon-root jss78 MuiSvgIcon-fontSizeInherit" focusable="false" viewBox="0 0 24 24" aria-hidden="true"><path d="M17 12h-5v5h5v-5zM16 1v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-1V1h-2zm3 18H5V8h14v11z"></path></svg> <!-- -->Oct 6, 2025</p><div title="Status"><div class="MuiChip-root jss80 jss87 MuiChip-outlined MuiChip-sizeSmall"><span class="MuiChip-label MuiChip-labelSmall jss81">SUPERSEDED</span></div></div></div><p class="MuiTypography-root MuiTypography-body2" title="Author"><svg class="MuiSvgIcon-root jss78 MuiSvgIcon-fontSizeInherit" focusable="false" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"></path></svg> <!-- -->Yura Lazaryev</p><p class="MuiTypography-root MuiTypography-body2" title="Tags"><svg class="MuiSvgIcon-root jss78 MuiSvgIcon-fontSizeInherit" focusable="false" viewBox="0 0 24 24" aria-hidden="true"><path d="M17.63 5.84C17.27 5.33 16.67 5 16 5L5 5.01C3.9 5.01 3 5.9 3 7v10c0 1.1.9 1.99 2 1.99L16 19c.67 0 1.27-.33 1.63-.84L22 12l-4.37-6.16z"></path></svg> <span class="jss79">#benchmarking #submissions #evaluation-modes #compiler-comparison</span></p></div><div><div><div role="group" class="MuiButtonGroup-root"><button class="MuiButtonBase-root MuiButton-root MuiButton-outlined MuiButtonGroup-grouped MuiButtonGroup-groupedHorizontal MuiButtonGroup-groupedOutlined MuiButtonGroup-groupedOutlinedHorizontal MuiButtonGroup-groupedOutlined" tabindex="0" type="button" title="Copy link"><span class="MuiButton-label"><svg class="MuiSvgIcon-root" focusable="false" viewBox="0 0 24 24" aria-hidden="true"><svg stroke="currentColor" fill="none" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></svg></span></button><a class="MuiButtonBase-root MuiButton-root MuiButton-outlined MuiButtonGroup-grouped MuiButtonGroup-groupedHorizontal MuiButtonGroup-groupedOutlined MuiButtonGroup-groupedOutlinedHorizontal MuiButtonGroup-groupedOutlined" tabindex="0" aria-disabled="false" href="https://github.com/IntersectMBO/UPLC-CAPE/blob/master/doc/adr/20251006-baseopen-mode-system-with-submission-slugs.md" target="_blank" rel="noopener" title="View/edit on Github"><span class="MuiButton-label"><svg class="MuiSvgIcon-root" focusable="false" viewBox="0 0 24 24" aria-hidden="true"><svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M511.6 76.3C264.3 76.2 64 276.4 64 523.5 64 718.9 189.3 885 363.8 946c23.5 5.9 19.9-10.8 19.9-22.2v-77.5c-135.7 15.9-141.2-73.9-150.3-88.9C215 726 171.5 718 184.5 703c30.9-15.9 62.4 4 98.9 57.9 26.4 39.1 77.9 32.5 104 26 5.7-23.5 17.9-44.5 34.7-60.8-140.6-25.2-199.2-111-199.2-213 0-49.5 16.3-95 48.3-131.7-20.4-60.5 1.9-112.3 4.9-120 58.1-5.2 118.5 41.6 123.2 45.3 33-8.9 70.7-13.6 112.9-13.6 42.4 0 80.2 4.9 113.5 13.9 11.3-8.6 67.3-48.8 121.3-43.9 2.9 7.7 24.7 58.3 5.5 118 32.4 36.8 48.9 82.7 48.9 132.3 0 102.2-59 188.1-200 212.9a127.5 127.5 0 0 1 38.1 91v112.5c.8 9 0 17.9 15 17.9 177.1-59.7 304.6-227 304.6-424.1 0-247.2-200.4-447.3-447.5-447.3z"></path></svg></svg></span></a></div></div></div></div><div class="MuiPaper-root MuiAlert-root MuiAlert-standardWarning jss66 MuiPaper-elevation0" role="alert"><div class="MuiAlert-icon"><svg class="MuiSvgIcon-root MuiSvgIcon-fontSizeInherit" focusable="false" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5.99L19.53 19H4.47L12 5.99M12 2L1 21h22L12 2zm1 14h-2v2h2v-2zm0-6h-2v4h2v-4z"></path></svg></div><div class="MuiAlert-message">This ADR is <strong>superseded</strong> by <a class="MuiTypography-root MuiLink-root MuiLink-underlineNone MuiTypography-colorPrimary" href="/adr/20251009-scenario-based-approach-replacing-mode-system/">Scenario-Based Approach: Replacing Mode System with Dedicated Scenarios</a>.</div></div><div><div><p class="MuiTypography-root MuiTypography-body1 MuiTypography-paragraph">Technical Story: <a class="MuiTypography-root MuiLink-root MuiLink-underlineNone MuiTypography-colorPrimary" href="https://github.com/IntersectMBO/UPLC-CAPE/issues/59">Issue #59</a></p><blockquote><p class="MuiTypography-root MuiTypography-body1 MuiTypography-paragraph"><strong>Note</strong>: This ADR describes the base/open mode system that was implemented in PR #60 but subsequently replaced by a scenario-based approach (see superseding ADR). The mode system added unnecessary complexity; the scenario-based approach achieves the same goals more simply.</p></blockquote>
+<h2 class="MuiTypography-root jss88 MuiTypography-h4 MuiTypography-gutterBottom" id="context-and-problem-statement">Context and Problem Statement<a class="MuiTypography-root MuiLink-root MuiLink-underlineNone jss89 MuiTypography-colorPrimary" href="#context-and-problem-statement" title="Permanent link">¶</a></h2><p class="MuiTypography-root MuiTypography-body1 MuiTypography-paragraph">UPLC-CAPE users have two distinct benchmarking needs that are sometimes in conflict:</p><ol start="1"><li class="jss91"><span class="MuiTypography-root MuiTypography-body1"><p class="MuiTypography-root MuiTypography-body1 MuiTypography-paragraph"><strong>Compiler Comparison</strong> (Group A): Users want to compare compiler optimization effectiveness in isolation by having all submissions implement the <strong>same algorithm</strong>. This provides apples-to-apples comparison where performance differences reflect compiler capabilities rather than algorithmic choices.</p></span></li><li class="jss91"><span class="MuiTypography-root MuiTypography-body1"><p class="MuiTypography-root MuiTypography-body1 MuiTypography-paragraph"><strong>Real-World Competition</strong> (Group B): Users want submissions to showcase ecosystem capabilities using <strong>any optimizations or algorithms</strong> (memoization, metaprogramming, different algorithms). This reflects practical deployment strategies and compiler USPs.</p></span></li></ol><p class="MuiTypography-root MuiTypography-body1 MuiTypography-paragraph">Currently, the framework allows any implementation approach, but all submissions compete in a single pool. This makes it impossible to isolate compiler effectiveness from algorithmic choices, frustrating both user groups.</p><p class="MuiTypography-root MuiTypography-body1 MuiTypography-paragraph"><strong>Question</strong>: How can we support both pure compiler comparison and open optimization competition within the same framework?</p><h2 class="MuiTypography-root jss88 MuiTypography-h4 MuiTypography-gutterBottom" id="decision-drivers">Decision Drivers<a class="MuiTypography-root MuiLink-root MuiLink-underlineNone jss89 MuiTypography-colorPrimary" href="#decision-drivers" title="Permanent link">¶</a></h2><ul><li class="jss91"><span class="MuiTypography-root MuiTypography-body1">Must satisfy both user groups without forcing them into a single evaluation mode</span></li><li class="jss91"><span class="MuiTypography-root MuiTypography-body1">Should enable multiple optimization experiments per compiler/author</span></li><li class="jss91"><span class="MuiTypography-root MuiTypography-body1">Must maintain backward compatibility with existing submissions</span></li><li class="jss91"><span class="MuiTypography-root MuiTypography-body1">Should provide clear, self-documenting organization</span></li><li class="jss91"><span class="MuiTypography-root MuiTypography-body1">Must be intuitive for new users while supporting advanced workflows</span></li><li class="jss91"><span class="MuiTypography-root MuiTypography-body1">Should facilitate both academic research and practical developer guidance</span></li></ul><h2 class="MuiTypography-root jss88 MuiTypography-h4 MuiTypography-gutterBottom" id="considered-options">Considered Options<a class="MuiTypography-root MuiLink-root MuiLink-underlineNone jss89 MuiTypography-colorPrimary" href="#considered-options" title="Permanent link">¶</a></h2><ol start="1"><li class="jss91"><span class="MuiTypography-root MuiTypography-body1"><strong>Separate Scenario Types</strong> - Create duplicate scenarios (e.g., &quot;fibonacci-constrained&quot; vs &quot;fibonacci-open&quot;)</span></li><li class="jss91"><span class="MuiTypography-root MuiTypography-body1"><strong>Implementation Tracks</strong> - Add track/category system within scenarios</span></li><li class="jss91"><span class="MuiTypography-root MuiTypography-body1"><strong>Base/Open Mode System with Slugs</strong> - Two evaluation modes with flexible slug identifiers</span></li><li class="jss91"><span class="MuiTypography-root MuiTypography-body1"><strong>Tag-Based System</strong> - Use metadata tags for algorithmic constraints</span></li></ol><h2 class="MuiTypography-root jss88 MuiTypography-h4 MuiTypography-gutterBottom" id="decision-outcome">Decision Outcome<a class="MuiTypography-root MuiLink-root MuiLink-underlineNone jss89 MuiTypography-colorPrimary" href="#decision-outcome" title="Permanent link">¶</a></h2><p class="MuiTypography-root MuiTypography-body1 MuiTypography-paragraph">Chosen option: <strong>&quot;Base/Open Mode System with Slugs&quot;</strong>, because it:</p><ul><li class="jss91"><span class="MuiTypography-root MuiTypography-body1">Provides clear semantic distinction between evaluation contexts (&quot;base&quot; = prescribed algorithm, &quot;open&quot; = any optimization)</span></li><li class="jss91"><span class="MuiTypography-root MuiTypography-body1">Enables multiple experiments per compiler via descriptive slugs</span></li><li class="jss91"><span class="MuiTypography-root MuiTypography-body1">Maintains single scenario definition (no duplication)</span></li><li class="jss91"><span class="MuiTypography-root MuiTypography-body1">Scales to any number of optimization variants</span></li><li class="jss91"><span class="MuiTypography-root MuiTypography-body1">Is backward compatible (existing submissions → &quot;open_default&quot;)</span></li><li class="jss91"><span class="MuiTypography-root MuiTypography-body1">Uses familiar terminology (&quot;mode&quot; aligns with compilation contexts)</span></li></ul><h3 class="MuiTypography-root jss88 MuiTypography-h5 MuiTypography-gutterBottom" id="implementation-overview">Implementation Overview<a class="MuiTypography-root MuiLink-root MuiLink-underlineNone jss89 MuiTypography-colorPrimary" href="#implementation-overview" title="Permanent link">¶</a></h3><p class="MuiTypography-root MuiTypography-body1 MuiTypography-paragraph"><strong>Two Evaluation Modes:</strong></p><ol start="1"><li class="jss91"><span class="MuiTypography-root MuiTypography-body1"><p class="MuiTypography-root MuiTypography-body1 MuiTypography-paragraph"><strong>&quot;base&quot; mode</strong>: Implements exact algorithm prescribed in scenario specification</p><ul><li class="jss91"><span class="MuiTypography-root MuiTypography-body1">One submission per compiler/author</span></li><li class="jss91"><span class="MuiTypography-root MuiTypography-body1">Pure compiler comparison (apples-to-apples)</span></li><li class="jss91"><span class="MuiTypography-root MuiTypography-body1">No slug needed</span></li></ul></span></li><li class="jss91"><span class="MuiTypography-root MuiTypography-body1"><p class="MuiTypography-root MuiTypography-body1 MuiTypography-paragraph"><strong>&quot;open&quot; mode</strong>: Any algorithm or optimization technique allowed</p><ul><li class="jss91"><span class="MuiTypography-root MuiTypography-body1">Multiple submissions per compiler/author</span></li><li class="jss91"><span class="MuiTypography-root MuiTypography-body1">Optional slugs for specific optimizations: &quot;memoized&quot;, &quot;unrolled&quot;, &quot;pfix&quot;, etc.</span></li><li class="jss91"><span class="MuiTypography-root MuiTypography-body1">Slug can be omitted for generic/default implementation</span></li><li class="jss91"><span class="MuiTypography-root MuiTypography-body1">Real-world competition</span></li></ul></span></li></ol><p class="MuiTypography-root MuiTypography-body1 MuiTypography-paragraph"><strong>Directory Naming:</strong></p><pre><code class="jss90">submissions/{scenario}/{Compiler}_{Version}_{Author}_base/
+submissions/{scenario}/{Compiler}_{Version}_{Author}_open/            # generic/default
+submissions/{scenario}/{Compiler}_{Version}_{Author}_open_{slug}/    # specific optimization
+</code></pre>
+<p class="MuiTypography-root MuiTypography-body1 MuiTypography-paragraph"><strong>Slug Philosophy:</strong></p><ul><li class="jss91"><span class="MuiTypography-root MuiTypography-body1"><strong>Omit slug</strong>: For generic/default open mode implementations (most common)</span></li><li class="jss91"><span class="MuiTypography-root MuiTypography-body1"><strong>Add slug</strong>: Only when submitting specific optimization variants (e.g., &quot;memoized&quot;, &quot;tail-recursive&quot;)</span></li><li class="jss91"><span class="MuiTypography-root MuiTypography-body1"><strong>Benefit</strong>: Cleaner naming, slug only adds information when needed</span></li></ul><p class="MuiTypography-root MuiTypography-body1 MuiTypography-paragraph"><strong>CLI Default Behavior:</strong></p><ul><li class="jss91"><span class="MuiTypography-root MuiTypography-body1">Omitting <code class="jss90">--mode</code> shows <strong>all modes</strong> (most comprehensive view)</span></li><li class="jss91"><span class="MuiTypography-root MuiTypography-body1">Explicit <code class="jss90">--mode base</code> or <code class="jss90">--mode open</code> filters to specific mode</span></li></ul><h3 class="MuiTypography-root jss88 MuiTypography-h5 MuiTypography-gutterBottom" id="positive-consequences">Positive Consequences<a class="MuiTypography-root MuiLink-root MuiLink-underlineNone jss89 MuiTypography-colorPrimary" href="#positive-consequences" title="Permanent link">¶</a></h3><ul><li class="jss91"><span class="MuiTypography-root MuiTypography-body1">Both user groups get dedicated evaluation contexts without compromise</span></li><li class="jss91"><span class="MuiTypography-root MuiTypography-body1">Compiler authors can demonstrate both compliance (base) and innovation (open)</span></li><li class="jss91"><span class="MuiTypography-root MuiTypography-body1">Reports clearly separate algorithmic comparison from optimization competition</span></li><li class="jss91"><span class="MuiTypography-root MuiTypography-body1">Multiple optimization experiments trackable via descriptive slugs</span></li><li class="jss91"><span class="MuiTypography-root MuiTypography-body1">Framework becomes more valuable for academic research AND practical guidance</span></li><li class="jss91"><span class="MuiTypography-root MuiTypography-body1">Backward compatible: existing submissions continue working as &quot;open_default&quot;</span></li></ul><h3 class="MuiTypography-root jss88 MuiTypography-h5 MuiTypography-gutterBottom" id="negative-consequences">Negative Consequences<a class="MuiTypography-root MuiLink-root MuiLink-underlineNone jss89 MuiTypography-colorPrimary" href="#negative-consequences" title="Permanent link">¶</a></h3><ul><li class="jss91"><span class="MuiTypography-root MuiTypography-body1">Increased complexity in submission directory structure</span></li><li class="jss91"><span class="MuiTypography-root MuiTypography-body1">Base mode compliance relies on community review (honor system)</span></li><li class="jss91"><span class="MuiTypography-root MuiTypography-body1">Scenario authors must define base mode algorithm specification</span></li><li class="jss91"><span class="MuiTypography-root MuiTypography-body1">More options for users to understand (though with good defaults)</span></li></ul><h2 class="MuiTypography-root jss88 MuiTypography-h4 MuiTypography-gutterBottom" id="pros-and-cons-of-the-options">Pros and Cons of the Options<a class="MuiTypography-root MuiLink-root MuiLink-underlineNone jss89 MuiTypography-colorPrimary" href="#pros-and-cons-of-the-options" title="Permanent link">¶</a></h2><h3 class="MuiTypography-root jss88 MuiTypography-h5 MuiTypography-gutterBottom" id="option-1-separate-scenario-types">Option 1: Separate Scenario Types<a class="MuiTypography-root MuiLink-root MuiLink-underlineNone jss89 MuiTypography-colorPrimary" href="#option-1-separate-scenario-types" title="Permanent link">¶</a></h3><p class="MuiTypography-root MuiTypography-body1 MuiTypography-paragraph">Create duplicate scenarios (e.g., &quot;fibonacci-constrained&quot; vs &quot;fibonacci-open&quot;)</p><ul><li class="jss91"><span class="MuiTypography-root MuiTypography-body1">Good, because conceptually simple (one scenario = one evaluation mode)</span></li><li class="jss91"><span class="MuiTypography-root MuiTypography-body1">Good, because no changes to existing submission structure</span></li><li class="jss91"><span class="MuiTypography-root MuiTypography-body1">Bad, because duplicates scenario specifications (maintenance burden)</span></li><li class="jss91"><span class="MuiTypography-root MuiTypography-body1">Bad, because fragments community efforts across duplicate scenarios</span></li><li class="jss91"><span class="MuiTypography-root MuiTypography-body1">Bad, because doesn&#x27;t scale to multiple optimization variants</span></li></ul><h3 class="MuiTypography-root jss88 MuiTypography-h5 MuiTypography-gutterBottom" id="option-2-implementation-tracks">Option 2: Implementation Tracks<a class="MuiTypography-root MuiLink-root MuiLink-underlineNone jss89 MuiTypography-colorPrimary" href="#option-2-implementation-tracks" title="Permanent link">¶</a></h3><p class="MuiTypography-root MuiTypography-body1 MuiTypography-paragraph">Add track/category system within scenarios</p><ul><li class="jss91"><span class="MuiTypography-root MuiTypography-body1">Good, because keeps scenarios unified</span></li><li class="jss91"><span class="MuiTypography-root MuiTypography-body1">Good, because supports multiple tracks per scenario</span></li><li class="jss91"><span class="MuiTypography-root MuiTypography-body1">Bad, because &quot;track&quot; terminology less clear than &quot;mode&quot;</span></li><li class="jss91"><span class="MuiTypography-root MuiTypography-body1">Bad, because doesn&#x27;t directly convey algorithmic constraint concept</span></li><li class="jss91"><span class="MuiTypography-root MuiTypography-body1">Bad, because requires additional slug system for variants anyway</span></li></ul><h3 class="MuiTypography-root jss88 MuiTypography-h5 MuiTypography-gutterBottom" id="option-3-baseopen-mode-system-with-slugs-chosen">Option 3: Base/Open Mode System with Slugs (CHOSEN)<a class="MuiTypography-root MuiLink-root MuiLink-underlineNone jss89 MuiTypography-colorPrimary" href="#option-3-baseopen-mode-system-with-slugs-chosen" title="Permanent link">¶</a></h3><p class="MuiTypography-root MuiTypography-body1 MuiTypography-paragraph">Two evaluation modes with flexible slug system</p><ul><li class="jss91"><span class="MuiTypography-root MuiTypography-body1">Good, because clear semantic distinction (&quot;base&quot; = prescribed, &quot;open&quot; = free)</span></li><li class="jss91"><span class="MuiTypography-root MuiTypography-body1">Good, because slug system enables unlimited optimization variants</span></li><li class="jss91"><span class="MuiTypography-root MuiTypography-body1">Good, because &quot;mode&quot; terminology familiar from compilation contexts</span></li><li class="jss91"><span class="MuiTypography-root MuiTypography-body1">Good, because backward compatible</span></li><li class="jss91"><span class="MuiTypography-root MuiTypography-body1">Good, because self-documenting (slug describes optimization)</span></li><li class="jss91"><span class="MuiTypography-root MuiTypography-body1">Good, because comprehensive default (omitting --mode shows all)</span></li><li class="jss91"><span class="MuiTypography-root MuiTypography-body1">Bad, because base mode compliance relies on community review</span></li><li class="jss91"><span class="MuiTypography-root MuiTypography-body1">Bad, because adds complexity to directory naming</span></li></ul><h3 class="MuiTypography-root jss88 MuiTypography-h5 MuiTypography-gutterBottom" id="option-4-tag-based-system">Option 4: Tag-Based System<a class="MuiTypography-root MuiLink-root MuiLink-underlineNone jss89 MuiTypography-colorPrimary" href="#option-4-tag-based-system" title="Permanent link">¶</a></h3><p class="MuiTypography-root MuiTypography-body1 MuiTypography-paragraph">Use metadata tags for algorithmic constraints</p><ul><li class="jss91"><span class="MuiTypography-root MuiTypography-body1">Good, because flexible tagging system</span></li><li class="jss91"><span class="MuiTypography-root MuiTypography-body1">Good, because no directory structure changes</span></li><li class="jss91"><span class="MuiTypography-root MuiTypography-body1">Bad, because less discoverable (hidden in metadata)</span></li><li class="jss91"><span class="MuiTypography-root MuiTypography-body1">Bad, because tags less structured than explicit modes</span></li><li class="jss91"><span class="MuiTypography-root MuiTypography-body1">Bad, because unclear semantics (what tags mean what?)</span></li><li class="jss91"><span class="MuiTypography-root MuiTypography-body1">Bad, because makes filtering and reporting more complex</span></li></ul><h2 class="MuiTypography-root jss88 MuiTypography-h4 MuiTypography-gutterBottom" id="implementation-details">Implementation Details<a class="MuiTypography-root MuiLink-root MuiLink-underlineNone jss89 MuiTypography-colorPrimary" href="#implementation-details" title="Permanent link">¶</a></h2><h3 class="MuiTypography-root jss88 MuiTypography-h5 MuiTypography-gutterBottom" id="scenario-definition-enhancement">Scenario Definition Enhancement<a class="MuiTypography-root MuiLink-root MuiLink-underlineNone jss89 MuiTypography-colorPrimary" href="#scenario-definition-enhancement" title="Permanent link">¶</a></h3><p class="MuiTypography-root MuiTypography-body1 MuiTypography-paragraph">Scenarios gain optional base mode algorithm specification:</p><pre><code class="jss90">## Base Mode Algorithm
+
+All &quot;base&quot; mode submissions MUST implement this exact algorithm:
+
+\`\`\`haskell fibonacci :: Integer -&gt; Integer fibonacci n | n &lt;= 1 = n | otherwise = fibonacci (n - 1) + fibonacci (n - 2) \`\`\`
+
+**Requirements:**
+
+- Naive recursive implementation (no memoization)
+- No loop-based iteration
+- Direct translation of mathematical definition
+</code></pre>
+<h3 class="MuiTypography-root jss88 MuiTypography-h5 MuiTypography-gutterBottom" id="metadata-schema-addition">Metadata Schema Addition<a class="MuiTypography-root MuiLink-root MuiLink-underlineNone jss89 MuiTypography-colorPrimary" href="#metadata-schema-addition" title="Permanent link">¶</a></h3><pre><code class="jss90">{
+  &quot;submission&quot;: {
+    &quot;mode&quot;: &quot;open&quot;, // Required: &quot;base&quot; or &quot;open&quot;
+    &quot;slug&quot;: &quot;memoized&quot;, // Required for open, omitted for base
+    &quot;implementation_notes&quot;: &quot;...&quot;
+  }
+}
+</code></pre>
+<h3 class="MuiTypography-root jss88 MuiTypography-h5 MuiTypography-gutterBottom" id="cli-enhancements">CLI Enhancements<a class="MuiTypography-root MuiLink-root MuiLink-underlineNone jss89 MuiTypography-colorPrimary" href="#cli-enhancements" title="Permanent link">¶</a></h3><pre><code class="jss90"># Create submissions
+cape submission new fibonacci Compiler 1.0 author --mode base
+cape submission new fibonacci Compiler 1.0 author --mode open --slug memoized
+
+# List submissions (default: all modes)
+cape submission list fibonacci
+cape submission list fibonacci --mode base
+
+# Generate reports (default: all modes)
+cape submission report fibonacci
+cape submission report fibonacci --mode base
+</code></pre>
+<h3 class="MuiTypography-root jss88 MuiTypography-h5 MuiTypography-gutterBottom" id="verification-strategy">Verification Strategy<a class="MuiTypography-root MuiLink-root MuiLink-underlineNone jss89 MuiTypography-colorPrimary" href="#verification-strategy" title="Permanent link">¶</a></h3><p class="MuiTypography-root MuiTypography-body1 MuiTypography-paragraph"><strong>Base Mode</strong>: Community review during PR process</p><ul><li class="jss91"><span class="MuiTypography-root MuiTypography-body1">Submission README explains algorithm compliance</span></li><li class="jss91"><span class="MuiTypography-root MuiTypography-body1">Reviewers verify against scenario specification</span></li><li class="jss91"><span class="MuiTypography-root MuiTypography-body1">Honor system with clear guidelines</span></li></ul><p class="MuiTypography-root MuiTypography-body1 MuiTypography-paragraph"><strong>Open Mode</strong>: Existing correctness verification only</p><ul><li class="jss91"><span class="MuiTypography-root MuiTypography-body1">No algorithmic constraints</span></li><li class="jss91"><span class="MuiTypography-root MuiTypography-body1">Slug for identification/documentation only</span></li></ul><h2 class="MuiTypography-root jss88 MuiTypography-h4 MuiTypography-gutterBottom" id="applicability">Applicability<a class="MuiTypography-root MuiLink-root MuiLink-underlineNone jss89 MuiTypography-colorPrimary" href="#applicability" title="Permanent link">¶</a></h2><p class="MuiTypography-root MuiTypography-body1 MuiTypography-paragraph"><strong>Synthetic Scenarios</strong> (fibonacci, factorial):</p><ul><li class="jss91"><span class="MuiTypography-root MuiTypography-body1">Both modes applicable</span></li><li class="jss91"><span class="MuiTypography-root MuiTypography-body1">Clear algorithmic prescriptions for base mode</span></li><li class="jss91"><span class="MuiTypography-root MuiTypography-body1">Room for optimization exploration in open mode</span></li></ul><p class="MuiTypography-root MuiTypography-body1 MuiTypography-paragraph"><strong>Real-world Scenarios</strong> (two-party-escrow):</p><ul><li class="jss91"><span class="MuiTypography-root MuiTypography-body1">Typically only open mode</span></li><li class="jss91"><span class="MuiTypography-root MuiTypography-body1">Complex validators lack clear &quot;base&quot; algorithm</span></li><li class="jss91"><span class="MuiTypography-root MuiTypography-body1">Focus on practical deployment strategies</span></li></ul><p class="MuiTypography-root MuiTypography-body1 MuiTypography-paragraph">Scenarios can optionally define base mode. If undefined, only open mode available.</p><h2 class="MuiTypography-root jss88 MuiTypography-h4 MuiTypography-gutterBottom" id="links">Links<a class="MuiTypography-root MuiLink-root MuiLink-underlineNone jss89 MuiTypography-colorPrimary" href="#links" title="Permanent link">¶</a></h2><ul><li class="jss91"><span class="MuiTypography-root MuiTypography-body1"><a class="MuiTypography-root MuiLink-root MuiLink-underlineNone MuiTypography-colorPrimary" href="https://github.com/IntersectMBO/UPLC-CAPE/issues/59">GitHub Issue #59</a> - Full specification and implementation plan</span></li><li class="jss91"><span class="MuiTypography-root MuiTypography-body1">Related ADR: <a class="MuiTypography-root MuiLink-root MuiLink-underlineNone jss94 MuiTypography-colorPrimary" href="/adr/0003-use-multi-view-approach-for-benchmark-scenarios/">Multi-View Approach for Benchmark Scenario Specification</a></span></li></ul></div></div><hr class="MuiDivider-root jss67"/><nav class="jss68"><div></div><div class="jss69"><p class="MuiTypography-root jss70 MuiTypography-body1">Last edited by <!-- -->Yura Lazaryev</p><p class="MuiTypography-root jss70 MuiTypography-body1">on <!-- -->Oct 24, 2025 9:04 AM</p></div><div></div></nav></div><div class="jss74 jss75"></div></div></main><footer class="jss23"><div class="jss2"></div><div class="jss3 jss26"><p class="MuiTypography-root jss24 MuiTypography-body1">Powered by<!-- --> <a class="MuiTypography-root MuiLink-root MuiLink-underlineNone jss25 MuiTypography-colorPrimary" href="https://github.com/thomvaill/log4brains" target="_blank" rel="noopener">Log4brains</a> <span style="font-size:0.8em">(v1.1.0)</span></p></div><div class="jss4"></div></footer></div></div></div><script id="__NEXT_DATA__" type="application/json">{"props":{"pageProps":{"projectName":"UPLC-CAPE","currentAdr":{"slug":"20251006-baseopen-mode-system-with-submission-slugs","package":null,"title":"Base/Open Mode System with Submission Slugs","status":"superseded","supersededBy":{"slug":"20251009-scenario-based-approach-replacing-mode-system","package":null,"title":"Scenario-Based Approach: Replacing Mode System with Dedicated Scenarios","status":"accepted","creationDate":"2025-10-09T14:44:46.000Z","publicationDate":"2025-10-09T21:59:59.000Z"},"tags":["benchmarking","submissions","evaluation-modes","compiler-comparison"],"deciders":[],"body":{"enhancedMdx":"\nTechnical Story: [Issue #59](https://github.com/IntersectMBO/UPLC-CAPE/issues/59)\n\n\u003e **Note**: This ADR describes the base/open mode system that was implemented in PR #60 but subsequently replaced by a scenario-based approach (see superseding ADR). The mode system added unnecessary complexity; the scenario-based approach achieves the same goals more simply.\n\n## Context and Problem Statement\n\nUPLC-CAPE users have two distinct benchmarking needs that are sometimes in conflict:\n\n1. **Compiler Comparison** (Group A): Users want to compare compiler optimization effectiveness in isolation by having all submissions implement the **same algorithm**. This provides apples-to-apples comparison where performance differences reflect compiler capabilities rather than algorithmic choices.\n\n2. **Real-World Competition** (Group B): Users want submissions to showcase ecosystem capabilities using **any optimizations or algorithms** (memoization, metaprogramming, different algorithms). This reflects practical deployment strategies and compiler USPs.\n\nCurrently, the framework allows any implementation approach, but all submissions compete in a single pool. This makes it impossible to isolate compiler effectiveness from algorithmic choices, frustrating both user groups.\n\n**Question**: How can we support both pure compiler comparison and open optimization competition within the same framework?\n\n## Decision Drivers\n\n- Must satisfy both user groups without forcing them into a single evaluation mode\n- Should enable multiple optimization experiments per compiler/author\n- Must maintain backward compatibility with existing submissions\n- Should provide clear, self-documenting organization\n- Must be intuitive for new users while supporting advanced workflows\n- Should facilitate both academic research and practical developer guidance\n\n## Considered Options\n\n1. **Separate Scenario Types** - Create duplicate scenarios (e.g., \"fibonacci-constrained\" vs \"fibonacci-open\")\n2. **Implementation Tracks** - Add track/category system within scenarios\n3. **Base/Open Mode System with Slugs** - Two evaluation modes with flexible slug identifiers\n4. **Tag-Based System** - Use metadata tags for algorithmic constraints\n\n## Decision Outcome\n\nChosen option: **\"Base/Open Mode System with Slugs\"**, because it:\n\n- Provides clear semantic distinction between evaluation contexts (\"base\" = prescribed algorithm, \"open\" = any optimization)\n- Enables multiple experiments per compiler via descriptive slugs\n- Maintains single scenario definition (no duplication)\n- Scales to any number of optimization variants\n- Is backward compatible (existing submissions → \"open_default\")\n- Uses familiar terminology (\"mode\" aligns with compilation contexts)\n\n### Implementation Overview\n\n**Two Evaluation Modes:**\n\n1. **\"base\" mode**: Implements exact algorithm prescribed in scenario specification\n   - One submission per compiler/author\n   - Pure compiler comparison (apples-to-apples)\n   - No slug needed\n\n2. **\"open\" mode**: Any algorithm or optimization technique allowed\n   - Multiple submissions per compiler/author\n   - Optional slugs for specific optimizations: \"memoized\", \"unrolled\", \"pfix\", etc.\n   - Slug can be omitted for generic/default implementation\n   - Real-world competition\n\n**Directory Naming:**\n\n```\nsubmissions/{scenario}/{Compiler}_{Version}_{Author}_base/\nsubmissions/{scenario}/{Compiler}_{Version}_{Author}_open/            # generic/default\nsubmissions/{scenario}/{Compiler}_{Version}_{Author}_open_{slug}/    # specific optimization\n```\n\n**Slug Philosophy:**\n\n- **Omit slug**: For generic/default open mode implementations (most common)\n- **Add slug**: Only when submitting specific optimization variants (e.g., \"memoized\", \"tail-recursive\")\n- **Benefit**: Cleaner naming, slug only adds information when needed\n\n**CLI Default Behavior:**\n\n- Omitting `--mode` shows **all modes** (most comprehensive view)\n- Explicit `--mode base` or `--mode open` filters to specific mode\n\n### Positive Consequences\n\n- Both user groups get dedicated evaluation contexts without compromise\n- Compiler authors can demonstrate both compliance (base) and innovation (open)\n- Reports clearly separate algorithmic comparison from optimization competition\n- Multiple optimization experiments trackable via descriptive slugs\n- Framework becomes more valuable for academic research AND practical guidance\n- Backward compatible: existing submissions continue working as \"open_default\"\n\n### Negative Consequences\n\n- Increased complexity in submission directory structure\n- Base mode compliance relies on community review (honor system)\n- Scenario authors must define base mode algorithm specification\n- More options for users to understand (though with good defaults)\n\n## Pros and Cons of the Options\n\n### Option 1: Separate Scenario Types\n\nCreate duplicate scenarios (e.g., \"fibonacci-constrained\" vs \"fibonacci-open\")\n\n- Good, because conceptually simple (one scenario = one evaluation mode)\n- Good, because no changes to existing submission structure\n- Bad, because duplicates scenario specifications (maintenance burden)\n- Bad, because fragments community efforts across duplicate scenarios\n- Bad, because doesn't scale to multiple optimization variants\n\n### Option 2: Implementation Tracks\n\nAdd track/category system within scenarios\n\n- Good, because keeps scenarios unified\n- Good, because supports multiple tracks per scenario\n- Bad, because \"track\" terminology less clear than \"mode\"\n- Bad, because doesn't directly convey algorithmic constraint concept\n- Bad, because requires additional slug system for variants anyway\n\n### Option 3: Base/Open Mode System with Slugs (CHOSEN)\n\nTwo evaluation modes with flexible slug system\n\n- Good, because clear semantic distinction (\"base\" = prescribed, \"open\" = free)\n- Good, because slug system enables unlimited optimization variants\n- Good, because \"mode\" terminology familiar from compilation contexts\n- Good, because backward compatible\n- Good, because self-documenting (slug describes optimization)\n- Good, because comprehensive default (omitting --mode shows all)\n- Bad, because base mode compliance relies on community review\n- Bad, because adds complexity to directory naming\n\n### Option 4: Tag-Based System\n\nUse metadata tags for algorithmic constraints\n\n- Good, because flexible tagging system\n- Good, because no directory structure changes\n- Bad, because less discoverable (hidden in metadata)\n- Bad, because tags less structured than explicit modes\n- Bad, because unclear semantics (what tags mean what?)\n- Bad, because makes filtering and reporting more complex\n\n## Implementation Details\n\n### Scenario Definition Enhancement\n\nScenarios gain optional base mode algorithm specification:\n\n```markdown\n## Base Mode Algorithm\n\nAll \"base\" mode submissions MUST implement this exact algorithm:\n\n\\`\\`\\`haskell fibonacci :: Integer -\u003e Integer fibonacci n | n \u003c= 1 = n | otherwise = fibonacci (n - 1) + fibonacci (n - 2) \\`\\`\\`\n\n**Requirements:**\n\n- Naive recursive implementation (no memoization)\n- No loop-based iteration\n- Direct translation of mathematical definition\n```\n\n### Metadata Schema Addition\n\n```json\n{\n  \"submission\": {\n    \"mode\": \"open\", // Required: \"base\" or \"open\"\n    \"slug\": \"memoized\", // Required for open, omitted for base\n    \"implementation_notes\": \"...\"\n  }\n}\n```\n\n### CLI Enhancements\n\n```bash\n# Create submissions\ncape submission new fibonacci Compiler 1.0 author --mode base\ncape submission new fibonacci Compiler 1.0 author --mode open --slug memoized\n\n# List submissions (default: all modes)\ncape submission list fibonacci\ncape submission list fibonacci --mode base\n\n# Generate reports (default: all modes)\ncape submission report fibonacci\ncape submission report fibonacci --mode base\n```\n\n### Verification Strategy\n\n**Base Mode**: Community review during PR process\n\n- Submission README explains algorithm compliance\n- Reviewers verify against scenario specification\n- Honor system with clear guidelines\n\n**Open Mode**: Existing correctness verification only\n\n- No algorithmic constraints\n- Slug for identification/documentation only\n\n## Applicability\n\n**Synthetic Scenarios** (fibonacci, factorial):\n\n- Both modes applicable\n- Clear algorithmic prescriptions for base mode\n- Room for optimization exploration in open mode\n\n**Real-world Scenarios** (two-party-escrow):\n\n- Typically only open mode\n- Complex validators lack clear \"base\" algorithm\n- Focus on practical deployment strategies\n\nScenarios can optionally define base mode. If undefined, only open mode available.\n\n## Links\n\n- [GitHub Issue #59](https://github.com/IntersectMBO/UPLC-CAPE/issues/59) - Full specification and implementation plan\n- Related ADR: \u003cAdrLink slug=\"0003-use-multi-view-approach-for-benchmark-scenarios\" status=\"accepted\" title=\"Use Multi-View Approach for Benchmark Scenario Specification\" customLabel=\"Multi-View Approach for Benchmark Scenario Specification\" /\u003e\n"},"creationDate":"2025-10-06T15:04:40.000Z","lastEditDate":"2025-10-24T09:04:39.000Z","lastEditAuthor":"Yura Lazaryev","publicationDate":"2025-10-06T21:59:59.000Z","file":{"relativePath":"doc/adr/20251006-baseopen-mode-system-with-submission-slugs.md","absolutePath":"/home/runner/work/UPLC-CAPE/UPLC-CAPE/doc/adr/20251006-baseopen-mode-system-with-submission-slugs.md"},"repository":{"provider":"github","viewUrl":"https://github.com/IntersectMBO/UPLC-CAPE/blob/master/doc/adr/20251006-baseopen-mode-system-with-submission-slugs.md"}},"l4bVersion":"1.1.0"},"__N_SSG":true},"page":"/adr/[...slug]","query":{"slug":["20251006-baseopen-mode-system-with-submission-slugs"]},"buildId":"YBGxmyWSY-GPIi7QQi-7X","runtimeConfig":{},"isFallback":false,"gsp":true}</script><script nomodule="" src="/_next/static/chunks/polyfills-694d8cb7f00ed89b8e7e.js"></script><script src="/_next/static/chunks/webpack-50bee04d1dc61f8adf5b.js" async=""></script><script src="/_next/static/chunks/framework.b33896d72531466bcf17.js" async=""></script><script src="/_next/static/chunks/commons.c0189e8448b4d4bdffa1.js" async=""></script><script src="/_next/static/chunks/main-d0427bd7c9d85889a938.js" async=""></script><script src="/_next/static/chunks/a3e17150ead73d62fba7a33a50672ae3f72841a5.6fca93b3d6d0634b51bf.js" async=""></script><script src="/_next/static/chunks/pages/_app-796f4c8086e869be38c4.js" async=""></script><script src="/_next/static/chunks/364bddfb.28847971f0e02b167249.js" async=""></script><script src="/_next/static/chunks/3da477db.e49cd5277ed36ace32c1.js" async=""></script><script src="/_next/static/chunks/3b07cb59.4f0af644828e83722dc4.js" async=""></script><script src="/_next/static/chunks/b4e962f4.986fa92c462dd01807e1.js" async=""></script><script src="/_next/static/chunks/45d2d314fc8da5e3d79852782e4a432ad4da6771.d0cee093fe28a3e30dcc.js" async=""></script><script src="/_next/static/chunks/pages/adr/%5B...slug%5D-9f67d10c628dcc0d3aa2.js" async=""></script><script src="/_next/static/YBGxmyWSY-GPIi7QQi-7X/_buildManifest.js" async=""></script><script src="/_next/static/YBGxmyWSY-GPIi7QQi-7X/_ssgManifest.js" async=""></script></body></html>
