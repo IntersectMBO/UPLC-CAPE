@@ -735,3 +735,217 @@ For scenarios with multiple test cases:
 - " - Reference script heavy usage → smaller size saves on reference fees"
 
 **Transition:** "Let's look at what scenarios are currently available in CAPE..."
+
+=== Slide 13 ===================================================================
+
+## Available Benchmarks: Two Key Dimensions
+
+**Dimension 1: Algorithm Constraint**
+
+- **Fixed Algorithm** (`*_naive_recursion`)
+  - Locked implementation algorithm
+  - Examples: `fibonacci_naive_recursion`, `factorial_naive_recursion`
+  - **Purpose**: Isolate compiler optimization quality
+- **Open Algorithm** (`fibonacci`, `factorial`)
+  - Flexible implementation and optimizations
+  - **Purpose**: Demonstrate E2E optimizations as deployed on mainnet
+  - Submissions **converge on optimal implementation** → showcases best practices
+
+**Dimension 2: Complexity**
+
+- **Synthetic Scenarios** (`fibonacci`, `factorial`, `sum`, `list-ops`)
+  - Simple, avoid ScriptContext complexity
+  - Easier to contribute, faster to implement
+  - Less representative of real-world usage
+- **Real-World Scenarios** (validators with multi-stage interactions)
+  - Complex, use plutus-ledger API
+  - Multi-transaction validator interactions
+  - More educational and representative of production use
+
+**Growing Set, Open for Contributions**
+
+- Current scenarios are starting points
+- We're actively expanding the set
+- Community contributions welcome for both types
+
+--- Speaker Notes: -------------------------------------------------------------
+
+**Key emphasis:**
+
+- Two orthogonal dimensions create a matrix of scenario types
+- Each type serves a different purpose
+- Open scenarios naturally converge on optimal solutions across compilers
+
+**Dimension 1: Algorithm Constraint**
+
+**Fixed Algorithm:**
+
+- "These scenarios lock the algorithm everyone must use"
+- "Example: fibonacci_naive_recursion forces naive recursive implementation"
+- "All compilers implement the same approach → performance differences come purely from optimizer quality"
+- "This isolates compiler optimization effectiveness"
+- "You're testing: 'How good is your inlining? Your dead code elimination? Your constant folding?'"
+
+**Open Algorithm:**
+
+- "These allow any implementation approach"
+- "Fibonacci can be implemented naively, iteratively, with memoization, closed-form, etc."
+- "Authors compete and explore different strategies"
+- "Over time, submissions converge on the optimal approach"
+- "This convergence is valuable: it demonstrates best practices across the ecosystem"
+- "Example: 'Here's how the best Plinth implementation looks, and here's the best Aiken implementation'"
+
+**Dimension 2: Complexity**
+
+**Synthetic Scenarios:**
+
+- "Simple algorithmic problems: fibonacci, factorial, sum, list operations"
+- "No ScriptContext, no datum/redeemer complexity"
+- "Easy to understand, quick to implement"
+- "Great for getting started with CAPE"
+- "But: not representative of real validators you'd deploy on mainnet"
+
+**Real-World Scenarios:**
+
+- "Actual validator patterns: vesting, escrow, multi-sig, token policies"
+- "Multi-stage interactions: setup transaction → validator execution → cleanup"
+- "Use plutus-ledger API, deal with ScriptContext"
+- "More complex to contribute, but much more educational"
+- "Representative of what you'd actually deploy"
+- "These show real-world optimization techniques"
+
+**The convergence phenomenon:**
+
+- "Open scenarios have a fascinating property"
+- "Different compilers, different authors, same problem"
+- "Over time: 'This is the best way to implement X in UPLC'"
+- "Cross-pollination: techniques from one compiler inspire optimizations in another"
+- "The benchmark becomes a repository of best practices"
+
+**Growing set:**
+
+- "We're actively expanding the scenario set"
+- "Planning to add more real-world scenarios"
+- "Community contributions welcome - both synthetic and real-world"
+- "If you have a validator pattern worth benchmarking, contribute it!"
+
+**Matrix visualization (optional):**
+
+```
+            Synthetic       Real-World
+Fixed       fibonacci_naive   [future: vesting_naive]
+            factorial_naive
+
+Open        fibonacci         [future: linear_vesting]
+            factorial         [future: two_party_escrow]
+            sum
+```
+
+**Transition:** "Now that you've seen what's available, let's talk about how you can create your own submission..."
+
+=== Slide 14 ===================================================================
+
+## Creating Submissions: Step-by-Step
+
+**The Workflow**
+
+1. **Understand the scenario** - Read spec, review test cases
+2. **Create your project** - Separate GitHub repo or local project
+   - Sources must be publishable for analysis, reproduction, forking
+3. **Complete & commit** - Get stable immutable reference (commit hash)
+4. **Initialize submission** - `cape submission new <scenario> <compiler> <version> <handle>`
+5. **Fill in metadata** - References to source project, compiler details
+6. **Write README** - Examples, build instructions, optimization notes
+7. **Include UPLC file** - `<scenario>.uplc` compiled output
+8. **Submit PR** - For community review
+9. **After merge** - CI automatically measures metrics and generates reports
+
+**Common Gotcha: UPLC Names**
+
+- Ensure your UPLC file follows naming conventions
+- Check test compatibility before submitting
+
+--- Speaker Notes: -------------------------------------------------------------
+
+**Key emphasis:**
+
+- Submission is not just UPLC - it's sources, documentation, reproducibility
+- The project lives outside CAPE repo, referenced by commit hash
+- Community review is part of the process
+
+**Workflow walkthrough:**
+
+**1. Understand the scenario:**
+
+- "Start by reading the scenario spec in `scenarios/<name>/<name>.md`"
+- "Review `cape-tests.json` to see what test cases your implementation must handle"
+- "Understand expected behavior: success cases, failure cases, edge cases"
+
+**2. Create your project:**
+
+- "This is YOUR project - it lives in its own repo or local directory"
+- "Could be a GitHub repo: `github.com/yourname/cape-fibonacci-plinth`"
+- "Or a local project you'll publish later"
+- "Why separate? So others can fork it, improve it, learn from it"
+- "Sources are critical - transparency and reproducibility"
+
+**3. Complete & commit:**
+
+- "Once your implementation works, commit it"
+- "Get a stable commit hash - this becomes your immutable reference"
+- "Example: `abc123def456` - this exact version produced these metrics"
+
+**4. Initialize submission:**
+
+- "`cape submission new fibonacci Plinth 1.11.0 myhandle`"
+- "This creates the submission structure in CAPE repo"
+- "Format: `submissions/fibonacci/Plinth_1.11.0_myhandle/`"
+
+**5. Fill in metadata:**
+
+- "Edit `metadata.json`"
+- "Include: compiler name, version, contributor handle"
+- "Source repository URL and commit hash"
+- "This links your CAPE submission to your source project"
+
+**6. Write README:**
+
+- "Explain your approach, optimizations, trade-offs"
+- "Build instructions: how to reproduce the UPLC output"
+- "Examples of what makes this implementation interesting"
+- "This is educational - help others learn from your work"
+
+**7. Include UPLC file:**
+
+- "Your compiled output: `fibonacci.uplc`"
+- "This is what gets measured"
+- "Must match the scenario name"
+
+**8. Submit PR:**
+
+- "Push your branch, create pull request"
+- "Reviewers will check: sources make sense, metadata is correct, tests pass"
+- "This is collaborative - feedback improves quality"
+
+**9. After merge:**
+
+- "GitHub Actions automatically runs `cape submission measure`"
+- "Generates `metrics.json`"
+- "Updates HTML reports with your submission"
+- "Your results are now part of the benchmark"
+
+**Common Gotcha: UPLC Names:**
+
+- "UPLC de Bruijn indices can be fragile"
+- "Named variables in source → nameless in UPLC"
+- "Test your UPLC file against `cape-tests.json` BEFORE submitting"
+- "Use `cape submission verify` to catch issues early"
+
+**Why this workflow?**
+
+- "Separating source project from CAPE submission keeps repos focused"
+- "Commit hashes ensure reproducibility"
+- "Community review maintains quality"
+- "Published sources enable learning and improvement"
+
+**Transition:** "Once submissions are merged, where can you see the results?"
