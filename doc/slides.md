@@ -948,4 +948,289 @@ Open        fibonacci         [future: linear_vesting]
 - "Community review maintains quality"
 - "Published sources enable learning and improvement"
 
-**Transition:** "Once submissions are merged, where can you see the results?"
+**Transition:** "After publishing a submission PR, where can you see the results?"
+
+=== Slide 15 ===================================================================
+
+## Live Results & Community
+
+**Live Results**
+
+- **URL**: https://intersectmbo.github.io/UPLC-CAPE/
+- Also linked in repository sidebar
+- **Auto-generated** static HTML site from measured metrics
+- Updates automatically after PR merge via CI
+
+**PR Preview Deployments**
+
+- Submission PR authors get **preview reports**
+- Published as PR comment
+- See your results **before** merging
+
+**Community Resources**
+
+- **Repository**: https://github.com/IntersectMBO/UPLC-CAPE
+- **Issues**: Report bugs, request features, ask questions
+- **Discussions**: Community chat, ideas, help
+- **Documentation**: README, USAGE.md, CONTRIBUTING.md
+
+**Get Involved**
+
+- Submit benchmarks for your compiler
+- Propose new scenarios
+- Improve tooling and documentation
+- Review submissions, share insights
+
+--- Speaker Notes: -------------------------------------------------------------
+
+**Key emphasis:**
+
+- Results are public, transparent, automatically updated
+- Preview system lets you check before merging
+- Multiple ways to engage with the community
+
+**Live results walkthrough:**
+
+**The website:**
+
+- "All benchmark results are published at intersectmbo.github.io/UPLC-CAPE"
+- "This is a static HTML site - no backend, no database"
+- "Generated entirely from metrics.json files in the repo"
+- "Tables and graphs for easy comparison"
+- "You can see: CPU, memory, script size, fees, budget percentages, capacity"
+- "Compare across compilers, across scenarios"
+
+**Auto-generation:**
+
+- "When a submission PR merges, GitHub Actions kicks in"
+- "Runs cape submission measure, generates metrics.json"
+- "Regenerates the entire HTML report"
+- "Deploys to GitHub Pages"
+- "Fully automated - no manual steps"
+
+**PR preview deployments:**
+
+- "Before your PR merges, you want to see results"
+- "CI generates a preview deployment"
+- "Posted as a comment on your PR"
+- "Click the link, see your submission's metrics"
+- "Compare against existing submissions"
+- "This lets you verify everything looks good before merging"
+
+**Community resources:**
+
+**Repository:**
+
+- "Main repo: github.com/IntersectMBO/UPLC-CAPE"
+- "Browse scenarios, submissions, source code"
+- "Fork it, clone it, explore it"
+
+**Issues:**
+
+- "Found a bug? Open an issue"
+- "Want a new feature? Request it"
+- "Stuck on something? Ask for help"
+
+**Discussions:**
+
+- "Less formal than issues"
+- "Share ideas, ask questions, discuss approaches"
+- "Community support"
+
+**Documentation:**
+
+- "README.md: Quick start guide"
+- "USAGE.md: Complete CLI reference"
+- "CONTRIBUTING.md: How to contribute"
+- "doc/: In-depth documentation (metrics, domain model, etc.)"
+
+**Get involved - specific calls to action:**
+
+**1. Submit benchmarks:**
+
+- "If you're a compiler author - submit benchmarks for your compiler"
+- "Even if you're not competitive yet - baseline submissions are valuable"
+- "Progress over time is interesting to track"
+
+**2. Propose new scenarios:**
+
+- "Have a validator pattern worth benchmarking?"
+- "Real-world scenarios are especially valuable"
+- "Open an issue to discuss, then contribute it"
+
+**3. Improve tooling:**
+
+- "The cape CLI is open source"
+- "Improve error messages, add features, fix bugs"
+- "Make it easier for the next contributor"
+
+**4. Review submissions:**
+
+- "Community review improves quality"
+- "Check submissions make sense"
+- "Share optimization insights"
+- "Learn from others' approaches"
+
+**Transition:** "Now let's get hands-on. Here's what we're going to do in the workshop portion..."
+
+=== Slide 16 ===================================================================
+
+## Workshop: Hands-on Contribution
+
+**Choose Your Path**
+
+**Path 1: Simple Scenarios (Beginners)**
+
+- Implement `fibonacci_naive_recursion` or `factorial_naive_recursion`
+- Use the language/compiler of your choice
+- Focus: Learn the submission process without validator complexity
+
+**Path 2: Real-World Scenario (Advanced)**
+
+- Implement **Linear Vesting** validator
+- Multi-stage validator interactions, ScriptContext handling
+- Focus: Real-world validator patterns and optimizations
+
+**Plinth Users: In-Repo Convenience**
+
+- No separate project needed!
+- Implement directly in UPLC-CAPE repo
+- Structure already exists: `plinth-submissions-app/` and `lib/`
+- See `cape.cabal` for examples
+
+**Support Available**
+
+- UPLC-CAPE submission process help
+- Plinth language guidance
+- Troubleshooting and Q&A
+
+**Getting Started**
+
+1. Clone repo: `git clone https://github.com/IntersectMBO/UPLC-CAPE`
+2. Setup environment: `nix develop` (binary cache available)
+3. Choose your path and scenario
+4. Start implementing!
+
+--- Speaker Notes: -------------------------------------------------------------
+
+**Key emphasis:**
+
+- Two clear paths based on experience level
+- Plinth has special convenience (in-repo development)
+- I'm here to help with process and language questions
+
+**Workshop structure:**
+
+**Time allocation (25-30 minutes total):**
+
+- Environment setup: 5 minutes
+- Implementation: 15-20 minutes
+- Validation & discussion: 5 minutes
+
+**Path 1: Simple Scenarios**
+
+**Who should choose this:**
+
+- "If you've never implemented a Cardano validator"
+- "If you want to focus on the submission process rather than validator complexity"
+- "If you want a quick win to understand the full workflow"
+
+**What you'll do:**
+
+- "Pick fibonacci_naive_recursion or factorial_naive_recursion"
+- "Implement it in your preferred language: Plinth, Aiken, OpShin, etc."
+- "Follow the fixed algorithm specified in the scenario"
+- "Compile to UPLC, create submission, verify it passes tests"
+
+**Benefits:**
+
+- "Straightforward implementation"
+- "No ScriptContext complexity"
+- "Full end-to-end experience in 20-30 minutes"
+- "You'll understand the entire CAPE workflow"
+
+**Path 2: Real-World Scenario (Linear Vesting)**
+
+**Who should choose this:**
+
+- "If you're comfortable with validators and plutus-ledger API"
+- "If you want to tackle a real-world use case"
+- "If you're ready for multi-transaction interactions"
+
+**What you'll do:**
+
+- "Implement a Linear Vesting validator"
+- "Handle ScriptContext, datum/redeemer validation"
+- "Abstract the off-chain parts (transaction building)"
+- "Focus on the validator logic itself"
+
+**Benefits:**
+
+- "Representative of production validators"
+- "Learn real optimization techniques"
+- "More educational and challenging"
+
+**Plinth in-repo convenience:**
+
+**This is unique to Plinth:**
+
+- "If you're using Plinth, you don't need a separate repo"
+- "The UPLC-CAPE repo already has the project structure"
+- "Look at `plinth-submissions-app/Main.hs` for the generator"
+- "Look at `lib/` for existing implementations (Factorial, Fibonacci, TwoPartyEscrow)"
+- "Add your implementation, compile, generate submission"
+- "This is faster for the workshop setting"
+
+**For other languages:**
+
+- "You'll need your own project setup"
+- "But that's realistic for real contributions"
+- "Compile to UPLC, bring the output file"
+
+**Support I'll provide:**
+
+**UPLC-CAPE submission process:**
+
+- "How to use `cape submission new`"
+- "How to structure metadata.json"
+- "How to run `cape submission verify`"
+- "Common pitfalls and how to avoid them"
+
+**Plinth language:**
+
+- "Syntax questions"
+- "How to use the fixtures system"
+- "PlutusTx compilation pragmas"
+- "Debugging UPLC output"
+
+**Getting started:**
+
+**Environment setup:**
+
+- "git clone https://github.com/IntersectMBO/UPLC-CAPE"
+- "cd UPLC-CAPE"
+- "nix develop (binary cache is configured, should be fast)"
+- "Verify: cape --version, cabal --version"
+
+**Choose your path:**
+
+- "Path 1: Simple → pick fibonacci_naive_recursion or factorial_naive_recursion"
+- "Path 2: Advanced → linear vesting"
+
+**Start implementing:**
+
+- "I'll circulate to help individuals"
+- "Ask questions as you go"
+- "Share your progress, discuss approaches"
+
+**End of workshop:**
+
+- "Even if you don't finish, you've learned the process"
+- "You can continue after the conference and submit a PR"
+- "The goal is to understand the workflow and get started"
+
+**Closing:**
+
+- "Thank you for attending!"
+- "Links: intersectmbo.github.io/UPLC-CAPE (results), github.com/IntersectMBO/UPLC-CAPE (repo)"
+- "Let's build a comprehensive benchmark together!"
