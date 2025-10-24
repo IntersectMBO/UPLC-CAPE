@@ -94,7 +94,7 @@ jobs:
 
       - name: Build ADR site
         run: |
-          nix develop --accept-flake-config --command bash -c "adr build --out ./adr-site"
+          nix develop --accept-flake-config --command bash -c "adr build --out ./adr-site --basePath /UPLC-CAPE/adr"
 
       - name: Prepare deployment directory
         run: |
