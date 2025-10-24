@@ -1,4 +1,4 @@
-# Simple workflow for deploying static content to GitHub Pages
+# Workflow for deploying benchmark reports and ADR site to GitHub Pages
 name: Deploy static content to Pages
 
 on:
@@ -9,11 +9,10 @@ on:
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
-# Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
+# Sets permissions for deployment to GitHub Pages
 permissions:
-  contents: read
-  pages: write
-  id-token: write
+  contents: write # Needed to push to gh-pages branch
+  pull-requests: write # Needed for cleanup operations
 
 # Allow only one concurrent deployment, skipping runs queued between the run in-progress and latest queued.
 # However, do NOT cancel in-progress runs as we want to allow these production deployments to complete.
@@ -22,21 +21,131 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  # Single deploy job since we're just deploying
+  build-measure:
+    name: Build Measure Executable
+    runs-on: ubuntu-latest
+    steps:
+      - name: Nothing but Nix - Optimize disk space
+        uses: wimpysworld/nothing-but-nix@main
+
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install Nix
+        uses: cachix/install-nix-action@v31
+        with:
+          extra_nix_config: |
+            accept-flake-config = true
+
+      - name: Use Cachix (pull/push if token provided)
+        uses: cachix/cachix-action@v15
+        with:
+          name: uplc-cape
+          authToken: ${{ secrets.CACHIX_AUTH_TOKEN }}
+
+      - name: Build measure executable
+        run: nix build .#measure --accept-flake-config -o result
+
+      - name: Upload measure executable
+        uses: actions/upload-artifact@v4
+        with:
+          name: measure-executable
+          path: result/bin/measure
+          retention-days: 1
+
   deploy:
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
+    name: Deploy to GitHub Pages
+    needs: build-measure
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      - name: Setup Pages
-        uses: actions/configure-pages@v5
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
         with:
-          path: "report"
+          fetch-depth: 0 # Needed for PR number detection
+
+      - name: Install Nix
+        uses: cachix/install-nix-action@v31
+        with:
+          extra_nix_config: |
+            accept-flake-config = true
+
+      - name: Use Cachix (pull/push if token provided)
+        uses: cachix/cachix-action@v15
+        with:
+          name: uplc-cape
+          authToken: ${{ secrets.CACHIX_AUTH_TOKEN }}
+
+      - name: Download measure executable
+        uses: actions/download-artifact@v4
+        with:
+          name: measure-executable
+          path: result/bin
+
+      - name: Make measure executable
+        run: chmod +x result/bin/measure
+
+      - name: Measure all submissions
+        run: |
+          nix develop --accept-flake-config --command bash -c "export PATH=\"\$PWD/result/bin:\$PATH\" && cape submission measure --all"
+
+      - name: Generate HTML reports
+        run: |
+          nix develop --accept-flake-config --command bash -c "export PATH=\"\$PWD/result/bin:\$PATH\" && cape submission report --all"
+
+      - name: Build ADR site
+        run: |
+          nix develop --accept-flake-config --command bash -c "adr build --out ./adr-site"
+
+      - name: Prepare deployment directory
+        run: |
+          mkdir -p deploy
+          cp -r report/* deploy/
+          cp -r adr-site deploy/adr
+
+      - name: Detect merged PR number
+        id: detect_pr
+        run: |
+          # Try to find PR number from the merge commit message
+          PR_NUM=$(git log -1 --pretty=%B | grep -oP 'Merge pull request #\K\d+' || echo "")
+          echo "pr_number=$PR_NUM" >> $GITHUB_OUTPUT
+          if [ -n "$PR_NUM" ]; then
+            echo "Detected merged PR: #$PR_NUM"
+          else
+            echo "No PR number detected in commit message"
+          fi
+
       - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./deploy
+          destination_dir: .
+          keep_files: true # Keep PR preview directories
+          commit_message: "deploy: ${{ github.sha }}"
+
+      - name: Cleanup PR preview directory
+        if: steps.detect_pr.outputs.pr_number != ''
+        run: |
+          # Wait a moment for the previous deployment to complete
+          sleep 5
+
+          # Clone gh-pages branch
+          git clone --branch gh-pages --depth 1 https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git gh-pages-branch
+          cd gh-pages-branch
+
+          # Remove PR preview directory if it exists
+          PR_DIR="pr-${{ steps.detect_pr.outputs.pr_number }}"
+          if [ -d "$PR_DIR" ]; then
+            echo "Removing PR preview directory: $PR_DIR"
+            rm -rf "$PR_DIR"
+
+            # Commit and push the cleanup
+            git config user.name "github-actions[bot]"
+            git config user.email "github-actions[bot]@users.noreply.github.com"
+            git add .
+            git commit -m "chore: remove PR #${{ steps.detect_pr.outputs.pr_number }} preview"
+            git push
+            echo "✅ PR preview directory removed successfully"
+          else
+            echo "ℹ️  PR preview directory does not exist, no cleanup needed"
+          fi
