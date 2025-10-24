@@ -290,11 +290,6 @@
             # Prevents build failures when index-state is updated (see issue #104)
             echo "📦 Synchronizing Cabal package index..."
             cabal update > /dev/null 2>&1 || true
-
-            # Show environment info
-            echo "💻 Development Environment: haskell.nix with binary caches"
-            echo "📦 Build with: cabal build exe:measure exe:plinth-submissions"
-            echo ""
           '';
         };
       in
