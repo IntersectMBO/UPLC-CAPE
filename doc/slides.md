@@ -639,3 +639,99 @@ cape submission report           # Generate HTML report
 - "I may create a diagram showing this flow for the actual slides"
 
 **Transition:** "Now that you understand the workflow, let's talk about what we're actually measuring..."
+
+=== Slide 12 ===================================================================
+
+## Key Metrics Explained
+
+**Two Categories of Metrics**
+
+1. **Raw Metrics** - Direct measurements from UPLC evaluation
+   - CPU units, Memory units
+   - Script size (bytes), Term size (AST nodes)
+2. **Derived Metrics** - Calculated from raw metrics, connected to real-world use-cases
+   - Transaction fees (lovelace/ADA)
+   - Budget utilization (% of tx/block limits)
+   - Capacity (scripts per tx/block)
+
+**Aggregation Strategies**
+
+For scenarios with multiple test cases:
+
+- `maximum` - Worst-case across all tests (used for budget/capacity metrics)
+- `sum` - Total across all tests (used for fee metrics)
+- `minimum`, `median` - Best-case and middle values
+- `sum_positive`, `sum_negative` - Success vs failure cases
+
+**Trade-offs & Variants**
+
+- Optimizations involve trade-offs: size vs speed, memory vs CPU
+- **Variants** allow submissions to indicate which side of a trade-off is optimized for
+- Example: "size-optimized" vs "speed-optimized" variants
+
+--- Speaker Notes: -------------------------------------------------------------
+
+**Key emphasis:**
+
+- Distinguish between raw (what we measure) and derived (what users care about)
+- Aggregation strategies have semantic meaning - not arbitrary choices
+- Trade-offs are real, variants capture different optimization goals
+
+**Two categories explanation:**
+
+**Raw Metrics:**
+
+- "These are direct outputs from running UPLC on the CEK machine"
+- "CPU units: computational cost"
+- "Memory units: memory cost"
+- "Script size: on-chain storage size in bytes"
+- "Term size: AST node count, complexity indicator"
+
+**Derived Metrics:**
+
+- "These translate raw measurements into real-world impact"
+- "Execution fee: 'How much does it cost to run this?'"
+- "Budget utilization: 'What percentage of transaction/block limits does this consume?'"
+- "Capacity: 'How many of these can fit in a transaction or block?'"
+- "These are calculated using Conway mainnet protocol parameters"
+
+**Aggregation strategies:**
+
+- "`maximum` - Worst-case semantics"
+- "Used for budget/capacity metrics because validators face adversarial inputs"
+- "You need to handle the worst case, not just average case"
+- "A validator cheap on average but expensive on edge cases = security risk"
+
+- "`sum` - Total cost semantics"
+- "Used for fee metrics to represent total test suite cost"
+- "Useful for estimating verification overhead"
+
+- "Other aggregations (`minimum`, `median`, `sum_positive`, `sum_negative`) provide additional perspectives"
+- "All raw metric aggregations are published for transparency"
+
+**Hybrid aggregation strategy:**
+
+- "CAPE uses a hybrid approach: different aggregations for different derived metrics"
+- "Budget/capacity use `maximum` (worst-case)"
+- "Fees use `sum` (total cost)"
+- "This makes gaming harder - you can't optimize one without improving the other"
+
+**Trade-offs & variants:**
+
+- "Real optimizations involve trade-offs"
+- "Example: You can make a script smaller, but it might run slower"
+- "Or optimize for speed but increase memory usage"
+- "Variants allow you to submit different versions optimized for different goals"
+- "Example: fibonacci-size-optimized vs fibonacci-speed-optimized"
+- "This is explicit - not hidden in one 'best' submission"
+
+**Real-world example:**
+
+- "A 10KB script with 500M CPU steps vs"
+- "A 50KB script with 300M CPU steps"
+- "Which is 'better'? Depends on your use case:"
+- " - High-volume protocol → prefer lower execution cost"
+- " - One-time deployment → script size might not matter"
+- " - Reference script heavy usage → smaller size saves on reference fees"
+
+**Transition:** "Let's look at what scenarios are currently available in CAPE..."
