@@ -11,6 +11,17 @@ import Cape.PrettyResult (
   evaluateCompiledCode,
   extractPrettyResult,
  )
+import Cape.Protocol.Parameters (
+  blockCpuBudget,
+  blockMemoryBudget,
+  executionFee,
+  referenceScriptFee,
+  scriptsPerBlock,
+  scriptsPerTransaction,
+  totalFee,
+  txCpuBudget,
+  txMemoryBudget,
+ )
 import Cape.Tests (
   ExpectedResult (..),
   InputType (..),
@@ -337,13 +348,34 @@ writeDetailedMetrics program evaluations metricsFile = do
   let cpuAggregations = calculateBudgetAggregations cpuData
       memoryAggregations = calculateBudgetAggregations memoryData
 
-  -- Create measurements object
+  -- Calculate derived metrics using hybrid aggregation strategy:
+  -- - Budget/Capacity metrics use 'maximum' (worst-case single execution)
+  -- - Fee metrics use 'sum' (total cost of complete test suite)
+  -- See doc/metrics.md for detailed rationale.
+  let cpuSum = aggSum cpuAggregations
+      memSum = aggSum memoryAggregations
+      cpuMax = aggMaximum cpuAggregations
+      memMax = aggMaximum memoryAggregations
+
+  -- Create measurements object with derived metrics
   let measurements =
         Measurements
           { measCpuAggregations = cpuAggregations
           , measMemoryAggregations = memoryAggregations
           , measScriptSizeBytes = fromIntegral scriptSize
           , measTermSize = termSize
+          , -- Fee metrics: use sum (total test suite cost)
+            measExecutionFee = executionFee memSum cpuSum
+          , measReferenceScriptFee = referenceScriptFee (fromIntegral scriptSize)
+          , measTotalFee = totalFee memSum cpuSum (fromIntegral scriptSize)
+          , -- Budget metrics: use maximum (worst-case single execution)
+            measTxMemoryBudgetPct = txMemoryBudget memMax
+          , measTxCpuBudgetPct = txCpuBudget cpuMax
+          , measBlockMemoryBudgetPct = blockMemoryBudget memMax
+          , measBlockCpuBudgetPct = blockCpuBudget cpuMax
+          , -- Capacity metrics: use maximum (worst-case constraint)
+            measScriptsPerTx = scriptsPerTransaction memMax cpuMax
+          , measScriptsPerBlock = scriptsPerBlock memMax cpuMax
           }
 
   -- Get current timestamp
@@ -415,22 +447,56 @@ instance ToJSON BudgetAggregations where
       , "sum_negative" .= sumNeg
       ]
 
--- | Top-level measurements with aggregations
+-- | Top-level measurements with aggregations and derived metrics
 data Measurements = Measurements
   { measCpuAggregations :: BudgetAggregations
   , measMemoryAggregations :: BudgetAggregations
   , measScriptSizeBytes :: Integer
   , measTermSize :: Integer
+  , -- Derived metrics (calculated from raw measurements and protocol parameters)
+    measExecutionFee :: Integer
+  , measReferenceScriptFee :: Integer
+  , measTotalFee :: Integer
+  , measTxMemoryBudgetPct :: Double
+  , measTxCpuBudgetPct :: Double
+  , measBlockMemoryBudgetPct :: Double
+  , measBlockCpuBudgetPct :: Double
+  , measScriptsPerTx :: Integer
+  , measScriptsPerBlock :: Integer
   }
 
 instance ToJSON Measurements where
-  toJSON (Measurements cpuAgg memAgg scriptSize termSize) =
-    Json.object
-      [ "cpu_units" .= cpuAgg
-      , "memory_units" .= memAgg
-      , "script_size_bytes" .= scriptSize
-      , "term_size" .= termSize
-      ]
+  toJSON
+    ( Measurements
+        cpuAgg
+        memAgg
+        scriptSize
+        termSize
+        execFee
+        refScriptFee
+        totFee
+        txMemBudget
+        txCpuBudget
+        blockMemBudget
+        blockCpuBudget
+        scriptsPerTx
+        scriptsPerBlock
+      ) =
+      Json.object
+        [ "cpu_units" .= cpuAgg
+        , "memory_units" .= memAgg
+        , "script_size_bytes" .= scriptSize
+        , "term_size" .= termSize
+        , "execution_fee_lovelace" .= execFee
+        , "reference_script_fee_lovelace" .= refScriptFee
+        , "total_fee_lovelace" .= totFee
+        , "tx_memory_budget_pct" .= txMemBudget
+        , "tx_cpu_budget_pct" .= txCpuBudget
+        , "block_memory_budget_pct" .= blockMemBudget
+        , "block_cpu_budget_pct" .= blockCpuBudget
+        , "scripts_per_tx" .= scriptsPerTx
+        , "scripts_per_block" .= scriptsPerBlock
+        ]
 
 -- | Complete metrics data structure matching the schema
 data Metrics = Metrics

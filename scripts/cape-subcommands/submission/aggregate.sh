@@ -49,7 +49,7 @@ if [ ! -d "$PROJECT_ROOT/submissions" ]; then
 fi
 
 # Output CSV header
-echo "benchmark,timestamp,language,version,user,variant,cpu_units,memory_units,script_size_bytes,term_size,submission_dir"
+echo "benchmark,timestamp,language,version,user,variant,cpu_units,memory_units,script_size_bytes,term_size,execution_fee_lovelace,reference_script_fee_lovelace,total_fee_lovelace,tx_memory_budget_pct,tx_cpu_budget_pct,block_memory_budget_pct,block_cpu_budget_pct,scripts_per_tx,scripts_per_block,submission_dir"
 
 # Process all submissions (NUL-delimited for filename safety)
 while IFS= read -r -d '' metadata_file; do
@@ -87,6 +87,17 @@ while IFS= read -r -d '' metadata_file; do
   script_size_bytes=$(jq -r '.measurements.script_size_bytes // 0' "$metrics_file" 2> /dev/null || true)
   term_size=$(jq -r '.measurements.term_size // 0' "$metrics_file" 2> /dev/null || true)
 
+  # Extract derived metrics
+  execution_fee_lovelace=$(jq -r '.measurements.execution_fee_lovelace // 0' "$metrics_file" 2> /dev/null || true)
+  reference_script_fee_lovelace=$(jq -r '.measurements.reference_script_fee_lovelace // 0' "$metrics_file" 2> /dev/null || true)
+  total_fee_lovelace=$(jq -r '.measurements.total_fee_lovelace // 0' "$metrics_file" 2> /dev/null || true)
+  tx_memory_budget_pct=$(jq -r '.measurements.tx_memory_budget_pct // 0' "$metrics_file" 2> /dev/null || true)
+  tx_cpu_budget_pct=$(jq -r '.measurements.tx_cpu_budget_pct // 0' "$metrics_file" 2> /dev/null || true)
+  block_memory_budget_pct=$(jq -r '.measurements.block_memory_budget_pct // 0' "$metrics_file" 2> /dev/null || true)
+  block_cpu_budget_pct=$(jq -r '.measurements.block_cpu_budget_pct // 0' "$metrics_file" 2> /dev/null || true)
+  scripts_per_tx=$(jq -r '.measurements.scripts_per_tx // 0' "$metrics_file" 2> /dev/null || true)
+  scripts_per_block=$(jq -r '.measurements.scripts_per_block // 0' "$metrics_file" 2> /dev/null || true)
+
   # Extract variant from submission directory name (format: Compiler_Version_Author[_Variant])
   # Split by underscore and check if 4th element exists
   variant=$(echo "$actual_submission_dir" | awk -F_ '{if (NF >= 4) print $4; else print "default"}')
@@ -100,5 +111,5 @@ while IFS= read -r -d '' metadata_file; do
   variant=$(echo "$variant" | sed 's/,/\\,/g')
   actual_submission_dir=$(echo "$actual_submission_dir" | sed 's/,/\\,/g')
 
-  echo "$benchmark,$timestamp,$compiler_name,$compiler_version,$contributor_name,$variant,$cpu_units,$memory_units,$script_size_bytes,$term_size,$actual_submission_dir"
+  echo "$benchmark,$timestamp,$compiler_name,$compiler_version,$contributor_name,$variant,$cpu_units,$memory_units,$script_size_bytes,$term_size,$execution_fee_lovelace,$reference_script_fee_lovelace,$total_fee_lovelace,$tx_memory_budget_pct,$tx_cpu_budget_pct,$block_memory_budget_pct,$block_cpu_budget_pct,$scripts_per_tx,$scripts_per_block,$actual_submission_dir"
 done < <(find "$PROJECT_ROOT/submissions" -name "metadata.json" -path "*/[!T]*/*" -print0 | sort -z)

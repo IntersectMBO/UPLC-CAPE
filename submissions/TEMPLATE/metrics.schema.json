@@ -2,7 +2,7 @@
   "$schema": "http://json-schema.org/draft-07/schema#",
   "$id": "https://github.com/IntersectMBO/UPLC-CAPE/submissions/TEMPLATE/metrics.schema.json",
   "title": "UPLC-CAPE Metrics Schema",
-  "description": "Schema for benchmark metrics data in the UPLC-CAPE framework",
+  "description": "Schema for benchmark metrics data in the UPLC-CAPE framework. See doc/metrics.md for comprehensive metric documentation including formulas, protocol parameters, and interpretation guidelines.",
   "type": "object",
   "properties": {
     "scenario": {
@@ -105,9 +105,68 @@
           "type": "integer",
           "minimum": 1,
           "description": "Number of AST nodes in the UPLC term (constant across evaluations)"
+        },
+        "execution_fee_lovelace": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Execution cost in lovelace (CPU + memory cost only, no reference script fee)"
+        },
+        "reference_script_fee_lovelace": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Reference script storage cost in lovelace (Conway era tiered pricing)"
+        },
+        "total_fee_lovelace": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Total cost in lovelace (execution + reference script fee)"
+        },
+        "tx_memory_budget_pct": {
+          "type": "number",
+          "minimum": 0,
+          "description": "Percentage of transaction memory budget used"
+        },
+        "tx_cpu_budget_pct": {
+          "type": "number",
+          "minimum": 0,
+          "description": "Percentage of transaction CPU budget used"
+        },
+        "block_memory_budget_pct": {
+          "type": "number",
+          "minimum": 0,
+          "description": "Percentage of block memory budget used"
+        },
+        "block_cpu_budget_pct": {
+          "type": "number",
+          "minimum": 0,
+          "description": "Percentage of block CPU budget used"
+        },
+        "scripts_per_tx": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Maximum number of script executions that fit in a single transaction"
+        },
+        "scripts_per_block": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Maximum number of script executions that fit in a single block"
         }
       },
-      "required": ["cpu_units", "memory_units", "script_size_bytes", "term_size"],
+      "required": [
+        "cpu_units",
+        "memory_units",
+        "script_size_bytes",
+        "term_size",
+        "execution_fee_lovelace",
+        "reference_script_fee_lovelace",
+        "total_fee_lovelace",
+        "tx_memory_budget_pct",
+        "tx_cpu_budget_pct",
+        "block_memory_budget_pct",
+        "block_cpu_budget_pct",
+        "scripts_per_tx",
+        "scripts_per_block"
+      ],
       "additionalProperties": false
     },
     "evaluations": {

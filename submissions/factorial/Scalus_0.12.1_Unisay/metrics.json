@@ -75,6 +75,8 @@
     "evaluator": "<evaluator-version>"
   },
   "measurements": {
+    "block_cpu_budget_pct": 0.023021375,
+    "block_memory_budget_pct": 0.05415161290322581,
     "cpu_units": {
       "maximum": 9208550,
       "median": 3020150,
@@ -83,6 +85,7 @@
       "sum_negative": 0,
       "sum_positive": 37481975
     },
+    "execution_fee_lovelace": 10798,
     "memory_units": {
       "maximum": 33574,
       "median": 11423,
@@ -91,11 +94,17 @@
       "sum_negative": 0,
       "sum_positive": 140290
     },
+    "reference_script_fee_lovelace": 600,
     "script_size_bytes": 40,
-    "term_size": 33
+    "scripts_per_block": 1846,
+    "scripts_per_tx": 416,
+    "term_size": 33,
+    "total_fee_lovelace": 11398,
+    "tx_cpu_budget_pct": 0.0920855,
+    "tx_memory_budget_pct": 0.2398142857142857
   },
   "scenario": "factorial",
-  "timestamp": "2025-10-08T13:30:14Z",
+  "timestamp": "2025-10-23T14:41:52Z",
   "version": "1.0.0",
   "notes": "Placeholder metrics - actual measurements to be performed by UPLC-CAPE benchmark framework"
 }

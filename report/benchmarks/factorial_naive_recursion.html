@@ -15,38 +15,35 @@
             background-color: #f8f9fa;
         }
         .header {
-            text-align: center;
             margin-bottom: 40px;
-            padding: 30px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border-radius: 10px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 20px 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
         }
-        .nav {
-            text-align: center;
-            margin-bottom: 30px;
+        .header img {
+            width: 150px;
+            height: auto;
+            flex-shrink: 0;
         }
-        .nav a {
-            display: inline-block;
-            padding: 10px 20px;
-            background-color: #667eea;
-            color: white;
-            text-decoration: none;
-            border-radius: 5px;
-            margin: 0 10px;
-            transition: background-color 0.3s ease;
+        .header-text {
+            flex-grow: 0;
         }
-        .nav a:hover {
-            background-color: #5a67d8;
+        .header h1 {
+            color: #333;
+            margin: 0 0 10px 0;
+        }
+        .header p {
+            color: #6c757d;
+            margin: 5px 0;
         }
 
         /* Breadcrumb Navigation */
         .breadcrumb {
-            text-align: center;
-            margin-bottom: 20px;
             color: #6c757d;
-            font-size: 0.95em;
+            font-size: 0.9em;
+            margin-top: 10px;
         }
         .breadcrumb a {
             color: #667eea;
@@ -80,22 +77,34 @@
         }
         .chart-container {
             text-align: center;
-            background: #f8f9fa;
-            padding: 20px;
-            border-radius: 8px;
-            border: 1px solid #e9ecef;
         }
         .chart-container img {
             max-width: 100%;
             height: auto;
             border-radius: 6px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
         }
         .chart-title {
             font-size: 1.1em;
             font-weight: 600;
             color: #495057;
-            margin-bottom: 15px;
+            margin-bottom: 5px;
+        }
+        .chart-subtitle {
+            font-size: 0.85em;
+            color: #6c757d;
+            margin-bottom: 10px;
+            font-style: italic;
+        }
+        .chart-section-title {
+            grid-column: 1 / -1;
+            font-size: 1.3em;
+            font-weight: 700;
+            color: #667eea;
+            text-align: left;
+            margin-top: 20px;
+            margin-bottom: 10px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #667eea;
         }
         .footer {
             text-align: center;
@@ -112,6 +121,7 @@
         .data-table {
             background: white;
             margin-top: 40px;
+            margin-bottom: 40px;
             padding: 30px;
             border-radius: 10px;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
@@ -156,56 +166,89 @@
             text-align: center;
             display: block;
         }
+        .source-link {
+            color: #6c757d;
+            text-decoration: underline;
+            font-size: 0.75em;
+            display: inline;
+        }
+        .budget-warning {
+            background-color: #fff3cd !important;
+            border-left: 4px solid #ffc107;
+        }
+        .budget-critical {
+            background-color: #f8d7da !important;
+            border-left: 4px solid #dc3545;
+        }
     </style>
 </head>
 <body>
     <div class="header">
-        <h1>🚀 UPLC-CAPE Performance Report - factorial_naive_recursion</h1>
-        <p>Performance comparison of UPLC programs across different compilers</p>
+        <img src="../uplc-cape-logo.png" alt="UPLC-CAPE Logo">
+        <div class="header-text">
+            <h1>UPLC-CAPE Performance Report</h1>
+            <p>Performance comparison of UPLC programs across different compilers</p>
+            <div class="breadcrumb">
+                <a href="../index.html">All benchmarks</a>
+                <span class="breadcrumb-separator">→</span>
+                <span>factorial_naive_recursion</span>
+            </div>
+        </div>
     </div>
 
-    <div class="breadcrumb">
-        <a href="../index.html">Home</a>
-        <span class="breadcrumb-separator">→</span>
-        <span>factorial_naive_recursion</span>
-    </div>
-
-    <div class="nav">
-        <a href="../index.html">← Back to All Benchmarks</a>
-    </div>
-
-    <div class="timestamp">
-        Generated on: 2025-10-23 13:04:08 CEST
-    </div>
-    
     <div class="benchmark-section">
         <h2 class="benchmark-title">📊 factorial_naive_recursion benchmark report</h2>
         <div class="chart-grid">
+            <div class="chart-section-title">Raw measurements</div>
             <div class="chart-container">
                 <div class="chart-title">💻 CPU Units</div>
+                <div class="chart-subtitle">Lower is Better</div>
                 <img src="images/factorial_naive_recursion_cpu_units.png" alt="CPU Units comparison for factorial_naive_recursion">
             </div>
             <div class="chart-container">
                 <div class="chart-title">🧠 Memory Units</div>
+                <div class="chart-subtitle">Lower is Better</div>
                 <img src="images/factorial_naive_recursion_memory_units.png" alt="Memory Units comparison for factorial_naive_recursion">
             </div>
             <div class="chart-container">
                 <div class="chart-title">📦 Script Size</div>
+                <div class="chart-subtitle">Lower is Better</div>
                 <img src="images/factorial_naive_recursion_script_size.png" alt="Script Size comparison for factorial_naive_recursion">
             </div>
             <div class="chart-container">
                 <div class="chart-title">🌳 Term Size</div>
+                <div class="chart-subtitle">Lower is Better</div>
                 <img src="images/factorial_naive_recursion_term_size.png" alt="Term Size comparison for factorial_naive_recursion">
+            </div>
+            <div class="chart-section-title">Derived metrics</div>
+            <div class="chart-container">
+                <div class="chart-title">💻 CPU Tx Budget Usage (%)</div>
+                <div class="chart-subtitle"></div>
+                <img src="images/factorial_naive_recursion_tx_budget_cpu.png" alt="CPU Transaction Budget comparison for factorial_naive_recursion">
+            </div>
+            <div class="chart-container">
+                <div class="chart-title">🧠 Memory Tx Budget Usage (%)</div>
+                <div class="chart-subtitle"></div>
+                <img src="images/factorial_naive_recursion_tx_budget_mem.png" alt="Memory Transaction Budget comparison for factorial_naive_recursion">
+            </div>
+            <div class="chart-container">
+                <div class="chart-title">💰 Total Fee (₳)</div>
+                <div class="chart-subtitle">Lower is Better</div>
+                <img src="images/factorial_naive_recursion_total_fee.png" alt="Total Fee comparison for factorial_naive_recursion">
+            </div>
+            <div class="chart-container">
+                <div class="chart-title">📈 Scripts per Transaction</div>
+                <div class="chart-subtitle">Higher is Better</div>
+                <img src="images/factorial_naive_recursion_scripts_per_tx.png" alt="Capacity comparison for factorial_naive_recursion">
             </div>
         </div>
     </div>
-    
+
     <div class="data-table">
         <h3>📋 Performance Data</h3>
         <table>
             <thead>
                 <tr>
-                    <th>Timestamp</th>
                     <th>Language</th>
                     <th>Version</th>
                     <th>Variant</th>
@@ -214,14 +257,16 @@
                     <th class="numeric">Memory Units</th>
                     <th class="numeric">Script Size (bytes)</th>
                     <th class="numeric">Term Size (nodes)</th>
-                    <th>Source</th>
-                    <th>UPLC</th>
+                    <th class="numeric">Fee (₳)</th>
+                    <th class="numeric">Tx Budget</th>
+                    <th class="numeric">Block Budget</th>
+                    <th class="numeric">Cap/Tx</th>
+                    <th class="numeric">Cap/Block</th>
                 </tr>
             </thead>
             <tbody>
                 <tr>
-                    <td>2025-10-09T14:42:16Z</td>
-                    <td>Plinth</td>
+                    <td>Plinth<br><a href="https://github.com/IntersectMBO/UPLC-CAPE/blob/main/submissions/factorial_naive_recursion/Plinth_1.45.0.0_Unisay/source/README.md" target="_blank" rel="noopener" class="source-link">src</a> <a href="https://github.com/IntersectMBO/UPLC-CAPE/blob/main/submissions/factorial_naive_recursion/Plinth_1.45.0.0_Unisay/factorial_naive_recursion.uplc" target="_blank" rel="noopener" class="source-link">UPLC</a></td>
                     <td>1.45.0.0</td>
                     <td>default</td>
                     <td>Unisay</td>
@@ -229,12 +274,14 @@
                     <td class="numeric">170290</td>
                     <td class="numeric">42</td>
                     <td class="numeric">40</td>
-                    <td><a href="https://github.com/IntersectMBO/UPLC-CAPE/blob/main/submissions/factorial_naive_recursion/Plinth_1.45.0.0_Unisay/source/README.md" target="_blank" rel="noopener">📁</a></td>
-                    <td><a href="https://github.com/IntersectMBO/UPLC-CAPE/blob/main/submissions/factorial_naive_recursion/Plinth_1.45.0.0_Unisay/factorial_naive_recursion.uplc" target="_blank" rel="noopener">🔗</a></td>
+                    <td class="numeric">0.01</td>
+                    <td class="numeric">0.3%&nbsp;mem<br>0.1%&nbsp;cpu</td>
+                    <td class="numeric">0.1%&nbsp;mem<br>0.0%&nbsp;cpu</td>
+                    <td class="numeric">340</td>
+                    <td class="numeric">1509</td>
                 </tr>
                 <tr>
-                    <td>2025-10-17T12:20:16Z</td>
-                    <td>Plutarch</td>
+                    <td>Plutarch<br><a href="https://github.com/IntersectMBO/UPLC-CAPE/blob/main/submissions/factorial_naive_recursion/Plutarch_1.11.0_SeungheonOh/source/README.md" target="_blank" rel="noopener" class="source-link">src</a> <a href="https://github.com/IntersectMBO/UPLC-CAPE/blob/main/submissions/factorial_naive_recursion/Plutarch_1.11.0_SeungheonOh/factorial_naive_recursion.uplc" target="_blank" rel="noopener" class="source-link">UPLC</a></td>
                     <td>1.11.0</td>
                     <td>default</td>
                     <td>SeungheonOh</td>
@@ -242,12 +289,14 @@
                     <td class="numeric">170290</td>
                     <td class="numeric">52</td>
                     <td class="numeric">47</td>
-                    <td><a href="https://github.com/IntersectMBO/UPLC-CAPE/blob/main/submissions/factorial_naive_recursion/Plutarch_1.11.0_SeungheonOh/source/README.md" target="_blank" rel="noopener">📁</a></td>
-                    <td><a href="https://github.com/IntersectMBO/UPLC-CAPE/blob/main/submissions/factorial_naive_recursion/Plutarch_1.11.0_SeungheonOh/factorial_naive_recursion.uplc" target="_blank" rel="noopener">🔗</a></td>
+                    <td class="numeric">0.01</td>
+                    <td class="numeric">0.3%&nbsp;mem<br>0.1%&nbsp;cpu</td>
+                    <td class="numeric">0.1%&nbsp;mem<br>0.0%&nbsp;cpu</td>
+                    <td class="numeric">340</td>
+                    <td class="numeric">1509</td>
                 </tr>
                 <tr>
-                    <td>2025-10-09T14:42:17Z</td>
-                    <td>Scalus</td>
+                    <td>Scalus<br><a href="https://github.com/IntersectMBO/UPLC-CAPE/blob/main/submissions/factorial_naive_recursion/Scalus_0.12.1_Unisay/source/README.md" target="_blank" rel="noopener" class="source-link">src</a> <a href="https://github.com/IntersectMBO/UPLC-CAPE/blob/main/submissions/factorial_naive_recursion/Scalus_0.12.1_Unisay/factorial_naive_recursion.uplc" target="_blank" rel="noopener" class="source-link">UPLC</a></td>
                     <td>0.12.1</td>
                     <td>default</td>
                     <td>Unisay</td>
@@ -255,12 +304,14 @@
                     <td class="numeric">171790</td>
                     <td class="numeric">57</td>
                     <td class="numeric">53</td>
-                    <td><a href="https://github.com/IntersectMBO/UPLC-CAPE/blob/main/submissions/factorial_naive_recursion/Scalus_0.12.1_Unisay/source/README.md" target="_blank" rel="noopener">📁</a></td>
-                    <td><a href="https://github.com/IntersectMBO/UPLC-CAPE/blob/main/submissions/factorial_naive_recursion/Scalus_0.12.1_Unisay/factorial_naive_recursion.uplc" target="_blank" rel="noopener">🔗</a></td>
+                    <td class="numeric">0.01</td>
+                    <td class="numeric">0.3%&nbsp;mem<br>0.1%&nbsp;cpu</td>
+                    <td class="numeric">0.1%&nbsp;mem<br>0.0%&nbsp;cpu</td>
+                    <td class="numeric">345</td>
+                    <td class="numeric">1531</td>
                 </tr>
                 <tr>
-                    <td>2025-10-16T07:52:09Z</td>
-                    <td>OpShin</td>
+                    <td>OpShin<br><a href="https://github.com/IntersectMBO/UPLC-CAPE/blob/main/submissions/factorial_naive_recursion/OpShin_1.0.0_nielstron/source/README.md" target="_blank" rel="noopener" class="source-link">src</a> <a href="https://github.com/IntersectMBO/UPLC-CAPE/blob/main/submissions/factorial_naive_recursion/OpShin_1.0.0_nielstron/factorial_naive_recursion.uplc" target="_blank" rel="noopener" class="source-link">UPLC</a></td>
                     <td>0.26.1</td>
                     <td>default</td>
                     <td>Niels Mündler</td>
@@ -268,15 +319,25 @@
                     <td class="numeric">361790</td>
                     <td class="numeric">88</td>
                     <td class="numeric">104</td>
-                    <td><a href="https://github.com/IntersectMBO/UPLC-CAPE/blob/main/submissions/factorial_naive_recursion/OpShin_1.0.0_nielstron/source/README.md" target="_blank" rel="noopener">📁</a></td>
-                    <td><a href="https://github.com/IntersectMBO/UPLC-CAPE/blob/main/submissions/factorial_naive_recursion/OpShin_1.0.0_nielstron/factorial_naive_recursion.uplc" target="_blank" rel="noopener">🔗</a></td>
+                    <td class="numeric">0.03</td>
+                    <td class="numeric">0.6%&nbsp;mem<br>0.2%&nbsp;cpu</td>
+                    <td class="numeric">0.1%&nbsp;mem<br>0.0%&nbsp;cpu</td>
+                    <td class="numeric">161</td>
+                    <td class="numeric">716</td>
                 </tr>
             </tbody>
         </table>
     </div>
-    
+
+    <div class="breadcrumb">
+        <a href="../index.html">All benchmarks</a>
+        <span class="breadcrumb-separator">→</span>
+        <span>factorial_naive_recursion</span>
+    </div>
+
     <div class="footer">
         <p>Generated by UPLC-CAPE • <a href="https://github.com/IntersectMBO/UPLC-CAPE">View on GitHub</a></p>
+        <p class="timestamp">Generated on: 2025-10-23 20:36:02 CEST</p>
     </div>
 </body>
 </html>
