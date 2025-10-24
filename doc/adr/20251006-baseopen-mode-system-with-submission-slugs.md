@@ -1,8 +1,7 @@
 # Base/Open Mode System with Submission Slugs
 
-- Status: superseded
+- Status: superseded by [20251009-scenario-based-approach-replacing-mode-system](20251009-scenario-based-approach-replacing-mode-system.md)
 - Date: 2025-10-06
-- Superseded by: [20251009-scenario-based-approach-replacing-mode-system.md](20251009-scenario-based-approach-replacing-mode-system.md)
 - Tags: benchmarking, submissions, evaluation-modes, compiler-comparison
 
 Technical Story: [Issue #59](https://github.com/IntersectMBO/UPLC-CAPE/issues/59)
