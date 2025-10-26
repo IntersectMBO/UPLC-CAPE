@@ -96,11 +96,64 @@ jobs:
         run: |
           nix develop --accept-flake-config --command bash -c "adr build --out ./adr-site --basePath /UPLC-CAPE/adr"
 
+      - name: Check if slides changed
+        id: slides_check
+        run: |
+          if git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep -q '^doc/slides/'; then
+            echo "changed=true" >> $GITHUB_OUTPUT
+            echo "✓ Slides changed - will rebuild"
+          else
+            echo "changed=false" >> $GITHUB_OUTPUT
+            echo "○ Slides unchanged - will preserve existing"
+          fi
+
+      - name: Install pnpm
+        if: steps.slides_check.outputs.changed == 'true'
+        uses: pnpm/action-setup@v4
+        with:
+          version: latest
+
+      - name: Setup Node.js
+        if: steps.slides_check.outputs.changed == 'true'
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "pnpm"
+          cache-dependency-path: doc/slides/pnpm-lock.yaml
+
+      - name: Build Slidev presentation
+        if: steps.slides_check.outputs.changed == 'true'
+        working-directory: doc/slides
+        run: |
+          pnpm install
+          pnpm build --base /UPLC-CAPE/slides/
+
+      - name: Fetch existing slides
+        if: steps.slides_check.outputs.changed == 'false'
+        run: |
+          git clone --branch gh-pages --depth 1 --single-branch https://github.com/${{ github.repository }}.git gh-pages-temp || echo "No gh-pages branch yet"
+          if [ -d "gh-pages-temp/slides" ]; then
+            echo "✓ Fetching existing slides from gh-pages"
+            mkdir -p doc/slides/dist
+            cp -r gh-pages-temp/slides/* doc/slides/dist/
+          else
+            echo "○ No existing slides found on gh-pages"
+          fi
+          rm -rf gh-pages-temp
+
       - name: Prepare deployment directory
         run: |
           mkdir -p deploy
           cp -r report/* deploy/
           cp -r adr-site deploy/adr
+
+          # Include slides (either newly built or fetched)
+          if [ -d "doc/slides/dist" ]; then
+            echo "✓ Including slides in deployment"
+            cp -r doc/slides/dist deploy/slides
+          else
+            echo "○ No slides to include in deployment"
+          fi
 
       - name: Detect merged PR number
         id: detect_pr
