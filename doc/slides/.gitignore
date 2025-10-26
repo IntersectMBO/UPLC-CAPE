@@ -1,0 +1,30 @@
+# Dependencies
+node_modules/
+pnpm-lock.yaml
+package-lock.json
+yarn.lock
+
+# Build outputs
+dist/
+.slidev/
+
+# Exports
+slides-export.pdf
+slides-export.pptx
+*.pdf
+*.pptx
+
+# Environment
+.DS_Store
+.env
+.env.local
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Direnv
+.direnv/

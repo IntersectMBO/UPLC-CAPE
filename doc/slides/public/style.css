@@ -1,0 +1,266 @@
+/**
+ * Slidev Theme: IO UPLC
+ * Extracted from PowerPoint template: IO_UPLC Presentation Template_2025.pptx
+ *
+ * This stylesheet defines CSS custom properties matching the PowerPoint theme colors
+ */
+
+:root {
+  /* ===== Theme Colors ===== */
+
+  /* Primary Colors */
+  --color-primary: #058DC7;      /* Accent 1 - Bright Blue */
+  --color-secondary: #50B432;    /* Accent 2 - Green */
+  --color-tertiary: #ED561B;     /* Accent 3 - Orange */
+  --color-accent: #24CBE5;       /* Accent 5 - Cyan */
+
+  /* Additional Accents */
+  --color-warning: #EDEF00;      /* Accent 4 - Yellow */
+  --color-success: #64E572;      /* Accent 6 - Light Green */
+
+  /* Dark/Light */
+  --color-dark: #000000;         /* Dark 1 - Black */
+  --color-dark-alt: #158158;     /* Dark 2 - Teal/Green */
+  --color-light: #FFFFFF;        /* Light 1 - White */
+  --color-light-alt: #F3F3F3;    /* Light 2 - Light Gray */
+
+  /* Links */
+  --color-link: #2200CC;         /* Hyperlink - Blue-Purple */
+  --color-link-visited: #551A8B; /* Followed Hyperlink - Purple */
+
+  /* Semantic Colors */
+  --color-text: var(--color-dark);
+  --color-background: var(--color-light);
+  --color-muted: var(--color-light-alt);
+  --color-border: var(--color-dark-alt);
+
+  /* ===== Typography ===== */
+  --font-family-sans: Arial, 'Helvetica Neue', Helvetica, sans-serif;
+  --font-family-serif: Georgia, 'Times New Roman', serif;
+  --font-family-mono: 'Fira Code', Consolas, Monaco, monospace;
+
+  --font-family-heading: var(--font-family-sans);
+  --font-family-body: var(--font-family-sans);
+}
+
+/* ===== Global Styles ===== */
+
+body {
+  font-family: var(--font-family-body);
+  color: var(--color-text);
+  background-color: var(--color-background);
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-family-heading);
+  color: var(--color-dark);
+}
+
+a {
+  color: var(--color-link);
+  text-decoration: none;
+}
+
+a:visited {
+  color: var(--color-link-visited);
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* ===== Slidev-specific Overrides ===== */
+
+.slidev-layout {
+  background-color: var(--color-background);
+  color: var(--color-text);
+}
+
+/* Default layout - no centering to avoid letterboxing */
+.slidev-layout.default {
+  padding: 3rem 4rem;
+}
+
+/* Title slide */
+.slidev-layout.cover h1 {
+  color: var(--color-primary);
+}
+
+/* Section headers */
+.slidev-layout h2 {
+  color: var(--color-dark);
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+/* Code blocks */
+pre, code {
+  font-family: var(--font-family-mono);
+  background-color: var(--color-muted);
+  border: 1px solid var(--color-border);
+}
+
+/* Emphasis */
+strong {
+  color: var(--color-secondary);
+}
+
+em {
+  color: var(--color-tertiary);
+}
+
+/* Lists */
+ul li::marker {
+  color: var(--color-primary);
+}
+
+ol li::marker {
+  color: var(--color-secondary);
+}
+
+/* Blockquotes */
+blockquote {
+  border-left: 4px solid var(--color-primary);
+  padding-left: 1rem;
+  color: var(--color-dark-alt);
+  background-color: var(--color-muted);
+}
+
+/* Tables */
+table {
+  border-collapse: collapse;
+}
+
+th {
+  background-color: var(--color-primary);
+  color: var(--color-light);
+  padding: 0.5rem 1rem;
+}
+
+td {
+  border: 1px solid var(--color-border);
+  padding: 0.5rem 1rem;
+}
+
+tr:nth-child(even) {
+  background-color: var(--color-muted);
+}
+
+/* Buttons and interactive elements */
+button, .button {
+  background-color: var(--color-primary);
+  color: var(--color-light);
+  border: none;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  font-family: var(--font-family-sans);
+}
+
+button:hover, .button:hover {
+  background-color: var(--color-secondary);
+}
+
+/* Highlights */
+mark {
+  background-color: var(--color-warning);
+  color: var(--color-dark);
+  padding: 0.2rem 0.4rem;
+}
+
+/* Utility Classes */
+.text-primary { color: var(--color-primary); }
+.text-secondary { color: var(--color-secondary); }
+.text-tertiary { color: var(--color-tertiary); }
+.text-accent { color: var(--color-accent); }
+.text-muted { color: var(--color-muted); }
+
+.bg-primary { background-color: var(--color-primary); }
+.bg-secondary { background-color: var(--color-secondary); }
+.bg-tertiary { background-color: var(--color-tertiary); }
+.bg-accent { background-color: var(--color-accent); }
+.bg-muted { background-color: var(--color-muted); }
+
+.border-primary { border-color: var(--color-primary); }
+.border-secondary { border-color: var(--color-secondary); }
+.border-tertiary { border-color: var(--color-tertiary); }
+
+/* Title slide background from PowerPoint template */
+.slidev-layout.cover {
+  background-image: url('/title-slide-bg.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+/* Ensure title text is visible over background */
+.slidev-layout.cover h1 {
+  color: var(--color-light);
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+}
+
+.slidev-layout.cover p,
+.slidev-layout.cover div {
+  color: var(--color-light);
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.7);
+}
+
+/* Title slide specific layout */
+.slidev-layout.cover {
+  justify-content: flex-start;
+  align-items: flex-start;
+  padding: 0;
+}
+
+/* Logo positioning */
+.title-slide-logos {
+  position: absolute;
+  top: 2rem;
+  left: 2rem;
+  right: 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  z-index: 10;
+}
+
+.title-slide-logos .uplc-logo {
+  height: 60px;
+  width: auto;
+}
+
+.title-slide-logos .io-logo {
+  height: 80px;
+  width: auto;
+}
+
+/* Title content positioning */
+.title-slide-content {
+  position: absolute;
+  left: 2rem;
+  top: 50%;
+  transform: translateY(-50%);
+  max-width: 600px;
+}
+
+.title-slide-content .title-main,
+.title-slide-content .title-sub {
+  font-size: 3.5rem;
+  font-weight: bold;
+  line-height: 1.1;
+  margin: 0;
+  padding: 0;
+  color: var(--color-light);
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+  text-align: left;
+}
+
+.title-slide-content .title-main {
+  margin-bottom: 0.2rem;
+}
+
+.title-slide-content .title-date {
+  margin-top: 2rem;
+  font-size: 1.2rem;
+  color: var(--color-light);
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+}

@@ -1,0 +1,23 @@
+{
+  "name": "uplc-cape-workshop",
+  "version": "1.0.0",
+  "description": "UPLC-CAPE Workshop Presentation",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "slidev --open",
+    "build": "slidev build",
+    "export": "slidev export",
+    "export-pdf": "slidev export --format pdf",
+    "export-pptx": "slidev export --format pptx"
+  },
+  "dependencies": {
+    "@slidev/cli": "^0.49.0",
+    "@slidev/theme-default": "latest",
+    "vue": "^3.4.0"
+  },
+  "devDependencies": {
+    "@unocss/reset": "^0.58.0",
+    "unocss": "^0.58.0"
+  }
+}
