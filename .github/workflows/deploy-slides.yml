@@ -30,17 +30,17 @@ jobs:
         with:
           ref: ${{ inputs.branch || 'main' }}
 
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: latest
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: "20"
           cache: "pnpm"
           cache-dependency-path: doc/slides/pnpm-lock.yaml
-
-      - name: Install pnpm
-        uses: pnpm/action-setup@v4
-        with:
-          version: latest
 
       - name: Install dependencies
         working-directory: doc/slides
