@@ -1,0 +1,76 @@
+{
+  "theme_name": "IO UPLC Presentation Template",
+  "color_scheme": "Default",
+  "colors": {
+    "dark1": {
+      "hex": "#000000",
+      "rgb": [0, 0, 0],
+      "description": "Primary dark color"
+    },
+    "light1": {
+      "hex": "#FFFFFF",
+      "rgb": [255, 255, 255],
+      "description": "Primary light color"
+    },
+    "dark2": {
+      "hex": "#158158",
+      "rgb": [21, 129, 88],
+      "description": "Secondary dark color (teal/green)"
+    },
+    "light2": {
+      "hex": "#F3F3F3",
+      "rgb": [243, 243, 243],
+      "description": "Secondary light color (light gray)"
+    },
+    "accent1": {
+      "hex": "#058DC7",
+      "rgb": [5, 141, 199],
+      "description": "Accent 1 (bright blue)"
+    },
+    "accent2": {
+      "hex": "#50B432",
+      "rgb": [80, 180, 50],
+      "description": "Accent 2 (green)"
+    },
+    "accent3": {
+      "hex": "#ED561B",
+      "rgb": [237, 86, 27],
+      "description": "Accent 3 (orange)"
+    },
+    "accent4": {
+      "hex": "#EDEF00",
+      "rgb": [237, 239, 0],
+      "description": "Accent 4 (yellow)"
+    },
+    "accent5": {
+      "hex": "#24CBE5",
+      "rgb": [36, 203, 229],
+      "description": "Accent 5 (cyan)"
+    },
+    "accent6": {
+      "hex": "#64E572",
+      "rgb": [100, 229, 114],
+      "description": "Accent 6 (light green)"
+    },
+    "hyperlink": {
+      "hex": "#2200CC",
+      "rgb": [34, 0, 204],
+      "description": "Hyperlink color (blue-purple)"
+    },
+    "followed_hyperlink": {
+      "hex": "#551A8B",
+      "rgb": [85, 26, 139],
+      "description": "Followed hyperlink color (purple)"
+    }
+  },
+  "slidev_mapping": {
+    "primary": "#058DC7",
+    "secondary": "#50B432",
+    "tertiary": "#ED561B",
+    "accent": "#24CBE5",
+    "dark": "#000000",
+    "light": "#FFFFFF",
+    "gray": "#F3F3F3",
+    "link": "#2200CC"
+  }
+}

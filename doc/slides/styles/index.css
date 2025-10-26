@@ -1,0 +1,332 @@
+/**
+ * Slidev Theme: IO UPLC
+ * Minimal CSS Reset
+ */
+
+/* ===== CSS Reset ===== */
+
+/* Box sizing reset */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+/* Remove default margin and padding */
+* {
+  margin: 0;
+  padding: 0;
+}
+
+/* Reset root typography */
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+/* Reset body */
+body {
+  min-height: 100vh;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Reset headings */
+h1, h2, h3, h4, h5, h6 {
+  font-size: inherit;
+  font-weight: inherit;
+}
+
+/* Reset lists */
+ol, ul {
+  list-style: none;
+}
+
+/* Reset links */
+a {
+  text-decoration: inherit;
+  color: inherit;
+}
+
+/* Reset buttons */
+button {
+  border: none;
+  background: none;
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+}
+
+/* Reset form elements */
+input,
+textarea,
+select {
+  font: inherit;
+  color: inherit;
+}
+
+/* Reset tables */
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
+/* Reset images and media */
+img,
+picture,
+video,
+canvas,
+svg {
+  display: block;
+  max-width: 100%;
+}
+
+/* Remove default button focus outline */
+button:focus,
+input:focus,
+textarea:focus,
+select:focus {
+  outline: none;
+}
+
+/* Remove default fieldset styles */
+fieldset {
+  border: none;
+}
+
+/* Reset blockquote */
+blockquote {
+  quotes: none;
+}
+
+/* Reset strong and em */
+strong,
+b {
+  font-weight: inherit;
+}
+
+em,
+i {
+  font-style: inherit;
+}
+
+/* ===== Typography ===== */
+
+/* Font families */
+body {
+  font-family: Arial, 'Helvetica Neue', Helvetica, sans-serif;
+}
+
+/* Heading sizes (from PowerPoint template slide master) */
+h1 {
+  font-size: 28pt;
+  line-height: 1.0;
+}
+
+h2 {
+  color: #000000;
+  font-size: 28pt;
+  font-weight: bold;
+  line-height: 1.0;
+  margin-bottom: 3rem;
+}
+
+h3,
+h4,
+h5,
+h6 {
+  font-size: 14pt;
+  line-height: 1.15;
+}
+
+/* Paragraphs */
+p {
+  color: #000000;
+  font-size: 18pt;
+  line-height: 1.2;
+  margin-top: 10pt;
+}
+
+/* Lists */
+ul,
+ol {
+  line-height: 1.2;
+}
+
+li {
+  color: #000000;
+  font-size: 18pt;
+  line-height: 1.2;
+}
+
+/* Nested list items (level 2+) */
+ul ul li,
+ol ol li,
+ul ol li,
+ol ul li {
+  font-size: 14pt;
+}
+
+/* Code blocks */
+pre,
+code {
+  font-size: 18pt;
+  line-height: 1.3;
+}
+
+/* Bold text as subheadings (red color from template) */
+strong {
+  color: #EC1C24;
+  font-size: 18pt;
+  font-weight: bold;
+}
+
+/* ===== Layout-Specific Styles ===== */
+
+/* Default & Center slide layout */
+.slidev-layout.default,
+.slidev-layout.center {
+  background-color: white;
+  padding: 3rem 4rem;
+  position: relative;
+}
+
+/* Fixed header position for default and center layouts */
+.slidev-layout.default h2,
+.slidev-layout.center h2 {
+  position: absolute;
+  top: 3rem;
+  left: 4rem;
+  right: 4rem;
+  z-index: 10;
+}
+
+/* Center layout - vertically center content relative to full slide height */
+.slidev-layout.center {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: stretch;
+}
+
+/* Content wrapper for center layout - ignore header for centering */
+.slidev-layout.center > *:not(h2) {
+  margin: 0;
+}
+
+/* ===== Attention Slide (Custom Class) ===== */
+
+/* Attention slide - full screen dramatic background with centered text */
+.slidev-layout.center.attention,
+.slidev-layout.cover.attention {
+  background-image: url('/attention-bg.jpg') !important;
+  background-size: cover !important;
+  background-position: center !important;
+  background-repeat: no-repeat !important;
+  background-color: transparent !important;
+  padding: 0 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  text-align: center !important;
+}
+
+/* Hide logos on attention slides */
+.slidev-layout.cover.attention .cover-logos,
+.slidev-layout.cover.attention .cover-content {
+  display: none;
+}
+
+/* Attention slide text - large, bold, white, centered */
+.slidev-layout.center.attention h1,
+.slidev-layout.center.attention h2,
+.slidev-layout.center.attention h3,
+.slidev-layout.center.attention p,
+.slidev-layout.center.attention,
+.slidev-layout.cover.attention h1,
+.slidev-layout.cover.attention h2,
+.slidev-layout.cover.attention h3,
+.slidev-layout.cover.attention p {
+  color: white !important;
+  font-size: 3rem !important;
+  font-weight: bold !important;
+  line-height: 1.3 !important;
+  text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.9) !important;
+  max-width: 80%;
+  margin: 0 auto;
+  text-align: center !important;
+}
+
+/* ===== Cover Slide Layout ===== */
+
+/* Cover slide background */
+.slidev-layout.cover {
+  background-image: url('/title-slide-bg.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  padding: 2rem;
+}
+
+/* Cover slide text - large and white */
+.slidev-layout.cover h1,
+.slidev-layout.cover h2,
+.slidev-layout.cover h3,
+.slidev-layout.cover p {
+  color: white;
+  text-align: left;
+  font-size: 3.5rem;
+  line-height: 1.1;
+}
+
+.slidev-layout.cover p {
+  font-size: 1.2rem;
+}
+
+/* Logo positioning - upper left corner */
+.slidev-layout.cover .cover-logos {
+  position: absolute;
+  top: 2rem;
+  left: 2rem;
+  z-index: 10;
+}
+
+.slidev-layout.cover .cover-logos img {
+  height: 80px;
+  width: auto;
+}
+
+/* Cover content positioning */
+.slidev-layout.cover .cover-content {
+  position: absolute;
+  left: 2rem;
+  top: 50%;
+  transform: translateY(-50%);
+  max-width: 800px;
+  margin-top: 6rem;
+}
+
+/* Cover title text */
+.cover-content .cover-main,
+.cover-content .cover-sub {
+  font-size: 3.5rem;
+  font-weight: bold;
+  line-height: 1.1;
+  margin: 0;
+  padding: 0;
+  color: white;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+  text-align: left;
+}
+
+.cover-content .cover-main {
+  margin-bottom: 0.2rem;
+}
+
+/* Cover date/subtitle */
+.cover-content .cover-date {
+  margin-top: 2rem;
+  font-size: 1.8rem;
+  color: white;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+}
