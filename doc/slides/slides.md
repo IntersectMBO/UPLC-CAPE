@@ -261,7 +261,6 @@ Optimization isn't micro-optimization—choosing the right toolchain and optimiz
 -->
 
 ---
-
 layout: center
 class: attention
 ---
@@ -279,7 +278,6 @@ class: attention
 -->
 
 ---
-
 layout: center
 class: attention
 ---
