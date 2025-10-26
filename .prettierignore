@@ -37,3 +37,6 @@ flake.lock
 
 # Log files
 *.log
+
+# Slidev presentations (YAML frontmatter incompatible with Prettier)
+doc/slides/

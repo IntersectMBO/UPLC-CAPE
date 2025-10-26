@@ -60,5 +60,8 @@ excludes = [
   "flake.lock",
 
   # Exclude any auto-generated files
-  "**/*.generated.*"
+  "**/*.generated.*",
+
+  # Exclude Slidev presentations (YAML frontmatter incompatible with Prettier)
+  "doc/slides/**"
 ]
