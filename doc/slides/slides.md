@@ -1465,20 +1465,13 @@ layout: center
 
 ---
 layout: center
-class: text-center
+class: cover
 ---
 
 <div class="cover-logos">
   <img src="/uplc-logo.png" alt="UPLC Conference Logo" />
 </div>
 
-<div class="cover-content">
-  <h1 class="cover-main">Thank You!</h1>
-  <h1 class="cover-sub">Let's Build a Comprehensive</h1>
-  <h1 class="cover-sub">Benchmark Together</h1>
-
-  <p class="cover-date" style="margin-top: 3rem; font-size: 1.2em;">
-    <strong>Live Results:</strong> https://intersectmbo.github.io/UPLC-CAPE/<br/>
-    <strong>Repository:</strong> https://github.com/IntersectMBO/UPLC-CAPE
-  </p>
+<div style="width: 100%; display: flex; justify-content: center; align-items: center;">
+  <h1 style="color: white; font-size: 4rem; font-weight: bold; text-align: center;">Thank You!</h1>
 </div>
