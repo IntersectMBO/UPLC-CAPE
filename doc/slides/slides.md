@@ -1256,229 +1256,101 @@ layout: center
 <v-switch :unmount="true">
 <template #0>
 
-**Choose Your Path**
+**Your Task**
 
-- **Path 1: Simple Scenarios** - Beginners, learn submission process
-- **Path 2: Real-World Scenario** - Advanced, validator patterns
-- **Plinth Users** - In-repo convenience available
-- **Support Available** - Help with submission process & language
-- **Getting Started** - Clone, setup, implement
+Create a complete benchmark for the **Euclidean GCD algorithm**
+
+1. **Create scenario** - Define the problem and test cases
+2. **Create submission** - Implement in your language of choice
+
+Full end-to-end CAPE workflow in ~30 minutes
 
 </template>
 
 <template #1>
 
-**Path 1: Simple Scenarios (Beginners)**
+**Step 1: Create Scenario**
 
-- Implement `factorial_naive_recursion`
-- Use the language/compiler of your choice
-- Focus: Learn the submission process without validator complexity
+Use the CAPE CLI to create a new scenario:
 
-**Benefits:**
-- Straightforward implementation
-- No ScriptContext complexity
-- Full end-to-end experience in 20-30 minutes
+```bash
+cape benchmark new euclidean_gcd
+```
+
+Then:
+- Edit `scenarios/euclidean_gcd/euclidean_gcd.md` with algorithm description
+- Create test cases in `scenarios/euclidean_gcd/cape-tests.json`
+- Define expected behavior for GCD(a, b)
 
 </template>
 
 <template #2>
 
-**Path 2: Real-World Scenario (Advanced)**
+**Step 2: Create Submission**
 
-- Implement **Two-Party Escrow** validator
-- Multi-stage validator interactions, ScriptContext handling
-- Focus: Real-world validator patterns and optimizations
+Implement the GCD algorithm in your preferred language:
 
-**Benefits:**
-- Representative of production validators
-- Learn real optimization techniques
-- More educational and challenging
+```bash
+cape submission new euclidean_gcd <compiler> <version> <handle>
+```
+
+Then:
+- Write your implementation (Plinth, Aiken, OpShin, etc.)
+- Compile to UPLC
+- Place compiled `euclidean_gcd.uplc` in submission directory
+- Validate: `cape submission verify <path>`
 
 </template>
 
 <template #3>
 
-**Plinth Users: In-Repo Convenience**
+**Support & Resources**
 
-- No separate project needed!
-- Implement directly in UPLC-CAPE repo
-- Structure already exists: `plinth-submissions-app/` and `lib/`
-- See `cape.cabal` for examples
+**We'll help with:**
+- CAPE CLI commands (`cape benchmark`, `cape submission`)
+- Test case format and validation
+- Language-specific questions (Plinth, Aiken, etc.)
+- Troubleshooting compilation and validation
 
-**For other languages:**
-- You'll need your own project setup
-- Compile to UPLC, bring the output file
+**Plinth users:** Check `plinth/` directory for examples
 
 </template>
 
 <template #4>
 
-**Support Available**
-
-- UPLC-CAPE submission process help
-- Plinth language guidance
-- Troubleshooting and Q&A
-- We'll circulate to help individuals
-
-</template>
-
-<template #5>
-
 **Getting Started**
 
-1. Clone repo: `git clone https://github.com/IntersectMBO/UPLC-CAPE`
-2. Set up the environment: `nix develop` (binary cache available)
-3. Choose your path and scenario
-4. Start implementing!
+1. Clone: `git clone https://github.com/IntersectMBO/UPLC-CAPE`
+2. Setup: `nix develop` (binary cache available)
+3. Verify: `cape --version`
+4. Start with Step 1!
 
-**Even if you don't finish:**
-- You've learned the process
-- Continue after the conference and submit a PR
-- Goal: understand the workflow and get started
+**Goal:** Complete both steps, or just Step 1 if new to UPLC
 
 </template>
 </v-switch>
 
 <!--
-**Key emphasis:**
+**Task overview:** Single unified track - everyone creates both scenario and submission for Euclidean GCD
 
-- Two clear paths based on experience level
-- Plinth has special convenience (in-repo development)
-- I'm here to help with process and language questions
+[click] **Step 1 emphasis:** Creating a scenario means defining what to benchmark. You'll write the problem description and test cases that validate correctness.
 
-**Workshop structure:**
+[click] **Step 2 emphasis:** Creating a submission means implementing the algorithm. This is where you write actual code in your chosen language and compile to UPLC.
 
-**Time allocation (25-30 minutes total):**
+[click] **Support approach:** I'll circulate to help with CAPE tooling, test formats, and language-specific questions. Don't hesitate to ask!
 
-- Environment setup: 5 minutes
-- Implementation: 15-20 minutes
-- Validation & discussion: 5 minutes
-
-**Path 1: Simple Scenarios**
-
-**Who should choose this:**
-
-- "If you've never implemented a Cardano validator"
-- "If you want to focus on the submission process rather than validator complexity"
-- "If you want a quick win to understand the full workflow"
-
-**What you'll do:**
-
-- "Pick fibonacci_naive_recursion or factorial_naive_recursion"
-- "Implement it in your preferred language: Plinth, Aiken, OpShin, etc."
-- "Follow the fixed algorithm specified in the scenario"
-- "Compile to UPLC, create submission, verify it passes tests"
-
-**Benefits:**
-
-- "Straightforward implementation"
-- "No ScriptContext complexity"
-- "Full end-to-end experience in 20-30 minutes"
-- "You'll understand the entire CAPE workflow"
-
-**Path 2: Real-World Scenario (Linear Vesting)**
-
-**Who should choose this:**
-
-- "If you're comfortable with validators and plutus-ledger API"
-- "If you want to tackle a real-world use case"
-- "If you're ready for multi-transaction interactions"
-
-**What you'll do:**
-
-- "Implement a Linear Vesting validator"
-- "Handle ScriptContext, datum/redeemer validation"
-- "Abstract the off-chain parts (transaction building)"
-- "Focus on the validator logic itself"
-
-**Benefits:**
-
-- "Representative of production validators"
-- "Learn real optimization techniques"
-- "More educational and challenging"
-
-**Plinth in-repo convenience:**
-
-**This is unique to Plinth:**
-
-- "If you're using Plinth, you don't need a separate repo"
-- "The UPLC-CAPE repo already has the project structure"
-- "Look at `plinth-submissions-app/Main.hs` for the generator"
-- "Look at `lib/` for existing implementations (Factorial, Fibonacci, TwoPartyEscrow)"
-- "Add your implementation, compile, generate submission"
-- "This is faster for the workshop setting"
-
-**For other languages:**
-
-- "You'll need your own project setup"
-- "But that's realistic for real contributions"
-- "Compile to UPLC, bring the output file"
-
-**Support I'll provide:**
-
-**UPLC-CAPE submission process:**
-
-- "How to use `cape submission new`"
-- "How to structure metadata.json"
-- "How to run `cape submission verify`"
-- "Common pitfalls and how to avoid them"
-
-**Plinth language:**
-
-- "Syntax questions"
-- "How to use the fixtures system"
-- "PlutusTx compilation pragmas"
-- "Debugging UPLC output"
-
-**Getting started:**
-
-- "git clone https://github.com/IntersectMBO/UPLC-CAPE"
-- "cd UPLC-CAPE"
-- "nix develop (binary cache is configured, should be fast)"
-- "Verify: cape --version, cabal --version"
-
-**Choose your path:**
-
-- "Path 1: Simple → pick fibonacci_naive_recursion or factorial_naive_recursion"
-- "Path 2: Advanced → linear vesting"
-
-**Start implementing:**
-
-- "I'll circulate to help individuals"
-- "Ask questions as you go"
-- "Share your progress, discuss approaches"
-
-**End of workshop:**
-
-- "Even if you don't finish, you've learned the process"
-- "You can continue after the conference and submit a PR"
-- "The goal is to understand the workflow and get started"
-
-**Closing:**
-
-- "Thank you for attending!"
-- "Links: intersectmbo.github.io/UPLC-CAPE (results), github.com/IntersectMBO/UPLC-CAPE (repo)"
-- "Let's build a comprehensive benchmark together!"
--->
-- "Let's build a comprehensive benchmark together!"
+[click] **Success criteria:** Completing both steps is ideal, but finishing Step 1 (scenario creation) alone is valuable - it contributes to CAPE's benchmark suite!
 -->
 
 ---
 layout: center
-class: text-center
+class: cover
 ---
 
 <div class="cover-logos">
   <img src="/uplc-logo.png" alt="UPLC Conference Logo" />
 </div>
 
-<div class="cover-content">
-  <h1 class="cover-main">Thank You!</h1>
-  <h1 class="cover-sub">Let's Build a Comprehensive</h1>
-  <h1 class="cover-sub">Benchmark Together</h1>
-
-  <p class="cover-date" style="margin-top: 3rem; font-size: 1.2em;">
-    <strong>Live Results:</strong> https://intersectmbo.github.io/UPLC-CAPE/<br/>
-    <strong>Repository:</strong> https://github.com/IntersectMBO/UPLC-CAPE
-  </p>
+<div style="width: 100%; display: flex; justify-content: center; align-items: center;">
+  <h1 style="color: white; font-size: 4rem; font-weight: bold; text-align: center;">Thank You!</h1>
 </div>
