@@ -1331,136 +1331,21 @@ layout: center
 3. Choose your path and scenario
 4. Start implementing!
 
-**Even if you don't finish:**
-- You've learned the process
-- Continue after the conference and submit a PR
-- Goal: understand the workflow and get started
-
 </template>
 </v-switch>
 
 <!--
-**Key emphasis:**
+**Overview:** Two paths based on experience level - pick what matches your comfort with validators
 
-- Two clear paths based on experience level
-- Plinth has special convenience (in-repo development)
-- I'm here to help with process and language questions
+[click] **Path 1 emphasis:** Never implemented a validator? This is your path. You'll understand the entire CAPE workflow in 20-30 minutes without validator complexity.
 
-**Workshop structure:**
+[click] **Path 2 emphasis:** Comfortable with plutus-ledger API? Tackle Two-Party Escrow. You'll learn real optimization techniques for production validators.
 
-**Time allocation (25-30 minutes total):**
+[click] **Plinth advantage:** Check `plinth-submissions-app/Main.hs` and `lib/` for examples. Other languages need separate project setup.
 
-- Environment setup: 5 minutes
-- Implementation: 15-20 minutes
-- Validation & discussion: 5 minutes
+[click] **Support scope:** I'll help with CAPE tooling (`cape submission new`, `cape submission verify`) and Plinth-specific questions (fixtures, PlutusTx pragmas).
 
-**Path 1: Simple Scenarios**
-
-**Who should choose this:**
-
-- "If you've never implemented a Cardano validator"
-- "If you want to focus on the submission process rather than validator complexity"
-- "If you want a quick win to understand the full workflow"
-
-**What you'll do:**
-
-- "Pick fibonacci_naive_recursion or factorial_naive_recursion"
-- "Implement it in your preferred language: Plinth, Aiken, OpShin, etc."
-- "Follow the fixed algorithm specified in the scenario"
-- "Compile to UPLC, create submission, verify it passes tests"
-
-**Benefits:**
-
-- "Straightforward implementation"
-- "No ScriptContext complexity"
-- "Full end-to-end experience in 20-30 minutes"
-- "You'll understand the entire CAPE workflow"
-
-**Path 2: Real-World Scenario (Linear Vesting)**
-
-**Who should choose this:**
-
-- "If you're comfortable with validators and plutus-ledger API"
-- "If you want to tackle a real-world use case"
-- "If you're ready for multi-transaction interactions"
-
-**What you'll do:**
-
-- "Implement a Linear Vesting validator"
-- "Handle ScriptContext, datum/redeemer validation"
-- "Abstract the off-chain parts (transaction building)"
-- "Focus on the validator logic itself"
-
-**Benefits:**
-
-- "Representative of production validators"
-- "Learn real optimization techniques"
-- "More educational and challenging"
-
-**Plinth in-repo convenience:**
-
-**This is unique to Plinth:**
-
-- "If you're using Plinth, you don't need a separate repo"
-- "The UPLC-CAPE repo already has the project structure"
-- "Look at `plinth-submissions-app/Main.hs` for the generator"
-- "Look at `lib/` for existing implementations (Factorial, Fibonacci, TwoPartyEscrow)"
-- "Add your implementation, compile, generate submission"
-- "This is faster for the workshop setting"
-
-**For other languages:**
-
-- "You'll need your own project setup"
-- "But that's realistic for real contributions"
-- "Compile to UPLC, bring the output file"
-
-**Support I'll provide:**
-
-**UPLC-CAPE submission process:**
-
-- "How to use `cape submission new`"
-- "How to structure metadata.json"
-- "How to run `cape submission verify`"
-- "Common pitfalls and how to avoid them"
-
-**Plinth language:**
-
-- "Syntax questions"
-- "How to use the fixtures system"
-- "PlutusTx compilation pragmas"
-- "Debugging UPLC output"
-
-**Getting started:**
-
-- "git clone https://github.com/IntersectMBO/UPLC-CAPE"
-- "cd UPLC-CAPE"
-- "nix develop (binary cache is configured, should be fast)"
-- "Verify: cape --version, cabal --version"
-
-**Choose your path:**
-
-- "Path 1: Simple → pick fibonacci_naive_recursion or factorial_naive_recursion"
-- "Path 2: Advanced → linear vesting"
-
-**Start implementing:**
-
-- "I'll circulate to help individuals"
-- "Ask questions as you go"
-- "Share your progress, discuss approaches"
-
-**End of workshop:**
-
-- "Even if you don't finish, you've learned the process"
-- "You can continue after the conference and submit a PR"
-- "The goal is to understand the workflow and get started"
-
-**Closing:**
-
-- "Thank you for attending!"
-- "Links: intersectmbo.github.io/UPLC-CAPE (results), github.com/IntersectMBO/UPLC-CAPE (repo)"
-- "Let's build a comprehensive benchmark together!"
--->
-- "Let's build a comprehensive benchmark together!"
+[click] **Workshop goal:** Even if incomplete, you've learned the process. Continue after and submit a PR - that's success!
 -->
 
 ---
