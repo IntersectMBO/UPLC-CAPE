@@ -39,7 +39,28 @@ mdc: true
 layout: center
 ---
 
-## The Multiplication Principle
+## Agenda
+
+1. Presentation **~30 min**
+1. Hands-on part **~30 min**
+
+---
+layout: center
+---
+
+## Before we start...
+
+**To save time on dev environment initialization**
+
+1. Clone the git repository:<br> <strong class="black">github.com&nbsp;/&nbsp;IntersectMBO&nbsp;/&nbsp;UPLC-CAPE</strong>
+1. Start the nix dev-shell:<br>
+`nix develop` 
+
+---
+layout: center
+---
+
+## Multiplication Principle
 
 **Every validator node runs your code independently**
 
@@ -66,12 +87,12 @@ In a decentralized network, you can't solve performance problems by adding more 
 layout: center
 ---
 
-## The Cost is Multiplied
+## Cost is Multiplied
 
-**The Cost Model**
+**Cost Model**
 
 - Each evaluation step: **29,773 CPU units + 100 memory units**
-- A small inefficiency repeated 100 times = **2.9M extra CPU units**
+- Small inefficiency repeated 100 times = **2.9M extra CPU units**
 - Unlike Web2: you can't "scale up servers" — **every node pays the cost**
 
 <!--
@@ -96,8 +117,6 @@ Fee = (memory × 0.0577) + (CPU_steps × 0.0000721) lovelace
 ```
 
 <!--
-**Key emphasis:**
-
 - The formula shows memory and CPU both matter (different weights)
 - Both resources contribute to the final transaction cost
 
@@ -349,7 +368,6 @@ layout: center
 
 **1. Reproducibility & Determinism:**
 
-- "Before CAPE: 'It runs fast on my machine' isn't useful"
 - "Need exact same results regardless of who runs it, when, or where"
 - "Critical for trust and validation"
 
@@ -385,10 +403,13 @@ layout: center
 
 **CAPE = Cardano Application Performance Evaluation**
 
+</template>
+<template #1>
+
 **CAPE = Comparative Artifact Performance Evaluation**
 
 </template>
-<template #1>
+<template #2>
 
 **Developed & maintained by the Plutus Core team**
 
@@ -396,7 +417,7 @@ layout: center
 - No favoritism, just objective measurement
 
 </template>
-<template #2>
+<template #3>
 
 **Focus on Writing Code, Not Measurement**
 
@@ -405,7 +426,7 @@ layout: center
 - Measurement, validation, aggregation handled automatically
 
 </template>
-<template #3>
+<template #4>
 
 **Same Environment as Mainnet**
 
@@ -414,7 +435,7 @@ layout: center
 - Uses **latest cost model** deployed
 
 </template>
-<template #4>
+<template #5>
 
 **What's Included**
 
@@ -423,7 +444,7 @@ layout: center
 - **Visualization**: Tables and graphs on the web for easy comparison
 
 </template>
-<template #5>
+<template #6>
 
 **Open & Community-Driven**
 
@@ -1535,7 +1556,7 @@ layout: center
 
 **Path 2: Real-World Scenario (Advanced)**
 
-- Implement **Linear Vesting** validator
+- Implement **Two-Party Escrow** validator
 - Multi-stage validator interactions, ScriptContext handling
 - Focus: Real-world validator patterns and optimizations
 

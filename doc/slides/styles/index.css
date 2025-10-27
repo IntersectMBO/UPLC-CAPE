@@ -174,9 +174,15 @@ code {
   line-height: 1.3;
 }
 
-/* Bold text as subheadings (red color from template) */
+/* Bold text as subheadings */
 strong {
   color: #EC1C24;
+  font-size: 18pt;
+  font-weight: bold;
+}
+
+strong.black {
+  color: black;
   font-size: 18pt;
   font-weight: bold;
 }
