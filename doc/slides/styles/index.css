@@ -174,9 +174,15 @@ code {
   line-height: 1.3;
 }
 
-/* Bold text as subheadings (red color from template) */
+/* Bold text as subheadings */
 strong {
   color: #EC1C24;
+  font-size: 18pt;
+  font-weight: bold;
+}
+
+strong.black {
+  color: black;
   font-size: 18pt;
   font-weight: bold;
 }
@@ -216,45 +222,47 @@ strong {
 
 /* ===== Attention Slide (Custom Class) ===== */
 
-/* Attention slide - full screen dramatic background with centered text */
-.slidev-layout.center.attention,
-.slidev-layout.cover.attention {
+/* Attention slide - dramatic text styling for emphasis slides */
+.attention {
   background-image: url('/attention-bg.jpg') !important;
   background-size: cover !important;
   background-position: center !important;
   background-repeat: no-repeat !important;
-  background-color: transparent !important;
-  padding: 0 !important;
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  text-align: center !important;
 }
 
-/* Hide logos on attention slides */
-.slidev-layout.cover.attention .cover-logos,
-.slidev-layout.cover.attention .cover-content {
+/* Hide logos and cover content on attention slides */
+.attention .cover-logos,
+.attention .cover-content {
   display: none;
 }
 
 /* Attention slide text - large, bold, white, centered */
-.slidev-layout.center.attention h1,
-.slidev-layout.center.attention h2,
-.slidev-layout.center.attention h3,
-.slidev-layout.center.attention p,
-.slidev-layout.center.attention,
-.slidev-layout.cover.attention h1,
-.slidev-layout.cover.attention h2,
-.slidev-layout.cover.attention h3,
-.slidev-layout.cover.attention p {
+/* Applied to all text elements regardless of layout */
+.attention h1,
+.attention h2,
+.attention h3,
+.attention p,
+.attention li,
+.attention ul,
+.attention ol {
   color: white !important;
   font-size: 3rem !important;
   font-weight: bold !important;
   line-height: 1.3 !important;
   text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.9) !important;
+  width: 100% !important;
+}
+
+/* Attention slide list items - smaller font, maintain white color */
+.attention li {
+  font-size: 2rem !important;
+  margin-bottom: 1rem;
+}
+
+/* Center content container */
+.attention > * {
   max-width: 80%;
   margin: 0 auto;
-  text-align: center !important;
 }
 
 /* ===== Cover Slide Layout ===== */

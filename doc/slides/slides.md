@@ -15,6 +15,9 @@ drawings:
   persist: false
 transition: slide-left
 mdc: true
+routerMode: hash
+author: Yuriy Lazaryev
+colorSchema: light
 ---
 
 <div class="cover-logos">
@@ -22,7 +25,7 @@ mdc: true
 </div>
 
 <div class="cover-content">
-  <h1 class="cover-main">UPLC CAPE:</h1>
+  <h1 class="cover-main">UPLC-CAPE:</h1>
   <h1 class="cover-sub">Comparative Artifact</h1>
   <h1 class="cover-sub">Performance Evaluation</h1>
 
@@ -39,7 +42,28 @@ mdc: true
 layout: center
 ---
 
-## The Multiplication Principle
+## Agenda
+
+1. Presentation **~30 min**
+1. Hands-on part **~30 min**
+
+---
+layout: center
+---
+
+## Before we start...
+
+**To save time on development environment initialization**
+
+1. Clone the GitHub repository:<br> <strong class="black">github.com&nbsp;/&nbsp;IntersectMBO&nbsp;/&nbsp;UPLC-CAPE</strong>
+1. Start the Nix dev shell:<br>
+`nix develop` 
+
+---
+layout: center
+---
+
+## Multiplication Principle
 
 **Every validator node runs your code independently**
 
@@ -66,40 +90,24 @@ In a decentralized network, you can't solve performance problems by adding more 
 layout: center
 ---
 
-## The Cost is Multiplied
+## Cost is Multiplied
 
-**The Cost Model**
+**Cost Model**
 
-- Each evaluation step: **29,773 CPU units + 100 memory units**
-- A small inefficiency repeated 100 times = **2.9M extra CPU units**
-- Unlike Web2: you can't "scale up servers" — **every node pays the cost**
+- Costs accrue per the on-chain cost model (CPU and memory units)
+  ```
+  Fee = (memory × 0.0577) + (CPU_steps × 0.0000721) lovelace
+  ```
+- A small inefficiency repeated 100 times can add millions of extra CPU units
+- Unlike Web2: you can't "scale up servers" —  **every node pays the cost**
 
 <!--
-**The cost impact:** "A single inefficiency—repeated just 100 times in your validator—costs an extra 2.9 million CPU units. Per transaction. Multiplied across thousands of nodes."
-
-**Key emphasis:**
+**The cost impact:**
 
 - Unlike traditional software where inefficiency is linear, here it's multiplicative
-- Every node pays the cost—you can't scale up servers
-
-**Transition:** "Let's make this concrete with the actual fee formula..."
--->
-
----
-layout: center
----
-
-## Fee Formula
-
-```
-Fee = (memory × 0.0577) + (CPU_steps × 0.0000721) lovelace
-```
-
-<!--
-**Key emphasis:**
-
 - The formula shows memory and CPU both matter (different weights)
 - Both resources contribute to the final transaction cost
+- Every node pays the cost—you can't scale up servers
 
 **Transition:** "Now let's see what these fees look like in practice..."
 -->
@@ -159,7 +167,7 @@ layout: center
 
 - Max memory: **14M units**
 - Max CPU: **10B steps**
-- Max script size: **16KB**
+- Max script size: **16 KB**
 
 <!--
 **Key emphasis:**
@@ -219,26 +227,11 @@ layout: center
 
 ## Real-World Impact: SundaeSwap
 
-<v-switch :unmount="true">
-<template #0>
+**13.8x throughput improvement** (V1 → V3)
 
-**SundaeSwap V1 → V3 Rewrite**
-
-- V1: **164 orders** per transaction
-- V3: **2,258 orders** per transaction
-- **13.8x throughput improvement** from rewriting in Aiken
-
-</template>
-<template #1>
-
-**What Changed?**
-
-- Rewrote validator logic for efficiency
-- Better compilation strategy
-- Same functionality, dramatically different performance
-
-</template>
-</v-switch>
+- V1: 164 orders per transaction
+- V3: 2,258 orders per transaction
+- Rewrote validator logic + better compilation strategy (Aiken)
 
 <!--
 **Key emphasis:**
@@ -265,30 +258,22 @@ layout: center
 class: attention
 ---
 
-## Optimization isn't optional
+## Key Takeaways
+
+- Optimization isn't optional
+- The language/compiler you choose matters
 
 <!--
 **Delivery:**
 
-- Let this statement sink in
+- Let both statements sink in
 - Brief pause for emphasis
-- This is a key takeaway for all audiences
+- These are key takeaways for all audiences
 
-**Transition:** "And equally important..."
--->
-
----
-layout: center
-class: attention
----
-
-## The language/compiler you choose matters
-
-<!--
 **Key emphasis:**
 
 - The SundaeSwap example showed: same functionality, different implementation = 13.8x difference
-- Toolchain choice has massive implications
+- Optimization and toolchain choice have massive implications
 
 **Key takeaway:**
 
@@ -303,55 +288,14 @@ layout: center
 
 ## Benchmarking Challenges
 
-<v-switch :unmount="true">
-<template #0>
-
-**Reproducibility & Determinism**
-
-- Need **deterministic measurement** - same code, same results, every time
-- Eliminate environment-specific variations
-
-</template>
-<template #1>
-
-**Source Code Transparency**
-
-- Publish sources so readers can **understand why these results**
-- Clear mental model: "If I do **this** in source → I get **this** in metrics"
-- Trace from source code to performance outcome
-
-</template>
-<template #2>
-
-**Technical Challenges**
-
-- **Abstract off-chain parts** for validators with multi-transaction interactions
-- One-shot algorithms vs complex validator logic
-- State management
-
-</template>
-<template #3>
-
-**Usability Challenges**
-
-- Present data that's **easy to compare and digest**
-- **Lower barrier to contribution** - enable crowdsourcing
-- Make it accessible for non-experts to participate
-
-</template>
-</v-switch>
+- **Reproducibility & Determinism** - same code, same results, every time
+- **Source Code Transparency** - understand why the results are what they are
+- **Technical Challenges** - abstract off-chain parts for complex validators
+- **Usability Challenges** - easy to compare and lower barrier to contribution
 
 <!--
-**Key emphasis:**
-
-- These are real problems that have prevented good benchmarking in the past
-- CAPE was designed to solve each of these challenges
-
-**1. Reproducibility & Determinism:**
-
-- "Before CAPE: 'It runs fast on my machine' isn't useful"
-- "Need exact same results regardless of who runs it, when, or where"
-- "Critical for trust and validation"
+- "Need exact same results regardless of who runs it, when, or where" 
+"Critical for trust and validation"
 
 **2. Source Code Transparency:**
 
@@ -363,7 +307,6 @@ layout: center
 
 - "Many validators aren't one-shot algorithms - they have state, multi-tx interactions"
 - "Need to abstract the off-chain setup/interaction parts"
-- "Focus benchmark on the validator logic itself"
 
 **4. Usability Challenges:**
 
@@ -383,12 +326,15 @@ layout: center
 <v-switch :unmount="true">
 <template #0>
 
-**CAPE = Cardano Application Performance Evaluation**
-
 **CAPE = Comparative Artifact Performance Evaluation**
 
 </template>
 <template #1>
+
+**CAPE = Cardano Application Performance Evaluation**
+
+</template>
+<template #2>
 
 **Developed & maintained by the Plutus Core team**
 
@@ -396,7 +342,7 @@ layout: center
 - No favoritism, just objective measurement
 
 </template>
-<template #2>
+<template #3>
 
 **Focus on Writing Code, Not Measurement**
 
@@ -405,16 +351,16 @@ layout: center
 - Measurement, validation, aggregation handled automatically
 
 </template>
-<template #3>
+<template #4>
 
 **Same Environment as Mainnet**
 
 - Uses **sandboxed CEK machine** (UPLC interpreter)
-- Same implementation used by the last release of the Cardano node
+- Same implementation used by the latest release of the Cardano node
 - Uses **latest cost model** deployed
 
 </template>
-<template #4>
+<template #5>
 
 **What's Included**
 
@@ -423,7 +369,7 @@ layout: center
 - **Visualization**: Tables and graphs on the web for easy comparison
 
 </template>
-<template #5>
+<template #6>
 
 **Open & Community-Driven**
 
@@ -489,7 +435,34 @@ layout: center
 - "Anyone can contribute new scenarios or submissions"
 - "Everything is transparent and reproducible"
 
-**Transition:** "Let me show you the core entities in CAPE..."
+**Transition:** "Let me show you who benefits from CAPE..."
+-->
+
+---
+layout: center
+---
+
+## Who Benefits
+
+- **Compiler Authors**
+- **dApp Developers**
+- **New Developers**
+
+<!--
+**Compiler Authors:**
+- Fixed algorithm scenarios isolate compiler optimization quality
+- This is an opportunity to showcase and improve, not a ranking competition
+- Learn from other compilers' optimization techniques
+
+**dApp Developers:**
+- CAPE is a repository of battle-tested validator patterns
+- Study expert implementations to improve your own code
+- Cross-pollination: techniques from one ecosystem inspire patterns in another
+
+**New Developers:**
+- Make informed toolchain decisions with objective performance data
+- See trade-offs across compilers before investing time learning
+- "Should you learn Plinth, Aiken, or OpShin?" - CAPE shows real-world differences
 -->
 
 ---
@@ -539,215 +512,6 @@ graph LR
 - All validated against the same test suite
 
 **Transition:** "Now let me show you how these entities work together in practice..."
--->
-
----
-layout: center
----
-
-## Who Benefits: Compiler Authors
-
-<v-switch :unmount="true">
-<template #0>
-
-**Frame of Reference for Optimization**
-
-- Compare your compiler's optimization pipeline against others
-- Validate that your optimizer is competitive
-
-</template>
-<template #1>
-
-**Apples-to-Apples Comparison**
-
-- Same algorithm across all compilers → **differences come from optimization quality**
-- Not about algorithm cleverness, about **compiler effectiveness**
-
-</template>
-<template #2>
-
-**This is more of an Opportunity, less of a Competition**
-
-- Show off what your optimizer can do
-- Identify areas for improvement
-- Learn from other approaches
-
-</template>
-</v-switch>
-
-<!--
-**Key emphasis:**
-
-- This is for the compiler/language authors in the room
-- CAPE gives you a way to prove your optimizer is competitive
-- The "apples-to-apples" concept is crucial
-- **Emphasize heavily**: This is an opportunity to showcase and improve, not a competitive ranking
-
-**Main talking points:**
-
-- "When the algorithm is fixed, the benchmark isolates compiler quality"
-- "You're not competing on who writes the cleverest algorithm—you're showing how well your optimizer works"
-- "This is validation: submit your best output and see how it stacks up"
-- "It's about learning and improving together"
-
-**Example to elaborate:**
-
-- "Imagine 5 different compilers all implement the same naive recursive fibonacci"
-- "Same source logic, different UPLC output"
-- "The performance difference comes purely from your optimization passes: inlining, dead code elimination, constant folding"
-- "This tells you exactly how good your optimizer is"
-
-**For compiler authors specifically:**
-
-- Frame this positively: it's about making the whole ecosystem better
-- "See what techniques others use—learn from each other"
-- "Identify where you have room to improve"
-
-**Transition:** "But compiler authors aren't the only beneficiaries. What about application developers?"
--->
-
----
-layout: center
----
-
-## Who Benefits: dApp Developers
-
-<v-switch :unmount="true">
-<template #0>
-
-**Repository of Best Practices**
-
-- Learn from compiler experts' submissions
-- Study efficient validator patterns contributed by the community
-- See how experts structure performant code
-
-</template>
-<template #1>
-
-**Knowledge Dissemination**
-
-- Compiler authors contribute optimized implementations
-- dApp developers learn from these examples
-- **Cross-pollination**: techniques from one ecosystem inspire patterns in another
-
-</template>
-<template #2>
-
-**Practical Learning**
-
-- "Why is this submission faster?" → study the approach
-- Apply learned patterns to your own validators
-- Improve your code without becoming a compiler expert
-
-</template>
-</v-switch>
-
-<!--
-**Key emphasis:**
-
-- CAPE isn't just rankings—it's a learning resource
-- The benchmark becomes a repository of battle-tested patterns
-- You don't need to build a compiler to benefit
-
-**Main talking points:**
-
-- "Every submission is a case study in efficient UPLC code"
-- "Study the top submissions—see how experts solve common problems"
-- "Learn patterns you can apply to your own validators"
-
-**Concrete examples:**
-
-- "How do the fastest submissions handle list operations?"
-- "What patterns emerge in the top-performing recursive implementations?"
-- "Can I adapt this approach to my own use case?"
-
-**Knowledge flow:**
-
-- Compiler authors contribute their best optimized code
-- dApp developers study these implementations
-- Community learns collectively—not siloed by toolchain
-
-**For dApp developers specifically:**
-
-- "You don't need to understand the compiler internals"
-- "Focus on the patterns: how is data structured? How are operations sequenced?"
-- "Use CAPE as your performance education resource"
-
-**Transition:** "And for newcomers just entering the ecosystem..."
--->
-
----
-layout: center
----
-
-## Who Benefits: New Developers
-
-<v-switch :unmount="true">
-<template #0>
-
-**Making Informed Decisions**
-
-- "Which compiler ecosystem should I invest time in?"
-- See **objective performance data** before committing resources
-- Compare toolchains based on real benchmarks, not marketing claims
-
-</template>
-<template #1>
-
-**Understanding Trade-offs**
-
-- Different compilers have different strengths
-- Some optimize for size, others for speed
-- CAPE shows you the actual differences
-
-</template>
-<template #2>
-
-**Reducing Barrier to Entry**
-
-- Avoid costly mistakes: choose the most optimal compiler for performance-critical apps
-- See the full landscape of available tools
-- Make evidence-based decisions
-
-</template>
-</v-switch>
-
-<!--
-**Key emphasis:**
-
-- For newcomers, toolchain choice is a major decision
-- CAPE provides objective data to inform that choice
-- Reduces risk of committing to the wrong ecosystem
-
-**Analogy to use:**
-
-- "Choosing a compiler is like choosing a programming language"
-- "You want to see real performance data before investing months of learning"
-- "CAPE gives you that data upfront"
-
-**Main talking points:**
-
-- "Should you learn Plinth? Aiken? OpShin?"
-- "CAPE shows you real performance across these ecosystems"
-- "Different tools for different needs—pick the right one for your use case"
-
-**For new developers specifically:**
-
-- "You don't need to try every compiler"
-- "Look at the scenarios closest to your planned application"
-- "See which compilers perform best for your use case"
-
-**Risk reduction:**
-
-- "Avoid spending months learning a toolchain that's too slow for your needs"
-- "See the trade-offs before you commit"
-- "Evidence-based decision making"
-
-**Potential question:** "Can I submit to CAPE if I'm not a compiler author?"
-
-- Answer: "Absolutely! Anyone can submit. Compiler authors often contribute, but dApp developers optimizing specific use cases are equally valuable."
-
-**Transition:** "So we've established why performance matters and who benefits. But measuring UPLC performance accurately is harder than it looks. Let's talk about the challenges..."
 -->
 
 ---
@@ -842,7 +606,7 @@ layout: center
 <template #0>
 
 1. **Raw Metrics**<br> Direct measurements from UPLC evaluation
-2. **Derived Metrics**<br> Calculated from raw metrics, connected to real-world use-cases
+2. **Derived Metrics**<br> Meaningful for dApp developers, calculated from raw metrics
 
 </template>
 
@@ -1046,7 +810,7 @@ layout: center
 
 **Open Algorithm**
 
-- **Purpose**: Demonstrate both compiler and program optimizations E2E
+- **Purpose**: Demonstrate both compiler and program optimizations end to end 
 - Examples:
   - Fibonacci `fibonacci`
   - Factorial `factorial`
@@ -1171,27 +935,13 @@ layout: center
 <v-switch :unmount="true">
 <template #0>
 
-**The Workflow**
-
-1. **Understand the scenario** - Read spec, review test cases
-1. **Create your project** - Separate GitHub repo or local project
-1. **Initialize submission** - `cape submission new <scenario> <compiler> <version> <handle>`
-1. **Fill in metadata** - References to source project, compiler details
-1. **Write README** - Examples, build instructions, optimization notes
-1. **Include UPLC file** - `<scenario>.uplc` compiled output
-1. **Submit PR** - For community review
-
-</template>
-
-<template #1>
-
 **1. Understand the scenario**
 - Read specification in `scenarios/<name>/<name>.md`
 - Review test cases in `cape-tests.json`
 - Understand expected behavior and edge cases
 </template>
 
-<template #2>
+<template #1>
 
 **2. Create a submission(s) project**
 
@@ -1199,13 +949,13 @@ Sources must be publishable for analysis, reproduction, forking
 
 - Dedicated public GitHub repo
   - Example: `github.com/yourname/cape-submissions-mycompiler`
-  - Sources will be **referenced** in submission PR,<br> 
+  - Sources will be **referenced** in submission PR,<br>
     so a stable immutable reference (commit hash) is used.
 - Local project
   - Project sources should be **included** in submission PR
 </template>
 
-<template #3>
+<template #2>
 
 **3. Initialize submission**
 - `cape submission new <scenario> <compiler> <version> <handle> [variant]`
@@ -1213,7 +963,7 @@ Sources must be publishable for analysis, reproduction, forking
 
 </template>
 
-<template #4>
+<template #3>
 
 **4. Fill in metadata** (`metadata.json`)
 - Compiler name, version, contributor handle
@@ -1222,7 +972,7 @@ Sources must be publishable for analysis, reproduction, forking
 
 </template>
 
-<template #5>
+<template #4>
 
 **5. Write README**
 - Explain your approach, optimizations, trade-offs
@@ -1231,7 +981,7 @@ Sources must be publishable for analysis, reproduction, forking
 
 </template>
 
-<template #6>
+<template #5>
 
 **6. Include UPLC file**
 - Your compiled output: `<scenario>.uplc`
@@ -1239,7 +989,7 @@ Sources must be publishable for analysis, reproduction, forking
 
 </template>
 
-<template #7>
+<template #6>
 
 **7. Submit PR**
 - Push your branch, create pull request
@@ -1247,7 +997,7 @@ Sources must be publishable for analysis, reproduction, forking
 - Collaborative feedback improves quality
 </template>
 
-<template #8>
+<template #7>
 
 **8. After merge**
 - GitHub Actions runs `cape submission measure`
@@ -1256,11 +1006,11 @@ Sources must be publishable for analysis, reproduction, forking
 
 </template>
 
-<template #9>
+<template #8>
 
 **Common Gotcha: UPLC Names**
 
-- Named variables in UPLC source `[a-zA-Z][a-zA-Z0-9_']*` 
+- Named variables in UPLC source must match `[a-zA-Z][a-zA-Z0-9_']*`
 - **Always test**: `cape submission verify <path>` before submitting
 - Catches compatibility issues early
 
@@ -1535,7 +1285,7 @@ layout: center
 
 **Path 2: Real-World Scenario (Advanced)**
 
-- Implement **Linear Vesting** validator
+- Implement **Two-Party Escrow** validator
 - Multi-stage validator interactions, ScriptContext handling
 - Focus: Real-world validator patterns and optimizations
 
@@ -1577,7 +1327,7 @@ layout: center
 **Getting Started**
 
 1. Clone repo: `git clone https://github.com/IntersectMBO/UPLC-CAPE`
-2. Setup environment: `nix develop` (binary cache available)
+2. Set up the environment: `nix develop` (binary cache available)
 3. Choose your path and scenario
 4. Start implementing!
 
@@ -1682,8 +1432,6 @@ layout: center
 
 **Getting started:**
 
-**Environment setup:**
-
 - "git clone https://github.com/IntersectMBO/UPLC-CAPE"
 - "cd UPLC-CAPE"
 - "nix develop (binary cache is configured, should be fast)"
@@ -1710,6 +1458,8 @@ layout: center
 
 - "Thank you for attending!"
 - "Links: intersectmbo.github.io/UPLC-CAPE (results), github.com/IntersectMBO/UPLC-CAPE (repo)"
+- "Let's build a comprehensive benchmark together!"
+-->
 - "Let's build a comprehensive benchmark together!"
 -->
 
