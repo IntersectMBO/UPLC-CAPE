@@ -1256,96 +1256,90 @@ layout: center
 <v-switch :unmount="true">
 <template #0>
 
-**Choose Your Path**
+**Your Task**
 
-- **Path 1: Simple Scenarios** - Beginners, learn submission process
-- **Path 2: Real-World Scenario** - Advanced, validator patterns
-- **Plinth Users** - In-repo convenience available
-- **Support Available** - Help with submission process & language
-- **Getting Started** - Clone, setup, implement
+Create a complete benchmark for the **Euclidean GCD algorithm**
+
+1. **Create scenario** - Define the problem and test cases
+2. **Create submission** - Implement in your language of choice
+
+Full end-to-end CAPE workflow in ~30 minutes
 
 </template>
 
 <template #1>
 
-**Path 1: Simple Scenarios (Beginners)**
+**Step 1: Create Scenario**
 
-- Implement `factorial_naive_recursion`
-- Use the language/compiler of your choice
-- Focus: Learn the submission process without validator complexity
+Use the CAPE CLI to create a new scenario:
 
-**Benefits:**
-- Straightforward implementation
-- No ScriptContext complexity
-- Full end-to-end experience in 20-30 minutes
+```bash
+cape benchmark new euclidean_gcd
+```
+
+Then:
+- Edit `scenarios/euclidean_gcd/euclidean_gcd.md` with algorithm description
+- Create test cases in `scenarios/euclidean_gcd/cape-tests.json`
+- Define expected behavior for GCD(a, b)
 
 </template>
 
 <template #2>
 
-**Path 2: Real-World Scenario (Advanced)**
+**Step 2: Create Submission**
 
-- Implement **Two-Party Escrow** validator
-- Multi-stage validator interactions, ScriptContext handling
-- Focus: Real-world validator patterns and optimizations
+Implement the GCD algorithm in your preferred language:
 
-**Benefits:**
-- Representative of production validators
-- Learn real optimization techniques
-- More educational and challenging
+```bash
+cape submission new euclidean_gcd <compiler> <version> <handle>
+```
+
+Then:
+- Write your implementation (Plinth, Aiken, OpShin, etc.)
+- Compile to UPLC
+- Place compiled `euclidean_gcd.uplc` in submission directory
+- Validate: `cape submission verify <path>`
 
 </template>
 
 <template #3>
 
-**Plinth Users: In-Repo Convenience**
+**Support & Resources**
 
-- No separate project needed!
-- Implement directly in UPLC-CAPE repo
-- Structure already exists: `plinth-submissions-app/` and `lib/`
-- See `cape.cabal` for examples
+**We'll help with:**
+- CAPE CLI commands (`cape benchmark`, `cape submission`)
+- Test case format and validation
+- Language-specific questions (Plinth, Aiken, etc.)
+- Troubleshooting compilation and validation
 
-**For other languages:**
-- You'll need your own project setup
-- Compile to UPLC, bring the output file
+**Plinth users:** Check `plinth/` directory for examples
 
 </template>
 
 <template #4>
 
-**Support Available**
-
-- UPLC-CAPE submission process help
-- Plinth language guidance
-- Troubleshooting and Q&A
-- We'll circulate to help individuals
-
-</template>
-
-<template #5>
-
 **Getting Started**
 
-1. Clone repo: `git clone https://github.com/IntersectMBO/UPLC-CAPE`
-2. Set up the environment: `nix develop` (binary cache available)
-3. Choose your path and scenario
-4. Start implementing!
+1. Clone: `git clone https://github.com/IntersectMBO/UPLC-CAPE`
+2. Setup: `nix develop` (binary cache available)
+3. Verify: `cape --version`
+4. Start with Step 1!
+
+**Goal:** Complete both steps, or just Step 1 if new to UPLC
 
 </template>
 </v-switch>
 
 <!--
-**Overview:** Two paths based on experience level - pick what matches your comfort with validators
+**Task overview:** Single unified track - everyone creates both scenario and submission for Euclidean GCD
 
-[click] **Path 1 emphasis:** Never implemented a validator? This is your path. You'll understand the entire CAPE workflow in 20-30 minutes without validator complexity.
+[click] **Step 1 emphasis:** Creating a scenario means defining what to benchmark. You'll write the problem description and test cases that validate correctness.
 
-[click] **Path 2 emphasis:** Comfortable with plutus-ledger API? Tackle Two-Party Escrow. You'll learn real optimization techniques for production validators.
+[click] **Step 2 emphasis:** Creating a submission means implementing the algorithm. This is where you write actual code in your chosen language and compile to UPLC.
 
-[click] **Plinth advantage:** Check `plinth-submissions-app/Main.hs` and `lib/` for examples. Other languages need separate project setup.
+[click] **Support approach:** I'll circulate to help with CAPE tooling, test formats, and language-specific questions. Don't hesitate to ask!
 
-[click] **Support scope:** I'll help with CAPE tooling (`cape submission new`, `cape submission verify`) and Plinth-specific questions (fixtures, PlutusTx pragmas).
-
-[click] **Workshop goal:** Even if incomplete, you've learned the process. Continue after and submit a PR - that's success!
+[click] **Success criteria:** Completing both steps is ideal, but finishing Step 1 (scenario creation) alone is valuable - it contributes to CAPE's benchmark suite!
 -->
 
 ---
