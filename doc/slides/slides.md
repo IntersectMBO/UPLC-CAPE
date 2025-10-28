@@ -33,9 +33,11 @@ colorSchema: light
 </div>
 
 <!--
-**Conference**: UPLC Conference
-**Duration**: 60 minutes
-**Format**: Presentation (30-35 min) + Hands-on Workshop (25-30 min)
+**Opening:**
+
+Welcome to the UPLC Conference! I'm excited to share UPLC-CAPE with you today—
+a framework designed to help us objectively compare performance across different
+Plutus compilers.
 -->
 
 ---
@@ -47,6 +49,17 @@ layout: center
 1. Presentation **~30 min**
 1. Hands-on part **~30 min**
 
+<!--
+**What we'll cover:**
+
+In the next hour, we'll explore why UPLC performance matters,
+see real-world impact examples,
+and then get hands-on with the framework.
+
+By the end, you'll understand how to contribute your own benchmarks and
+help build a performance evaluation resource for the entire Cardano ecosystem.
+-->
+
 ---
 layout: center
 ---
@@ -57,7 +70,15 @@ layout: center
 
 1. Clone the GitHub repository:<br> <strong class="black">github.com&nbsp;/&nbsp;IntersectMBO&nbsp;/&nbsp;UPLC-CAPE</strong>
 1. Start the Nix dev shell:<br>
-`nix develop` 
+`nix develop`
+
+<!--
+[Tell about dev env init]
+
+**Practical note:** "While the environment is initializing, let me explain why we're focusing on UPLC performance today."
+
+**Transition:** It all comes down to one fundamental principle that makes Cardano different from traditional computing environments - and why every optimization you make has massive impact.
+-->
 
 ---
 layout: center
@@ -76,14 +97,14 @@ layout: center
 
 **Key emphasis:**
 
-- This is the fundamental mental model for UPLC performance
+- This is the fundamental **mental model** for UPLC performance
 - The decentralized nature is a feature, but it makes optimization critical
 
 **Why this matters:**
 
 In a decentralized network, you can't solve performance problems by adding more servers—every optimization matters because your code runs thousands of times per transaction.
 
-**Transition:** "Now let's look at what this means for costs..."
+**Transition:** Now let's look at what this means for costs...
 -->
 
 ---
@@ -104,12 +125,12 @@ layout: center
 <!--
 **The cost impact:**
 
-- Unlike traditional software where inefficiency is linear, here it's multiplicative
+- Unlike traditional software where each inefficiency affects one computer, here it affects thousands of validator nodes simultaneously
 - The formula shows memory and CPU both matter (different weights)
 - Both resources contribute to the final transaction cost
 - Every node pays the cost—you can't scale up servers
 
-**Transition:** "Now let's see what these fees look like in practice..."
+**Transition:** Now let's see what these fees look like in practice...
 -->
 
 ---
@@ -127,7 +148,7 @@ layout: center
 - Make the economics concrete: script transactions cost 3-12x more than simple transfers
 - This is the actual cost users pay today
 
-**Transition:** "So what impact can optimization have on these costs?"
+**Transition:** So what impact can optimization have on these costs?
 -->
 
 ---
@@ -140,6 +161,10 @@ layout: center
 - High-volume protocols: **$24k-$150k annual savings**
 
 <!--
+**Why this matters:**
+
+Better optimization means lower fees for users and better user experience overall.
+
 **Key emphasis:**
 
 - For dApp developers: 40-60% reduction is realistic, not theoretical
@@ -150,11 +175,7 @@ layout: center
 - Minswap example: 1M transactions/year × 0.02 ADA savings = $24k annually
 - Developer ROI: 1-2 weeks optimization work = 400-900% first-year return
 
-**Why this matters:**
-
-Better optimization means lower fees for users and better user experience overall.
-
-**Transition:** "But there's a hard ceiling on how much you can execute..."
+**Transition:** But there's a hard ceiling on how much you can execute...
 -->
 
 ---
@@ -170,20 +191,15 @@ layout: center
 - Max script size: **16 KB**
 
 <!--
+All compiled output must fit within these bounds in terms of size as well as execution budget —
+test your worst-case execution paths to ensure you stay under the limits.
+
 **Key emphasis:**
 
 - These aren't soft warnings or best practices—they're hard protocol limits
 - These limits exist for network health (prevent DoS), but they constrain what you can build
 
-**Practical guidance:**
-
-All compiled output must fit within these bounds—test your worst-case execution paths to ensure you stay under the limits.
-
-**Potential question:** "Can these limits change?"
-
-- Answer: Yes, via governance/parameter updates, but they're currently stable. Don't count on them increasing soon.
-
-**Transition:** "So what happens when you exceed these limits?"
+**Transition:** So what happens when you exceed these limits?
 -->
 
 ---
@@ -203,31 +219,31 @@ layout: center
 </div>
 
 <!--
+Unlike web applications that can crash gracefully, blockchain execution is all-or-nothing—scripts either pass all checks or fail completely, forfeiting user collateral.
+
 **Key emphasis:**
 
-- Collateral forfeit is the critical point: users lose money if your script is too expensive
 - No second chances, no partial execution, no refunds
+- Transaction fails
+- Collateral could be lost
 - The consequences are immediate and harsh
-
-**Why this matters:**
-
-Unlike web applications that can crash gracefully, blockchain execution is all-or-nothing—scripts either pass all checks or fail completely, forfeiting user collateral.
 
 **Bottom line:**
 
-- Optimization isn't optional—it's required for execution
+- Optimization isn't optional — it's required for execution
 - This is the "stick" that makes performance critical
 
-**Transition:** "Let's see a real-world example of optimization impact..."
+**Transition:** Let's see a real-world example of optimization impact...
 -->
 
 ---
 layout: center
+disabled: true
 ---
 
 ## Real-World Impact: SundaeSwap
 
-**13.8x throughput improvement** (V1 → V3)
+**13.8x throughput improvement** (V1&nbsp;→ &nbsp;V3)
 
 - V1: 164 orders per transaction
 - V3: 2,258 orders per transaction
@@ -250,7 +266,7 @@ layout: center
 
 Optimization isn't micro-optimization—choosing the right toolchain and optimization strategy can deliver transformational performance improvements.
 
-**Transition:** "This proves optimization matters. Now let's drive the point home..."
+**Transition:** This proves optimization matters. Now let's drive the point home...
 -->
 
 ---
@@ -279,11 +295,12 @@ class: attention
 
 The toolchain you choose has massive implications—optimization can deliver transformational improvements, not just incremental gains.
 
-**Transition:** "So who should care about measuring UPLC performance? Let's break down the stakeholders..."
+**Transition:** So who should care about measuring UPLC performance? Let's break down the stakeholders...
 -->
 
 ---
 layout: center
+class: ''
 ---
 
 ## Benchmarking Challenges
@@ -314,7 +331,7 @@ layout: center
 - "Present results in digestible format - not raw dumps"
 - "Crowdsourcing: anyone should be able to contribute without being a benchmarking expert"
 
-**Transition:** "So how does CAPE address these challenges? Let me introduce the framework..."
+**Transition:** So how does CAPE address these challenges? Let me introduce the framework...
 -->
 
 ---
@@ -435,7 +452,7 @@ layout: center
 - "Anyone can contribute new scenarios or submissions"
 - "Everything is transparent and reproducible"
 
-**Transition:** "Let me show you who benefits from CAPE..."
+**Transition:** Let me show you who benefits from CAPE...
 -->
 
 ---
@@ -511,7 +528,7 @@ graph LR
 - Different compilers solving the same problem
 - All validated against the same test suite
 
-**Transition:** "Now let me show you how these entities work together in practice..."
+**Transition:** Now let me show you how these entities work together in practice...
 -->
 
 ---
@@ -593,7 +610,7 @@ CAPE generates report with tables and graphs
 
 Create scenario → Write implementation → Submit → Automated measurement → HTML reports with comparison tables
 
-**Transition:** "Now let's talk about what metrics we're actually measuring..."
+**Transition:** Now let's talk about what metrics we're actually measuring...
 -->
 
 ---
@@ -733,7 +750,7 @@ For scenarios with multiple evaluations:
 - " - One-time deployment → script size might not matter"
 - " - Reference script heavy usage → smaller size saves on reference fees"
 
-**Transition:** "Let's look at what scenarios are currently available in CAPE..."
+**Transition:** Let's look at what scenarios are currently available in CAPE...
 -->
 
 ---
@@ -923,7 +940,7 @@ layout: center
 - "Community contributions welcome - both synthetic and real-world"
 - "If you have a validator pattern worth benchmarking, contribute it!"
 
-**Transition:** "Now that you've seen what's available, let's talk about how you can create your own submission..."
+**Transition:** Now that you've seen what's available, let's talk about how you can create your own submission...
 -->
 
 ---
@@ -1099,7 +1116,7 @@ Sources must be publishable for analysis, reproduction, forking
 - "Community review maintains quality"
 - "Published sources enable learning and improvement"
 
-**Transition:** "After publishing a submission PR, where can you see the results?"
+**Transition:** After publishing a submission PR, where can you see the results?
 -->
 
 ---
@@ -1244,7 +1261,7 @@ layout: center
 - "Share optimization insights"
 - "Learn from others' approaches"
 
-**Transition:** "Now let's get hands-on. Here's what we're going to do in the workshop portion..."
+**Transition:** Now let's get hands-on. Here's what we're going to do in the workshop portion...
 -->
 
 ---
