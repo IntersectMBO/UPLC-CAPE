@@ -24,7 +24,7 @@ main = do
     "submissions/factorial_naive_recursion/Plinth_1.45.0.0_Unisay/factorial.uplc"
     factorialCode
   writeCodeToFile
-    "submissions/two-party-escrow/Plinth_1.45.0.0_Unisay/two-party-escrow.uplc"
+    "submissions/two_party_escrow/Plinth_1.45.0.0_Unisay/two_party_escrow.uplc"
     twoPartyEscrowValidatorCode
 
 writeCodeToFile :: FilePath -> CompiledCode a -> IO ()

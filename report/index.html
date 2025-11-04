@@ -259,6 +259,62 @@
         <div id="benchmark-table">
             
             <div class="benchmark-section">
+                <div class="benchmark-header" onclick="toggleBenchmark('ecd')">
+                    <div class="name">
+                        <span class="toggle" id="toggle-ecd">▶</span>
+                        <a href="benchmarks/ecd.html" onclick="event.stopPropagation()">ecd</a>
+                    </div>
+                    <div class="count">
+                        
+                            (1 submission)
+                        
+                    </div>
+                </div>
+                <div class="benchmark-content" id="content-ecd">
+                    
+                    <table class="submission-table" id="table-ecd">
+                        <thead>
+                            <tr>
+                                <th onclick="sortTable('ecd', 0)">Compiler</th>
+                                <th onclick="sortTable('ecd', 1)">Version</th>
+                                <th onclick="sortTable('ecd', 2)">Variant</th>
+                                <th onclick="sortTable('ecd', 3)">Author</th>
+                                <th class="numeric" onclick="sortTable('ecd', 4)">CPU Units</th>
+                                <th class="numeric" onclick="sortTable('ecd', 5)">Memory Units</th>
+                                <th class="numeric" onclick="sortTable('ecd', 6)">Script Size</th>
+                                <th class="numeric" onclick="sortTable('ecd', 7)">Term Size</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            
+                            <tr data-cpu="36668998" data-memory="154557" data-script="56" data-term="57">
+                                <td>Plinth</td>
+                                <td>1.45.0.0</td>
+                                <td>default</td>
+                                <td>Unisay</td>
+                                <td class="numeric">
+                                    <span class="tooltip">
+                                        <span class="cpu-value">36.67M</span>
+                                        <span class="tooltiptext">36668998</span>
+                                    </span>
+                                </td>
+                                <td class="numeric">
+                                    <span class="tooltip">
+                                        <span class="memory-value">154.56K</span>
+                                        <span class="tooltiptext">154557</span>
+                                    </span>
+                                </td>
+                                <td class="numeric script-value">56</td>
+                                <td class="numeric term-value">57</td>
+                            </tr>
+                            
+                        </tbody>
+                    </table>
+                    
+                </div>
+            </div>
+            
+            <div class="benchmark-section">
                 <div class="benchmark-header" onclick="toggleBenchmark('factorial')">
                     <div class="name">
                         <span class="toggle" id="toggle-factorial">▶</span>
@@ -798,10 +854,10 @@
             </div>
             
             <div class="benchmark-section">
-                <div class="benchmark-header" onclick="toggleBenchmark('two-party-escrow')">
+                <div class="benchmark-header" onclick="toggleBenchmark('two_party_escrow')">
                     <div class="name">
-                        <span class="toggle" id="toggle-two-party-escrow">▶</span>
-                        <a href="benchmarks/two-party-escrow.html" onclick="event.stopPropagation()">two-party-escrow</a>
+                        <span class="toggle" id="toggle-two_party_escrow">▶</span>
+                        <a href="benchmarks/two_party_escrow.html" onclick="event.stopPropagation()">two_party_escrow</a>
                     </div>
                     <div class="count">
                         
@@ -809,19 +865,19 @@
                         
                     </div>
                 </div>
-                <div class="benchmark-content" id="content-two-party-escrow">
+                <div class="benchmark-content" id="content-two_party_escrow">
                     
-                    <table class="submission-table" id="table-two-party-escrow">
+                    <table class="submission-table" id="table-two_party_escrow">
                         <thead>
                             <tr>
-                                <th onclick="sortTable('two-party-escrow', 0)">Compiler</th>
-                                <th onclick="sortTable('two-party-escrow', 1)">Version</th>
-                                <th onclick="sortTable('two-party-escrow', 2)">Variant</th>
-                                <th onclick="sortTable('two-party-escrow', 3)">Author</th>
-                                <th class="numeric" onclick="sortTable('two-party-escrow', 4)">CPU Units</th>
-                                <th class="numeric" onclick="sortTable('two-party-escrow', 5)">Memory Units</th>
-                                <th class="numeric" onclick="sortTable('two-party-escrow', 6)">Script Size</th>
-                                <th class="numeric" onclick="sortTable('two-party-escrow', 7)">Term Size</th>
+                                <th onclick="sortTable('two_party_escrow', 0)">Compiler</th>
+                                <th onclick="sortTable('two_party_escrow', 1)">Version</th>
+                                <th onclick="sortTable('two_party_escrow', 2)">Variant</th>
+                                <th onclick="sortTable('two_party_escrow', 3)">Author</th>
+                                <th class="numeric" onclick="sortTable('two_party_escrow', 4)">CPU Units</th>
+                                <th class="numeric" onclick="sortTable('two_party_escrow', 5)">Memory Units</th>
+                                <th class="numeric" onclick="sortTable('two_party_escrow', 6)">Script Size</th>
+                                <th class="numeric" onclick="sortTable('two_party_escrow', 7)">Term Size</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -858,7 +914,7 @@
     
     
     <div class="footer">
-        <p>Generated by UPLC-CAPE on 2025-10-23 20:36:31 CEST • <a href="https://github.com/IntersectMBO/UPLC-CAPE">View on GitHub</a></p>
+        <p>Generated by UPLC-CAPE on 2025-11-04 12:03:06 CET • <a href="https://github.com/IntersectMBO/UPLC-CAPE">View on GitHub</a></p>
     </div>
     
     <script>

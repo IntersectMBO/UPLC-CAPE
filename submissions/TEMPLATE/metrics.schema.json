@@ -8,7 +8,7 @@
     "scenario": {
       "type": "string",
       "description": "The benchmark scenario name",
-      "examples": ["fibonacci", "two-party-escrow", "streaming-payments"]
+      "examples": ["fibonacci", "two_party_escrow", "streaming_payments"]
     },
     "version": {
       "type": "string",

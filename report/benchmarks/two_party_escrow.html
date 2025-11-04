@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>UPLC-CAPE Performance Report - factorial_naive_recursion</title>
+    <title>UPLC-CAPE Performance Report - two_party_escrow</title>
     <style>
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
@@ -191,55 +191,55 @@
             <div class="breadcrumb">
                 <a href="../index.html">All benchmarks</a>
                 <span class="breadcrumb-separator">→</span>
-                <span>factorial_naive_recursion</span>
+                <span>two_party_escrow</span>
             </div>
         </div>
     </div>
 
     <div class="benchmark-section">
-        <h2 class="benchmark-title">📊 factorial_naive_recursion benchmark report</h2>
+        <h2 class="benchmark-title">📊 two_party_escrow benchmark report</h2>
         <div class="chart-grid">
             <div class="chart-section-title">Raw measurements</div>
             <div class="chart-container">
                 <div class="chart-title">💻 CPU Units</div>
                 <div class="chart-subtitle">Lower is Better</div>
-                <img src="images/factorial_naive_recursion_cpu_units.png" alt="CPU Units comparison for factorial_naive_recursion">
+                <img src="images/two_party_escrow_cpu_units.png" alt="CPU Units comparison for two_party_escrow">
             </div>
             <div class="chart-container">
                 <div class="chart-title">🧠 Memory Units</div>
                 <div class="chart-subtitle">Lower is Better</div>
-                <img src="images/factorial_naive_recursion_memory_units.png" alt="Memory Units comparison for factorial_naive_recursion">
+                <img src="images/two_party_escrow_memory_units.png" alt="Memory Units comparison for two_party_escrow">
             </div>
             <div class="chart-container">
                 <div class="chart-title">📦 Script Size</div>
                 <div class="chart-subtitle">Lower is Better</div>
-                <img src="images/factorial_naive_recursion_script_size.png" alt="Script Size comparison for factorial_naive_recursion">
+                <img src="images/two_party_escrow_script_size.png" alt="Script Size comparison for two_party_escrow">
             </div>
             <div class="chart-container">
                 <div class="chart-title">🌳 Term Size</div>
                 <div class="chart-subtitle">Lower is Better</div>
-                <img src="images/factorial_naive_recursion_term_size.png" alt="Term Size comparison for factorial_naive_recursion">
+                <img src="images/two_party_escrow_term_size.png" alt="Term Size comparison for two_party_escrow">
             </div>
             <div class="chart-section-title">Derived metrics</div>
             <div class="chart-container">
                 <div class="chart-title">💻 CPU Tx Budget Usage (%)</div>
                 <div class="chart-subtitle"></div>
-                <img src="images/factorial_naive_recursion_tx_budget_cpu.png" alt="CPU Transaction Budget comparison for factorial_naive_recursion">
+                <img src="images/two_party_escrow_tx_budget_cpu.png" alt="CPU Transaction Budget comparison for two_party_escrow">
             </div>
             <div class="chart-container">
                 <div class="chart-title">🧠 Memory Tx Budget Usage (%)</div>
                 <div class="chart-subtitle"></div>
-                <img src="images/factorial_naive_recursion_tx_budget_mem.png" alt="Memory Transaction Budget comparison for factorial_naive_recursion">
+                <img src="images/two_party_escrow_tx_budget_mem.png" alt="Memory Transaction Budget comparison for two_party_escrow">
             </div>
             <div class="chart-container">
                 <div class="chart-title">💰 Total Fee (₳)</div>
                 <div class="chart-subtitle">Lower is Better</div>
-                <img src="images/factorial_naive_recursion_total_fee.png" alt="Total Fee comparison for factorial_naive_recursion">
+                <img src="images/two_party_escrow_total_fee.png" alt="Total Fee comparison for two_party_escrow">
             </div>
             <div class="chart-container">
                 <div class="chart-title">📈 Scripts per Transaction</div>
                 <div class="chart-subtitle">Higher is Better</div>
-                <img src="images/factorial_naive_recursion_scripts_per_tx.png" alt="Capacity comparison for factorial_naive_recursion">
+                <img src="images/two_party_escrow_scripts_per_tx.png" alt="Capacity comparison for two_party_escrow">
             </div>
         </div>
     </div>
@@ -266,64 +266,19 @@
             </thead>
             <tbody>
                 <tr>
-                    <td>Plinth<br><a href="https://github.com/IntersectMBO/UPLC-CAPE/blob/main/submissions/factorial_naive_recursion/Plinth_1.45.0.0_Unisay/source/README.md" target="_blank" rel="noopener" class="source-link">src</a> <a href="https://github.com/IntersectMBO/UPLC-CAPE/blob/main/submissions/factorial_naive_recursion/Plinth_1.45.0.0_Unisay/factorial_naive_recursion.uplc" target="_blank" rel="noopener" class="source-link">UPLC</a></td>
+                    <td>Plinth<br><a href="https://github.com/IntersectMBO/UPLC-CAPE/blob/main/submissions/two_party_escrow/Plinth_1.45.0.0_Unisay/source/README.md" target="_blank" rel="noopener" class="source-link">src</a> <a href="https://github.com/IntersectMBO/UPLC-CAPE/blob/main/submissions/two_party_escrow/Plinth_1.45.0.0_Unisay/two_party_escrow.uplc" target="_blank" rel="noopener" class="source-link">UPLC</a></td>
                     <td>1.45.0.0</td>
                     <td>default</td>
                     <td>Unisay</td>
-                    <td class="numeric">42281975</td>
-                    <td class="numeric">170290</td>
-                    <td class="numeric">42</td>
-                    <td class="numeric">40</td>
-                    <td class="numeric">0.01</td>
-                    <td class="numeric">0.3%&nbsp;mem<br>0.1%&nbsp;cpu</td>
-                    <td class="numeric">0.1%&nbsp;mem<br>0.0%&nbsp;cpu</td>
-                    <td class="numeric">340</td>
-                    <td class="numeric">1509</td>
-                </tr>
-                <tr>
-                    <td>Plutarch<br><a href="https://github.com/IntersectMBO/UPLC-CAPE/blob/main/submissions/factorial_naive_recursion/Plutarch_1.11.0_SeungheonOh/source/README.md" target="_blank" rel="noopener" class="source-link">src</a> <a href="https://github.com/IntersectMBO/UPLC-CAPE/blob/main/submissions/factorial_naive_recursion/Plutarch_1.11.0_SeungheonOh/factorial_naive_recursion.uplc" target="_blank" rel="noopener" class="source-link">UPLC</a></td>
-                    <td>1.11.0</td>
-                    <td>default</td>
-                    <td>SeungheonOh</td>
-                    <td class="numeric">42281975</td>
-                    <td class="numeric">170290</td>
-                    <td class="numeric">52</td>
-                    <td class="numeric">47</td>
-                    <td class="numeric">0.01</td>
-                    <td class="numeric">0.3%&nbsp;mem<br>0.1%&nbsp;cpu</td>
-                    <td class="numeric">0.1%&nbsp;mem<br>0.0%&nbsp;cpu</td>
-                    <td class="numeric">340</td>
-                    <td class="numeric">1509</td>
-                </tr>
-                <tr>
-                    <td>Scalus<br><a href="https://github.com/IntersectMBO/UPLC-CAPE/blob/main/submissions/factorial_naive_recursion/Scalus_0.12.1_Unisay/source/README.md" target="_blank" rel="noopener" class="source-link">src</a> <a href="https://github.com/IntersectMBO/UPLC-CAPE/blob/main/submissions/factorial_naive_recursion/Scalus_0.12.1_Unisay/factorial_naive_recursion.uplc" target="_blank" rel="noopener" class="source-link">UPLC</a></td>
-                    <td>0.12.1</td>
-                    <td>default</td>
-                    <td>Unisay</td>
-                    <td class="numeric">42521975</td>
-                    <td class="numeric">171790</td>
-                    <td class="numeric">57</td>
-                    <td class="numeric">53</td>
-                    <td class="numeric">0.01</td>
-                    <td class="numeric">0.3%&nbsp;mem<br>0.1%&nbsp;cpu</td>
-                    <td class="numeric">0.1%&nbsp;mem<br>0.0%&nbsp;cpu</td>
-                    <td class="numeric">345</td>
-                    <td class="numeric">1531</td>
-                </tr>
-                <tr>
-                    <td>OpShin<br><a href="https://github.com/IntersectMBO/UPLC-CAPE/blob/main/submissions/factorial_naive_recursion/OpShin_1.0.0_nielstron/source/README.md" target="_blank" rel="noopener" class="source-link">src</a> <a href="https://github.com/IntersectMBO/UPLC-CAPE/blob/main/submissions/factorial_naive_recursion/OpShin_1.0.0_nielstron/factorial_naive_recursion.uplc" target="_blank" rel="noopener" class="source-link">UPLC</a></td>
-                    <td>0.26.1</td>
-                    <td>default</td>
-                    <td>Niels Mündler</td>
-                    <td class="numeric">72921975</td>
-                    <td class="numeric">361790</td>
-                    <td class="numeric">88</td>
-                    <td class="numeric">104</td>
-                    <td class="numeric">0.03</td>
-                    <td class="numeric">0.6%&nbsp;mem<br>0.2%&nbsp;cpu</td>
-                    <td class="numeric">0.1%&nbsp;mem<br>0.0%&nbsp;cpu</td>
-                    <td class="numeric">161</td>
-                    <td class="numeric">716</td>
+                    <td class="numeric">2393038216</td>
+                    <td class="numeric">9158210</td>
+                    <td class="numeric">3939</td>
+                    <td class="numeric">4257</td>
+                    <td class="numeric">0.76</td>
+                    <td class="numeric">5.2%&nbsp;mem<br>1.9%&nbsp;cpu</td>
+                    <td class="numeric">1.2%&nbsp;mem<br>0.5%&nbsp;cpu</td>
+                    <td class="numeric">19</td>
+                    <td class="numeric">85</td>
                 </tr>
             </tbody>
         </table>
@@ -332,12 +287,12 @@
     <div class="breadcrumb">
         <a href="../index.html">All benchmarks</a>
         <span class="breadcrumb-separator">→</span>
-        <span>factorial_naive_recursion</span>
+        <span>two_party_escrow</span>
     </div>
 
     <div class="footer">
         <p>Generated by UPLC-CAPE • <a href="https://github.com/IntersectMBO/UPLC-CAPE">View on GitHub</a></p>
-        <p class="timestamp">Generated on: 2025-11-04 12:02:38 CET</p>
+        <p class="timestamp">Generated on: 2025-11-04 12:03:00 CET</p>
     </div>
 </body>
 </html>

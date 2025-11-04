@@ -316,7 +316,7 @@ main() {
   else
     echo "INFO: Testing integration workflow..."
   fi
-  local test_name="test-$$"
+  local test_name="test_$$"
   run_test "create benchmark" "(cd \"$PROJECT_ROOT\" && PROJECT_ROOT=\"$SANDBOX_DIR\" bash \"$REPO_ROOT/scripts/cape-subcommands/benchmark/new.sh\" $test_name)" 15
   run_test "create submission" "(cd \"$PROJECT_ROOT\" && PROJECT_ROOT=\"$SANDBOX_DIR\" bash \"$REPO_ROOT/scripts/cape-subcommands/submission/new.sh\" $test_name TestComp 1.0 user)" 15
   run_test "verify submission created" "test -d $SANDBOX_DIR/submissions/$test_name/TestComp_1.0_user" 2

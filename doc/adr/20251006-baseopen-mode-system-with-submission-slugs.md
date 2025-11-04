@@ -212,7 +212,7 @@ cape submission report fibonacci --mode base
 - Clear algorithmic prescriptions for base mode
 - Room for optimization exploration in open mode
 
-**Real-world Scenarios** (two-party-escrow):
+**Real-world Scenarios** (two_party_escrow):
 
 - Typically only open mode
 - Complex validators lack clear "base" algorithm

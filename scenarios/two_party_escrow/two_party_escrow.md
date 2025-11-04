@@ -8,7 +8,7 @@ The Two-Party Escrow benchmark is a **real-world smart contract scenario** desig
 
 Implement a two-party escrow validator that handles deposit, accept, and refund operations and compile it as a fully-applied UPLC program.
 
-**Required Files**: Submit `two-party-escrow.uplc`, `metadata.json`, `metrics.json` to `submissions/two-party-escrow/{Compiler}_{Version}_{Handle}/`
+**Required Files**: Submit `two_party_escrow.uplc`, `metadata.json`, `metrics.json` to `submissions/two_party_escrow/{Compiler}_{Version}_{Handle}/`
 
 **Target**: Both Accept and Refund sequences → Expected result: `() (unit)`  
 **Metrics**: CPU units, Memory units, Script size (bytes), Term size  
@@ -444,7 +444,7 @@ Use the standard metrics schema as defined in `submissions/TEMPLATE/metrics.sche
 
 ```json
 {
-  "scenario": "two-party-escrow",
+  "scenario": "two_party_escrow",
   "version": "1.0.0",
   "measurements": {
     "cpu_units": {

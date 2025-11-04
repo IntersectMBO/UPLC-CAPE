@@ -84,8 +84,8 @@ if [ ! -d "$PROJECT_ROOT/submissions" ]; then
   exit 1
 fi
 
-# Validate benchmark name pattern when provided (lowercase, underscores/hyphens allowed)
-valid_benchmark_name() { [[ $1 =~ ^[a-z][a-z0-9_-]*[a-z0-9]$|^[a-z]$ ]]; }
+# Validate benchmark name pattern when provided (lowercase, underscores only)
+valid_benchmark_name() { [[ $1 =~ ^[a-z][a-z0-9_]*[a-z0-9]$|^[a-z]$ ]]; }
 
 # CSV format: benchmark,timestamp,language,version,user,variant,cpu_units,memory_units,script_size_bytes,term_size,execution_fee_lovelace,reference_script_fee_lovelace,total_fee_lovelace,tx_memory_budget_pct,tx_cpu_budget_pct,block_memory_budget_pct,block_cpu_budget_pct,scripts_per_tx,scripts_per_block,submission_dir
 # Field positions:
@@ -1620,7 +1620,7 @@ else
   benchmark="$1"
   if ! valid_benchmark_name "$benchmark"; then
     log_err "Invalid benchmark name: '$benchmark'"
-    echo "Expected pattern: lowercase with optional hyphens (e.g., two-party-escrow)" >&2
+    echo "Expected pattern: lowercase with optional underscores (e.g., two_party_escrow)" >&2
     exit 1
   fi
 

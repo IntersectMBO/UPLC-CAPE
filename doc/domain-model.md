@@ -246,7 +246,7 @@ This design encourages experimentation and allows the community to discover opti
 
 ### Naming Conventions
 
-- Scenario names: lowercase, hyphen-separated (e.g., "fibonacci", "two-party-escrow")
+- Scenario names: lowercase, underscore-separated (e.g., "fibonacci", "two_party_escrow")
 - Submission IDs: `{compiler}_{version}_{contributor}` format
 - File names: scenario name + appropriate extension
 
