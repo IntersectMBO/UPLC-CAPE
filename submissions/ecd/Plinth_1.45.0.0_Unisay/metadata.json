@@ -1,0 +1,32 @@
+{
+  "compiler": {
+    "name": "Plinth",
+    "version": "1.45.0.0",
+    "commit_hash": "f67df1cd505bf9779ff106ba2eba3aededcf4732"
+  },
+  "compilation_config": {
+    "optimization_level": "Plinth",
+    "target": "uplc",
+    "flags": ["Plinth"],
+    "environment": {
+      "dependencies": {
+        "plutus-tx": "1.45.0.0",
+        "plutus-core": "1.45.0.0",
+        "plutus-ledger-api": "1.45.0.0"
+      }
+    }
+  },
+  "contributors": [
+    {
+      "name": "Unisay",
+      "organization": "UPLC-CAPE Project"
+    }
+  ],
+  "submission": {
+    "date": "2025-11-03T00:00:00Z",
+    "source_available": true,
+    "source_repository": "https://github.com/IntersectMBO/UPLC-CAPE",
+    "source_commit_hash": "f67df1cd505bf9779ff106ba2eba3aededcf4732",
+    "implementation_notes": "ECD (Euclidean Common Divisor) implementation using Plinth with naive recursive algorithm"
+  }
+}

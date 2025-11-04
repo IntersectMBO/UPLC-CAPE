@@ -81,6 +81,7 @@ library
     Cape.ScriptContextBuilder
     Cape.Tests
     Cape.Verify
+    Ecd
     Factorial
     Fibonacci
     PlutusCore.Data.Compact.Parser
@@ -151,6 +152,7 @@ test-suite cape-tests
     Cape.Protocol.ParametersSpec
     Cape.ScriptContextBuilderSpec
     Cape.TestsSpec
+    EcdSpec
     FactorialSpec
     FibonacciSpec
     PlutusCore.Data.Compact.ParserSpec

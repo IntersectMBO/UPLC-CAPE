@@ -1,0 +1,138 @@
+{
+  "evaluations": [
+    {
+      "cpu_units": 1646133,
+      "description": "ECD of 0 and 12 should return 12 (edge case: first argument is zero)",
+      "execution_result": "success",
+      "memory_units": 7207,
+      "name": "ecd_0_12"
+    },
+    {
+      "cpu_units": 937821,
+      "description": "ECD of 12 and 0 should return 12 (edge case: second argument is zero)",
+      "execution_result": "success",
+      "memory_units": 4404,
+      "name": "ecd_12_0"
+    },
+    {
+      "cpu_units": 1646133,
+      "description": "ECD of 7 and 7 should return 7 (edge case: identical numbers)",
+      "execution_result": "success",
+      "memory_units": 7207,
+      "name": "ecd_7_7"
+    },
+    {
+      "cpu_units": 3062757,
+      "description": "ECD of 6 and 9 should return 3",
+      "execution_result": "success",
+      "memory_units": 12813,
+      "name": "ecd_6_9"
+    },
+    {
+      "cpu_units": 2354445,
+      "description": "ECD of 12 and 8 should return 4",
+      "execution_result": "success",
+      "memory_units": 10010,
+      "name": "ecd_12_8"
+    },
+    {
+      "cpu_units": 3771069,
+      "description": "ECD of 15 and 25 should return 5",
+      "execution_result": "success",
+      "memory_units": 15616,
+      "name": "ecd_15_25"
+    },
+    {
+      "cpu_units": 3771069,
+      "description": "ECD of 17 and 19 should return 1 (coprime numbers)",
+      "execution_result": "success",
+      "memory_units": 15616,
+      "name": "ecd_17_19"
+    },
+    {
+      "cpu_units": 3771069,
+      "description": "ECD of 13 and 29 should return 1 (coprime numbers)",
+      "execution_result": "success",
+      "memory_units": 15616,
+      "name": "ecd_13_29"
+    },
+    {
+      "cpu_units": 3062757,
+      "description": "ECD of 48 and 18 should return 6",
+      "execution_result": "success",
+      "memory_units": 12813,
+      "name": "ecd_48_18"
+    },
+    {
+      "cpu_units": 2354445,
+      "description": "ECD of 100 and 75 should return 25",
+      "execution_result": "success",
+      "memory_units": 10010,
+      "name": "ecd_100_75"
+    },
+    {
+      "cpu_units": 3062757,
+      "description": "ECD of 1071 and 462 should return 21 (larger numbers)",
+      "execution_result": "success",
+      "memory_units": 12813,
+      "name": "ecd_1071_462"
+    },
+    {
+      "cpu_units": 2354445,
+      "description": "ECD of 2520 and 1890 should return 630 (larger numbers)",
+      "execution_result": "success",
+      "memory_units": 10010,
+      "name": "ecd_2520_1890"
+    },
+    {
+      "cpu_units": 2354445,
+      "description": "ECD of -12 and 8 should return 4 (negative first argument handled via abs)",
+      "execution_result": "success",
+      "memory_units": 10010,
+      "name": "ecd_negative_12_8"
+    },
+    {
+      "cpu_units": 2519653,
+      "description": "ECD of 12 and -8 should return 4 (negative second argument handled via abs)",
+      "execution_result": "success",
+      "memory_units": 10412,
+      "name": "ecd_12_negative_8"
+    }
+  ],
+  "execution_environment": {
+    "evaluator": "unknown"
+  },
+  "measurements": {
+    "block_cpu_budget_pct": 0.009427672500000001,
+    "block_memory_budget_pct": 0.02518709677419355,
+    "cpu_units": {
+      "maximum": 3771069,
+      "median": 2437049,
+      "minimum": 937821,
+      "sum": 36668998,
+      "sum_negative": 0,
+      "sum_positive": 36668998
+    },
+    "execution_fee_lovelace": 11562,
+    "memory_units": {
+      "maximum": 15616,
+      "median": 10211,
+      "minimum": 4404,
+      "sum": 154557,
+      "sum_negative": 0,
+      "sum_positive": 154557
+    },
+    "reference_script_fee_lovelace": 840,
+    "script_size_bytes": 56,
+    "scripts_per_block": 3970,
+    "scripts_per_tx": 896,
+    "term_size": 57,
+    "total_fee_lovelace": 12402,
+    "tx_cpu_budget_pct": 0.037710690000000005,
+    "tx_memory_budget_pct": 0.11154285714285715
+  },
+  "scenario": "ecd",
+  "timestamp": "2025-11-04T10:30:13Z",
+  "version": "1.0.0",
+  "notes": "Generated using UPLC-CAPE measure tool"
+}
