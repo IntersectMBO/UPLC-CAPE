@@ -35,6 +35,7 @@ import Cape.Tests (
   resolveTestInput,
  )
 import Control.Exception qualified as E
+import Control.Monad (foldM)
 import Data.Aeson (ToJSON, (.=))
 import Data.Aeson qualified as Json
 import Data.Aeson.Encode.Pretty qualified as AesonPretty
@@ -50,6 +51,7 @@ import PlutusCore.Data.Compact.Parser (parseBuiltinDataText, renderParseError)
 import PlutusCore.Data.Compact.Printer (dataToCompactText)
 import PlutusCore.Evaluation.Machine.ExBudget (ExBudget (..))
 import PlutusCore.Evaluation.Machine.ExMemory (ExCPU (..), ExMemory (..))
+import PlutusCore.MkPlc qualified as MkPlc
 import PlutusCore.Size (unSize)
 import PlutusLedgerApi.Common (serialiseCompiledCode)
 import PlutusLedgerApi.V3 qualified as V3
@@ -198,30 +200,30 @@ evaluateTestSuite results = do
         else
           E.throwIO (VerificationError "Some tests failed")
 
--- | Run a single test case
-runSingleTest ::
+{- | Apply a list of inputs sequentially to a UPLC program
+BuiltinData and ScriptContext inputs must be used alone (single input).
+-}
+applyInputsToProgram ::
   UPLC.Program UPLC.Name PLC.DefaultUni PLC.DefaultFun PLC.SrcSpan ->
   FilePath ->
   TestSuite ->
   TestCase ->
+  [TestInput] ->
   Bool ->
-  IO (TestResult, EvaluationMetrics)
-runSingleTest program baseDir testSuite testCase debugContext = do
-  (testResult, evalRes) <- case tcInput testCase of
-    Nothing -> do
-      -- No input - run program directly
-      code <- compileProgram program Nothing
-      let evalRes = evaluateCompiledCode code
-      testResult <- checkTestResult evalRes testCase baseDir
-      pure (testResult, evalRes)
-    Just testInput -> do
-      -- Apply input to validator based on input type
+  IO (UPLC.Program UPLC.Name PLC.DefaultUni PLC.DefaultFun PLC.SrcSpan)
+applyInputsToProgram program _ _ _ [] _ =
+  -- No inputs - return program as is
+  pure program
+applyInputsToProgram program baseDir testSuite testCase inputs debugContext =
+  -- Fold over inputs, applying each one sequentially
+  foldM applyOneInput program inputs
+  where
+    applyOneInput currentProgram testInput = do
       inputText <- resolveTestInput baseDir testSuite testInput
 
       case tiType testInput of
         UPLC -> do
-          -- Parse input as UPLC term and apply to program
-          -- Need to wrap the term in a minimal program for parsing
+          -- Parse input as UPLC term and apply to current program
           let wrappedInput = "(program 1.1.0 " <> inputText <> ")"
           inputTerm <- case PLC.runQuote (runExceptT (UPLCParser.parseProgram wrappedInput)) ::
                               Either
@@ -232,11 +234,6 @@ runSingleTest program baseDir testSuite testCase debugContext = do
               let UPLC.Program _ _ term = inputProgram
               pure term
 
-          -- Create applied program by applying the main program to the input term
-          let UPLC.Program ann ver mainTerm = program
-              appliedTerm = UPLC.Apply ann mainTerm inputTerm
-              appliedProgram = UPLC.Program ann ver appliedTerm
-
           -- Output debug information if requested
           when debugContext $ do
             putStrLn $
@@ -245,12 +242,13 @@ runSingleTest program baseDir testSuite testCase debugContext = do
                 <> "]: raw_uplc input: "
                 <> show inputText
 
-          appliedCode <- compileProgram appliedProgram Nothing
-          let evalRes = evaluateCompiledCode appliedCode
-          testResult <- checkTestResult evalRes testCase baseDir
-          pure (testResult, evalRes)
+          -- Apply the input term to the current program's term
+          let UPLC.Program ann ver currentTerm = currentProgram
+              appliedTerm = UPLC.Apply ann currentTerm inputTerm
+          pure $ UPLC.Program ann ver appliedTerm
         _ -> do
-          -- Handle BuiltinData and ScriptContext (existing logic)
+          -- Handle BuiltinData and ScriptContext inputs
+          -- Parse and apply using MkPlc.mkConstant (same as compileProgram does)
           builtinData <- parseBuiltinDataFromText inputText
 
           -- Output debug information if requested
@@ -260,10 +258,31 @@ runSingleTest program baseDir testSuite testCase debugContext = do
             putStrLn $
               "DEBUG_CAPE[" <> toString (tcName testCase) <> "]: " <> show compactText
 
-          appliedCode <- compileProgram program (Just builtinData)
-          let evalRes = evaluateCompiledCode appliedCode
-          testResult <- checkTestResult evalRes testCase baseDir
-          pure (testResult, evalRes)
+          -- Apply BuiltinData using mkConstant (same approach as compileProgram)
+          let UPLC.Program ann ver currentTerm = currentProgram
+              coreData = Builtins.builtinDataToData builtinData
+              dataConstant = MkPlc.mkConstant ann coreData
+              appliedTerm = UPLC.Apply ann currentTerm dataConstant
+          pure $ UPLC.Program ann ver appliedTerm
+
+-- | Run a single test case
+runSingleTest ::
+  UPLC.Program UPLC.Name PLC.DefaultUni PLC.DefaultFun PLC.SrcSpan ->
+  FilePath ->
+  TestSuite ->
+  TestCase ->
+  Bool ->
+  IO (TestResult, EvaluationMetrics)
+runSingleTest program baseDir testSuite testCase debugContext = do
+  -- Apply inputs sequentially to the program
+  let inputs = tcInputs testCase
+  finalProgram <-
+    applyInputsToProgram program baseDir testSuite testCase inputs debugContext
+
+  -- Evaluate the fully-applied program
+  code <- compileProgram finalProgram Nothing
+  let evalRes = evaluateCompiledCode code
+  testResult <- checkTestResult evalRes testCase baseDir
 
   -- Extract metrics from evaluation result
   let budget = evalResultBudget evalRes
@@ -475,12 +494,12 @@ instance ToJSON Measurements where
         execFee
         refScriptFee
         totFee
-        txMemBudget
-        txCpuBudget
-        blockMemBudget
-        blockCpuBudget
+        txMemBudgetPct
+        txCpuBudgetPct
+        blockMemBudgetPct
+        blockCpuBudgetPct
         scriptsPerTx
-        scriptsPerBlock
+        scriptsPerBlk
       ) =
       Json.object
         [ "cpu_units" .= cpuAgg
@@ -490,12 +509,12 @@ instance ToJSON Measurements where
         , "execution_fee_lovelace" .= execFee
         , "reference_script_fee_lovelace" .= refScriptFee
         , "total_fee_lovelace" .= totFee
-        , "tx_memory_budget_pct" .= txMemBudget
-        , "tx_cpu_budget_pct" .= txCpuBudget
-        , "block_memory_budget_pct" .= blockMemBudget
-        , "block_cpu_budget_pct" .= blockCpuBudget
+        , "tx_memory_budget_pct" .= txMemBudgetPct
+        , "tx_cpu_budget_pct" .= txCpuBudgetPct
+        , "block_memory_budget_pct" .= blockMemBudgetPct
+        , "block_cpu_budget_pct" .= blockCpuBudgetPct
         , "scripts_per_tx" .= scriptsPerTx
-        , "scripts_per_block" .= scriptsPerBlock
+        , "scripts_per_block" .= scriptsPerBlk
         ]
 
 -- | Complete metrics data structure matching the schema
