@@ -144,7 +144,7 @@ parseAddressSpec dataStructures addressSpec = case addressSpec of
 
 1. **lib/Cape/Tests.hs**: Core parsing logic with new AddressSpec data type
 2. **schemas/cape-tests.schema.json**: JSON schema with structural address format
-3. **scenarios/two-party-escrow/cape-tests.json**: Example usage in test specifications
+3. **scenarios/two_party_escrow/cape-tests.json**: Example usage in test specifications
 
 ### Runtime Conversion
 

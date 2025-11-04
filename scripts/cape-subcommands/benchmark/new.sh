@@ -22,7 +22,7 @@ fi
 if [ $# -eq 0 ]; then
   echo "Error: Benchmark name is required" >&2
   echo "Usage: cape benchmark new <name>" >&2
-  echo "Examples: fibonacci, two-party-escrow, dao-voting" >&2
+  echo "Examples: fibonacci, two_party_escrow, dao_voting" >&2
   exit 1
 elif [ $# -eq 1 ]; then
   BENCHMARK_NAME="$1"
@@ -31,11 +31,11 @@ else
   exit 1
 fi
 
-# Validate benchmark name format (lowercase, hyphens allowed)
-if ! echo "$BENCHMARK_NAME" | grep -qE '^[a-z][a-z0-9-]*[a-z0-9]$|^[a-z]$'; then
-  echo "Error: Benchmark name must be lowercase, start with a letter, and can contain hyphens"
-  echo "Valid examples: fibonacci, two-party-escrow, dao-voting"
-  echo "Invalid examples: TwoParty, two_party, 2escrow, -escrow, escrow-"
+# Validate benchmark name format (lowercase, underscores allowed)
+if ! echo "$BENCHMARK_NAME" | grep -qE '^[a-z][a-z0-9_]*[a-z0-9]$|^[a-z]$'; then
+  echo "Error: Benchmark name must be lowercase, start with a letter, and can contain underscores"
+  echo "Valid examples: fibonacci, two_party_escrow, dao_voting"
+  echo "Invalid examples: TwoParty, two-party, 2escrow, _escrow, escrow_"
   exit 1
 fi
 

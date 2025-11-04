@@ -1,6 +1,6 @@
 # Benchmark Implementation Notes
 
-**Scenario**: `two-party-escrow`
+**Scenario**: `two_party_escrow`
 
 **Submission ID**: `Plinth_1.0.0_plinth-team` (Format: `Language_Version_GitHubHandle`)
 

@@ -26,25 +26,25 @@ This will:
 Benchmark names should be:
 
 - Lowercase letters only
-- Can contain hyphens to separate words
+- Can contain underscores to separate words
 - Descriptive of the computational task
 - Start and end with a letter or number
 
 **Valid examples:**
 
 - `fibonacci`
-- `two-party-escrow`
-- `dao-voting`
-- `merkle-proof`
-- `nft-minting`
+- `two_party_escrow`
+- `dao_voting`
+- `merkle_proof`
+- `nft_minting`
 
 **Invalid examples:**
 
 - `TwoParty` (uppercase)
-- `two_party` (underscore)
+- `two-party` (hyphen)
 - `2escrow` (starts with number)
-- `-escrow` (starts with hyphen)
-- `escrow-` (ends with hyphen)
+- `_escrow` (starts with underscore)
+- `escrow_` (ends with underscore)
 
 ## Template Structure
 

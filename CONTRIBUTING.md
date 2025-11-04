@@ -108,9 +108,9 @@ cape benchmark new <benchmark-name>
 
 The benchmark name should be:
 
-- Lowercase letters and hyphens only
+- Lowercase letters and underscores only
 - Descriptive of the computational task
-- Examples: `fibonacci`, `two-party-escrow`, `dao-voting`, `merkle-proof`
+- Examples: `fibonacci`, `two_party_escrow`, `dao_voting`, `merkle_proof`
 
 ### 2. Complete the Benchmark Definition
 

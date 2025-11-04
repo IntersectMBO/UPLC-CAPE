@@ -90,14 +90,14 @@ cape benchmark list
 
 # View a specific benchmark
 cape benchmark fibonacci
-cape benchmark two-party-escrow
+cape benchmark two_party_escrow
 
 # Generate JSON statistics for all benchmarks
 cape benchmark stats
 
 # Create a submission for your compiler
 cape submission new fibonacci MyCompiler 1.0.0 myhandle
-cape submission new two-party-escrow MyCompiler 1.0.0 myhandle
+cape submission new two_party_escrow MyCompiler 1.0.0 myhandle
 ```
 
 ---
@@ -131,7 +131,7 @@ For implementation details, see [ADR: PR Preview Deployment](doc/adr/20251022-pr
 | [Fibonacci (Naive Recursion)](scenarios/fibonacci_naive_recursion/fibonacci_naive_recursion.md) | Synthetic | Prescribed naive recursive algorithm for compiler optimization comparison | Ready |
 | [Factorial](scenarios/factorial/factorial.md) | Synthetic | Recursive algorithm performance | Ready |
 | [Factorial (Naive Recursion)](scenarios/factorial_naive_recursion/factorial_naive_recursion.md) | Synthetic | Prescribed naive recursive algorithm for compiler optimization comparison | Ready |
-| [Two-Party Escrow](scenarios/two-party-escrow/two-party-escrow.md) | Real-world | Smart contract escrow validator | Ready |
+| [Two-Party Escrow](scenarios/two_party_escrow/two_party_escrow.md) | Real-world | Smart contract escrow validator | Ready |
 | Streaming Payments | Real-world | Payment channel implementation | Planned |
 | Simple DAO Voting | Real-world | Governance mechanism | Planned |
 | Time-locked Staking | Real-world | Staking protocol | Planned |
@@ -375,7 +375,7 @@ UPLC-CAPE/
 │   ├── TEMPLATE/                 # Template for new scenarios
 │   ├── fibonacci.md
 │   ├── factorial.md
-│   └── two-party-escrow.md
+│   └── two_party_escrow.md
 ├── submissions/                  # Compiler submissions (per scenario)
 │   ├── TEMPLATE/                 # Templates and schemas
 │   │   ├── metadata.schema.json
@@ -384,7 +384,7 @@ UPLC-CAPE/
 │   │   └── metrics-template.json
 │   ├── fibonacci/
 │   │   └── MyCompiler_1.0.0_handle/
-│   └── two-party-escrow/
+│   └── two_party_escrow/
 │       └── MyCompiler_1.0.0_handle/
 ├── scripts/                      # Project CLI tooling
 │   ├── cape.sh                   # Main CLI

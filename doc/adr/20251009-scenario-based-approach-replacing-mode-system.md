@@ -64,7 +64,7 @@ scenarios/
 ├── fibonacci_naive_recursion/    # Prescribed naive recursive algorithm
 ├── factorial/                    # Open optimization (any approach)
 ├── factorial_naive_recursion/    # Prescribed naive recursive algorithm
-└── two-party-escrow/             # Open optimization only
+└── two_party_escrow/             # Open optimization only
 ```
 
 **Submission Naming (Simplified):**
