@@ -14,13 +14,13 @@ import UntypedPlutusCore.DeBruijn (unDeBruijnTerm)
 main :: IO ()
 main = do
   writeCodeToFile
-    "submissions/fibonacci/Plinth_1.45.0.0_Unisay_base/fibonacci.uplc"
+    "submissions/fibonacci_naive_recursion/Plinth_1.45.0.0_Unisay/fibonacci.uplc"
     fibonacciCode
   writeCodeToFile
-    "submissions/factorial/Plinth_1.45.0.0_Unisay_base/factorial.uplc"
+    "submissions/factorial_naive_recursion/Plinth_1.45.0.0_Unisay/factorial.uplc"
     factorialCode
   writeCodeToFile
-    "submissions/two-party-escrow/Plinth_1.45.0.0_Unisay_open/two-party-escrow.uplc"
+    "submissions/two-party-escrow/Plinth_1.45.0.0_Unisay/two-party-escrow.uplc"
     twoPartyEscrowValidatorCode
 
 writeCodeToFile :: FilePath -> CompiledCode a -> IO ()

@@ -15,7 +15,7 @@ Example usage:
 
 @
 suite <- loadTestSuite "scenarios/fibonacci/cape-tests.json"
-input <- resolveTestInput baseDir suite (tcInput testCase)
+inputs <- mapM (resolveTestInput baseDir suite) (tcInputs testCase)
 @
 -}
 module Cape.Tests (
@@ -143,18 +143,21 @@ data TestCase = TestCase
   -- ^ Whether test is marked pending
   --
   --     JSON: @"pending": true@
-  , tcInput :: Maybe TestInput
-  -- ^ Input specification (optional for error-only tests)
+  , tcInputs :: [TestInput]
+  -- ^ List of inputs to be applied sequentially (empty for error-only tests)
   --
   --     JSON example:
   --     @
-  --     "input": {
-  --       "type": "script_context",
-  --       "script_context": {
-  --         "baseline": "@successful_deposit",
-  --         "patches": []
+  --     "inputs": [
+  --       {
+  --         "type": "uplc",
+  --         "value": "(con integer 48)"
+  --       },
+  --       {
+  --         "type": "uplc",
+  --         "value": "(con integer 18)"
   --       }
-  --     }
+  --     ]
   --     @
   , tcExpected :: ExpectedResult
   -- ^ Expected result specification
@@ -223,7 +226,7 @@ data InputType
     --
     --     JSON: @"type": "script_context"@
     ScriptContext
-  deriving stock (Show)
+  deriving stock (Show, Eq)
 
 -- | Specification for ScriptContext baseline.
 data BaselineSpec
@@ -458,7 +461,7 @@ instance FromJSON TestCase where
       <$> o .: "name"
       <*> o .:? "description"
       <*> o .:? "pending"
-      <*> o .:? "input"
+      <*> o .: "inputs"
       <*> o .: "expected"
 
 instance FromJSON TestInput where

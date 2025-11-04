@@ -4,7 +4,9 @@ import Prelude
 
 import Cape.Tests
 import Data.Aeson qualified as Json
+import Data.List ((!!))
 import Data.Map.Strict qualified as Map
+import Data.String.Interpolate (__i)
 import PlutusCore.Data.Compact.Parser (parseBuiltinDataText)
 import Test.Hspec
 
@@ -466,3 +468,67 @@ spec = do
             1000000
             (Json.String "test")
         ]
+
+  describe "Multiple inputs support" do
+    context "JSON parsing with inputs array" do
+      it "parses single input in inputs array" do
+        let jsonText =
+              [__i|{
+              "name": "test_single",
+              "inputs": [{"type": "uplc", "value": "(con integer 42)"}],
+              "expected": {"type": "value", "content": "(con integer 42)"}
+            }|]
+        case Json.eitherDecode jsonText of
+          Left err -> expectationFailure $ "Failed to parse: " <> err
+          Right (testCase :: TestCase) -> do
+            tcName testCase `shouldBe` "test_single"
+            length (tcInputs testCase) `shouldBe` 1
+
+      it "parses multiple UPLC inputs in inputs array" do
+        let jsonText =
+              [__i|{
+              "name": "test_multi",
+              "inputs": [
+                {"type": "uplc", "value": "(con integer 48)"},
+                {"type": "uplc", "value": "(con integer 18)"}
+              ],
+              "expected": {"type": "value", "content": "(con integer 6)"}
+            }|]
+        case Json.eitherDecode jsonText of
+          Left err -> expectationFailure $ "Failed to parse: " <> err
+          Right (testCase :: TestCase) -> do
+            tcName testCase `shouldBe` "test_multi"
+            length (tcInputs testCase) `shouldBe` 2
+            tiType (tcInputs testCase !! 0) `shouldBe` UPLC
+            tiType (tcInputs testCase !! 1) `shouldBe` UPLC
+
+      it "parses empty inputs array for error-only tests" do
+        let jsonText =
+              [__i|{
+              "name": "test_empty",
+              "inputs": [],
+              "expected": {"type": "error"}
+            }|]
+        case Json.eitherDecode jsonText of
+          Left err -> expectationFailure $ "Failed to parse: " <> err
+          Right (testCase :: TestCase) -> do
+            tcName testCase `shouldBe` "test_empty"
+            length (tcInputs testCase) `shouldBe` 0
+
+      it "parses multiple BuiltinData inputs" do
+        let jsonText =
+              [__i|{
+              "name": "test_builtin_multi",
+              "inputs": [
+                {"type": "builtin_data", "value": "42"},
+                {"type": "builtin_data", "value": "100"}
+              ],
+              "expected": {"type": "value", "content": "(con integer 142)"}
+            }|]
+        case Json.eitherDecode jsonText of
+          Left err -> expectationFailure $ "Failed to parse: " <> err
+          Right (testCase :: TestCase) -> do
+            tcName testCase `shouldBe` "test_builtin_multi"
+            length (tcInputs testCase) `shouldBe` 2
+            tiType (tcInputs testCase !! 0) `shouldBe` BuiltinData
+            tiType (tcInputs testCase !! 1) `shouldBe` BuiltinData
