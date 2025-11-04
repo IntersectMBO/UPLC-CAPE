@@ -2,6 +2,7 @@ module Main (main) where
 
 import Prelude
 
+import Ecd (ecdCode)
 import Factorial (factorialCode)
 import Fibonacci (fibonacciCode)
 import PlutusCore.Pretty qualified as PP
@@ -13,6 +14,9 @@ import UntypedPlutusCore.DeBruijn (unDeBruijnTerm)
 
 main :: IO ()
 main = do
+  writeCodeToFile
+    "submissions/ecd/Plinth_1.45.0.0_Unisay/ecd.uplc"
+    ecdCode
   writeCodeToFile
     "submissions/fibonacci_naive_recursion/Plinth_1.45.0.0_Unisay/fibonacci.uplc"
     fibonacciCode
