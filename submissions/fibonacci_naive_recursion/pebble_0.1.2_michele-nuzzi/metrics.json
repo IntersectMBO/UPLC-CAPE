@@ -1,0 +1,38 @@
+{
+  "scenario": "fibonacci_naive_recursion",
+  "version": "1.0.0",
+  "measurements": {
+    "cpu_units": {
+      "maximum": "<integer>",
+      "sum": "<integer>",
+      "minimum": "<integer>",
+      "median": "<integer>",
+      "sum_positive": "<integer>",
+      "sum_negative": "<integer>"
+    },
+    "memory_units": {
+      "maximum": "<integer>",
+      "sum": "<integer>",
+      "minimum": "<integer>",
+      "median": "<integer>",
+      "sum_positive": "<integer>",
+      "sum_negative": "<integer>"
+    },
+    "script_size_bytes": "<integer>",
+    "term_size": "<integer>"
+  },
+  "evaluations": [
+    {
+      "name": "<test_case_name>",
+      "description": "<description_of_test>",
+      "cpu_units": "<integer>",
+      "memory_units": "<integer>",
+      "execution_result": "success|error"
+    }
+  ],
+  "execution_environment": {
+    "evaluator": "<evaluator-version>"
+  },
+  "timestamp": "<ISO-8601 timestamp>",
+  "notes": "<optional notes>"
+}
