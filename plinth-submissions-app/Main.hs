@@ -22,7 +22,7 @@ main = do
     "submissions/fibonacci_naive_recursion/Plinth_1.45.0.0_Unisay/fibonacci.uplc"
     fibonacciCode
   writeCodeToFile
-    "submissions/fibonacci/Plinth_1.45.0.0_Unisay/fibonacci.uplc"
+    "submissions/fibonacci/Plinth_1.45.0.0_Unisay_tailrec/fibonacci.uplc"
     fibonacciIterativeCode
   writeCodeToFile
     "submissions/factorial_naive_recursion/Plinth_1.45.0.0_Unisay/factorial.uplc"
