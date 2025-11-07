@@ -1,0 +1,29 @@
+{
+  "compiler": {
+    "name": "pebble",
+    "version": "pebble",
+    "commit_hash": "pebble"
+  },
+  "compilation_config": {
+    "optimization_level": "pebble",
+    "target": "uplc",
+    "flags": ["pebble"],
+    "environment": {
+      "dependencies": {
+        "<package>": "0.1.2"
+      }
+    }
+  },
+  "contributors": [
+    {
+      "name": "Michele Nuzzi",
+      "organization": "Harmonic Labs",
+      "contact": "michele@harmoniclabs.tech"
+    }
+  ],
+  "submission": {
+    "date": "2025-11-06",
+    "source_available": "true",
+    "implementation_notes": "pebble"
+  }
+}
