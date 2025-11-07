@@ -7,10 +7,7 @@
   "compilation_config": {
     "optimization_level": "Aiken",
     "target": "uplc",
-    "flags": ["Aiken"],
-    "environment": {
-      "dependencies": {}
-    }
+    "flags": ["Aiken"]
   },
   "contributors": [
     {

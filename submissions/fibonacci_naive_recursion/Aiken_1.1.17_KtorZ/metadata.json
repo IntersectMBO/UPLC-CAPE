@@ -7,10 +7,7 @@
   "compilation_config": {
     "optimization_level": "N/A",
     "target": "uplc",
-    "flags": [],
-    "environment": {
-      "dependencies": {}
-    }
+    "flags": []
   },
   "contributors": [
     {

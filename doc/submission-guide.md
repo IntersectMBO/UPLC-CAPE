@@ -278,12 +278,7 @@ Use `submissions/TEMPLATE/metadata-template.json` as a starting point:
   "compilation_config": {
     "target": "uplc",
     "optimization_level": "O2",
-    "flags": ["--optimize", "--inline"],
-    "environment": {
-      "dependencies": {
-        "some-package": "1.2.3"
-      }
-    }
+    "flags": ["--optimize", "--inline"]
   },
   "contributors": [
     {

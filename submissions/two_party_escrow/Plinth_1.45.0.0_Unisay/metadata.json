@@ -7,14 +7,7 @@
   "compilation_config": {
     "optimization_level": "Plinth",
     "target": "uplc",
-    "flags": ["Plinth"],
-    "environment": {
-      "dependencies": {
-        "plutus-tx": "1.45.0.0",
-        "plutus-core": "1.45.0.0",
-        "plutus-ledger-api": "1.45.0.0"
-      }
-    }
+    "flags": ["Plinth"]
   },
   "contributors": [
     {

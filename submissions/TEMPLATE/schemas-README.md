@@ -39,7 +39,6 @@ Validates the structure of submission metadata files that contain information ab
   - `target`: Must be "uplc"
   - `optimization_level`: Optimization level used (optional)
   - `flags`: Additional compiler flags (optional)
-  - `environment`: Environment configuration (optional)
 - `submission`: Submission information containing:
   - `date`: ISO-8601 timestamp when submission was created
   - `source_available`: Whether source code is publicly available

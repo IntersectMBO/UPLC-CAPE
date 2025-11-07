@@ -217,13 +217,7 @@ The output includes formatted metrics, best value indicators, and submission met
      "compilation_config": {
        "target": "uplc",
        "optimization_level": "O2",
-       "flags": ["--inline-functions", "--optimize-recursion"],
-       "environment": {
-         "dependencies": {
-           "plutus-tx": "1.52.0.0",
-           "plutus-core": "1.52.0.0"
-         }
-       }
+       "flags": ["--inline-functions", "--optimize-recursion"]
      },
      "contributors": [
        {
@@ -244,7 +238,6 @@ The output includes formatted metrics, best value indicators, and submission met
 
    **For reproducibility**, include:
    - `compiler.commit_hash`: Exact compiler version used
-   - `compilation_config.environment.dependencies`: All dependency versions
    - `submission.source_repository` and `submission.source_commit_hash`: Link to source code with exact commit
 
 1. Verify and measure
