@@ -53,24 +53,6 @@
             ["-O2", "--inline-functions"],
             ["--no-dead-code-elimination"]
           ]
-        },
-        "environment": {
-          "type": "object",
-          "description": "Environment configuration",
-          "properties": {
-            "dependencies": {
-              "type": "object",
-              "description": "Package dependencies and their versions",
-              "patternProperties": {
-                "^[a-zA-Z0-9_-]+$": {
-                  "type": "string",
-                  "description": "Version string for the dependency"
-                }
-              },
-              "additionalProperties": false
-            }
-          },
-          "additionalProperties": false
         }
       },
       "required": ["target"],

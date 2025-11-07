@@ -86,7 +86,6 @@ A **Compiler** represents a specific version of a tool that can transform source
 - `optimization_level`: Level of optimization applied
 - `flags`: Command-line flags or options used
 - `dependencies`: Package dependencies and their versions
-- `environment`: Additional environment-specific settings
 
 ### 6. Benchmark Results
 
@@ -155,7 +154,6 @@ erDiagram
         string optimization_level
         array flags
         object dependencies
-        object environment
     }
 
     BENCHMARK_RESULTS {
