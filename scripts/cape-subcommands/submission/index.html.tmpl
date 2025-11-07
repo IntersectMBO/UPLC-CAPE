@@ -38,164 +38,133 @@
             color: #6c757d;
             margin: 5px 0;
         }
-        
-        /* Benchmark Summary Table Styles */
-        .benchmark-summary {
+
+        /* Category Sections */
+        .category-section {
             background: white;
             border-radius: 10px;
-            padding: 20px;
+            padding: 30px;
             margin-bottom: 40px;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
-        .benchmark-summary h2 {
+        .category-header {
+            border-bottom: 3px solid #e9ecef;
+            padding-bottom: 15px;
+            margin-bottom: 25px;
+        }
+        .category-header h2 {
             color: #667eea;
-            margin-bottom: 20px;
+            margin: 0 0 10px 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
-        .controls {
-            margin-bottom: 15px;
-            text-align: right;
+        .category-header .icon {
+            font-size: 1.5em;
         }
-        .controls button {
-            background-color: #667eea;
-            color: white;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 5px;
-            cursor: pointer;
-            margin-left: 10px;
-            transition: background-color 0.3s ease;
+        .category-description {
+            color: #6c757d;
+            font-size: 0.95em;
+            margin: 10px 0 0 0;
+            font-style: italic;
         }
-        .controls button:hover {
-            background-color: #5a67d8;
-        }
-        
-        /* Expandable Benchmark Sections */
-        .benchmark-section {
-            margin-bottom: 15px;
+
+        /* Scenario Cards */
+        .scenario-card {
             border: 1px solid #e9ecef;
             border-radius: 8px;
-            overflow: hidden;
+            padding: 20px;
+            margin-bottom: 20px;
+            transition: box-shadow 0.2s ease;
         }
-        .benchmark-header {
-            padding: 15px 20px;
-            background-color: #f8f9fa;
-            cursor: pointer;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            transition: background-color 0.2s ease;
+        .scenario-card:hover {
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
-        .benchmark-header:hover {
-            background-color: #e9ecef;
-        }
-        .benchmark-header .name {
+        .scenario-name {
+            font-size: 1.2em;
             font-weight: 600;
-            color: #495057;
-            display: flex;
-            align-items: center;
+            color: #333;
+            margin-bottom: 5px;
         }
-        .benchmark-header .name a {
+        .scenario-name a {
             color: #667eea;
+            text-decoration: none;
+        }
+        .scenario-name a:hover {
             text-decoration: underline;
-            margin-left: 5px;
+        }
+        .scenario-meta {
+            color: #6c757d;
+            font-size: 0.9em;
+            margin-bottom: 15px;
+        }
+
+        /* Winners Display */
+        .winners {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+        .winner-item {
+            background: #f8f9fa;
+            border-left: 4px solid #667eea;
+            padding: 12px 15px;
+            border-radius: 4px;
+        }
+        .winner-label {
+            font-size: 0.85em;
+            color: #6c757d;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 5px;
             display: flex;
             align-items: center;
             gap: 5px;
-            text-transform: capitalize;
         }
-        .benchmark-header .name a:hover {
-            color: #5a67d8;
-        }
-        .benchmark-header .name a::before {
-            content: "📊";
-            font-size: 0.9em;
-            margin-right: 5px;
-        }
-        .benchmark-header .toggle {
-            font-family: monospace;
-            margin-right: 10px;
-            user-select: none;
-        }
-        .benchmark-header .count {
-            color: #6c757d;
-            font-size: 0.9em;
-        }
-        .benchmark-content {
-            display: none;
-            padding: 0;
-            background-color: white;
-            animation: slideDown 0.3s ease;
-        }
-        .benchmark-content.expanded {
-            display: block;
-        }
-        @keyframes slideDown {
-            from {
-                opacity: 0;
-                transform: translateY(-10px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-        
-        /* Submission Table Styles */
-        .submission-table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-        .submission-table th {
-            background-color: #f8f9fa;
-            padding: 12px;
-            text-align: left;
+        .winner-value {
+            color: #333;
             font-weight: 600;
-            color: #495057;
-            border-bottom: 2px solid #dee2e6;
-            position: sticky;
-            top: 0;
-            cursor: pointer;
-            user-select: none;
+            font-size: 1.1em;
+            margin-bottom: 8px;
         }
-        .submission-table th:hover {
-            background-color: #e9ecef;
-        }
-        .submission-table th.numeric {
-            text-align: right;
-        }
-        .submission-table td {
-            padding: 12px;
-            border-bottom: 1px solid #dee2e6;
-        }
-        .submission-table td.numeric {
-            text-align: right;
+        .winner-submission {
+            color: #667eea;
+            font-size: 0.9em;
             font-family: 'Monaco', 'Menlo', monospace;
+            margin-bottom: 4px;
         }
-        .submission-table tr:hover {
-            background-color: #f8f9fa;
+        .winner-more {
+            color: #6c757d;
+            font-size: 0.85em;
+            font-style: italic;
+            margin-top: 4px;
         }
-        .submission-table tr:last-child td {
-            border-bottom: none;
+
+        /* Medal icons */
+        .medal {
+            font-size: 1em;
         }
-        
-        /* Best value indicators */
-        .best-value {
-            color: #28a745;
-            font-weight: 600;
-        }
-        .best-value::after {
-            content: " ⭐";
-            font-size: 0.8em;
-        }
-        
-        /* Empty state */
+
+        /* No submissions state */
         .no-submissions {
             padding: 20px;
             text-align: center;
             color: #6c757d;
             font-style: italic;
+            background: #f8f9fa;
+            border-radius: 8px;
         }
-        
+
+        /* Empty category state */
+        .empty-category {
+            padding: 30px;
+            text-align: center;
+            color: #6c757d;
+            font-style: italic;
+        }
+
         .footer {
             text-align: center;
             margin-top: 50px;
@@ -203,40 +172,17 @@
             color: #6c757d;
             border-top: 1px solid #e9ecef;
         }
-        .timestamp {
-            text-align: center;
-            font-style: italic;
-            color: #6c757d;
-            margin-bottom: 40px;
-        }
-        
-        /* Tooltip styles */
-        .tooltip {
-            position: relative;
-            display: inline-block;
-        }
-        .tooltip .tooltiptext {
-            visibility: hidden;
-            background-color: #555;
-            color: #fff;
-            text-align: center;
-            border-radius: 6px;
-            padding: 5px 10px;
-            position: absolute;
-            z-index: 1;
-            bottom: 125%;
-            left: 50%;
-            transform: translateX(-50%);
-            opacity: 0;
-            transition: opacity 0.3s;
-            white-space: nowrap;
-            font-size: 0.9em;
-        }
-        .tooltip:hover .tooltiptext {
-            visibility: visible;
-            opacity: 1;
-        }
 
+        /* Responsive design */
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                text-align: center;
+            }
+            .winners {
+                grid-template-columns: 1fr;
+            }
+        }
     </style>
 </head>
 <body>
@@ -248,195 +194,170 @@
         </div>
     </div>
 
-    <!-- Benchmark Summary Table -->
-    <div class="benchmark-summary">
-        <h2>📊 Benchmark Submissions</h2>
-        <div class="controls">
-            <button onclick="expandAll()">Expand All</button>
-            <button onclick="collapseAll()">Collapse All</button>
+    <!-- Fixed Algorithm Scenarios -->
+    <div class="category-section">
+        <div class="category-header">
+            <h2><span class="icon">🔒</span> Fixed Algorithm Scenarios</h2>
+            <p class="category-description">
+                Compiler comparison with prescribed algorithms. These benchmarks require all submissions to implement the exact same algorithm, isolating compiler optimization effectiveness from algorithmic choices.
+            </p>
         </div>
-        
-        <div id="benchmark-table">
-            {{range .stats.benchmarks}}
-            <div class="benchmark-section">
-                <div class="benchmark-header" onclick="toggleBenchmark('{{.name}}')">
-                    <div class="name">
-                        <span class="toggle" id="toggle-{{.name}}">{{if gt .submission_count 0}}▶{{else}}▶{{end}}</span>
-                        <a href="benchmarks/{{.name}}.html" onclick="event.stopPropagation()">{{.name}}</a>
-                    </div>
-                    <div class="count">
-                        {{if eq .submission_count 0}}
-                            (No submissions yet)
-                        {{else if eq .submission_count 1}}
-                            (1 submission)
-                        {{else}}
-                            ({{.submission_count}} submissions)
+
+        {{$has_fixed := false}}
+        {{range .stats.benchmarks}}{{if eq .category "fixed"}}{{$has_fixed = true}}{{end}}{{end}}
+
+        {{if $has_fixed}}
+            {{range .stats.benchmarks}}{{if eq .category "fixed"}}
+            <div class="scenario-card">
+                <div class="scenario-name">
+                    <a href="benchmarks/{{.name}}.html">{{.name}}</a>
+                </div>
+                <div class="scenario-meta">
+                    {{if eq .submission_count 0}}
+                        No submissions yet
+                    {{else if eq .submission_count 1}}
+                        1 submission
+                    {{else}}
+                        {{.submission_count}} submissions
+                    {{end}}
+                </div>
+
+                {{if gt .submission_count 0}}
+                <div class="winners">
+                    {{if .winners.cpu}}
+                    <div class="winner-item">
+                        <div class="winner-label"><span class="medal">🥇</span> Best CPU</div>
+                        <div class="winner-value">{{.winners.cpu.formatted}} units</div>
+                        {{range $idx, $sub := .winners.cpu.submissions}}{{if lt $idx 3}}
+                        <div class="winner-submission">{{$sub.compiler}}_{{$sub.version}}_{{$sub.author}}{{if ne $sub.variant "default"}}_{{$sub.variant}}{{end}}</div>
+                        {{end}}{{end}}
+                        {{if gt .winners.cpu.total 3}}
+                        <div class="winner-more">(+{{sub .winners.cpu.total 3}} more)</div>
                         {{end}}
                     </div>
-                </div>
-                <div class="benchmark-content" id="content-{{.name}}">
-                    {{if gt .submission_count 0}}
-                    <table class="submission-table" id="table-{{.name}}">
-                        <thead>
-                            <tr>
-                                <th onclick="sortTable('{{.name}}', 0)">Compiler</th>
-                                <th onclick="sortTable('{{.name}}', 1)">Version</th>
-                                <th onclick="sortTable('{{.name}}', 2)">Variant</th>
-                                <th onclick="sortTable('{{.name}}', 3)">Author</th>
-                                <th class="numeric" onclick="sortTable('{{.name}}', 4)">CPU Units</th>
-                                <th class="numeric" onclick="sortTable('{{.name}}', 5)">Memory Units</th>
-                                <th class="numeric" onclick="sortTable('{{.name}}', 6)">Script Size</th>
-                                <th class="numeric" onclick="sortTable('{{.name}}', 7)">Term Size</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {{range .submissions}}
-                            <tr data-cpu="{{.cpu_units.value}}" data-memory="{{.memory_units.value}}" data-script="{{.script_size.value}}" data-term="{{.term_size.value}}">
-                                <td>{{.compiler}}</td>
-                                <td>{{.version}}</td>
-                                <td>{{.variant}}</td>
-                                <td>{{.author}}</td>
-                                <td class="numeric">
-                                    <span class="tooltip">
-                                        <span class="cpu-value{{if .cpu_units.is_best}} best-value{{end}}">{{.cpu_units.formatted}}</span>
-                                        <span class="tooltiptext">{{.cpu_units.value}}</span>
-                                    </span>
-                                </td>
-                                <td class="numeric">
-                                    <span class="tooltip">
-                                        <span class="memory-value{{if .memory_units.is_best}} best-value{{end}}">{{.memory_units.formatted}}</span>
-                                        <span class="tooltiptext">{{.memory_units.value}}</span>
-                                    </span>
-                                </td>
-                                <td class="numeric script-value{{if .script_size.is_best}} best-value{{end}}">{{.script_size.value}}</td>
-                                <td class="numeric term-value{{if .term_size.is_best}} best-value{{end}}">{{.term_size.value}}</td>
-                            </tr>
-                            {{end}}
-                        </tbody>
-                    </table>
-                    {{else}}
-                    <div class="no-submissions">
-                        No submissions available for this benchmark yet.
+                    {{end}}
+
+                    {{if .winners.memory}}
+                    <div class="winner-item">
+                        <div class="winner-label"><span class="medal">🥈</span> Best Memory</div>
+                        <div class="winner-value">{{.winners.memory.formatted}} units</div>
+                        {{range $idx, $sub := .winners.memory.submissions}}{{if lt $idx 3}}
+                        <div class="winner-submission">{{$sub.compiler}}_{{$sub.version}}_{{$sub.author}}{{if ne $sub.variant "default"}}_{{$sub.variant}}{{end}}</div>
+                        {{end}}{{end}}
+                        {{if gt .winners.memory.total 3}}
+                        <div class="winner-more">(+{{sub .winners.memory.total 3}} more)</div>
+                        {{end}}
+                    </div>
+                    {{end}}
+
+                    {{if .winners.script_size}}
+                    <div class="winner-item">
+                        <div class="winner-label"><span class="medal">🥉</span> Smallest Size</div>
+                        <div class="winner-value">{{.winners.script_size.formatted}} bytes</div>
+                        {{range $idx, $sub := .winners.script_size.submissions}}{{if lt $idx 3}}
+                        <div class="winner-submission">{{$sub.compiler}}_{{$sub.version}}_{{$sub.author}}{{if ne $sub.variant "default"}}_{{$sub.variant}}{{end}}</div>
+                        {{end}}{{end}}
+                        {{if gt .winners.script_size.total 3}}
+                        <div class="winner-more">(+{{sub .winners.script_size.total 3}} more)</div>
+                        {{end}}
                     </div>
                     {{end}}
                 </div>
+                {{else}}
+                <div class="no-submissions">No submissions available for this benchmark yet</div>
+                {{end}}
             </div>
-            {{end}}
+            {{end}}{{end}}
+        {{else}}
+        <div class="empty-category">
+            No fixed algorithm scenarios defined yet
         </div>
+        {{end}}
     </div>
-    
-    
+
+    <!-- Open Optimization Scenarios -->
+    <div class="category-section">
+        <div class="category-header">
+            <h2><span class="icon">🚀</span> Open Optimization Scenarios</h2>
+            <p class="category-description">
+                Best achievable performance using any approach. These benchmarks allow any algorithmic optimizations, metaprogramming techniques, or compiler-specific features to showcase maximum capabilities.
+            </p>
+        </div>
+
+        {{$has_open := false}}
+        {{range .stats.benchmarks}}{{if ne .category "fixed"}}{{$has_open = true}}{{end}}{{end}}
+
+        {{if $has_open}}
+            {{range .stats.benchmarks}}{{if ne .category "fixed"}}
+            <div class="scenario-card">
+                <div class="scenario-name">
+                    <a href="benchmarks/{{.name}}.html">{{.name}}</a>
+                </div>
+                <div class="scenario-meta">
+                    {{if eq .submission_count 0}}
+                        No submissions yet
+                    {{else if eq .submission_count 1}}
+                        1 submission
+                    {{else}}
+                        {{.submission_count}} submissions
+                    {{end}}
+                </div>
+
+                {{if gt .submission_count 0}}
+                <div class="winners">
+                    {{if .winners.cpu}}
+                    <div class="winner-item">
+                        <div class="winner-label"><span class="medal">🥇</span> Best CPU</div>
+                        <div class="winner-value">{{.winners.cpu.formatted}} units</div>
+                        {{range $idx, $sub := .winners.cpu.submissions}}{{if lt $idx 3}}
+                        <div class="winner-submission">{{$sub.compiler}}_{{$sub.version}}_{{$sub.author}}{{if ne $sub.variant "default"}}_{{$sub.variant}}{{end}}</div>
+                        {{end}}{{end}}
+                        {{if gt .winners.cpu.total 3}}
+                        <div class="winner-more">(+{{sub .winners.cpu.total 3}} more)</div>
+                        {{end}}
+                    </div>
+                    {{end}}
+
+                    {{if .winners.memory}}
+                    <div class="winner-item">
+                        <div class="winner-label"><span class="medal">🥈</span> Best Memory</div>
+                        <div class="winner-value">{{.winners.memory.formatted}} units</div>
+                        {{range $idx, $sub := .winners.memory.submissions}}{{if lt $idx 3}}
+                        <div class="winner-submission">{{$sub.compiler}}_{{$sub.version}}_{{$sub.author}}{{if ne $sub.variant "default"}}_{{$sub.variant}}{{end}}</div>
+                        {{end}}{{end}}
+                        {{if gt .winners.memory.total 3}}
+                        <div class="winner-more">(+{{sub .winners.memory.total 3}} more)</div>
+                        {{end}}
+                    </div>
+                    {{end}}
+
+                    {{if .winners.script_size}}
+                    <div class="winner-item">
+                        <div class="winner-label"><span class="medal">🥉</span> Smallest Size</div>
+                        <div class="winner-value">{{.winners.script_size.formatted}} bytes</div>
+                        {{range $idx, $sub := .winners.script_size.submissions}}{{if lt $idx 3}}
+                        <div class="winner-submission">{{$sub.compiler}}_{{$sub.version}}_{{$sub.author}}{{if ne $sub.variant "default"}}_{{$sub.variant}}{{end}}</div>
+                        {{end}}{{end}}
+                        {{if gt .winners.script_size.total 3}}
+                        <div class="winner-more">(+{{sub .winners.script_size.total 3}} more)</div>
+                        {{end}}
+                    </div>
+                    {{end}}
+                </div>
+                {{else}}
+                <div class="no-submissions">No submissions available for this benchmark yet</div>
+                {{end}}
+            </div>
+            {{end}}{{end}}
+        {{else}}
+        <div class="empty-category">
+            No open optimization scenarios defined yet
+        </div>
+        {{end}}
+    </div>
+
     <div class="footer">
         <p>Generated by UPLC-CAPE on {{.timestamp}} • <a href="https://github.com/IntersectMBO/UPLC-CAPE">View on GitHub</a></p>
     </div>
-    
-    <script>
-        // Toggle benchmark expansion
-        function toggleBenchmark(benchmarkName) {
-            const content = document.getElementById('content-' + benchmarkName);
-            const toggle = document.getElementById('toggle-' + benchmarkName);
-            
-            if (content.classList.contains('expanded')) {
-                content.classList.remove('expanded');
-                toggle.textContent = '▶';
-            } else {
-                content.classList.add('expanded');
-                toggle.textContent = '▼';
-            }
-            
-            // Save state to localStorage
-            const expandedBenchmarks = JSON.parse(localStorage.getItem('expandedBenchmarks') || '[]');
-            const index = expandedBenchmarks.indexOf(benchmarkName);
-            if (content.classList.contains('expanded')) {
-                if (index === -1) expandedBenchmarks.push(benchmarkName);
-            } else {
-                if (index > -1) expandedBenchmarks.splice(index, 1);
-            }
-            localStorage.setItem('expandedBenchmarks', JSON.stringify(expandedBenchmarks));
-        }
-        
-        // Expand all benchmarks
-        function expandAll() {
-            document.querySelectorAll('.benchmark-content').forEach(content => {
-                content.classList.add('expanded');
-                const benchmarkName = content.id.replace('content-', '');
-                document.getElementById('toggle-' + benchmarkName).textContent = '▼';
-            });
-            
-            // Save state
-            const allBenchmarks = Array.from(document.querySelectorAll('.benchmark-section'))
-                .map(section => section.querySelector('.benchmark-content').id.replace('content-', ''));
-            localStorage.setItem('expandedBenchmarks', JSON.stringify(allBenchmarks));
-        }
-        
-        // Collapse all benchmarks
-        function collapseAll() {
-            document.querySelectorAll('.benchmark-content').forEach(content => {
-                content.classList.remove('expanded');
-                const benchmarkName = content.id.replace('content-', '');
-                document.getElementById('toggle-' + benchmarkName).textContent = '▶';
-            });
-            localStorage.setItem('expandedBenchmarks', JSON.stringify([]));
-        }
-        
-        
-        // Sort table
-        function sortTable(benchmarkName, columnIndex) {
-            const table = document.getElementById('table-' + benchmarkName);
-            const tbody = table.querySelector('tbody');
-            const rows = Array.from(tbody.querySelectorAll('tr'));
-            
-            // Determine sort direction
-            const th = table.querySelectorAll('th')[columnIndex];
-            const isAscending = th.dataset.sortDir !== 'asc';
-            th.dataset.sortDir = isAscending ? 'asc' : 'desc';
-            
-            // Clear other column sort indicators
-            table.querySelectorAll('th').forEach((header, idx) => {
-                if (idx !== columnIndex) delete header.dataset.sortDir;
-            });
-            
-            // Sort rows
-            rows.sort((a, b) => {
-                let aVal, bVal;
-
-                if (columnIndex >= 4) {
-                    // Numeric columns - use data attributes
-                    const metrics = ['cpu', 'memory', 'script', 'term'];
-                    const metric = metrics[columnIndex - 4];
-                    aVal = parseInt(a.dataset[metric]) || 0;
-                    bVal = parseInt(b.dataset[metric]) || 0;
-                } else {
-                    // Text columns
-                    aVal = a.children[columnIndex].textContent.trim();
-                    bVal = b.children[columnIndex].textContent.trim();
-                }
-                
-                if (typeof aVal === 'number') {
-                    return isAscending ? aVal - bVal : bVal - aVal;
-                } else {
-                    return isAscending ? 
-                        aVal.localeCompare(bVal) : 
-                        bVal.localeCompare(aVal);
-                }
-            });
-            
-            // Re-append sorted rows
-            rows.forEach(row => tbody.appendChild(row));
-        }
-        
-        // Restore expanded state from localStorage
-        document.addEventListener('DOMContentLoaded', function() {
-            const expandedBenchmarks = JSON.parse(localStorage.getItem('expandedBenchmarks') || '[]');
-            expandedBenchmarks.forEach(benchmarkName => {
-                const content = document.getElementById('content-' + benchmarkName);
-                const toggle = document.getElementById('toggle-' + benchmarkName);
-                if (content && toggle) {
-                    content.classList.add('expanded');
-                    toggle.textContent = '▼';
-                }
-            });
-        });
-    </script>
 </body>
 </html>
