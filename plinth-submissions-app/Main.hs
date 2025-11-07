@@ -5,6 +5,7 @@ import Prelude
 import Ecd (ecdCode)
 import Factorial (factorialCode)
 import Fibonacci (fibonacciCode)
+import FibonacciIterative (fibonacciIterativeCode)
 import PlutusCore.Pretty qualified as PP
 import PlutusCore.Quote (runQuoteT)
 import PlutusTx.Code (CompiledCode, getPlcNoAnn)
@@ -20,6 +21,9 @@ main = do
   writeCodeToFile
     "submissions/fibonacci_naive_recursion/Plinth_1.45.0.0_Unisay/fibonacci.uplc"
     fibonacciCode
+  writeCodeToFile
+    "submissions/fibonacci/Plinth_1.45.0.0_Unisay/fibonacci.uplc"
+    fibonacciIterativeCode
   writeCodeToFile
     "submissions/factorial_naive_recursion/Plinth_1.45.0.0_Unisay/factorial.uplc"
     factorialCode
