@@ -1,3 +1,7 @@
+---
+category: open
+---
+
 # Fibonacci Benchmark Scenario
 
 > **For submission requirements, metrics explanation, and validation steps, see the [Submission Guide](../../doc/submission-guide.md)**

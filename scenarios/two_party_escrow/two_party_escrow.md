@@ -1,3 +1,7 @@
+---
+category: open
+---
+
 # Two-Party Escrow Benchmark Scenario
 
 ## Overview

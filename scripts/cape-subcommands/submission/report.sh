@@ -1311,9 +1311,16 @@ build_filtered_stats() {
     fi
     first_benchmark=false
 
+    # Get category and winners
+    local category winners_json
+    category=$(categorize_scenario "$benchmark")
+    winners_json=$(find_winners "$benchmark_csv")
+
     echo '    {'
     echo '      "name": "'$benchmark'",'
+    echo '      "category": "'$category'",'
     echo '      "submission_count": '$submission_count','
+    echo '      "winners": '$winners_json','
     echo '      "submissions": ['
 
     # Process each submission for this benchmark
@@ -1434,6 +1441,109 @@ format_number_short() {
       print $1
     }
   }'
+}
+
+# Categorize scenario as fixed algorithm or open optimization
+# Reads from YAML frontmatter in scenario specification file
+categorize_scenario() {
+  local scenario="$1"
+  local scenario_file="$PROJECT_ROOT/scenarios/$scenario/${scenario}.md"
+
+  # Check if scenario file exists
+  if [ ! -f "$scenario_file" ]; then
+    log_err "Scenario file not found: $scenario_file"
+    echo "ERROR: Cannot categorize scenario '$scenario' - specification file missing" >&2
+    exit 1
+  fi
+
+  # Extract category from YAML frontmatter
+  # Look for "category: <value>" between the first two "---" lines
+  local category
+  category=$(awk 'BEGIN{in_fm=0} /^---$/ {in_fm++; next} in_fm==1 && /^category:/ {print $2; exit}' "$scenario_file")
+
+  # Fail if category not specified
+  if [ -z "$category" ]; then
+    log_err "Missing 'category' attribute in YAML frontmatter for scenario: $scenario"
+    echo "ERROR: Scenario '$scenario' must have 'category: fixed' or 'category: open' in $scenario_file" >&2
+    echo "Add YAML frontmatter at the top of the file:" >&2
+    echo "---" >&2
+    echo "category: fixed  # or 'open'" >&2
+    echo "---" >&2
+    exit 1
+  fi
+
+  # Validate category value
+  if [ "$category" != "fixed" ] && [ "$category" != "open" ]; then
+    log_err "Invalid category '$category' for scenario: $scenario"
+    echo "ERROR: Scenario category must be 'fixed' or 'open', got: '$category'" >&2
+    exit 1
+  fi
+
+  echo "$category"
+}
+
+# Find winning submissions for a benchmark
+# Returns JSON with winners for each metric (handles ties)
+find_winners() {
+  local benchmark_csv="$1"
+
+  # Helper function to build JSON array of tied winners for a metric
+  build_winners_json() {
+    local metric_col="$1"
+    local metric_name="$2"
+
+    # Find best (lowest) value
+    local best_value
+    best_value=$(echo "$benchmark_csv" | awk -F, -v col="$metric_col" '{print $col}' | sort -n | head -1)
+
+    if [ -z "$best_value" ]; then
+      echo "null"
+      return
+    fi
+
+    # Find all submissions with this value
+    local tied_submissions
+    tied_submissions=$(echo "$benchmark_csv" | awk -F, -v col="$metric_col" -v val="$best_value" '$col == val')
+
+    local total_count
+    total_count=$(echo "$tied_submissions" | wc -l)
+
+    # Build JSON array
+    echo -n "{\"value\":$best_value,\"formatted\":\"$(format_number_short "$best_value")\",\"total\":$total_count,\"submissions\":["
+
+    local count=0
+    local first=true
+    while IFS= read -r line; do
+      [ -z "$line" ] && continue
+
+      local compiler version variant author
+      compiler=$(csv_field "$line" "language")
+      version=$(csv_field "$line" "version")
+      variant=$(csv_field "$line" "variant")
+      author=$(csv_field "$line" "user")
+
+      if [ "$first" = "false" ]; then
+        echo -n ","
+      fi
+      first=false
+
+      echo -n "{\"compiler\":\"$compiler\",\"version\":\"$version\",\"variant\":\"$variant\",\"author\":\"$author\"}"
+
+      count=$((count + 1))
+    done <<< "$tied_submissions"
+
+    echo -n "]}"
+  }
+
+  # Build JSON for each metric
+  local cpu_json memory_json script_json term_json
+
+  cpu_json=$(build_winners_json "${CSV_COL[cpu_units]}" "cpu")
+  memory_json=$(build_winners_json "${CSV_COL[memory_units]}" "memory")
+  script_json=$(build_winners_json "${CSV_COL[script_size_bytes]}" "script_size")
+  term_json=$(build_winners_json "${CSV_COL[term_size]}" "term_size")
+
+  echo "{\"cpu\":$cpu_json,\"memory\":$memory_json,\"script_size\":$script_json,\"term_size\":$term_json}"
 }
 
 generate_index_report() {

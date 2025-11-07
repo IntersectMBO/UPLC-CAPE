@@ -1,3 +1,7 @@
+---
+category: fixed # or "open" - see below for guidance
+---
+
 # {Scenario Name} Scenario
 
 ## Overview
@@ -20,6 +24,20 @@ The {Scenario Name} benchmark is a **{synthetic/real-world} {type}** designed to
 - It provides sufficient {complexity/depth} to test {optimization capabilities}
 
 **Success Criteria**: The program must successfully {success condition} within the execution budget constraints.
+
+### Choosing the Category
+
+The `category` attribute in the YAML frontmatter determines how this scenario is classified in reports:
+
+- **`fixed`**: Fixed algorithm scenarios prescribe a specific implementation that all submissions must follow. Use this when:
+  - You want pure compiler-to-compiler comparison
+  - The goal is isolating compiler optimization effectiveness from algorithmic choices
+  - Example: "All submissions must implement the naive recursive algorithm shown below"
+
+- **`open`**: Open optimization scenarios allow any implementation approach. Use this when:
+  - You want to showcase best achievable performance
+  - Submissions can use any algorithmic optimizations, metaprogramming, or compiler-specific features
+  - Example: "Use any approach (recursive, iterative, memoized, etc.) to compute the result"
 
 ## TL;DR
 
