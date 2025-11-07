@@ -84,6 +84,7 @@ library
     Ecd
     Factorial
     Fibonacci
+    FibonacciIterative
     PlutusCore.Data.Compact.Parser
     PlutusCore.Data.Compact.Printer
     TwoPartyEscrow
