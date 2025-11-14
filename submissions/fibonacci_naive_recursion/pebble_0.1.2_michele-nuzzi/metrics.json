@@ -1,38 +1,117 @@
 {
-  "scenario": "fibonacci_naive_recursion",
-  "version": "1.0.0",
-  "measurements": {
-    "cpu_units": {
-      "maximum": "<integer>",
-      "sum": "<integer>",
-      "minimum": "<integer>",
-      "median": "<integer>",
-      "sum_positive": "<integer>",
-      "sum_negative": "<integer>"
-    },
-    "memory_units": {
-      "maximum": "<integer>",
-      "sum": "<integer>",
-      "minimum": "<integer>",
-      "median": "<integer>",
-      "sum_positive": "<integer>",
-      "sum_negative": "<integer>"
-    },
-    "script_size_bytes": "<integer>",
-    "term_size": "<integer>"
-  },
   "evaluations": [
     {
-      "name": "<test_case_name>",
-      "description": "<description_of_test>",
-      "cpu_units": "<integer>",
-      "memory_units": "<integer>",
-      "execution_result": "success|error"
+      "cpu_units": 697439,
+      "description": "Fibonacci of 0 should return 0",
+      "execution_result": "success",
+      "memory_units": 3702,
+      "name": "fibonacci_0"
+    },
+    {
+      "cpu_units": 697439,
+      "description": "Fibonacci of 1 should return 1",
+      "execution_result": "success",
+      "memory_units": 3702,
+      "name": "fibonacci_1"
+    },
+    {
+      "cpu_units": 1851741,
+      "description": "Fibonacci of 2 should return 1",
+      "execution_result": "success",
+      "memory_units": 7512,
+      "name": "fibonacci_2"
+    },
+    {
+      "cpu_units": 3006043,
+      "description": "Fibonacci of 3 should return 2",
+      "execution_result": "success",
+      "memory_units": 11322,
+      "name": "fibonacci_3"
+    },
+    {
+      "cpu_units": 8777553,
+      "description": "Fibonacci of 5 should return 5",
+      "execution_result": "success",
+      "memory_units": 30372,
+      "name": "fibonacci_5"
+    },
+    {
+      "cpu_units": 38789405,
+      "description": "Fibonacci of 8 should return 21",
+      "execution_result": "success",
+      "memory_units": 129432,
+      "name": "fibonacci_8"
+    },
+    {
+      "cpu_units": 102276015,
+      "description": "Fibonacci of 10 should return 55",
+      "execution_result": "success",
+      "memory_units": 338982,
+      "name": "fibonacci_10"
+    },
+    {
+      "cpu_units": 1138839211,
+      "description": "Fibonacci of 15 should return 610",
+      "execution_result": "success",
+      "memory_units": 3760362,
+      "name": "fibonacci_15"
+    },
+    {
+      "cpu_units": 12634532829,
+      "description": "Fibonacci of 20 should return 6765",
+      "execution_result": "success",
+      "memory_units": 41704152,
+      "name": "fibonacci_20"
+    },
+    {
+      "cpu_units": 140123725823,
+      "description": "Fibonacci of 25 should return 75025 (original benchmark target)",
+      "execution_result": "success",
+      "memory_units": 462507222,
+      "name": "fibonacci_25"
+    },
+    {
+      "cpu_units": 697439,
+      "description": "Fibonacci of negative number should return the negative number itself based on current implementation",
+      "execution_result": "success",
+      "memory_units": 3702,
+      "name": "fibonacci_negative"
     }
   ],
   "execution_environment": {
     "evaluator": "<evaluator-version>"
   },
-  "timestamp": "<ISO-8601 timestamp>",
+  "measurements": {
+    "block_cpu_budget_pct": 350.3093145575,
+    "block_memory_budget_pct": 745.9793903225807,
+    "cpu_units": {
+      "maximum": 140123725823,
+      "median": 8777553,
+      "minimum": 697439,
+      "sum": 154053890937,
+      "sum_negative": 0,
+      "sum_positive": 154053890937
+    },
+    "execution_fee_lovelace": 40447763,
+    "memory_units": {
+      "maximum": 462507222,
+      "median": 30372,
+      "minimum": 3702,
+      "sum": 508500462,
+      "sum_negative": 0,
+      "sum_positive": 508500462
+    },
+    "reference_script_fee_lovelace": 870,
+    "script_size_bytes": 58,
+    "scripts_per_block": 0,
+    "scripts_per_tx": 0,
+    "term_size": 51,
+    "total_fee_lovelace": 40448633,
+    "tx_cpu_budget_pct": 1401.23725823,
+    "tx_memory_budget_pct": 3303.6230142857144
+  },
+  "scenario": "fibonacci_naive_recursion",
+  "timestamp": "2025-11-14T22:02:48Z",
+  "version": "1.0.0",
   "notes": "<optional notes>"
 }

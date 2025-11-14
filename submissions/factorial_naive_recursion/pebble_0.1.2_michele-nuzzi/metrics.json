@@ -1,38 +1,110 @@
 {
-  "scenario": "factorial_naive_recursion",
-  "version": "1.0.0",
-  "measurements": {
-    "cpu_units": {
-      "maximum": "<integer>",
-      "sum": "<integer>",
-      "minimum": "<integer>",
-      "median": "<integer>",
-      "sum_positive": "<integer>",
-      "sum_negative": "<integer>"
-    },
-    "memory_units": {
-      "maximum": "<integer>",
-      "sum": "<integer>",
-      "minimum": "<integer>",
-      "median": "<integer>",
-      "sum_positive": "<integer>",
-      "sum_negative": "<integer>"
-    },
-    "script_size_bytes": "<integer>",
-    "term_size": "<integer>"
-  },
   "evaluations": [
     {
-      "name": "<test_case_name>",
-      "description": "<description_of_test>",
-      "cpu_units": "<integer>",
-      "memory_units": "<integer>",
-      "execution_result": "success|error"
+      "cpu_units": 633439,
+      "description": "Factorial of 0 should return 1 (mathematical definition)",
+      "execution_result": "success",
+      "memory_units": 3302,
+      "name": "factorial_0"
+    },
+    {
+      "cpu_units": 633439,
+      "description": "Factorial of 1 should return 1",
+      "execution_result": "success",
+      "memory_units": 3302,
+      "name": "factorial_1"
+    },
+    {
+      "cpu_units": 1282939,
+      "description": "Factorial of 2 should return 2",
+      "execution_result": "success",
+      "memory_units": 5408,
+      "name": "factorial_2"
+    },
+    {
+      "cpu_units": 1932439,
+      "description": "Factorial of 3 should return 6",
+      "execution_result": "success",
+      "memory_units": 7514,
+      "name": "factorial_3"
+    },
+    {
+      "cpu_units": 2581939,
+      "description": "Factorial of 4 should return 24",
+      "execution_result": "success",
+      "memory_units": 9620,
+      "name": "factorial_4"
+    },
+    {
+      "cpu_units": 3231439,
+      "description": "Factorial of 5 should return 120",
+      "execution_result": "success",
+      "memory_units": 11726,
+      "name": "factorial_5"
+    },
+    {
+      "cpu_units": 5179939,
+      "description": "Factorial of 8 should return 40320",
+      "execution_result": "success",
+      "memory_units": 18044,
+      "name": "factorial_8"
+    },
+    {
+      "cpu_units": 6478939,
+      "description": "Factorial of 10 should return 3628800 (original benchmark target)",
+      "execution_result": "success",
+      "memory_units": 22256,
+      "name": "factorial_10"
+    },
+    {
+      "cpu_units": 7777939,
+      "description": "Factorial of 12 should return 479001600",
+      "execution_result": "success",
+      "memory_units": 26468,
+      "name": "factorial_12"
+    },
+    {
+      "cpu_units": 633439,
+      "description": "Factorial of negative number should return 1 based on current implementation (n <= 0 case)",
+      "execution_result": "success",
+      "memory_units": 3302,
+      "name": "factorial_negative"
     }
   ],
   "execution_environment": {
     "evaluator": "<evaluator-version>"
   },
-  "timestamp": "<ISO-8601 timestamp>",
+  "measurements": {
+    "block_cpu_budget_pct": 0.0194448475,
+    "block_memory_budget_pct": 0.04269032258064516,
+    "cpu_units": {
+      "maximum": 7777939,
+      "median": 2257189,
+      "minimum": 633439,
+      "sum": 30365890,
+      "sum_negative": 0,
+      "sum_positive": 30365890
+    },
+    "execution_fee_lovelace": 8591,
+    "memory_units": {
+      "maximum": 26468,
+      "median": 8567,
+      "minimum": 3302,
+      "sum": 110942,
+      "sum_negative": 0,
+      "sum_positive": 110942
+    },
+    "reference_script_fee_lovelace": 720,
+    "script_size_bytes": 48,
+    "scripts_per_block": 2342,
+    "scripts_per_tx": 528,
+    "term_size": 41,
+    "total_fee_lovelace": 9311,
+    "tx_cpu_budget_pct": 0.07777939,
+    "tx_memory_budget_pct": 0.18905714285714284
+  },
+  "scenario": "factorial_naive_recursion",
+  "timestamp": "2025-11-14T22:03:29Z",
+  "version": "1.0.0",
   "notes": "<optional notes>"
 }
