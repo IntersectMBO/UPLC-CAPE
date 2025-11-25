@@ -1,0 +1,26 @@
+{
+  "compiler": {
+    "name": "Pebble",
+    "version": "0.1.2",
+    "commit_hash": "40887038e5d00f171e4684f4c456ffd468008445"
+  },
+  "compilation_config": {
+    "optimization_level": "none",
+    "target": "uplc",
+    "flags": []
+  },
+  "contributors": [
+    {
+      "name": "Michele Nuzzi",
+      "organization": "Harmonic Labs",
+      "contact": "michele@harmoniclabs.tech"
+    }
+  ],
+  "submission": {
+    "date": "2025-11-25T00:00:00Z",
+    "source_available": true,
+    "source_repository": "https://github.com/Unisay/pebble-cape-submissions",
+    "source_commit_hash": "ebb35dbe7538a0e95006e0b91dfff1eec022f1ca",
+    "implementation_notes": "Naive recursive implementation using Pebble 0.1.2 with default compilation settings"
+  }
+}
