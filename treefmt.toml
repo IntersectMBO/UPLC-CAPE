@@ -36,11 +36,6 @@ command = "nixfmt"
 options = []
 includes = ["*.nix"]
 
-[formatter.pretty-uplc]
-command = "scripts/pretty-uplc.sh"
-options = []
-includes = ["*.uplc"]
-
 # Global settings
 [global]
 excludes = [
