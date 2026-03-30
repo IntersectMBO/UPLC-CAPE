@@ -1,3 +1,5 @@
+{-# LANGUAGE CPP #-}
+
 module Main (main) where
 
 import Prelude
@@ -52,7 +54,11 @@ import PlutusCore.Data.Compact.Printer (dataToCompactText)
 import PlutusCore.Evaluation.Machine.ExBudget (ExBudget (..))
 import PlutusCore.Evaluation.Machine.ExMemory (ExCPU (..), ExMemory (..))
 import PlutusCore.MkPlc qualified as MkPlc
+#if MIN_VERSION_plutus_core(1,46,0)
+import PlutusCore.AstSize (unAstSize)
+#else
 import PlutusCore.Size (unSize)
+#endif
 import PlutusLedgerApi.Common (serialiseCompiledCode)
 import PlutusLedgerApi.V3 qualified as V3
 import PlutusTx.Builtins qualified as Builtins
@@ -69,7 +75,31 @@ import System.Exit qualified as Exit
 import System.IO (putChar)
 import UntypedPlutusCore qualified as UPLC
 import UntypedPlutusCore.Parser qualified as UPLCParser
+#if MIN_VERSION_plutus_core(1,46,0)
+import PlutusCore.Error (ParserErrorBundle)
+import UntypedPlutusCore.AstSize (programAstSize)
+#else
 import UntypedPlutusCore.Size (programSize)
+#endif
+
+-- | Parse UPLC program text, handling API differences between plutus-core versions
+parseUplcProgram ::
+  Text ->
+  Either
+    String
+    (UPLC.Program UPLC.Name PLC.DefaultUni PLC.DefaultFun PLC.SrcSpan)
+parseUplcProgram txt =
+#if MIN_VERSION_plutus_core(1,46,0)
+  case PLC.runQuote (runExceptT (UPLCParser.parseProgram txt)) ::
+    Either ParserErrorBundle (UPLC.Program UPLC.Name PLC.DefaultUni PLC.DefaultFun PLC.SrcSpan) of
+    Left err -> Left (show err)
+    Right prog -> Right prog
+#else
+  case PLC.runQuote (runExceptT (UPLCParser.parseProgram txt)) ::
+    Either (PLC.Error PLC.DefaultUni PLC.DefaultFun PLC.SrcSpan) (UPLC.Program UPLC.Name PLC.DefaultUni PLC.DefaultFun PLC.SrcSpan) of
+    Left err -> Left (show err)
+    Right prog -> Right prog
+#endif
 
 -- | Colorize text with green for PASS results
 colorizePass :: Text -> IO ()
@@ -146,11 +176,8 @@ runTestSuite uplcFile testsFile metricsFileOpt debugContext = do
 
   -- Read and parse the UPLC program
   uplcText <- readTextUtf8 uplcFile
-  program <- case PLC.runQuote (runExceptT (UPLCParser.parseProgram uplcText)) ::
-                    Either
-                      (PLC.Error PLC.DefaultUni PLC.DefaultFun PLC.SrcSpan)
-                      (UPLC.Program UPLC.Name PLC.DefaultUni PLC.DefaultFun PLC.SrcSpan) of
-    Left err -> E.throwIO (UPLCParseError uplcFile (show err))
+  program <- case parseUplcProgram uplcText of
+    Left err -> E.throwIO (UPLCParseError uplcFile err)
     Right prog -> pure prog
 
   -- Run each test case and collect results and metrics
@@ -225,11 +252,8 @@ applyInputsToProgram program baseDir testSuite testCase inputs debugContext =
         UPLC -> do
           -- Parse input as UPLC term and apply to current program
           let wrappedInput = "(program 1.1.0 " <> inputText <> ")"
-          inputTerm <- case PLC.runQuote (runExceptT (UPLCParser.parseProgram wrappedInput)) ::
-                              Either
-                                (PLC.Error PLC.DefaultUni PLC.DefaultFun PLC.SrcSpan)
-                                (UPLC.Program UPLC.Name PLC.DefaultUni PLC.DefaultFun PLC.SrcSpan) of
-            Left err -> E.throwIO (UPLCParseError "uplc_input" (show err))
+          inputTerm <- case parseUplcProgram wrappedInput of
+            Left err -> E.throwIO (UPLCParseError "uplc_input" err)
             Right inputProgram -> do
               let UPLC.Program _ _ term = inputProgram
               pure term
@@ -352,7 +376,11 @@ writeDetailedMetrics program evaluations metricsFile = do
   code <- compileProgram program Nothing
   let scriptBytes = SBS.fromShort (serialiseCompiledCode code)
       scriptSize = BS.length scriptBytes
+#if MIN_VERSION_plutus_core(1,46,0)
+      termSize = fromIntegral $ unAstSize $ programAstSize $ getPlc code
+#else
       termSize = fromIntegral $ unSize $ programSize $ getPlc code
+#endif
 
   -- Extract CPU and memory data for aggregations
   let cpuData =

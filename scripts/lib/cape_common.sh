@@ -4,6 +4,10 @@
 
 # Strict mode is expected in callers
 
+# Source version configuration for dual-CEK filtering
+# shellcheck disable=SC1091
+source "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/cape_versions.sh"
+
 # Command checks
 cape_has_cmd() { command -v "$1" > /dev/null 2>&1; }
 

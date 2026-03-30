@@ -13,6 +13,11 @@ maintainer:    UPLC-CAPE Project
 category:      Blockchain
 license:       Apache-2.0
 
+flag preview
+  description: Enable preview modules (requires plutus-tx-plugin with BuiltinCasing support)
+  default:     False
+  manual:      True
+
 common common-deps
   build-depends:
     , aeson
@@ -125,6 +130,47 @@ executable measure
 
   hs-source-dirs: measure-app
 
+-- Preview measurement tool (built against newer plutus-core)
+-- Build with: cabal --project-file=cabal.project.preview build measure-preview
+executable measure-preview
+  import:         common-language
+  main-is:        Main.hs
+  other-modules:  Cape.Cli
+
+  if !flag(preview)
+    buildable: False
+
+  build-depends:
+    , ansi-terminal
+    , cape
+    , optparse-applicative
+
+  hs-source-dirs: measure-app
+
+-- Preview modules: re-compiled with BuiltinCasing (requires plutus-tx-plugin >= 1.46)
+-- Build with: cabal --project-file=cabal.project.preview -f preview build plinth-submissions
+library cape-preview
+  import:          common-language
+  visibility:      private
+
+  if !flag(preview)
+    buildable: False
+
+  exposed-modules:
+    Preview.Ecd
+    Preview.Factorial
+    Preview.Fibonacci
+    Preview.FibonacciIterative
+    Preview.TwoPartyEscrow
+
+  build-depends:
+    , cape
+    , plutus-core
+    , plutus-tx
+    , plutus-tx-plugin
+
+  hs-source-dirs:  lib
+
 -- UPLC-CAPE Plinth submissions generator
 executable plinth-submissions
   import:         common-language
@@ -141,6 +187,10 @@ executable plinth-submissions
     , plutus-tx-plugin
     , plutus-tx:plutus-tx-testlib
     , text
+
+  if flag(preview)
+    build-depends: cape:cape-preview
+    cpp-options:   -DPREVIEW
 
   hs-source-dirs: plinth-submissions-app
 

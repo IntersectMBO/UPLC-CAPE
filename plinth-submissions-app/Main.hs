@@ -1,3 +1,5 @@
+{-# LANGUAGE CPP #-}
+
 module Main (main) where
 
 import Prelude
@@ -13,6 +15,15 @@ import TwoPartyEscrow (twoPartyEscrowValidatorCode)
 import UntypedPlutusCore qualified as UPLC
 import UntypedPlutusCore.DeBruijn (unDeBruijnTerm)
 
+#ifdef PREVIEW
+-- Preview modules (re-compiled with BuiltinCasing)
+import Preview.Ecd qualified as Preview
+import Preview.Factorial qualified as Preview
+import Preview.Fibonacci qualified as Preview
+import Preview.FibonacciIterative qualified as Preview
+import Preview.TwoPartyEscrow qualified as Preview
+#endif
+
 main :: IO ()
 main = do
   writeCodeToFile
@@ -22,7 +33,7 @@ main = do
     "submissions/fibonacci_naive_recursion/Plinth_1.45.0.0_Unisay/fibonacci.uplc"
     fibonacciCode
   writeCodeToFile
-    "submissions/fibonacci/Plinth_1.45.0.0_Unisay_tailrec/fibonacci.uplc"
+    "submissions/fibonacci/Plinth_1.45.0.0_Unisay/fibonacci.uplc"
     fibonacciIterativeCode
   writeCodeToFile
     "submissions/factorial_naive_recursion/Plinth_1.45.0.0_Unisay/factorial.uplc"
@@ -30,6 +41,24 @@ main = do
   writeCodeToFile
     "submissions/two_party_escrow/Plinth_1.45.0.0_Unisay/two_party_escrow.uplc"
     twoPartyEscrowValidatorCode
+#ifdef PREVIEW
+  -- Preview submissions: re-compiled with BuiltinCasing via Preview.* modules
+  writeCodeToFile
+    "submissions/ecd/Plinth_1.60.0.0_Unisay/ecd.uplc"
+    Preview.ecdCode
+  writeCodeToFile
+    "submissions/factorial_naive_recursion/Plinth_1.60.0.0_Unisay/factorial.uplc"
+    Preview.factorialCode
+  writeCodeToFile
+    "submissions/fibonacci_naive_recursion/Plinth_1.60.0.0_Unisay/fibonacci.uplc"
+    Preview.fibonacciCode
+  writeCodeToFile
+    "submissions/fibonacci/Plinth_1.60.0.0_Unisay/fibonacci.uplc"
+    Preview.fibonacciIterativeCode
+  writeCodeToFile
+    "submissions/two_party_escrow/Plinth_1.60.0.0_Unisay/two_party_escrow.uplc"
+    Preview.twoPartyEscrowValidatorCode
+#endif
 
 writeCodeToFile :: FilePath -> CompiledCode a -> IO ()
 writeCodeToFile filePath code = do

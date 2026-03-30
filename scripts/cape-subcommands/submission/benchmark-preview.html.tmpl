@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UPLC-CAPE Preview Report - {{.benchmark}}</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #fdf6e3;
+        }
+        .preview-banner {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            color: white;
+            padding: 12px 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 0.9em;
+        }
+        .header {
+            margin-bottom: 40px;
+            padding: 20px 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+        }
+        .header img {
+            width: 150px;
+            height: auto;
+            flex-shrink: 0;
+        }
+        .header-text {
+            flex-grow: 0;
+        }
+        .header h1 {
+            color: #333;
+            margin: 0 0 10px 0;
+        }
+        .header p {
+            color: #6c757d;
+            margin: 5px 0;
+        }
+
+        /* Breadcrumb Navigation */
+        .breadcrumb {
+            color: #6c757d;
+            font-size: 0.9em;
+            margin-top: 10px;
+        }
+        .breadcrumb a {
+            color: #667eea;
+            text-decoration: none;
+        }
+        .breadcrumb a:hover {
+            text-decoration: underline;
+        }
+        .breadcrumb-separator {
+            margin: 0 8px;
+        }
+
+        .benchmark-section {
+            background: white;
+            margin-bottom: 40px;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        .benchmark-title {
+            color: #667eea;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 10px;
+            margin-bottom: 30px;
+        }
+        .chart-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+        .chart-container {
+            text-align: center;
+        }
+        .chart-container img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 6px;
+        }
+        .chart-title {
+            font-size: 1.1em;
+            font-weight: 600;
+            color: #495057;
+            margin-bottom: 5px;
+        }
+        .chart-subtitle {
+            font-size: 0.85em;
+            color: #6c757d;
+            margin-bottom: 10px;
+            font-style: italic;
+        }
+        .chart-section-title {
+            grid-column: 1 / -1;
+            font-size: 1.3em;
+            font-weight: 700;
+            color: #667eea;
+            text-align: left;
+            margin-top: 20px;
+            margin-bottom: 10px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #667eea;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 50px;
+            padding: 20px;
+            color: #6c757d;
+            border-top: 1px solid #e9ecef;
+        }
+        .timestamp {
+            font-style: italic;
+            color: #6c757d;
+            margin-bottom: 20px;
+        }
+        .data-table {
+            background: white;
+            margin-top: 40px;
+            margin-bottom: 40px;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            overflow-x: auto;
+        }
+        .data-table h3 {
+            color: #667eea;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9em;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #e9ecef;
+        }
+        th {
+            background-color: #f8f9fa;
+            font-weight: 600;
+            color: #495057;
+            position: sticky;
+            top: 0;
+        }
+        td {
+            color: #6c757d;
+        }
+        tr:hover {
+            background-color: #f8f9fa;
+        }
+        .numeric {
+            text-align: right;
+            font-family: 'Courier New', monospace;
+        }
+        table a {
+            text-decoration: none;
+            cursor: pointer;
+            text-align: center;
+            display: block;
+        }
+        .source-link {
+            color: #6c757d;
+            text-decoration: underline;
+            font-size: 0.75em;
+            display: inline;
+        }
+        .budget-warning {
+            background-color: #fff3cd !important;
+            border-left: 4px solid #ffc107;
+        }
+        .budget-critical {
+            background-color: #f8d7da !important;
+            border-left: 4px solid #dc3545;
+        }
+    </style>
+</head>
+<body>
+    <div class="preview-banner">
+        <strong>PREVIEW</strong> &mdash; This report uses plutus-core features NOT yet deployed on Cardano mainnet.
+    </div>
+
+    <div class="header">
+        <img src="../../uplc-cape-logo.png" alt="UPLC-CAPE Logo">
+        <div class="header-text">
+            <h1>UPLC-CAPE Preview Report</h1>
+            <p>Performance comparison using upcoming plutus-core features</p>
+            <div class="breadcrumb">
+                <a href="../index.html">All preview benchmarks</a>
+                <span class="breadcrumb-separator">→</span>
+                <span>{{.benchmark}}</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="benchmark-section">
+        <h2 class="benchmark-title">📊 {{.benchmark}} benchmark report</h2>
+        <div class="chart-grid">
+            <div class="chart-section-title">Raw measurements</div>
+            <div class="chart-container">
+                <div class="chart-title">💻 CPU Units</div>
+                <div class="chart-subtitle">Lower is Better</div>
+                <img src="images/{{.charts.cpu_units}}" alt="CPU Units comparison for {{.benchmark}}">
+            </div>
+            <div class="chart-container">
+                <div class="chart-title">🧠 Memory Units</div>
+                <div class="chart-subtitle">Lower is Better</div>
+                <img src="images/{{.charts.memory_units}}" alt="Memory Units comparison for {{.benchmark}}">
+            </div>
+            <div class="chart-container">
+                <div class="chart-title">📦 Script Size</div>
+                <div class="chart-subtitle">Lower is Better</div>
+                <img src="images/{{.charts.script_size}}" alt="Script Size comparison for {{.benchmark}}">
+            </div>
+            <div class="chart-container">
+                <div class="chart-title">🌳 Term Size</div>
+                <div class="chart-subtitle">Lower is Better</div>
+                <img src="images/{{.charts.term_size}}" alt="Term Size comparison for {{.benchmark}}">
+            </div>
+            <div class="chart-section-title">Derived metrics</div>
+            <div class="chart-container">
+                <div class="chart-title">💻 CPU Tx Budget Usage (%)</div>
+                <div class="chart-subtitle">{{if .has_cpu_exceeding}}Hatched bars exceed transaction limits (>100%){{end}}</div>
+                <img src="images/{{.charts.tx_budget_cpu}}" alt="CPU Transaction Budget comparison for {{.benchmark}}">
+            </div>
+            <div class="chart-container">
+                <div class="chart-title">🧠 Memory Tx Budget Usage (%)</div>
+                <div class="chart-subtitle">{{if .has_mem_exceeding}}Hatched bars exceed transaction limits (>100%){{end}}</div>
+                <img src="images/{{.charts.tx_budget_mem}}" alt="Memory Transaction Budget comparison for {{.benchmark}}">
+            </div>
+            <div class="chart-container">
+                <div class="chart-title">💰 Total Fee (₳)</div>
+                <div class="chart-subtitle">Lower is Better</div>
+                <img src="images/{{.charts.total_fee}}" alt="Total Fee comparison for {{.benchmark}}">
+            </div>
+            <div class="chart-container">
+                <div class="chart-title">📈 Scripts per Transaction</div>
+                <div class="chart-subtitle">Higher is Better{{if .has_capacity_exceeding}} • Hatched bars exceed transaction limits (capacity=0){{end}}</div>
+                <img src="images/{{.charts.scripts_per_tx}}" alt="Capacity comparison for {{.benchmark}}">
+            </div>
+        </div>
+    </div>
+
+    <div class="data-table">
+        <h3>📋 Performance Data</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Language</th>
+                    <th>Version</th>
+                    <th>Variant</th>
+                    <th>User</th>
+                    <th class="numeric">CPU Units</th>
+                    <th class="numeric">Memory Units</th>
+                    <th class="numeric">Script Size (bytes)</th>
+                    <th class="numeric">Term Size (nodes)</th>
+                    <th class="numeric">Fee (₳)</th>
+                    <th class="numeric">Tx Budget</th>
+                    <th class="numeric">Block Budget</th>
+                    <th class="numeric">Cap/Tx</th>
+                    <th class="numeric">Cap/Block</th>
+                </tr>
+            </thead>
+            <tbody>
+{{range .submissions}}                <tr{{if or (ge .tx_memory_budget_pct 50.0) (ge .tx_cpu_budget_pct 50.0) (ge .block_memory_budget_pct 50.0) (ge .block_cpu_budget_pct 50.0)}} class="budget-warning"{{end}}>
+                    <td>{{.language}}<br><a href="https://github.com/IntersectMBO/UPLC-CAPE/blob/main/submissions/{{$.benchmark}}/{{.submission_dir}}/source/README.md" target="_blank" rel="noopener" class="source-link">src</a> <a href="https://github.com/IntersectMBO/UPLC-CAPE/blob/main/submissions/{{$.benchmark}}/{{.submission_dir}}/{{$.benchmark}}.uplc" target="_blank" rel="noopener" class="source-link">UPLC</a></td>
+                    <td>{{.version}}</td>
+                    <td>{{.variant}}</td>
+                    <td>{{.user}}</td>
+                    <td class="numeric">{{.cpu_units}}</td>
+                    <td class="numeric">{{.memory_units}}</td>
+                    <td class="numeric">{{.script_size}}</td>
+                    <td class="numeric">{{.term_size}}</td>
+                    <td class="numeric">{{.total_fee_ada}}</td>
+                    <td class="numeric">{{printf "%.1f" .tx_memory_budget_pct}}%&nbsp;mem<br>{{printf "%.1f" .tx_cpu_budget_pct}}%&nbsp;cpu</td>
+                    <td class="numeric">{{printf "%.1f" .block_memory_budget_pct}}%&nbsp;mem<br>{{printf "%.1f" .block_cpu_budget_pct}}%&nbsp;cpu</td>
+                    <td class="numeric">{{.scripts_per_tx}}</td>
+                    <td class="numeric">{{.scripts_per_block}}</td>
+                </tr>
+{{end}}            </tbody>
+        </table>
+    </div>
+
+    <div class="breadcrumb">
+        <a href="../index.html">All preview benchmarks</a>
+        <span class="breadcrumb-separator">→</span>
+        <span>{{.benchmark}}</span>
+    </div>
+
+    <div class="footer">
+        <p>PREVIEW &mdash; Generated by UPLC-CAPE • <a href="https://github.com/IntersectMBO/UPLC-CAPE">View on GitHub</a> • <a href="../../index.html">Production report</a></p>
+        <p class="timestamp">Generated on: {{.timestamp}}</p>
+    </div>
+</body>
+</html>

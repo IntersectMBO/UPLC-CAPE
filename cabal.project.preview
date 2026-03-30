@@ -1,0 +1,20 @@
+-- Preview cabal project: uses latest plutus-core from CHaP
+-- This file is used to build against a newer plutus-core version
+-- that may include features not yet deployed on Cardano mainnet.
+--
+-- Usage: cabal --project-file=cabal.project.preview build plinth-submissions
+
+import: cabal.project
+
+-- Use latest CHaP index-state to access plutus-core 1.60.0.0
+index-state: cardano-haskell-packages 2026-03-30T00:00:00Z
+
+-- Enable preview flag to build Preview.* modules with BuiltinCasing
+flags: +preview
+
+-- Relax version constraints to accept newer plutus packages
+allow-newer:
+    cape:plutus-core
+  , cape:plutus-ledger-api
+  , cape:plutus-tx
+  , cape:plutus-tx-plugin

@@ -1,3 +1,5 @@
+{-# LANGUAGE CPP #-}
+
 module Cape.PrettyResult (
   EvalResult (..),
   evaluateTerm,
@@ -21,11 +23,15 @@ import PlutusTx.Code (CompiledCodeIn, getPlcNoAnn)
 import UntypedPlutusCore qualified as UPLC
 import UntypedPlutusCore.Evaluation.Machine.Cek (
   CekEvaluationException,
-  TallyingSt (..),
   noEmitter,
   runCekDeBruijn,
   tallying,
  )
+
+import UntypedPlutusCore.Evaluation.Machine.Cek (TallyingSt (..))
+#if MIN_VERSION_plutus_core(1,46,0)
+import UntypedPlutusCore.Evaluation.Machine.Cek (CekReport (..), cekResultToEither)
+#endif
 
 -- | Evaluate UPLC term and return result as EvalResult-like structure
 data EvalResult = EvalResult
@@ -41,7 +47,12 @@ data EvalResult = EvalResult
 evaluateTerm ::
   UPLC.Term UPLC.NamedDeBruijn DefaultUni DefaultFun () -> EvalResult
 evaluateTerm term =
+#if MIN_VERSION_plutus_core(1,46,0)
+  let CekReport cekResult (TallyingSt _tally budget) _logs = runCekDeBruijn defaultCekParametersForTesting tallying noEmitter term
+      result = cekResultToEither cekResult
+#else
   let (result, TallyingSt _tally budget, _logs) = runCekDeBruijn defaultCekParametersForTesting tallying noEmitter term
+#endif
    in EvalResult
         { evalResult = result
         , evalResultBudget = budget

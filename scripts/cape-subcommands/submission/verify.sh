@@ -299,6 +299,16 @@ main() {
     cape_info "Verifying all submissions under $(cape_relpath "$SUBMISSIONS_ROOT")"
     local any_found=0
     while IFS= read -r submission_dir; do
+      # Skip preview submissions (require newer plutus-core than production)
+      local meta="$submission_dir/metadata.json"
+      if [[ -f "$meta" ]]; then
+        local min_ver
+        min_ver=$(jq -r '.compilation_config.min_plutus_version // ""' "$meta" 2>/dev/null || true)
+        if cape_is_preview_submission "$min_ver"; then
+          cape_info "Skipping preview submission: ${submission_dir#$SUBMISSIONS_ROOT/}"
+          continue
+        fi
+      fi
       any_found=1
       if ! verify_submission_dir "$submission_dir"; then
         rc=1

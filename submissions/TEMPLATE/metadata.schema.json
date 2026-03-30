@@ -53,6 +53,12 @@
             ["-O2", "--inline-functions"],
             ["--no-dead-code-elimination"]
           ]
+        },
+        "min_plutus_version": {
+          "type": "string",
+          "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+\\.[0-9]+$",
+          "description": "Minimum plutus-core version required to evaluate this submission. Submissions requiring a version higher than the current production version appear only in the preview report. Omit for submissions compatible with the current production version.",
+          "examples": ["1.45.0.0", "1.60.0.0"]
         }
       },
       "required": ["target"],

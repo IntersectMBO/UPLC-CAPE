@@ -205,6 +205,18 @@ measure_all_submissions() {
   local submission_dir
   while IFS= read -r submission_dir; do
     [[ -d "$submission_dir" ]] || continue
+
+    # Skip preview submissions (require newer plutus-core than production)
+    local metadata_file="$submission_dir/metadata.json"
+    if [[ -f "$metadata_file" ]]; then
+      local min_ver
+      min_ver=$(jq -r '.compilation_config.min_plutus_version // ""' "$metadata_file" 2>/dev/null || true)
+      if cape_is_preview_submission "$min_ver"; then
+        cape_info "Skipping preview submission: submissions/${submission_dir#$SUBMISSIONS_ROOT/} (requires plutus-core >= $min_ver)"
+        continue
+      fi
+    fi
+
     found_any=1
     local rel_path
     rel_path="${submission_dir#$SUBMISSIONS_ROOT/}"
