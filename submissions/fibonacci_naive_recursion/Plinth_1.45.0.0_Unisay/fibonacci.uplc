@@ -4,40 +4,49 @@
     (lam s-0 [ s-0 s-0 ])
     (lam
       s-1
-      (lam
-        n-2
-        (force
-          (case
-            (constr
-              0
-              [ [ (builtin lessThanEqualsInteger) n-2 ] (con integer 1) ]
-              (delay n-2)
-              (delay
+      [
+        (lam
+          fibonacci-2
+          (lam
+            n-3
+            (force
+              (force
                 [
-                  (lam
-                    cse-3
+                  [
                     [
+                      (force (builtin ifThenElse))
                       [
-                        (builtin addInteger)
-                        [
-                          cse-3
-                          [ [ (builtin subtractInteger) n-2 ] (con integer 1) ]
-                        ]
-                      ]
-                      [
-                        cse-3
-                        [ [ (builtin subtractInteger) n-2 ] (con integer 2) ]
+                        [ (builtin lessThanEqualsInteger) n-3 ] (con integer 1)
                       ]
                     ]
+                    (delay (delay n-3))
+                  ]
+                  (delay
+                    (delay
+                      [
+                        [
+                          (builtin addInteger)
+                          [
+                            fibonacci-2
+                            [
+                              [ (builtin subtractInteger) n-3 ] (con integer 1)
+                            ]
+                          ]
+                        ]
+                        [
+                          fibonacci-2
+                          [ [ (builtin subtractInteger) n-3 ] (con integer 2) ]
+                        ]
+                      ]
+                    )
                   )
-                  [ s-1 s-1 ]
                 ]
               )
             )
-            (force (builtin ifThenElse))
           )
         )
-      )
+        (lam x-4 [ [ s-1 s-1 ] x-4 ])
+      ]
     )
   ]
 )

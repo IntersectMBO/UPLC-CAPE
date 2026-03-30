@@ -9,32 +9,50 @@
         (lam
           b-3
           (force
-            (case
-              (constr
-                0
-                [ [ (builtin equalsInteger) (con integer 0) ] b-3 ]
-                (delay
-                  (force
-                    (case
-                      (constr
-                        0
-                        [ [ (builtin lessThanInteger) a-2 ] (con integer 0) ]
-                        (delay
-                          [ [ (builtin subtractInteger) (con integer 0) ] a-2 ]
+            (force
+              [
+                [
+                  [
+                    (force (builtin ifThenElse))
+                    [ [ (builtin equalsInteger) (con integer 0) ] b-3 ]
+                  ]
+                  (delay
+                    (delay
+                      (force
+                        (force
+                          [
+                            [
+                              [
+                                (force (builtin ifThenElse))
+                                [
+                                  [ (builtin lessThanInteger) a-2 ]
+                                  (con integer 0)
+                                ]
+                              ]
+                              (delay
+                                (delay
+                                  [
+                                    [
+                                      (builtin subtractInteger) (con integer 0)
+                                    ]
+                                    a-2
+                                  ]
+                                )
+                              )
+                            ]
+                            (delay (delay a-2))
+                          ]
                         )
-                        (delay a-2)
                       )
-                      (force (builtin ifThenElse))
                     )
                   )
-                )
+                ]
                 (delay
-                  (case
-                    (constr 0 s-1 b-3 [ [ (builtin modInteger) a-2 ] b-3 ]) s-1
+                  (delay
+                    [ [ [ s-1 s-1 ] b-3 ] [ [ (builtin modInteger) a-2 ] b-3 ] ]
                   )
                 )
-              )
-              (force (builtin ifThenElse))
+              ]
             )
           )
         )
