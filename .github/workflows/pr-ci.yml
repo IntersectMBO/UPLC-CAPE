@@ -133,10 +133,20 @@ jobs:
         if: steps.check_changes.outputs.has_changes == 'true'
         run: chmod +x result/bin/measure
 
-      - name: Measure all submissions
+      - name: Measure production submissions
         if: steps.check_changes.outputs.has_changes == 'true'
         run: |
           nix develop --accept-flake-config --command bash -c "export PATH=\"\$PWD/result/bin:\$PATH\" && cape submission measure --all"
+
+      - name: Build measure-preview
+        if: steps.check_changes.outputs.has_changes == 'true'
+        run: |
+          nix develop --accept-flake-config --command bash -c "cabal --project-file=cabal.project.preview build measure-preview"
+
+      - name: Measure preview submissions
+        if: steps.check_changes.outputs.has_changes == 'true'
+        run: |
+          nix develop --accept-flake-config --command bash -c "cape submission measure --preview"
 
       - name: Generate HTML reports
         if: steps.check_changes.outputs.has_changes == 'true'

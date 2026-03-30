@@ -195,6 +195,22 @@ cape_measure_binary() {
   fi
 }
 
+# Locate measure-preview binary (built against preview plutus-core)
+cape_measure_preview_binary() {
+  local binary_path
+
+  if binary_path=$(command -v measure-preview 2> /dev/null) && [[ -x "$binary_path" ]]; then
+    echo "$binary_path"
+    return
+  fi
+
+  if binary_path=$(cd "$PROJECT_ROOT" && cabal --project-file=cabal.project.preview list-bin measure-preview 2> /dev/null) && [[ -x "$binary_path" ]]; then
+    echo "$binary_path"
+  else
+    echo "cabal --project-file=cabal.project.preview run measure-preview --"
+  fi
+}
+
 # Write metrics.json with timestamp preservation
 # Merges raw metrics from measure tool with metadata and preserves timestamp if unchanged
 # Args:
