@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UPLC-CAPE Preview — Plinth by Unisay</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #fdf6e3;
+        }
+        .preview-banner {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            color: white;
+            padding: 12px 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 0.9em;
+        }
+        .report-nav {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 24px;
+        }
+        .report-nav a {
+            display: inline-block;
+            padding: 8px 16px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9em;
+        }
+        .report-nav .active { background: #f59e0b; color: white; }
+        .report-nav .inactive { background: #667eea; color: white; }
+        .report-nav .inactive:hover { background: #5a6fd6; }
+        .header {
+            margin-bottom: 30px;
+            padding: 20px 0;
+        }
+        .header h1 { color: #333; margin: 0 0 8px 0; }
+        .breadcrumb {
+            color: #6c757d;
+            font-size: 0.9em;
+            margin-bottom: 10px;
+        }
+        .breadcrumb a { color: #d97706; text-decoration: none; }
+        .breadcrumb a:hover { text-decoration: underline; }
+        .version-badge {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.85em;
+            font-family: 'Monaco', 'Menlo', monospace;
+        }
+        .version-prod { background: #e2e8f0; color: #475569; }
+        .version-preview { background: #fef3c7; color: #92400e; }
+        .scenario-section {
+            background: white;
+            border-radius: 10px;
+            padding: 24px;
+            margin-bottom: 24px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        .scenario-section h3 {
+            color: #333;
+            margin: 0 0 16px 0;
+            font-size: 1.15em;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 10px 14px;
+            text-align: right;
+            border-bottom: 1px solid #e9ecef;
+        }
+        th { color: #6c757d; font-size: 0.85em; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600; }
+        th:first-child, td:first-child { text-align: left; }
+        td.metric-name { font-weight: 500; color: #333; }
+        .delta-positive { color: #dc2626; }
+        .delta-negative { color: #16a34a; }
+        .delta-zero { color: #6c757d; }
+        .footer {
+            text-align: center;
+            margin-top: 50px;
+            padding: 20px;
+            color: #6c757d;
+            border-top: 1px solid #e9ecef;
+        }
+    </style>
+</head>
+<body>
+    <div class="report-nav">
+        <a class="inactive" href="../../index.html">Production</a>
+        <a class="active" href="../index.html">Preview</a>
+    </div>
+
+    <div class="preview-banner">
+        <strong>PREVIEW</strong> &mdash; Comparing production vs preview compiler output. Preview features are NOT yet on Cardano mainnet.
+    </div>
+
+    <div class="header">
+        <div class="breadcrumb">
+            <a href="../index.html">Preview compilers</a> &rarr; Plinth
+        </div>
+        <h1>Plinth by Unisay</h1>
+        <div>
+            <span class="version-badge version-prod">Production 1.45.0.0</span>
+            &rarr;
+            <span class="version-badge version-preview">Preview 1.60.0.0</span>
+        </div>
+    </div>
+
+    
+    <div class="scenario-section">
+        <h3>ecd</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Metric</th>
+                    <th>Production</th>
+                    <th>Preview</th>
+                    <th>Delta</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="metric-name">CPU Units (sum)</td>
+                    <td>33212998</td>
+                    <td>33212998</td>
+                    <td>N/A</td>
+                </tr>
+                <tr>
+                    <td class="metric-name">Memory Units (sum)</td>
+                    <td>132957</td>
+                    <td>132957</td>
+                    <td>N/A</td>
+                </tr>
+                <tr>
+                    <td class="metric-name">Script Size (bytes)</td>
+                    <td>56</td>
+                    <td>56</td>
+                    <td>N/A</td>
+                </tr>
+                <tr>
+                    <td class="metric-name">Term Size (AST nodes)</td>
+                    <td>48</td>
+                    <td>48</td>
+                    <td>N/A</td>
+                </tr>
+                <tr>
+                    <td class="metric-name">Total Fee (lovelace)</td>
+                    <td>10907</td>
+                    <td>10907</td>
+                    <td>N/A</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    
+    <div class="scenario-section">
+        <h3>factorial_naive_recursion</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Metric</th>
+                    <th>Production</th>
+                    <th>Preview</th>
+                    <th>Delta</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="metric-name">CPU Units (sum)</td>
+                    <td>37481975</td>
+                    <td>37481975</td>
+                    <td>N/A</td>
+                </tr>
+                <tr>
+                    <td class="metric-name">Memory Units (sum)</td>
+                    <td>140290</td>
+                    <td>140290</td>
+                    <td>N/A</td>
+                </tr>
+                <tr>
+                    <td class="metric-name">Script Size (bytes)</td>
+                    <td>40</td>
+                    <td>40</td>
+                    <td>N/A</td>
+                </tr>
+                <tr>
+                    <td class="metric-name">Term Size (AST nodes)</td>
+                    <td>33</td>
+                    <td>33</td>
+                    <td>N/A</td>
+                </tr>
+                <tr>
+                    <td class="metric-name">Total Fee (lovelace)</td>
+                    <td>11398</td>
+                    <td>11398</td>
+                    <td>N/A</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    
+    <div class="scenario-section">
+        <h3>fibonacci</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Metric</th>
+                    <th>Production</th>
+                    <th>Preview</th>
+                    <th>Delta</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="metric-name">CPU Units (sum)</td>
+                    <td>91379406</td>
+                    <td>91379406</td>
+                    <td>N/A</td>
+                </tr>
+                <tr>
+                    <td class="metric-name">Memory Units (sum)</td>
+                    <td>355606</td>
+                    <td>355606</td>
+                    <td>N/A</td>
+                </tr>
+                <tr>
+                    <td class="metric-name">Script Size (bytes)</td>
+                    <td>81</td>
+                    <td>81</td>
+                    <td>N/A</td>
+                </tr>
+                <tr>
+                    <td class="metric-name">Term Size (AST nodes)</td>
+                    <td>68</td>
+                    <td>68</td>
+                    <td>N/A</td>
+                </tr>
+                <tr>
+                    <td class="metric-name">Total Fee (lovelace)</td>
+                    <td>28322</td>
+                    <td>28322</td>
+                    <td>N/A</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    
+    <div class="scenario-section">
+        <h3>fibonacci_naive_recursion</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Metric</th>
+                    <th>Production</th>
+                    <th>Preview</th>
+                    <th>Delta</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="metric-name">CPU Units (sum)</td>
+                    <td>175016233630</td>
+                    <td>175016233630</td>
+                    <td>N/A</td>
+                </tr>
+                <tr>
+                    <td class="metric-name">Memory Units (sum)</td>
+                    <td>641939062</td>
+                    <td>641939062</td>
+                    <td>N/A</td>
+                </tr>
+                <tr>
+                    <td class="metric-name">Script Size (bytes)</td>
+                    <td>48</td>
+                    <td>48</td>
+                    <td>N/A</td>
+                </tr>
+                <tr>
+                    <td class="metric-name">Term Size (AST nodes)</td>
+                    <td>42</td>
+                    <td>42</td>
+                    <td>N/A</td>
+                </tr>
+                <tr>
+                    <td class="metric-name">Total Fee (lovelace)</td>
+                    <td>49659275</td>
+                    <td>49659275</td>
+                    <td>N/A</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    
+    <div class="scenario-section">
+        <h3>two_party_escrow</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Metric</th>
+                    <th>Production</th>
+                    <th>Preview</th>
+                    <th>Delta</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="metric-name">CPU Units (sum)</td>
+                    <td>2664628645</td>
+                    <td>2640180645</td>
+                    <td><span class="delta-negative">-0.9%</span></td>
+                </tr>
+                <tr>
+                    <td class="metric-name">Memory Units (sum)</td>
+                    <td>10402542</td>
+                    <td>10249742</td>
+                    <td><span class="delta-negative">-1.5%</span></td>
+                </tr>
+                <tr>
+                    <td class="metric-name">Script Size (bytes)</td>
+                    <td>3403</td>
+                    <td>3428</td>
+                    <td><span class="delta-positive">+0.7%</span></td>
+                </tr>
+                <tr>
+                    <td class="metric-name">Term Size (AST nodes)</td>
+                    <td>3249</td>
+                    <td>3254</td>
+                    <td><span class="delta-positive">+0.2%</span></td>
+                </tr>
+                <tr>
+                    <td class="metric-name">Total Fee (lovelace)</td>
+                    <td>843392</td>
+                    <td>833188</td>
+                    <td><span class="delta-negative">-1.2%</span></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    
+
+    <div class="footer">
+        <p>PREVIEW &mdash; Generated by UPLC-CAPE on 2026-03-30 15:51:31 UTC &middot; <a href="https://github.com/IntersectMBO/UPLC-CAPE">View on GitHub</a> &middot; <a href="../../index.html">Production report</a></p>
+    </div>
+</body>
+</html>
