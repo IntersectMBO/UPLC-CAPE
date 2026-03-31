@@ -164,10 +164,15 @@ fi
 generate_benchmark_report() {
   local benchmark="$1"
   local output_dir="$2"
+  local target_filter="${3:-}"
 
   # Get CSV data for this benchmark
   local csv_data valid_csv_data
-  csv_data=$($CAPE_CMD submission aggregate | grep "^$benchmark," || true)
+  local aggregate_args=()
+  if [ -n "$target_filter" ]; then
+    aggregate_args+=("--target=$target_filter")
+  fi
+  csv_data=$($CAPE_CMD submission aggregate "${aggregate_args[@]}" | grep "^$benchmark," || true)
 
   if [ -z "$csv_data" ]; then
     echo "No submissions found for benchmark: $benchmark" >&2
@@ -1140,6 +1145,8 @@ generate_individual_benchmark_report() {
   local benchmark="$1"
   local output_dir="$2"
   local chart_files="$3"
+  local target_filter="${4:-}"
+  local template_name="${5:-benchmark.html.tmpl}"
 
   # Parse chart files manually to avoid array issues
   local chart1 chart2 chart3 chart4 chart5 chart6 chart7 chart8
@@ -1154,7 +1161,11 @@ generate_individual_benchmark_report() {
 
   # Get CSV data for this benchmark to create the data table
   local csv_data valid_csv_data
-  csv_data=$($CAPE_CMD submission aggregate | grep "^$benchmark," || true)
+  local aggregate_args=()
+  if [ -n "$target_filter" ]; then
+    aggregate_args+=("--target=$target_filter")
+  fi
+  csv_data=$($CAPE_CMD submission aggregate "${aggregate_args[@]}" | grep "^$benchmark," || true)
 
   # Filter out invalid CSV entries (those with empty numeric fields or template placeholders)
   valid_csv_data=$(echo "$csv_data" | grep -v '<.*>' | awk -F, -v cpu="${CSV_COL[cpu_units]}" -v mem="${CSV_COL[memory_units]}" -v size="${CSV_COL[script_size_bytes]}" -v term="${CSV_COL[term_size]}" '$cpu != "" && $mem != "" && $size != "" && $term != ""')
@@ -1264,7 +1275,7 @@ EOF
 EOF
 
   # Template & output paths
-  local abs_template_path="$SCRIPT_DIR/benchmark.html.tmpl"
+  local abs_template_path="$SCRIPT_DIR/$template_name"
   local abs_output_path="$output_dir/benchmarks/${benchmark}.html"
 
   # Use the temporary JSON file directly without copying
@@ -1283,10 +1294,16 @@ EOF
 }
 
 # Build filtered benchmark stats from CSV data
+# Usage: build_filtered_stats [--target=current|preview]
 build_filtered_stats() {
+  local target_filter="${1:-}"
   # Get CSV data
   local csv_data
-  csv_data=$($CAPE_CMD submission aggregate)
+  local aggregate_args=()
+  if [ -n "$target_filter" ]; then
+    aggregate_args+=("--target=$target_filter")
+  fi
+  csv_data=$($CAPE_CMD submission aggregate "${aggregate_args[@]}")
 
   # Start JSON output
   echo '{'
@@ -1549,6 +1566,8 @@ find_winners() {
 generate_index_report() {
   local output_dir="$1"
   local benchmark_list="$2"
+  local target_filter="${3:-}"
+  local template_name="${4:-index.html.tmpl}"
 
   # Create JSON data for template
   local temp_json temp_stats
@@ -1560,8 +1579,12 @@ generate_index_report() {
     log_info "[dry-run] Would generate benchmark stats"
     echo '{"benchmarks":[]}' > "$temp_stats"
   else
-    # Build stats from CSV data
-    build_filtered_stats > "$temp_stats"
+    # Build stats from CSV data (pass target filter if set)
+    if [ -n "$target_filter" ]; then
+      build_filtered_stats "$target_filter" > "$temp_stats"
+    else
+      build_filtered_stats > "$temp_stats"
+    fi
   fi
 
   cat > "$temp_json" << EOF
@@ -1594,9 +1617,9 @@ EOF
 
   # Render template with gomplate
   if [[ $DRY_RUN -eq 1 ]]; then
-    log_info "[dry-run] Would render $output_dir/index.html using template $SCRIPT_DIR/index.html.tmpl"
+    log_info "[dry-run] Would render $output_dir/index.html using template $SCRIPT_DIR/$template_name"
   else
-    if ! gomplate -f "$SCRIPT_DIR/index.html.tmpl" -c .="$temp_json" > "$output_dir/index.html"; then
+    if ! gomplate -f "$SCRIPT_DIR/$template_name" -c .="$temp_json" > "$output_dir/index.html"; then
       echo "ERROR: Index template rendering failed" >&2
       rm -f "$temp_json"
       exit 1
@@ -1656,6 +1679,116 @@ EOF
   rm -f "$temp_json"
 }
 
+# Build compiler comparison stats for preview report (compiler-centric).
+# Correlates production and preview submissions by (benchmark, compiler, author),
+# computes delta percentages. Outputs JSON to stdout.
+build_compiler_comparison_stats() {
+  local current_csv preview_csv
+  current_csv=$($CAPE_CMD submission aggregate --target=current 2>/dev/null | tail -n +2)
+  preview_csv=$($CAPE_CMD submission aggregate --target=preview 2>/dev/null | tail -n +2)
+
+  if [ -z "$preview_csv" ]; then
+    echo '{"generated_at":"'"$(date -u +"%Y-%m-%dT%H:%M:%SZ")"'","compilers":[]}'
+    return
+  fi
+
+  # Build JSON using jq
+  # For each preview row, find matching production row by (benchmark, language, user)
+  local result='[]'
+
+  # Get unique (language, user) pairs from preview
+  local compiler_keys
+  compiler_keys=$(echo "$preview_csv" | awk -F, '{print $3 "," $5}' | sort -u)
+
+  while IFS=',' read -r compiler author; do
+    [ -n "$compiler" ] || continue
+
+    # Get all preview rows for this compiler+author
+    local preview_rows prod_version preview_version scenarios_json='[]'
+    preview_rows=$(echo "$preview_csv" | awk -F, -v c="$compiler" -v a="$author" '$3==c && $5==a')
+    preview_version=$(echo "$preview_rows" | head -1 | cut -d, -f4)
+
+    # Find corresponding production version
+    prod_version=$(echo "$current_csv" | awk -F, -v c="$compiler" -v a="$author" '$3==c && $5==a {print $4; exit}')
+
+    local scenario_count=0
+
+    while IFS= read -r preview_row; do
+      [ -n "$preview_row" ] || continue
+      local benchmark p_cpu p_mem p_size p_term p_fee
+      benchmark=$(echo "$preview_row" | cut -d, -f1)
+      p_cpu=$(echo "$preview_row" | cut -d, -f7)
+      p_mem=$(echo "$preview_row" | cut -d, -f8)
+      p_size=$(echo "$preview_row" | cut -d, -f9)
+      p_term=$(echo "$preview_row" | cut -d, -f10)
+      p_fee=$(echo "$preview_row" | cut -d, -f13)
+
+      # Find matching production row
+      local prod_row c_cpu c_mem c_size c_term c_fee
+      prod_row=$(echo "$current_csv" | awk -F, -v b="$benchmark" -v c="$compiler" -v a="$author" '$1==b && $3==c && $5==a' | head -1)
+
+      if [ -n "$prod_row" ]; then
+        c_cpu=$(echo "$prod_row" | cut -d, -f7)
+        c_mem=$(echo "$prod_row" | cut -d, -f8)
+        c_size=$(echo "$prod_row" | cut -d, -f9)
+        c_term=$(echo "$prod_row" | cut -d, -f10)
+        c_fee=$(echo "$prod_row" | cut -d, -f13)
+      else
+        c_cpu="" c_mem="" c_size="" c_term="" c_fee=""
+      fi
+
+      # Compute deltas (percentage change)
+      local d_cpu d_mem d_size d_term d_fee
+      if [ -n "$c_cpu" ] && [ "$c_cpu" != "0" ]; then
+        d_cpu=$(awk "BEGIN{printf \"%.1f\", (($p_cpu - $c_cpu) / $c_cpu) * 100}")
+        d_mem=$(awk "BEGIN{printf \"%.1f\", (($p_mem - $c_mem) / $c_mem) * 100}")
+        d_fee=$(awk "BEGIN{printf \"%.1f\", (($p_fee - $c_fee) / $c_fee) * 100}")
+      else
+        d_cpu="null" d_mem="null" d_fee="null"
+      fi
+      if [ -n "$c_size" ] && [ "$c_size" != "0" ]; then
+        d_size=$(awk "BEGIN{printf \"%.1f\", (($p_size - $c_size) / $c_size) * 100}")
+        d_term=$(awk "BEGIN{printf \"%.1f\", (($p_term - $c_term) / $c_term) * 100}")
+      else
+        d_size="null" d_term="null"
+      fi
+
+      scenarios_json=$(echo "$scenarios_json" | jq \
+        --arg name "$benchmark" \
+        --argjson p_cpu "${p_cpu:-0}" --argjson p_mem "${p_mem:-0}" \
+        --argjson p_size "${p_size:-0}" --argjson p_term "${p_term:-0}" \
+        --argjson p_fee "${p_fee:-0}" \
+        --argjson c_cpu "${c_cpu:-null}" --argjson c_mem "${c_mem:-null}" \
+        --argjson c_size "${c_size:-null}" --argjson c_term "${c_term:-null}" \
+        --argjson c_fee "${c_fee:-null}" \
+        --argjson d_cpu "${d_cpu}" --argjson d_mem "${d_mem}" \
+        --argjson d_size "${d_size}" --argjson d_term "${d_term}" \
+        --argjson d_fee "${d_fee}" \
+        '. + [{
+          name: $name,
+          prod: {cpu_units: $c_cpu, memory_units: $c_mem, script_size_bytes: $c_size, term_size: $c_term, total_fee_lovelace: $c_fee},
+          preview: {cpu_units: $p_cpu, memory_units: $p_mem, script_size_bytes: $p_size, term_size: $p_term, total_fee_lovelace: $p_fee},
+          deltas: {cpu_units_pct: $d_cpu, memory_units_pct: $d_mem, script_size_pct: $d_size, term_size_pct: $d_term, total_fee_pct: $d_fee}
+        }]')
+      scenario_count=$((scenario_count + 1))
+    done <<< "$preview_rows"
+
+    result=$(echo "$result" | jq \
+      --arg compiler "$compiler" --arg author "$author" \
+      --arg prod_version "${prod_version:-N/A}" --arg preview_version "$preview_version" \
+      --argjson scenario_count "$scenario_count" \
+      --argjson scenarios "$scenarios_json" \
+      '. + [{
+        compiler: $compiler, author: $author,
+        prod_version: $prod_version, preview_version: $preview_version,
+        scenario_count: $scenario_count, scenarios: $scenarios
+      }]')
+  done <<< "$compiler_keys"
+
+  jq -n --argjson compilers "$result" \
+    '{generated_at: "'"$(date -u +"%Y-%m-%dT%H:%M:%SZ")"'", compilers: $compilers}'
+}
+
 # Parse arguments
 if [ $# -eq 0 ]; then
   log_err "No arguments provided"
@@ -1684,8 +1817,8 @@ if [ "$1" = "--all" ]; then
     if [ -d "$PROJECT_ROOT/submissions/$benchmark" ] && [ "$(find "$PROJECT_ROOT/submissions/$benchmark" -mindepth 1 -maxdepth 1 -type d ! -name "TEMPLATE" 2> /dev/null | wc -l)" -gt 0 ]; then
       echo "Processing $benchmark..."
 
-      # Generate charts and benchmark report
-      if ! chart_files=$(generate_benchmark_report "$benchmark" "$report_dir"); then
+      # Generate charts and benchmark report (current submissions only)
+      if ! chart_files=$(generate_benchmark_report "$benchmark" "$report_dir" "current"); then
         echo "❌ Error: Failed to generate report for benchmark '$benchmark'" >&2
         exit 1
       fi
@@ -1696,7 +1829,7 @@ if [ "$1" = "--all" ]; then
       fi
 
       if [[ $DRY_RUN -eq 0 ]]; then
-        generate_individual_benchmark_report "$benchmark" "$report_dir" "$chart_files"
+        generate_individual_benchmark_report "$benchmark" "$report_dir" "$chart_files" "current"
       fi
 
       # Add to benchmarks list
@@ -1711,20 +1844,74 @@ if [ "$1" = "--all" ]; then
     fi
   done
 
-  # Generate index page
+  # Generate index page (current)
   if [ -n "$benchmarks_with_submissions" ]; then
-    generate_index_report "$report_dir" "$(echo -e "$benchmarks_with_submissions")"
+    generate_index_report "$report_dir" "$(echo -e "$benchmarks_with_submissions")" "current"
     echo ""
-    echo "✅ HTML reports generated:"
+    echo "✅ Current HTML reports generated:"
     echo "   📄 $report_dir/index.html (main index)"
     echo "   📊 Individual benchmark reports in $report_dir/benchmarks/"
     echo "   🖼️  Chart images in $report_dir/benchmarks/images/"
-    echo ""
-    echo "Open the main report with: xdg-open $report_dir/index.html 2>/dev/null || echo \"Open: $report_dir/index.html\""
   else
     echo "Error: No submissions found for report generation" >&2
     exit 1
   fi
+
+  # ─── Preview Report Generation (compiler-centric) ──────────────────
+  echo ""
+  echo "🔮 Generating Preview Reports (compiler-centric)..."
+  preview_dir="$report_dir/preview"
+  if [[ $DRY_RUN -eq 0 ]]; then
+    rm -rf "$preview_dir"
+    mkdir -p "$preview_dir/compilers"
+    cp -f "$PROJECT_ROOT/uplc-cape-logo.png" "$preview_dir/uplc-cape-logo.png"
+  fi
+
+  if [[ $DRY_RUN -eq 1 ]]; then
+    echo "  [dry-run] Would generate compiler-centric preview report"
+  else
+    # Build compiler comparison stats (calls aggregate twice: current + preview)
+    temp_compiler_stats="/tmp/cape_compiler_stats_$$_$(date +%s).json"
+    build_compiler_comparison_stats > "$temp_compiler_stats"
+
+    compiler_count=$(jq '.compilers | length' "$temp_compiler_stats")
+
+    if [ "$compiler_count" -gt 0 ]; then
+      # Generate preview index (compiler-centric)
+      temp_index_json="/tmp/cape_preview_index_$$_$(date +%s).json"
+      jq --arg ts "$(date '+%Y-%m-%d %H:%M:%S %Z')" \
+        '{timestamp: $ts, compilers: .compilers}' "$temp_compiler_stats" > "$temp_index_json"
+      gomplate -f "$SCRIPT_DIR/index-preview.html.tmpl" -c .="$temp_index_json" > "$preview_dir/index.html"
+      rm -f "$temp_index_json"
+
+      # Generate per-compiler detail pages
+      for i in $(seq 0 $((compiler_count - 1))); do
+        compiler_name=$(jq -r ".compilers[$i].compiler" "$temp_compiler_stats")
+        author=$(jq -r ".compilers[$i].author" "$temp_compiler_stats")
+
+        temp_compiler_json="/tmp/cape_compiler_detail_$$_$(date +%s).json"
+        jq --arg ts "$(date '+%Y-%m-%d %H:%M:%S %Z')" \
+          ".compilers[$i] + {timestamp: \$ts}" "$temp_compiler_stats" > "$temp_compiler_json"
+        gomplate -f "$SCRIPT_DIR/compiler-preview.html.tmpl" -c .="$temp_compiler_json" \
+          > "$preview_dir/compilers/${compiler_name}_${author}.html"
+        rm -f "$temp_compiler_json"
+
+        echo "  Preview: $compiler_name by $author ($(jq -r ".compilers[$i].scenario_count" "$temp_compiler_stats") scenarios)"
+      done
+
+      rm -f "$temp_compiler_stats"
+      echo ""
+      echo "✅ Preview HTML reports generated:"
+      echo "   📄 $preview_dir/index.html (compiler-centric index)"
+      echo "   📊 Compiler detail pages in $preview_dir/compilers/"
+    else
+      rm -f "$temp_compiler_stats"
+      echo "  (No preview submissions found — preview report skipped)"
+    fi
+  fi
+
+  echo ""
+  echo "Open the main report with: xdg-open $report_dir/index.html 2>/dev/null || echo \"Open: $report_dir/index.html\""
 else
   # Generate report for specific benchmark
   benchmark="$1"

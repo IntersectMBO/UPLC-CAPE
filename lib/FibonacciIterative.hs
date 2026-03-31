@@ -16,7 +16,7 @@
 {-# OPTIONS_GHC -fplugin-opt PlutusTx.Plugin:remove-trace #-}
 {-# OPTIONS_GHC -fplugin-opt PlutusTx.Plugin:target-version=1.1.0 #-}
 
-module FibonacciIterative (fibonacciIterativeCode) where
+module FibonacciIterative (fibonacciIterativeCode, fibonacciIterative) where
 
 import PlutusTx
 import PlutusTx.Prelude

@@ -84,9 +84,17 @@ jobs:
       - name: Make measure executable
         run: chmod +x result/bin/measure
 
-      - name: Measure all submissions
+      - name: Measure production submissions
         run: |
           nix develop --accept-flake-config --command bash -c "export PATH=\"\$PWD/result/bin:\$PATH\" && cape submission measure --all"
+
+      - name: Build measure-preview
+        run: |
+          nix develop --accept-flake-config --command bash -c "cabal --project-file=cabal.project.preview build measure-preview"
+
+      - name: Measure preview submissions
+        run: |
+          nix develop --accept-flake-config --command bash -c "cape submission measure --preview"
 
       - name: Generate HTML reports
         run: |

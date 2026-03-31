@@ -4,6 +4,10 @@
 
 # Strict mode is expected in callers
 
+# Source version configuration for dual-CEK filtering
+# shellcheck disable=SC1091
+source "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/cape_versions.sh"
+
 # Command checks
 cape_has_cmd() { command -v "$1" > /dev/null 2>&1; }
 
@@ -188,6 +192,22 @@ cape_measure_binary() {
   else
     # Fallback to cabal run if binary detection fails
     echo "cabal run measure --"
+  fi
+}
+
+# Locate measure-preview binary (built against preview plutus-core)
+cape_measure_preview_binary() {
+  local binary_path
+
+  if binary_path=$(command -v measure-preview 2> /dev/null) && [[ -x "$binary_path" ]]; then
+    echo "$binary_path"
+    return
+  fi
+
+  if binary_path=$(cd "$PROJECT_ROOT" && cabal --project-file=cabal.project.preview list-bin measure-preview 2> /dev/null) && [[ -x "$binary_path" ]]; then
+    echo "$binary_path"
+  else
+    echo "cabal --project-file=cabal.project.preview run measure-preview --"
   fi
 }
 

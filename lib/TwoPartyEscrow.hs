@@ -26,7 +26,7 @@
 {-# OPTIONS_GHC -fplugin-opt PlutusTx.Plugin:no-conservative-optimisation #-}
 {-# OPTIONS_GHC -fplugin-opt PlutusTx.Plugin:target-version=1.1.0 #-}
 
-module TwoPartyEscrow (twoPartyEscrowValidatorCode) where
+module TwoPartyEscrow (twoPartyEscrowValidatorCode, twoPartyEscrowValidator) where
 
 import PlutusLedgerApi.Data.V3
 import PlutusTx
