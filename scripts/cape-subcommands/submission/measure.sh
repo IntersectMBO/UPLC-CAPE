@@ -281,17 +281,20 @@ measure_preview_submissions() {
       continue
     fi
 
-    # Run measure-preview (writes metrics.json directly)
-    local stdout_tmp
+    # Run measure-preview, then patch scenario field
+    local tmp_raw stdout_tmp
+    tmp_raw="$(cape_mktemp)"
     stdout_tmp="$(cape_mktemp)"
-    if (cd "$PROJECT_ROOT" && $preview_measure_cmd -i "$uplc_file" -t "$tests_file" -o "$submission_dir/metrics.json" 2>/dev/null) > "$stdout_tmp" 2>&1; then
+    if (cd "$PROJECT_ROOT" && $preview_measure_cmd -i "$uplc_file" -t "$tests_file" -o "$tmp_raw" 2>/dev/null) > "$stdout_tmp" 2>&1; then
+      # Patch scenario field and write final metrics
+      jq --arg s "$scenario" '.scenario = $s' "$tmp_raw" > "$submission_dir/metrics.json"
       cape_success "  ✓ Measured: $rel_path"
     else
       cape_error "  ✗ Failed: $rel_path"
       cat "$stdout_tmp" | grep -E "PASS|FAIL|Error:|Test results:" | sed 's/^/    /' >&2
       overall_errors=1
     fi
-    rm -f "$stdout_tmp"
+    rm -f "$tmp_raw" "$stdout_tmp"
   done < <(cape_each_submission_dir "$SUBMISSIONS_ROOT")
 
   if [[ $found_any -eq 0 ]]; then

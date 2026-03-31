@@ -1,137 +1,137 @@
 {
-    "evaluations": [
-        {
-            "cpu_units": 969986,
-            "description": "ECD of 0 and 12 should return 12 (edge case: first argument is zero)",
-            "execution_result": "success",
-            "memory_units": 4404,
-            "name": "ecd_0_12"
-        },
-        {
-            "cpu_units": 497723,
-            "description": "ECD of 12 and 0 should return 12 (edge case: second argument is zero)",
-            "execution_result": "success",
-            "memory_units": 2602,
-            "name": "ecd_12_0"
-        },
-        {
-            "cpu_units": 969986,
-            "description": "ECD of 7 and 7 should return 7 (edge case: identical numbers)",
-            "execution_result": "success",
-            "memory_units": 4404,
-            "name": "ecd_7_7"
-        },
-        {
-            "cpu_units": 1914512,
-            "description": "ECD of 6 and 9 should return 3",
-            "execution_result": "success",
-            "memory_units": 8008,
-            "name": "ecd_6_9"
-        },
-        {
-            "cpu_units": 1442249,
-            "description": "ECD of 12 and 8 should return 4",
-            "execution_result": "success",
-            "memory_units": 6206,
-            "name": "ecd_12_8"
-        },
-        {
-            "cpu_units": 2386775,
-            "description": "ECD of 15 and 25 should return 5",
-            "execution_result": "success",
-            "memory_units": 9810,
-            "name": "ecd_15_25"
-        },
-        {
-            "cpu_units": 2386775,
-            "description": "ECD of 17 and 19 should return 1 (coprime numbers)",
-            "execution_result": "success",
-            "memory_units": 9810,
-            "name": "ecd_17_19"
-        },
-        {
-            "cpu_units": 2386775,
-            "description": "ECD of 13 and 29 should return 1 (coprime numbers)",
-            "execution_result": "success",
-            "memory_units": 9810,
-            "name": "ecd_13_29"
-        },
-        {
-            "cpu_units": 1914512,
-            "description": "ECD of 48 and 18 should return 6",
-            "execution_result": "success",
-            "memory_units": 8008,
-            "name": "ecd_48_18"
-        },
-        {
-            "cpu_units": 1442249,
-            "description": "ECD of 100 and 75 should return 25",
-            "execution_result": "success",
-            "memory_units": 6206,
-            "name": "ecd_100_75"
-        },
-        {
-            "cpu_units": 1914512,
-            "description": "ECD of 1071 and 462 should return 21 (larger numbers)",
-            "execution_result": "success",
-            "memory_units": 8008,
-            "name": "ecd_1071_462"
-        },
-        {
-            "cpu_units": 1442249,
-            "description": "ECD of 2520 and 1890 should return 630 (larger numbers)",
-            "execution_result": "success",
-            "memory_units": 6206,
-            "name": "ecd_2520_1890"
-        },
-        {
-            "cpu_units": 1442249,
-            "description": "ECD of -12 and 8 should return 4 (negative first argument handled via abs)",
-            "execution_result": "success",
-            "memory_units": 6206,
-            "name": "ecd_negative_12_8"
-        },
-        {
-            "cpu_units": 1607457,
-            "description": "ECD of 12 and -8 should return 4 (negative second argument handled via abs)",
-            "execution_result": "success",
-            "memory_units": 6608,
-            "name": "ecd_12_negative_8"
-        }
-    ],
-    "execution_environment": {
-        "evaluator": "PlutusTx.Eval-1.52.0.0"
+  "evaluations": [
+    {
+      "cpu_units": 969986,
+      "description": "ECD of 0 and 12 should return 12 (edge case: first argument is zero)",
+      "execution_result": "success",
+      "memory_units": 4404,
+      "name": "ecd_0_12"
     },
-    "measurements": {
-        "block_cpu_budget_pct": 5.9669375e-3,
-        "block_memory_budget_pct": 1.582258064516129e-2,
-        "cpu_units": {
-            "maximum": 2386775,
-            "median": 1524853,
-            "minimum": 497723,
-            "sum": 22718009,
-            "sum_negative": 0,
-            "sum_positive": 22718009
-        },
-        "execution_fee_lovelace": 7195,
-        "memory_units": {
-            "maximum": 9810,
-            "median": 6407,
-            "minimum": 2602,
-            "sum": 96296,
-            "sum_negative": 0,
-            "sum_positive": 96296
-        },
-        "reference_script_fee_lovelace": 690,
-        "script_size_bytes": 46,
-        "scripts_per_block": 6320,
-        "scripts_per_tx": 1427,
-        "term_size": 36,
-        "total_fee_lovelace": 7885,
-        "tx_cpu_budget_pct": 2.386775e-2,
-        "tx_memory_budget_pct": 7.007142857142858e-2
+    {
+      "cpu_units": 497723,
+      "description": "ECD of 12 and 0 should return 12 (edge case: second argument is zero)",
+      "execution_result": "success",
+      "memory_units": 2602,
+      "name": "ecd_12_0"
     },
-    "scenario": "unknown",
-    "timestamp": "2026-03-30T16:06:14Z",
-    "version": "1.0.0"
+    {
+      "cpu_units": 969986,
+      "description": "ECD of 7 and 7 should return 7 (edge case: identical numbers)",
+      "execution_result": "success",
+      "memory_units": 4404,
+      "name": "ecd_7_7"
+    },
+    {
+      "cpu_units": 1914512,
+      "description": "ECD of 6 and 9 should return 3",
+      "execution_result": "success",
+      "memory_units": 8008,
+      "name": "ecd_6_9"
+    },
+    {
+      "cpu_units": 1442249,
+      "description": "ECD of 12 and 8 should return 4",
+      "execution_result": "success",
+      "memory_units": 6206,
+      "name": "ecd_12_8"
+    },
+    {
+      "cpu_units": 2386775,
+      "description": "ECD of 15 and 25 should return 5",
+      "execution_result": "success",
+      "memory_units": 9810,
+      "name": "ecd_15_25"
+    },
+    {
+      "cpu_units": 2386775,
+      "description": "ECD of 17 and 19 should return 1 (coprime numbers)",
+      "execution_result": "success",
+      "memory_units": 9810,
+      "name": "ecd_17_19"
+    },
+    {
+      "cpu_units": 2386775,
+      "description": "ECD of 13 and 29 should return 1 (coprime numbers)",
+      "execution_result": "success",
+      "memory_units": 9810,
+      "name": "ecd_13_29"
+    },
+    {
+      "cpu_units": 1914512,
+      "description": "ECD of 48 and 18 should return 6",
+      "execution_result": "success",
+      "memory_units": 8008,
+      "name": "ecd_48_18"
+    },
+    {
+      "cpu_units": 1442249,
+      "description": "ECD of 100 and 75 should return 25",
+      "execution_result": "success",
+      "memory_units": 6206,
+      "name": "ecd_100_75"
+    },
+    {
+      "cpu_units": 1914512,
+      "description": "ECD of 1071 and 462 should return 21 (larger numbers)",
+      "execution_result": "success",
+      "memory_units": 8008,
+      "name": "ecd_1071_462"
+    },
+    {
+      "cpu_units": 1442249,
+      "description": "ECD of 2520 and 1890 should return 630 (larger numbers)",
+      "execution_result": "success",
+      "memory_units": 6206,
+      "name": "ecd_2520_1890"
+    },
+    {
+      "cpu_units": 1442249,
+      "description": "ECD of -12 and 8 should return 4 (negative first argument handled via abs)",
+      "execution_result": "success",
+      "memory_units": 6206,
+      "name": "ecd_negative_12_8"
+    },
+    {
+      "cpu_units": 1607457,
+      "description": "ECD of 12 and -8 should return 4 (negative second argument handled via abs)",
+      "execution_result": "success",
+      "memory_units": 6608,
+      "name": "ecd_12_negative_8"
+    }
+  ],
+  "execution_environment": {
+    "evaluator": "PlutusTx.Eval-1.52.0.0"
+  },
+  "measurements": {
+    "block_cpu_budget_pct": 0.0059669375,
+    "block_memory_budget_pct": 0.01582258064516129,
+    "cpu_units": {
+      "maximum": 2386775,
+      "median": 1524853,
+      "minimum": 497723,
+      "sum": 22718009,
+      "sum_negative": 0,
+      "sum_positive": 22718009
+    },
+    "execution_fee_lovelace": 7195,
+    "memory_units": {
+      "maximum": 9810,
+      "median": 6407,
+      "minimum": 2602,
+      "sum": 96296,
+      "sum_negative": 0,
+      "sum_positive": 96296
+    },
+    "reference_script_fee_lovelace": 690,
+    "script_size_bytes": 46,
+    "scripts_per_block": 6320,
+    "scripts_per_tx": 1427,
+    "term_size": 36,
+    "total_fee_lovelace": 7885,
+    "tx_cpu_budget_pct": 0.02386775,
+    "tx_memory_budget_pct": 0.07007142857142858
+  },
+  "scenario": "ecd",
+  "timestamp": "2026-03-31T11:39:13Z",
+  "version": "1.0.0"
 }
