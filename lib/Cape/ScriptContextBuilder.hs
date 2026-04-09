@@ -28,7 +28,7 @@ data PatchOperation
   = AddSignature PubKeyHash
   | RemoveSignature PubKeyHash
   | SetRedeemer Redeemer
-  | AddInputUTXO TxOutRef Value Bool
+  | AddInputUTXO TxOutRef Value Bool OutputDatum
   | SetValidRange (Maybe POSIXTime) (Maybe POSIXTime)
   | AddOutputUTXO Address Value
   | RemoveOutputUTXO Int
@@ -120,7 +120,7 @@ applyPatch ctx patch =
       pure $ ctx {scriptContextTxInfo = updatedTxInfo}
     SetRedeemer redeemer -> do
       pure $ ctx {scriptContextRedeemer = redeemer}
-    AddInputUTXO txOutRef value isOwnInput -> do
+    AddInputUTXO txOutRef value isOwnInput outputDatum -> do
       let txInfo = scriptContextTxInfo ctx
           -- Use script address for script inputs, dummy address for regular inputs
           inputAddr =
@@ -132,7 +132,7 @@ applyPatch ctx patch =
                   )
                   Nothing
               else Address (PubKeyCredential (PubKeyHash "")) Nothing
-          newTxIn = TxInInfo txOutRef (TxOut inputAddr value NoOutputDatum Nothing)
+          newTxIn = TxInInfo txOutRef (TxOut inputAddr value outputDatum Nothing)
           updatedInputs = List.cons newTxIn (txInfoInputs txInfo)
           updatedTxInfo = txInfo {txInfoInputs = updatedInputs}
           updatedCtx = ctx {scriptContextTxInfo = updatedTxInfo}

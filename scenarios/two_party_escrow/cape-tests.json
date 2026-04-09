@@ -46,7 +46,9 @@
           {
             "op": "add_input_utxo",
             "utxo_ref": "3333333333333333333333333333333333333333333333333333333333333333:0",
-            "lovelace": 75000000,
+            "value": {
+              "lovelace": 75000000
+            },
             "is_own_input": false
           },
           {
@@ -55,7 +57,9 @@
               "type": "script",
               "script_hash": "1111111111111111111111111111111111111111111111111111111111"
             },
-            "lovelace": 75000000,
+            "value": {
+              "lovelace": 75000000
+            },
             "datum": "@deposited_escrow_datum"
           }
         ]
@@ -81,7 +85,9 @@
           {
             "op": "add_input_utxo",
             "utxo_ref": "4444444444444444444444444444444444444444444444444444444444444444:0",
-            "lovelace": 75000000,
+            "value": {
+              "lovelace": 75000000
+            },
             "is_own_input": true,
             "datum": "@deposited_escrow_datum"
           },
@@ -91,7 +97,9 @@
               "type": "pubkey",
               "pubkey_hash": "@seller_pubkey"
             },
-            "lovelace": 75000000
+            "value": {
+              "lovelace": 75000000
+            }
           }
         ]
       }
@@ -120,7 +128,9 @@
           {
             "op": "add_input_utxo",
             "utxo_ref": "3333333333333333333333333333333333333333333333333333333333333333:1",
-            "lovelace": 75000000,
+            "value": {
+              "lovelace": 75000000
+            },
             "is_own_input": true,
             "datum": "@deposited_escrow_datum"
           },
@@ -130,7 +140,9 @@
               "type": "pubkey",
               "pubkey_hash": "@buyer_pubkey"
             },
-            "lovelace": 75000000
+            "value": {
+              "lovelace": 75000000
+            }
           }
         ]
       }
@@ -310,7 +322,9 @@
                   "type": "script",
                   "script_hash": "1111111111111111111111111111111111111111111111111111111111"
                 },
-                "lovelace": 50000000
+                "value": {
+                  "lovelace": 50000000
+                }
               }
             ]
           }
@@ -340,7 +354,9 @@
               {
                 "op": "add_input_utxo",
                 "utxo_ref": "3333333333333333333333333333333333333333333333333333333333333333:0",
-                "lovelace": 75000000,
+                "value": {
+                  "lovelace": 75000000
+                },
                 "is_own_input": true
               },
               {
@@ -349,7 +365,9 @@
                   "type": "pubkey",
                   "pubkey_hash": "@impostor_pubkey"
                 },
-                "lovelace": 75000000
+                "value": {
+                  "lovelace": 75000000
+                }
               }
             ]
           }
@@ -412,7 +430,9 @@
                   "type": "pubkey",
                   "pubkey_hash": "@seller_pubkey"
                 },
-                "lovelace": 50000000
+                "value": {
+                  "lovelace": 50000000
+                }
               }
             ]
           }
@@ -442,7 +462,9 @@
               {
                 "op": "add_input_utxo",
                 "utxo_ref": "4444444444444444444444444444444444444444444444444444444444444444:0",
-                "lovelace": 75000000,
+                "value": {
+                  "lovelace": 75000000
+                },
                 "is_own_input": true
               },
               {
@@ -451,7 +473,9 @@
                   "type": "pubkey",
                   "pubkey_hash": "@impostor_pubkey"
                 },
-                "lovelace": 75000000
+                "value": {
+                  "lovelace": 75000000
+                }
               }
             ]
           }
@@ -484,7 +508,9 @@
                   "type": "pubkey",
                   "pubkey_hash": "@seller_pubkey"
                 },
-                "lovelace": 75000000
+                "value": {
+                  "lovelace": 75000000
+                }
               }
             ]
           }
@@ -519,13 +545,17 @@
               {
                 "op": "add_input_utxo",
                 "utxo_ref": "3333333333333333333333333333333333333333333333333333333333333333:0",
-                "lovelace": 75000000,
+                "value": {
+                  "lovelace": 75000000
+                },
                 "is_own_input": true
               },
               {
                 "op": "add_input_utxo",
                 "utxo_ref": "3333333333333333333333333333333333333333333333333333333333333333:1",
-                "lovelace": 75000000,
+                "value": {
+                  "lovelace": 75000000
+                },
                 "is_own_input": true
               },
               {
@@ -534,7 +564,9 @@
                   "type": "pubkey",
                   "pubkey_hash": "@seller_pubkey"
                 },
-                "lovelace": 75000000
+                "value": {
+                  "lovelace": 75000000
+                }
               }
             ]
           }
@@ -564,7 +596,9 @@
               {
                 "op": "add_input_utxo",
                 "utxo_ref": "4444444444444444444444444444444444444444444444444444444444444444:0",
-                "lovelace": 75000000,
+                "value": {
+                  "lovelace": 75000000
+                },
                 "is_own_input": true
               },
               {
@@ -573,7 +607,9 @@
                   "type": "pubkey",
                   "pubkey_hash": "@seller_pubkey"
                 },
-                "lovelace": 50000000
+                "value": {
+                  "lovelace": 50000000
+                }
               }
             ]
           }
@@ -603,7 +639,9 @@
               {
                 "op": "add_input_utxo",
                 "utxo_ref": "4444444444444444444444444444444444444444444444444444444444444444:0",
-                "lovelace": 75000000,
+                "value": {
+                  "lovelace": 75000000
+                },
                 "is_own_input": true
               },
               {
@@ -612,7 +650,9 @@
                   "type": "pubkey",
                   "pubkey_hash": "@seller_pubkey"
                 },
-                "lovelace": 100000000
+                "value": {
+                  "lovelace": 100000000
+                }
               }
             ]
           }
@@ -664,7 +704,9 @@
               {
                 "op": "add_input_utxo",
                 "utxo_ref": "3333333333333333333333333333333333333333333333333333333333333333:1",
-                "lovelace": 75000000,
+                "value": {
+                  "lovelace": 75000000
+                },
                 "is_own_input": true
               },
               {
@@ -673,7 +715,9 @@
                   "type": "pubkey",
                   "pubkey_hash": "@seller_pubkey"
                 },
-                "lovelace": 50000000
+                "value": {
+                  "lovelace": 50000000
+                }
               },
               {
                 "op": "add_output_utxo",
@@ -681,7 +725,9 @@
                   "type": "pubkey",
                   "pubkey_hash": "@seller_pubkey"
                 },
-                "lovelace": 25000000
+                "value": {
+                  "lovelace": 25000000
+                }
               }
             ]
           }
@@ -711,7 +757,9 @@
               {
                 "op": "add_input_utxo",
                 "utxo_ref": "4444444444444444444444444444444444444444444444444444444444444444:0",
-                "lovelace": 75000000,
+                "value": {
+                  "lovelace": 75000000
+                },
                 "is_own_input": true
               },
               {
@@ -720,7 +768,9 @@
                   "type": "pubkey",
                   "pubkey_hash": "@seller_pubkey"
                 },
-                "lovelace": 75000000
+                "value": {
+                  "lovelace": 75000000
+                }
               },
               {
                 "op": "add_output_utxo",
@@ -728,7 +778,9 @@
                   "type": "script",
                   "script_hash": "1111111111111111111111111111111111111111111111111111111111"
                 },
-                "lovelace": 10000000
+                "value": {
+                  "lovelace": 10000000
+                }
               }
             ]
           }
@@ -801,13 +853,17 @@
               {
                 "op": "add_input_utxo",
                 "utxo_ref": "3333333333333333333333333333333333333333333333333333333333333333:0",
-                "lovelace": 75000000,
+                "value": {
+                  "lovelace": 75000000
+                },
                 "is_own_input": true
               },
               {
                 "op": "add_input_utxo",
                 "utxo_ref": "3333333333333333333333333333333333333333333333333333333333333333:1",
-                "lovelace": 75000000,
+                "value": {
+                  "lovelace": 75000000
+                },
                 "is_own_input": true
               },
               {
@@ -816,7 +872,9 @@
                   "type": "pubkey",
                   "pubkey_hash": "@buyer_pubkey"
                 },
-                "lovelace": 75000000
+                "value": {
+                  "lovelace": 75000000
+                }
               }
             ]
           }
@@ -855,7 +913,9 @@
               {
                 "op": "add_input_utxo",
                 "utxo_ref": "3333333333333333333333333333333333333333333333333333333333333333:1",
-                "lovelace": 75000000,
+                "value": {
+                  "lovelace": 75000000
+                },
                 "is_own_input": true
               },
               {
@@ -864,7 +924,9 @@
                   "type": "pubkey",
                   "pubkey_hash": "@buyer_pubkey"
                 },
-                "lovelace": 75000000
+                "value": {
+                  "lovelace": 75000000
+                }
               }
             ]
           }
@@ -903,7 +965,9 @@
               {
                 "op": "add_input_utxo",
                 "utxo_ref": "3333333333333333333333333333333333333333333333333333333333333333:1",
-                "lovelace": 75000000,
+                "value": {
+                  "lovelace": 75000000
+                },
                 "is_own_input": true
               },
               {
@@ -912,7 +976,9 @@
                   "type": "pubkey",
                   "pubkey_hash": "@buyer_pubkey"
                 },
-                "lovelace": 50000000
+                "value": {
+                  "lovelace": 50000000
+                }
               },
               {
                 "op": "add_output_utxo",
@@ -920,7 +986,9 @@
                   "type": "pubkey",
                   "pubkey_hash": "@buyer_pubkey"
                 },
-                "lovelace": 25000000
+                "value": {
+                  "lovelace": 25000000
+                }
               }
             ]
           }
@@ -975,7 +1043,9 @@
               {
                 "op": "add_input_utxo",
                 "utxo_ref": "4444444444444444444444444444444444444444444444444444444444444444:0",
-                "lovelace": 75000000,
+                "value": {
+                  "lovelace": 75000000
+                },
                 "is_own_input": true
               },
               {
@@ -984,7 +1054,9 @@
                   "type": "pubkey",
                   "pubkey_hash": "@buyer_pubkey"
                 },
-                "lovelace": 75000000
+                "value": {
+                  "lovelace": 75000000
+                }
               }
             ]
           }
@@ -1018,7 +1090,9 @@
               {
                 "op": "add_input_utxo",
                 "utxo_ref": "4444444444444444444444444444444444444444444444444444444444444444:0",
-                "lovelace": 75000000,
+                "value": {
+                  "lovelace": 75000000
+                },
                 "is_own_input": true
               },
               {
@@ -1027,7 +1101,9 @@
                   "type": "pubkey",
                   "pubkey_hash": "@buyer_pubkey"
                 },
-                "lovelace": 75000000
+                "value": {
+                  "lovelace": 75000000
+                }
               }
             ]
           }
@@ -1061,7 +1137,9 @@
               {
                 "op": "add_input_utxo",
                 "utxo_ref": "4444444444444444444444444444444444444444444444444444444444444444:0",
-                "lovelace": 75000000,
+                "value": {
+                  "lovelace": 75000000
+                },
                 "is_own_input": true
               },
               {
@@ -1070,7 +1148,9 @@
                   "type": "pubkey",
                   "pubkey_hash": "@buyer_pubkey"
                 },
-                "lovelace": 75000000
+                "value": {
+                  "lovelace": 75000000
+                }
               }
             ]
           }
@@ -1104,7 +1184,9 @@
               {
                 "op": "add_input_utxo",
                 "utxo_ref": "4444444444444444444444444444444444444444444444444444444444444444:0",
-                "lovelace": 75000000,
+                "value": {
+                  "lovelace": 75000000
+                },
                 "is_own_input": true
               },
               {
@@ -1113,7 +1195,9 @@
                   "type": "pubkey",
                   "pubkey_hash": "@buyer_pubkey"
                 },
-                "lovelace": 75000000
+                "value": {
+                  "lovelace": 75000000
+                }
               }
             ]
           }
@@ -1143,7 +1227,9 @@
               {
                 "op": "add_input_utxo",
                 "utxo_ref": "4444444444444444444444444444444444444444444444444444444444444444:0",
-                "lovelace": 75000000,
+                "value": {
+                  "lovelace": 75000000
+                },
                 "is_own_input": true
               },
               {
@@ -1152,7 +1238,9 @@
                   "type": "pubkey",
                   "pubkey_hash": "@buyer_pubkey"
                 },
-                "lovelace": 75000000
+                "value": {
+                  "lovelace": 75000000
+                }
               }
             ]
           }
@@ -1186,7 +1274,9 @@
               {
                 "op": "add_input_utxo",
                 "utxo_ref": "4444444444444444444444444444444444444444444444444444444444444444:0",
-                "lovelace": 75000000,
+                "value": {
+                  "lovelace": 75000000
+                },
                 "is_own_input": true
               },
               {
@@ -1195,7 +1285,9 @@
                   "type": "pubkey",
                   "pubkey_hash": "@buyer_pubkey"
                 },
-                "lovelace": 80000000
+                "value": {
+                  "lovelace": 80000000
+                }
               }
             ]
           }
@@ -1229,7 +1321,9 @@
               {
                 "op": "add_input_utxo",
                 "utxo_ref": "4444444444444444444444444444444444444444444444444444444444444444:0",
-                "lovelace": 75000000,
+                "value": {
+                  "lovelace": 75000000
+                },
                 "is_own_input": true
               },
               {
@@ -1238,7 +1332,9 @@
                   "type": "pubkey",
                   "pubkey_hash": "@buyer_pubkey"
                 },
-                "lovelace": 50000000
+                "value": {
+                  "lovelace": 50000000
+                }
               }
             ]
           }
@@ -1272,7 +1368,9 @@
               {
                 "op": "add_input_utxo",
                 "utxo_ref": "4444444444444444444444444444444444444444444444444444444444444444:0",
-                "lovelace": 75000000,
+                "value": {
+                  "lovelace": 75000000
+                },
                 "is_own_input": true
               },
               {
@@ -1281,7 +1379,9 @@
                   "type": "pubkey",
                   "pubkey_hash": "@buyer_pubkey"
                 },
-                "lovelace": 100000000
+                "value": {
+                  "lovelace": 100000000
+                }
               }
             ]
           }
@@ -1315,7 +1415,9 @@
               {
                 "op": "add_input_utxo",
                 "utxo_ref": "4444444444444444444444444444444444444444444444444444444444444444:0",
-                "lovelace": 75000000,
+                "value": {
+                  "lovelace": 75000000
+                },
                 "is_own_input": true
               },
               {
@@ -1324,7 +1426,9 @@
                   "type": "pubkey",
                   "pubkey_hash": "@seller_pubkey"
                 },
-                "lovelace": 75000000
+                "value": {
+                  "lovelace": 75000000
+                }
               }
             ]
           }
@@ -1358,7 +1462,9 @@
               {
                 "op": "add_input_utxo",
                 "utxo_ref": "4444444444444444444444444444444444444444444444444444444444444444:0",
-                "lovelace": 75000000,
+                "value": {
+                  "lovelace": 75000000
+                },
                 "is_own_input": true
               },
               {
@@ -1367,7 +1473,9 @@
                   "type": "pubkey",
                   "pubkey_hash": "@buyer_pubkey"
                 },
-                "lovelace": 65000000
+                "value": {
+                  "lovelace": 65000000
+                }
               },
               {
                 "op": "add_output_utxo",
@@ -1375,7 +1483,9 @@
                   "type": "script",
                   "script_hash": "1111111111111111111111111111111111111111111111111111111111"
                 },
-                "lovelace": 10000000
+                "value": {
+                  "lovelace": 10000000
+                }
               }
             ]
           }
@@ -1412,7 +1522,9 @@
                   "type": "pubkey",
                   "pubkey_hash": "@buyer_pubkey"
                 },
-                "lovelace": 75000000
+                "value": {
+                  "lovelace": 75000000
+                }
               }
             ]
           }
@@ -1450,7 +1562,9 @@
               {
                 "op": "add_input_utxo",
                 "utxo_ref": "4444444444444444444444444444444444444444444444444444444444444444:0",
-                "lovelace": 75000000,
+                "value": {
+                  "lovelace": 75000000
+                },
                 "is_own_input": true
               },
               {
@@ -1459,7 +1573,9 @@
                   "type": "pubkey",
                   "pubkey_hash": "@buyer_pubkey"
                 },
-                "lovelace": 75000000
+                "value": {
+                  "lovelace": 75000000
+                }
               }
             ]
           }
@@ -1493,7 +1609,9 @@
               {
                 "op": "add_input_utxo",
                 "utxo_ref": "4444444444444444444444444444444444444444444444444444444444444444:0",
-                "lovelace": 75000000,
+                "value": {
+                  "lovelace": 75000000
+                },
                 "is_own_input": true
               },
               {
@@ -1502,7 +1620,9 @@
                   "type": "pubkey",
                   "pubkey_hash": "@seller_pubkey"
                 },
-                "lovelace": 75000000
+                "value": {
+                  "lovelace": 75000000
+                }
               }
             ]
           }
@@ -1540,7 +1660,9 @@
               {
                 "op": "add_input_utxo",
                 "utxo_ref": "4444444444444444444444444444444444444444444444444444444444444444:0",
-                "lovelace": 75000000,
+                "value": {
+                  "lovelace": 75000000
+                },
                 "is_own_input": true
               },
               {
@@ -1549,7 +1671,9 @@
                   "type": "pubkey",
                   "pubkey_hash": "@buyer_pubkey"
                 },
-                "lovelace": 75000000
+                "value": {
+                  "lovelace": 75000000
+                }
               }
             ]
           }
@@ -1583,7 +1707,9 @@
               {
                 "op": "add_input_utxo",
                 "utxo_ref": "4444444444444444444444444444444444444444444444444444444444444444:0",
-                "lovelace": 75000000,
+                "value": {
+                  "lovelace": 75000000
+                },
                 "is_own_input": true
               },
               {
@@ -1592,7 +1718,9 @@
                   "type": "pubkey",
                   "pubkey_hash": "@seller_pubkey"
                 },
-                "lovelace": 75000000
+                "value": {
+                  "lovelace": 75000000
+                }
               }
             ]
           }

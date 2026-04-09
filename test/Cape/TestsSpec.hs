@@ -183,13 +183,14 @@ spec = do
                         "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb" -- Seller signature
                     , AddInputUTXOSpec
                         "4444444444444444444444444444444444444444444444444444444444444444:0"
-                        75000000
+                        (ValueSpec 75000000 [])
                         True
+                        Nothing
                     , AddOutputUTXOSpec
                         ( PubkeyAddressSpec
                             "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
                         )
-                        75000000
+                        (ValueSpec 75000000 [])
                     ]
                 }
             testInput =
@@ -422,18 +423,34 @@ spec = do
               testJSONRoundTrip
                 "{\"op\": \"set_redeemer\", \"redeemer\": \"42\"}"
                 (SetRedeemerSpec (Json.String "42"))
-            AddInputUTXOSpec _ _ _ ->
+            AddInputUTXOSpec {} ->
               testJSONRoundTrip
-                "{\"op\": \"add_input_utxo\", \"utxo_ref\": \"txid:0\", \"lovelace\": 1000000, \"is_own_input\": true}"
-                (AddInputUTXOSpec "txid:0" 1000000 True)
+                [__i|{
+                  "op": "add_input_utxo",
+                  "utxo_ref": "txid:0",
+                  "value": {
+                    "lovelace": 1000000
+                  },
+                  "is_own_input": true
+                }|]
+                (AddInputUTXOSpec "txid:0" (ValueSpec 1000000 []) True Nothing)
             SetValidRangeSpec _ _ ->
               testJSONRoundTrip
                 "{\"op\": \"set_valid_range\", \"from_time\": 1000, \"to_time\": 2000}"
                 (SetValidRangeSpec (Just 1000) (Just 2000))
-            AddOutputUTXOSpec _ _ ->
+            AddOutputUTXOSpec {} ->
               testJSONRoundTrip
-                "{\"op\": \"add_output_utxo\", \"address\": {\"type\": \"pubkey\", \"pubkey_hash\": \"deadbeef\"}, \"lovelace\": 500000}"
-                (AddOutputUTXOSpec (PubkeyAddressSpec "deadbeef") 500000)
+                [__i|{
+                  "op": "add_output_utxo",
+                  "address": {
+                    "type": "pubkey",
+                    "pubkey_hash": "deadbeef"
+                  },
+                  "value": {
+                    "lovelace": 500000
+                  }
+                }|]
+                (AddOutputUTXOSpec (PubkeyAddressSpec "deadbeef") (ValueSpec 500000 []))
             RemoveOutputUTXOSpec _ ->
               testJSONRoundTrip
                 "{\"op\": \"remove_output_utxo\", \"index\": 0}"
@@ -442,12 +459,22 @@ spec = do
               testJSONRoundTrip
                 "{\"op\": \"set_script_datum\", \"datum\": \"42\"}"
                 (SetScriptDatumSpec (Json.String "42"))
-            AddOutputUTXOWithDatumSpec _ _ _ ->
+            AddOutputUTXOWithDatumSpec {} ->
               testJSONRoundTrip
-                "{\"op\": \"add_output_utxo\", \"address\": {\"type\": \"pubkey\", \"pubkey_hash\": \"deadbeef\"}, \"lovelace\": 500000, \"datum\": \"42\"}"
+                [__i|{
+                  "op": "add_output_utxo",
+                  "address": {
+                    "type": "pubkey",
+                    "pubkey_hash": "deadbeef"
+                  },
+                  "value": {
+                    "lovelace": 500000
+                  },
+                  "datum": "42"
+                }|]
                 ( AddOutputUTXOWithDatumSpec
                     (PubkeyAddressSpec "deadbeef")
-                    500000
+                    (ValueSpec 500000 [])
                     (Json.String "42")
                 )
       -- NO wildcard pattern! Compilation will fail if a constructor is added
@@ -458,16 +485,68 @@ spec = do
         [ AddSignatureSpec "test"
         , RemoveSignatureSpec "test"
         , SetRedeemerSpec (Json.String "test")
-        , AddInputUTXOSpec "test:0" 1000000 True
+        , AddInputUTXOSpec "test:0" (ValueSpec 1000000 []) True Nothing
         , SetValidRangeSpec (Just 100) (Just 200)
-        , AddOutputUTXOSpec (PubkeyAddressSpec "test") 1000000
+        , AddOutputUTXOSpec (PubkeyAddressSpec "test") (ValueSpec 1000000 [])
         , RemoveOutputUTXOSpec 0
         , SetScriptDatumSpec (Json.String "test")
         , AddOutputUTXOWithDatumSpec
             (PubkeyAddressSpec "test")
-            1000000
+            (ValueSpec 1000000 [])
             (Json.String "test")
         ]
+
+    context "value with assets and datum" do
+      it "parses add_input_utxo with assets and datum" do
+        let expected :: PatchOperationSpec
+            expected =
+              AddInputUTXOSpec
+                "txid:0"
+                (ValueSpec 2000000 [AssetSpec "#dddd" "#7465" 1000])
+                True
+                (Just (Json.String "42"))
+        case Json.eitherDecode
+          [__i|{
+            "op": "add_input_utxo",
+            "utxo_ref": "txid:0",
+            "value": {
+              "lovelace": 2000000,
+              "assets": [{
+                "currency_symbol": "\#dddd",
+                "token_name": "\#7465",
+                "quantity": 1000
+              }]
+            },
+            "is_own_input": true,
+            "datum": "42"
+          }|] of
+          Left err -> expectationFailure $ "Failed to parse: " <> err
+          Right parsedSpec -> parsedSpec `shouldBe` expected
+
+      it "parses add_output_utxo with assets" do
+        let expected :: PatchOperationSpec
+            expected =
+              AddOutputUTXOSpec
+                (ScriptAddressSpec "1111")
+                (ValueSpec 2000000 [AssetSpec "#dddd" "#7465" 500])
+        case Json.eitherDecode
+          [__i|{
+            "op": "add_output_utxo",
+            "address": {
+              "type": "script",
+              "script_hash": "1111"
+            },
+            "value": {
+              "lovelace": 2000000,
+              "assets": [{
+                "currency_symbol": "\#dddd",
+                "token_name": "\#7465",
+                "quantity": 500
+              }]
+            }
+          }|] of
+          Left err -> expectationFailure $ "Failed to parse: " <> err
+          Right parsedSpec -> parsedSpec `shouldBe` expected
 
   describe "Multiple inputs support" do
     context "JSON parsing with inputs array" do
