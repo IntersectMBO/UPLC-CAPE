@@ -25,6 +25,8 @@ module Cape.Tests (
   InputType (..),
   ScriptContextSpec (..),
   PatchOperationSpec (..),
+  ValueSpec (..),
+  AssetSpec (..),
   ExpectedResult (..),
   ResultType (..),
   BaselineType (..),
@@ -41,7 +43,7 @@ module Cape.Tests (
 import Prelude
 
 import Cape.ScriptContextBuilder
-import Data.Aeson (FromJSON (..), withObject, (.:), (.:?))
+import Data.Aeson (FromJSON (..), withObject, (.:), (.:?), (.!=))
 import Data.Aeson qualified as Json
 import Data.Aeson.Types qualified as AesonTypes
 import Data.ByteString.Lazy qualified as LBS
@@ -265,6 +267,32 @@ data ScriptContextSpec = ScriptContextSpec
   }
   deriving stock (Show)
 
+-- | Specification for a UTXO value (lovelace + optional native assets).
+--
+--     JSON examples:
+--     @
+--     {"lovelace": 2000000}
+--     {"lovelace": 2000000, "assets": [{"currency_symbol": "#dddd...", "token_name": "#7465", "quantity": 1000}]}
+--     @
+data ValueSpec = ValueSpec
+  { vsLovelace :: Integer
+  -- ^ Lovelace amount
+  , vsAssets :: [AssetSpec]
+  -- ^ Native assets (empty list when none)
+  }
+  deriving stock (Show, Eq)
+
+-- | Specification for a native asset within a value.
+data AssetSpec = AssetSpec
+  { asCurrencySymbol :: Text
+  -- ^ Currency symbol as hex-encoded bytestring (e.g. "#dddd...dddd")
+  , asTokenName :: Text
+  -- ^ Token name as hex-encoded bytestring (e.g. "#76657374")
+  , asQuantity :: Integer
+  -- ^ Token quantity
+  }
+  deriving stock (Show, Eq)
+
 -- | Patch operations for modifying ScriptContext.
 data PatchOperationSpec
   = -- | Add signature by pubkey hash
@@ -289,18 +317,19 @@ data PatchOperationSpec
     --     {"op": "set_redeemer", "redeemer": "0"}
     --     @
     SetRedeemerSpec AesonTypes.Value
-  | -- | Add input UTXO (ref, lovelace, is_own)
+  | -- | Add input UTXO with value and optional datum
     --
     --     JSON example:
     --     @
     --     {
     --       "op": "add_input_utxo",
     --       "utxo_ref": "1234567890abcdef:0",
-    --       "lovelace": 75000000,
-    --       "is_own_input": true
+    --       "value": {"lovelace": 2000000, "assets": [{"currency_symbol": "#dddd...", "token_name": "#76657374", "quantity": 1000}]},
+    --       "is_own_input": true,
+    --       "datum": "@vesting_datum"
     --     }
     --     @
-    AddInputUTXOSpec Text Integer Bool
+    AddInputUTXOSpec Text ValueSpec Bool (Maybe AesonTypes.Value)
   | -- | Set validity range
     --
     --     JSON example:
@@ -316,17 +345,17 @@ data PatchOperationSpec
     --
     --     JSON examples:
     --     @
-    --     {"op": "add_output_utxo", "address": {"type": "script"}, "lovelace": 75000000}
-    --     {"op": "add_output_utxo", "address": {"type": "pubkey", "pubkey_hash": "@impostor_pubkey"}, "lovelace": 50000000}
+    --     {"op": "add_output_utxo", "address": {"type": "script"}, "value": {"lovelace": 75000000}}
+    --     {"op": "add_output_utxo", "address": {"type": "script"}, "value": {"lovelace": 2000000, "assets": [...]}}
     --     @
-    AddOutputUTXOSpec AddressSpec Integer
+    AddOutputUTXOSpec AddressSpec ValueSpec
   | -- | Add output UTXO with datum to specified address
     --
     --     JSON example:
     --     @
-    --     {"op": "add_output_utxo", "address": {"type": "script"}, "lovelace": 75000000, "datum": "@deposited_escrow_datum"}
+    --     {"op": "add_output_utxo", "address": {"type": "script"}, "value": {"lovelace": 75000000}, "datum": "@datum"}
     --     @
-    AddOutputUTXOWithDatumSpec AddressSpec Integer AesonTypes.Value
+    AddOutputUTXOWithDatumSpec AddressSpec ValueSpec AesonTypes.Value
   | -- | Remove output UTXO by index
     --
     --     JSON example:
@@ -508,22 +537,36 @@ instance FromJSON PatchOperationSpec where
       "add_input_utxo" ->
         AddInputUTXOSpec
           <$> o .: "utxo_ref"
-          <*> o .: "lovelace"
+          <*> o .: "value"
           <*> o .: "is_own_input"
+          <*> o .:? "datum"
       "set_valid_range" ->
         SetValidRangeSpec
           <$> o .:? "from_time"
           <*> o .:? "to_time"
       "add_output_utxo" -> do
         address <- o .: "address"
-        lovelace <- o .: "lovelace"
+        valueSpec <- o .: "value"
         mDatum <- o .:? "datum"
         case mDatum of
-          Just datum -> pure $ AddOutputUTXOWithDatumSpec address lovelace datum
-          Nothing -> pure $ AddOutputUTXOSpec address lovelace
+          Just datum -> pure $ AddOutputUTXOWithDatumSpec address valueSpec datum
+          Nothing -> pure $ AddOutputUTXOSpec address valueSpec
       "remove_output_utxo" -> RemoveOutputUTXOSpec <$> o .: "index"
       "set_script_datum" -> SetScriptDatumSpec <$> o .: "datum"
       _ -> fail $ "Unknown patch operation: " <> toString op
+
+instance FromJSON ValueSpec where
+  parseJSON = withObject "ValueSpec" \o ->
+    ValueSpec
+      <$> o .: "lovelace"
+      <*> o .:? "assets" .!= []
+
+instance FromJSON AssetSpec where
+  parseJSON = withObject "AssetSpec" \o ->
+    AssetSpec
+      <$> o .: "currency_symbol"
+      <*> o .: "token_name"
+      <*> o .: "quantity"
 
 instance FromJSON AddressSpec where
   parseJSON = withObject "AddressSpec" \o -> do
@@ -748,6 +791,68 @@ resolveScriptContextReference dataStructures refName =
     Just _ -> Nothing -- Not a script_context reference
     Nothing -> Nothing -- Reference not found
 
+-- * Value Construction
+
+{- | Build a Value from a ValueSpec (lovelace + optional assets).
+
+Constructs a multi-asset Value by starting with lovelace and combining
+each resolved asset value using @foldl'@ and @(<>)@.
+-}
+buildValue ::
+  HaskellMap.Map Text DataStructureEntry ->
+  ValueSpec ->
+  IO V3.Value
+buildValue dataStructures ValueSpec {vsLovelace, vsAssets} = do
+  let adaValue = V3.singleton V3.adaSymbol V3.adaToken vsLovelace
+  case vsAssets of
+    [] -> pure adaValue
+    assets -> do
+      assetValues <- traverse (resolveAsset dataStructures) assets
+      pure $ foldl' (<>) adaValue assetValues
+
+{- | Resolve an AssetSpec into a singleton Value.
+
+Currency symbol and token name support @references to builtin_data.
+-}
+resolveAsset ::
+  HaskellMap.Map Text DataStructureEntry ->
+  AssetSpec ->
+  IO V3.Value
+resolveAsset dataStructures AssetSpec {asCurrencySymbol, asTokenName, asQuantity} = do
+  csBytes <- resolveAsBytes dataStructures asCurrencySymbol
+  tnBytes <- resolveAsBytes dataStructures asTokenName
+  let cs = V3.CurrencySymbol csBytes
+      tn = V3.TokenName tnBytes
+  pure $ V3.singleton cs tn asQuantity
+
+{- | Resolve a text value to BuiltinByteString.
+
+Supports @references (resolving to BuiltinData bytestrings)
+and hex-encoded literals (prefixed with #).
+-}
+resolveAsBytes ::
+  HaskellMap.Map Text DataStructureEntry -> Text -> IO V3.BuiltinByteString
+resolveAsBytes dataStructures text
+  | Text.isPrefixOf "@" text && Text.length text > 1 = do
+      resolvedBuiltinData <- resolveBuiltinDataReference dataStructures text
+      let coreData = Builtins.builtinDataToData resolvedBuiltinData
+      case coreData of
+        PLC.B bytestring -> pure $ Builtins.toBuiltin bytestring
+        _ -> die $ "Expected bytestring data for asset component: " <> toString text
+  | otherwise = do
+      -- Resolve as text (handles non-reference cases)
+      let resolved = resolveTextReference dataStructures text
+      case parseBuiltinDataText resolved of
+        Left parseErr ->
+          die $
+            "Failed to parse asset component: "
+              <> toString (renderParseError parseErr)
+        Right builtinData ->
+          let coreData = builtinData
+           in case coreData of
+                PLC.B bytestring -> pure $ Builtins.toBuiltin bytestring
+                _ -> die $ "Expected bytestring for asset component: " <> toString text
+
 -- * Patch Operation Conversion
 
 {- | Convert PatchOperationSpec to PatchOperation with reference resolution.
@@ -843,24 +948,39 @@ convertPatchOperation dataStructures spec =
           die $
             "Redeemer must be a string with BuiltinData encoding, got: "
               <> show other
-    AddInputUTXOSpec utxoRefText lovelaceAmount isOwnInput -> do
+    AddInputUTXOSpec utxoRefText valueSpec isOwnInput mDatumValue -> do
       let resolvedUtxoRef = resolveTextReference dataStructures utxoRefText
       case parseTxOutRef resolvedUtxoRef of
         Left parseErr ->
           die ("Failed to parse UTXO reference: " <> show parseErr)
         Right txOutRef -> do
-          let value = V3.singleton V3.adaSymbol V3.adaToken lovelaceAmount
-          pure $ AddInputUTXO txOutRef value isOwnInput
+          value <- buildValue dataStructures valueSpec
+          outputDatum <- case mDatumValue of
+            Nothing -> pure V3.NoOutputDatum
+            Just (Json.String dataText) ->
+              if Text.isPrefixOf "@" dataText && Text.length dataText > 1
+                then do
+                  resolvedBuiltinData <-
+                    resolveBuiltinDataReference dataStructures dataText
+                  pure $ V3.OutputDatum (V3.Datum resolvedBuiltinData)
+                else case parseBuiltinDataText dataText of
+                  Left parseErr ->
+                    die ("Failed to parse input datum: " <> toString (renderParseError parseErr))
+                  Right parsedBuiltinData ->
+                    pure $ V3.OutputDatum (V3.Datum (BI.BuiltinData parsedBuiltinData))
+            Just other ->
+              die $ "Input datum must be a string, got: " <> show other
+          pure $ AddInputUTXO txOutRef value isOwnInput outputDatum
     SetValidRangeSpec fromTime toTime -> do
       let fromPosix = fmap V3.POSIXTime fromTime
           toPosix = fmap V3.POSIXTime toTime
       pure $ SetValidRange fromPosix toPosix
-    AddOutputUTXOSpec addressSpec lovelaceAmount -> do
-      let value = V3.singleton V3.adaSymbol V3.adaToken lovelaceAmount
+    AddOutputUTXOSpec addressSpec valueSpec -> do
+      value <- buildValue dataStructures valueSpec
       address <- parseAddressSpec dataStructures addressSpec
       pure $ AddOutputUTXO address value
-    AddOutputUTXOWithDatumSpec addressSpec lovelaceAmount datumValue -> do
-      let value = V3.singleton V3.adaSymbol V3.adaToken lovelaceAmount
+    AddOutputUTXOWithDatumSpec addressSpec valueSpec datumValue -> do
+      value <- buildValue dataStructures valueSpec
       address <- parseAddressSpec dataStructures addressSpec
       -- Convert JSON Value to BuiltinData with reference resolution support
       case datumValue of

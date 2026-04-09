@@ -67,7 +67,7 @@ spec = do
                 [ SetRedeemer Fixed.depositRedeemer
                 , AddSignature Fixed.buyerKeyHash
                 , SetValidRange (Just 1000) Nothing -- Match depositedEscrowDatum.depositTime
-                , AddInputUTXO Fixed.txOutRef value False -- Input from buyer wallet (not script)
+                , AddInputUTXO Fixed.txOutRef value False NoOutputDatum -- Input from buyer wallet (not script)
                 , AddOutputUTXOWithDatum Fixed.scriptAddr value Fixed.depositedEscrowDatum
                 ]
       expectSuccess evaluateValidator contextData
@@ -81,7 +81,7 @@ spec = do
                 SpendingBaseline
                 [ SetRedeemer Fixed.depositRedeemer
                 , -- Note: No AddSignature (simulating removed buyer signature)
-                  AddInputUTXO Fixed.txOutRef value True
+                  AddInputUTXO Fixed.txOutRef value True NoOutputDatum
                 , AddOutputUTXO Fixed.scriptAddr value
                 ]
       expectFailure evaluateValidator contextData
@@ -96,7 +96,7 @@ spec = do
                 SpendingBaseline
                 [ SetRedeemer Fixed.depositRedeemer
                 , AddSignature Fixed.buyerKeyHash
-                , AddInputUTXO Fixed.txOutRef correctInputValue True
+                , AddInputUTXO Fixed.txOutRef correctInputValue True NoOutputDatum
                 , AddOutputUTXO Fixed.scriptAddr wrongOutputValue -- Wrong amount: 50 ADA instead of 75 ADA
                 ]
       expectFailure evaluateValidator contextData
@@ -111,7 +111,7 @@ spec = do
                 SpendingBaseline
                 [ SetRedeemer Fixed.depositRedeemer
                 , AddSignature Fixed.buyerKeyHash
-                , AddInputUTXO Fixed.txOutRef inputValue True
+                , AddInputUTXO Fixed.txOutRef inputValue True NoOutputDatum
                 , AddOutputUTXO Fixed.impostorAddr outputValue -- Output to wrong address!
                 ]
       expectFailure evaluateValidator contextData
@@ -126,7 +126,7 @@ spec = do
                 [ SetRedeemer Fixed.depositRedeemer
                 , AddSignature Fixed.buyerKeyHash
                 , SetValidRange (Just 1000) Nothing -- Deposit time
-                , AddInputUTXO Fixed.txOutRef value False -- Input from buyer wallet (not script)
+                , AddInputUTXO Fixed.txOutRef value False NoOutputDatum -- Input from buyer wallet (not script)
                 , AddOutputUTXOWithDatum Fixed.scriptAddr value Fixed.depositedEscrowDatum
                 ]
       expectSuccess evaluateValidator contextData
@@ -141,7 +141,7 @@ spec = do
                 [ SetRedeemer Fixed.depositRedeemer
                 , AddSignature Fixed.buyerKeyHash
                 , SetValidRange (Just 1000) Nothing
-                , AddInputUTXO Fixed.txOutRef value True
+                , AddInputUTXO Fixed.txOutRef value True NoOutputDatum
                 , AddOutputUTXOWithDatum Fixed.scriptAddr value Fixed.acceptedEscrowDatum -- Wrong state!
                 ]
       expectFailure evaluateValidator contextData
@@ -160,7 +160,7 @@ spec = do
                 [ SetRedeemer Fixed.acceptRedeemer
                 , AddSignature Fixed.sellerKeyHash
                 , SetScriptDatum Fixed.depositedEscrowDatum -- Add proper datum for Accept operation
-                , AddInputUTXO Fixed.txOutRef2 inputValue True -- Script input with escrowed funds
+                , AddInputUTXO Fixed.txOutRef2 inputValue True NoOutputDatum -- Script input with escrowed funds
                 , AddOutputUTXO Fixed.sellerAddr inputValue -- Payment to seller
                 ]
       expectSuccess evaluateValidator contextData
@@ -175,7 +175,7 @@ spec = do
                 [ SetRedeemer Fixed.acceptRedeemer
                 , SetScriptDatum Fixed.depositedEscrowDatum -- Add proper datum
                 , -- Note: No AddSignature (simulating missing seller signature)
-                  AddInputUTXO Fixed.txOutRef2 inputValue True
+                  AddInputUTXO Fixed.txOutRef2 inputValue True NoOutputDatum
                 , AddOutputUTXO Fixed.sellerAddr inputValue
                 ]
       expectFailure evaluateValidator contextData
@@ -191,7 +191,7 @@ spec = do
                 [ SetRedeemer Fixed.acceptRedeemer
                 , AddSignature Fixed.sellerKeyHash
                 , SetScriptDatum Fixed.depositedEscrowDatum -- Add proper datum
-                , AddInputUTXO Fixed.txOutRef2 correctInputValue True
+                , AddInputUTXO Fixed.txOutRef2 correctInputValue True NoOutputDatum
                 , AddOutputUTXO Fixed.sellerAddr wrongOutputValue -- Wrong payment amount: 50 ADA instead of 75 ADA
                 ]
       expectFailure evaluateValidator contextData
@@ -206,7 +206,7 @@ spec = do
                 [ SetRedeemer Fixed.acceptRedeemer
                 , AddSignature Fixed.sellerKeyHash -- Seller signs, but payment goes to impostor!
                 , SetScriptDatum Fixed.depositedEscrowDatum -- Add proper datum
-                , AddInputUTXO Fixed.txOutRef2 inputValue True
+                , AddInputUTXO Fixed.txOutRef2 inputValue True NoOutputDatum
                 , AddOutputUTXO Fixed.impostorAddr inputValue -- Payment to wrong address!
                 ]
       expectFailure evaluateValidator contextData
@@ -240,8 +240,8 @@ spec = do
                 [ SetRedeemer Fixed.acceptRedeemer
                 , AddSignature Fixed.sellerKeyHash
                 , SetScriptDatum Fixed.depositedEscrowDatum -- Add proper datum for Accept operation
-                , AddInputUTXO Fixed.txOutRef inputValue True -- First script input
-                , AddInputUTXO Fixed.txOutRef2 inputValue True -- Second script input
+                , AddInputUTXO Fixed.txOutRef inputValue True NoOutputDatum -- First script input
+                , AddInputUTXO Fixed.txOutRef2 inputValue True NoOutputDatum -- Second script input
                 , AddOutputUTXO Fixed.sellerAddr inputValue
                 ]
       result <- evaluateValidator contextData
@@ -260,7 +260,7 @@ spec = do
                 [ SetRedeemer Fixed.acceptRedeemer
                 , AddSignature Fixed.sellerKeyHash
                 , SetScriptDatum Fixed.depositedEscrowDatum -- Add proper datum for Accept operation
-                , AddInputUTXO Fixed.txOutRef2 inputValue True
+                , AddInputUTXO Fixed.txOutRef2 inputValue True NoOutputDatum
                 , AddOutputUTXO Fixed.sellerAddr partialPayment -- Insufficient payment
                 ]
       expectFailure evaluateValidator contextData
@@ -277,7 +277,7 @@ spec = do
                 [ SetRedeemer Fixed.acceptRedeemer
                 , AddSignature Fixed.sellerKeyHash
                 , SetScriptDatum Fixed.depositedEscrowDatum -- Add proper datum for Accept operation
-                , AddInputUTXO Fixed.txOutRef2 inputValue True
+                , AddInputUTXO Fixed.txOutRef2 inputValue True NoOutputDatum
                 , AddOutputUTXO Fixed.sellerAddr excessPayment -- More than required
                 ]
       result <- evaluateValidator contextData
@@ -296,7 +296,7 @@ spec = do
                 [ SetRedeemer Fixed.acceptRedeemer
                 , AddSignature Fixed.sellerKeyHash
                 , SetScriptDatum Fixed.depositedEscrowDatum -- Add proper datum
-                , AddInputUTXO Fixed.txOutRef2 inputValue True
+                , AddInputUTXO Fixed.txOutRef2 inputValue True NoOutputDatum
                 , AddOutputUTXO Fixed.sellerAddr inputValue -- Payment with potential datum
                 ]
       result <- evaluateValidator contextData
@@ -315,7 +315,7 @@ spec = do
                 [ SetRedeemer Fixed.acceptRedeemer
                 , AddSignature Fixed.sellerKeyHash
                 , SetScriptDatum Fixed.depositedEscrowDatum -- Add proper datum
-                , AddInputUTXO Fixed.txOutRef2 inputValue True
+                , AddInputUTXO Fixed.txOutRef2 inputValue True NoOutputDatum
                 , AddOutputUTXO Fixed.sellerAddr firstPayment -- First payment
                 , AddOutputUTXO Fixed.sellerAddr secondPayment -- Second payment
                 ]
@@ -335,7 +335,7 @@ spec = do
                 [ SetRedeemer Fixed.acceptRedeemer
                 , AddSignature Fixed.sellerKeyHash
                 , SetScriptDatum Fixed.depositedEscrowDatum -- Add proper datum for Accept operation
-                , AddInputUTXO Fixed.txOutRef2 inputValue True
+                , AddInputUTXO Fixed.txOutRef2 inputValue True NoOutputDatum
                 , AddOutputUTXO Fixed.sellerAddr inputValue -- Payment to seller
                 , AddOutputUTXO Fixed.scriptAddr (adaValue 10_000_000) -- Remaining in script
                 ]
@@ -359,7 +359,7 @@ spec = do
                 , AddSignature Fixed.buyerKeyHash
                 , SetScriptDatum Fixed.depositedEscrowDatum -- Add proper datum
                 , SetValidRange (Just 2801) Nothing -- After deadline (1000 + 1800 = 2800, so 2801)
-                , AddInputUTXO Fixed.txOutRef2 inputValue True -- Script input with escrowed funds
+                , AddInputUTXO Fixed.txOutRef2 inputValue True NoOutputDatum -- Script input with escrowed funds
                 , AddOutputUTXO Fixed.buyerAddr inputValue -- Refund to buyer
                 ]
       expectSuccess evaluateValidator contextData
@@ -375,7 +375,7 @@ spec = do
                 , AddSignature Fixed.buyerKeyHash
                 , SetScriptDatum Fixed.depositedEscrowDatum -- Add proper datum
                 , SetValidRange (Just 2801) Nothing -- Exactly at deadline + 1 (1000 + 1800 = 2800, so 2801)
-                , AddInputUTXO Fixed.txOutRef2 inputValue True
+                , AddInputUTXO Fixed.txOutRef2 inputValue True NoOutputDatum
                 , AddOutputUTXO Fixed.buyerAddr inputValue
                 ]
       expectSuccess evaluateValidator contextData
@@ -391,8 +391,8 @@ spec = do
                 , AddSignature Fixed.buyerKeyHash
                 , SetScriptDatum Fixed.depositedEscrowDatum -- Add proper datum
                 , SetValidRange (Just 3000) Nothing -- Well after deadline (1000 + 1800 = 2800)
-                , AddInputUTXO Fixed.txOutRef inputValue True -- First script input
-                , AddInputUTXO Fixed.txOutRef2 inputValue True -- Second script input
+                , AddInputUTXO Fixed.txOutRef inputValue True NoOutputDatum -- First script input
+                , AddInputUTXO Fixed.txOutRef2 inputValue True NoOutputDatum -- Second script input
                 , AddOutputUTXO Fixed.buyerAddr inputValue
                 ]
       expectSuccess evaluateValidator contextData
@@ -408,7 +408,7 @@ spec = do
                 , AddSignature Fixed.buyerKeyHash
                 , SetScriptDatum Fixed.depositedEscrowDatum -- Add proper datum
                 , SetValidRange (Just 3600) Nothing -- 1 hour after deadline
-                , AddInputUTXO Fixed.txOutRef2 inputValue True
+                , AddInputUTXO Fixed.txOutRef2 inputValue True NoOutputDatum
                 , AddOutputUTXO Fixed.buyerAddr inputValue -- With potential datum
                 ]
       expectSuccess evaluateValidator contextData
@@ -426,7 +426,7 @@ spec = do
                 , AddSignature Fixed.buyerKeyHash
                 , SetScriptDatum Fixed.depositedEscrowDatum -- Add proper datum
                 , SetValidRange (Just 5000) Nothing -- Well after deadline
-                , AddInputUTXO Fixed.txOutRef2 inputValue True
+                , AddInputUTXO Fixed.txOutRef2 inputValue True NoOutputDatum
                 , AddOutputUTXO Fixed.buyerAddr firstPayment -- First refund output
                 , AddOutputUTXO Fixed.buyerAddr secondPayment -- Second refund output
                 ]
@@ -444,7 +444,7 @@ spec = do
                 , SetScriptDatum Fixed.depositedEscrowDatum -- Add proper datum for Refund operation
                 , -- Note: No AddSignature (missing buyer signature)
                   SetValidRange (Just 3000) Nothing -- After deadline
-                , AddInputUTXO Fixed.txOutRef2 inputValue True
+                , AddInputUTXO Fixed.txOutRef2 inputValue True NoOutputDatum
                 , AddOutputUTXO Fixed.buyerAddr inputValue
                 ]
       expectFailure evaluateValidator contextData
@@ -459,7 +459,7 @@ spec = do
                 [ SetRedeemer Fixed.refundRedeemer
                 , AddSignature Fixed.sellerKeyHash -- Wrong signer!
                 , SetValidRange (Just 3000) Nothing -- After deadline
-                , AddInputUTXO Fixed.txOutRef2 inputValue True
+                , AddInputUTXO Fixed.txOutRef2 inputValue True NoOutputDatum
                 , AddOutputUTXO Fixed.buyerAddr inputValue
                 ]
       expectFailure evaluateValidator contextData
@@ -474,7 +474,7 @@ spec = do
                 [ SetRedeemer Fixed.refundRedeemer
                 , AddSignature Fixed.impostorPubkey -- Impostor signature!
                 , SetValidRange (Just 3000) Nothing -- After deadline
-                , AddInputUTXO Fixed.txOutRef2 inputValue True
+                , AddInputUTXO Fixed.txOutRef2 inputValue True NoOutputDatum
                 , AddOutputUTXO Fixed.buyerAddr inputValue
                 ]
       expectFailure evaluateValidator contextData
@@ -490,7 +490,7 @@ spec = do
                 [ SetRedeemer Fixed.refundRedeemer
                 , AddSignature Fixed.buyerKeyHash
                 , SetValidRange (Just 900) Nothing -- Before deadline (1800 seconds)
-                , AddInputUTXO Fixed.txOutRef2 inputValue True
+                , AddInputUTXO Fixed.txOutRef2 inputValue True NoOutputDatum
                 , AddOutputUTXO Fixed.buyerAddr inputValue
                 ]
       expectFailure evaluateValidator contextData
@@ -505,7 +505,7 @@ spec = do
                 [ SetRedeemer Fixed.refundRedeemer
                 , AddSignature Fixed.buyerKeyHash
                 , SetValidRange (Just 2800) Nothing -- Exactly at deadline (should fail)
-                , AddInputUTXO Fixed.txOutRef2 inputValue True
+                , AddInputUTXO Fixed.txOutRef2 inputValue True NoOutputDatum
                 , AddOutputUTXO Fixed.buyerAddr inputValue
                 ]
       expectFailure evaluateValidator contextData
@@ -520,7 +520,7 @@ spec = do
                 [ SetRedeemer Fixed.refundRedeemer
                 , AddSignature Fixed.buyerKeyHash
                 , -- Note: No SetValidRange (using default always-valid range)
-                  AddInputUTXO Fixed.txOutRef2 inputValue True
+                  AddInputUTXO Fixed.txOutRef2 inputValue True NoOutputDatum
                 , AddOutputUTXO Fixed.buyerAddr inputValue
                 ]
       expectFailure evaluateValidator contextData
@@ -537,7 +537,7 @@ spec = do
                 [ SetRedeemer Fixed.refundRedeemer
                 , AddSignature Fixed.buyerKeyHash
                 , SetValidRange (Just 3000) Nothing -- After deadline
-                , AddInputUTXO Fixed.txOutRef2 inputValue True
+                , AddInputUTXO Fixed.txOutRef2 inputValue True NoOutputDatum
                 , AddOutputUTXO Fixed.buyerAddr wrongRefund -- Wrong amount
                 ]
       expectFailure evaluateValidator contextData
@@ -553,7 +553,7 @@ spec = do
                 [ SetRedeemer Fixed.refundRedeemer
                 , AddSignature Fixed.buyerKeyHash
                 , SetValidRange (Just 3000) Nothing -- After deadline
-                , AddInputUTXO Fixed.txOutRef2 inputValue True
+                , AddInputUTXO Fixed.txOutRef2 inputValue True NoOutputDatum
                 , AddOutputUTXO Fixed.buyerAddr partialRefund -- Insufficient refund
                 ]
       expectFailure evaluateValidator contextData
@@ -569,7 +569,7 @@ spec = do
                 [ SetRedeemer Fixed.refundRedeemer
                 , AddSignature Fixed.buyerKeyHash
                 , SetValidRange (Just 3000) Nothing -- After deadline
-                , AddInputUTXO Fixed.txOutRef2 inputValue True
+                , AddInputUTXO Fixed.txOutRef2 inputValue True NoOutputDatum
                 , AddOutputUTXO Fixed.buyerAddr excessRefund -- Too much refund
                 ]
       expectFailure evaluateValidator contextData
@@ -584,7 +584,7 @@ spec = do
                 [ SetRedeemer Fixed.refundRedeemer
                 , AddSignature Fixed.buyerKeyHash
                 , SetValidRange (Just 3000) Nothing -- After deadline
-                , AddInputUTXO Fixed.txOutRef2 inputValue True
+                , AddInputUTXO Fixed.txOutRef2 inputValue True NoOutputDatum
                 , AddOutputUTXO Fixed.sellerAddr inputValue -- Wrong recipient!
                 ]
       expectFailure evaluateValidator contextData
@@ -601,7 +601,7 @@ spec = do
                 [ SetRedeemer Fixed.refundRedeemer
                 , AddSignature Fixed.buyerKeyHash
                 , SetValidRange (Just 3000) Nothing -- After deadline
-                , AddInputUTXO Fixed.txOutRef2 inputValue True
+                , AddInputUTXO Fixed.txOutRef2 inputValue True NoOutputDatum
                 , AddOutputUTXO Fixed.buyerAddr partialRefund
                 , AddOutputUTXO Fixed.scriptAddr remainingInScript -- Funds left in script!
                 ]
@@ -637,7 +637,7 @@ spec = do
                 , AddSignature Fixed.buyerKeyHash
                 , SetValidRange (Just 3000) Nothing -- After deadline -- After deadline
                 , SetScriptDatum Fixed.acceptedEscrowDatum -- Already accepted!
-                , AddInputUTXO Fixed.txOutRef2 (Fixed.lovelaceValue Fixed.escrowPrice) True
+                , AddInputUTXO Fixed.txOutRef2 (Fixed.lovelaceValue Fixed.escrowPrice) True NoOutputDatum
                 , AddOutputUTXO Fixed.buyerAddr (Fixed.lovelaceValue Fixed.escrowPrice)
                 ]
       expectFailure evaluateValidator contextData
@@ -651,7 +651,7 @@ spec = do
                 [ SetRedeemer Fixed.acceptRedeemer
                 , AddSignature Fixed.sellerKeyHash
                 , SetScriptDatum Fixed.refundedEscrowDatum -- Already refunded!
-                , AddInputUTXO Fixed.txOutRef2 (Fixed.lovelaceValue Fixed.escrowPrice) True
+                , AddInputUTXO Fixed.txOutRef2 (Fixed.lovelaceValue Fixed.escrowPrice) True NoOutputDatum
                 , AddOutputUTXO Fixed.sellerAddr (Fixed.lovelaceValue Fixed.escrowPrice)
                 ]
       expectFailure evaluateValidator contextData
@@ -666,7 +666,7 @@ spec = do
                 , AddSignature Fixed.buyerKeyHash
                 , SetValidRange (Just 3000) Nothing -- After deadline -- After deadline
                 , SetScriptDatum Fixed.refundedEscrowDatum -- Already refunded!
-                , AddInputUTXO Fixed.txOutRef2 (Fixed.lovelaceValue Fixed.escrowPrice) True
+                , AddInputUTXO Fixed.txOutRef2 (Fixed.lovelaceValue Fixed.escrowPrice) True NoOutputDatum
                 , AddOutputUTXO Fixed.buyerAddr (Fixed.lovelaceValue Fixed.escrowPrice)
                 ]
       expectFailure evaluateValidator contextData
@@ -680,7 +680,7 @@ spec = do
                 [ SetRedeemer Fixed.acceptRedeemer
                 , AddSignature Fixed.sellerKeyHash
                 , SetScriptDatum Fixed.acceptedEscrowDatum -- Already accepted!
-                , AddInputUTXO Fixed.txOutRef2 (Fixed.lovelaceValue Fixed.escrowPrice) True
+                , AddInputUTXO Fixed.txOutRef2 (Fixed.lovelaceValue Fixed.escrowPrice) True NoOutputDatum
                 , AddOutputUTXO Fixed.sellerAddr (Fixed.lovelaceValue Fixed.escrowPrice)
                 ]
       expectFailure evaluateValidator contextData
