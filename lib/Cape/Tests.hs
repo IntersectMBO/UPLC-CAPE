@@ -847,11 +847,49 @@ resolveAsBytes dataStructures text
           die $
             "Failed to parse asset component: "
               <> toString (renderParseError parseErr)
-        Right builtinData ->
-          let coreData = builtinData
-           in case coreData of
-                PLC.B bytestring -> pure $ Builtins.toBuiltin bytestring
-                _ -> die $ "Expected bytestring for asset component: " <> toString text
+        Right parsedData ->
+          case parsedData of
+            PLC.B bytestring -> pure $ Builtins.toBuiltin bytestring
+            _ -> die $ "Expected bytestring for asset component: " <> toString text
+
+-- * Datum Resolution
+
+{- | Resolve a JSON string value to a Datum.
+
+Supports @references (resolving from data_structures)
+and inline BuiltinData text literals.
+-}
+resolveDatumValue ::
+  HaskellMap.Map Text DataStructureEntry -> Text -> Text -> IO V3.Datum
+resolveDatumValue dataStructures context dataText
+  | Text.isPrefixOf "@" dataText && Text.length dataText > 1 = do
+      resolvedBuiltinData <- resolveBuiltinDataReference dataStructures dataText
+      pure $ V3.Datum resolvedBuiltinData
+  | otherwise =
+      case parseBuiltinDataText dataText of
+        Left parseErr ->
+          die $
+            "Failed to parse "
+              <> toString context
+              <> ": "
+              <> toString (renderParseError parseErr)
+        Right parsedData ->
+          pure $ V3.Datum (BI.BuiltinData parsedData)
+
+{- | Resolve an optional JSON value to OutputDatum.
+
+Nothing becomes NoOutputDatum; Just (String ...) resolves via 'resolveDatumValue'.
+-}
+resolveOutputDatum ::
+  HaskellMap.Map Text DataStructureEntry ->
+  Text ->
+  Maybe AesonTypes.Value ->
+  IO V3.OutputDatum
+resolveOutputDatum _dataStructures _context Nothing = pure V3.NoOutputDatum
+resolveOutputDatum dataStructures context (Just (Json.String dataText)) =
+  V3.OutputDatum <$> resolveDatumValue dataStructures context dataText
+resolveOutputDatum _dataStructures context (Just other) =
+  die $ toString context <> " must be a string, got: " <> show other
 
 -- * Patch Operation Conversion
 
@@ -955,21 +993,7 @@ convertPatchOperation dataStructures spec =
           die ("Failed to parse UTXO reference: " <> show parseErr)
         Right txOutRef -> do
           value <- buildValue dataStructures valueSpec
-          outputDatum <- case mDatumValue of
-            Nothing -> pure V3.NoOutputDatum
-            Just (Json.String dataText) ->
-              if Text.isPrefixOf "@" dataText && Text.length dataText > 1
-                then do
-                  resolvedBuiltinData <-
-                    resolveBuiltinDataReference dataStructures dataText
-                  pure $ V3.OutputDatum (V3.Datum resolvedBuiltinData)
-                else case parseBuiltinDataText dataText of
-                  Left parseErr ->
-                    die ("Failed to parse input datum: " <> toString (renderParseError parseErr))
-                  Right parsedBuiltinData ->
-                    pure $ V3.OutputDatum (V3.Datum (BI.BuiltinData parsedBuiltinData))
-            Just other ->
-              die $ "Input datum must be a string, got: " <> show other
+          outputDatum <- resolveOutputDatum dataStructures "input datum" mDatumValue
           pure $ AddInputUTXO txOutRef value isOwnInput outputDatum
     SetValidRangeSpec fromTime toTime -> do
       let fromPosix = fmap V3.POSIXTime fromTime
@@ -982,55 +1006,23 @@ convertPatchOperation dataStructures spec =
     AddOutputUTXOWithDatumSpec addressSpec valueSpec datumValue -> do
       value <- buildValue dataStructures valueSpec
       address <- parseAddressSpec dataStructures addressSpec
-      -- Convert JSON Value to BuiltinData with reference resolution support
-      case datumValue of
-        Json.String dataText -> do
-          -- Check if this is a reference to a builtin_data type
-          if Text.isPrefixOf "@" dataText && Text.length dataText > 1
-            then do
-              -- Reference case: resolve from data structures
-              resolvedBuiltinData <-
-                resolveBuiltinDataReference dataStructures dataText
-              let datum = V3.Datum resolvedBuiltinData
-              pure $ AddOutputUTXOWithDatum address value datum
-            else do
-              -- Direct BuiltinData case
-              case parseBuiltinDataText dataText of
-                Left parseErr ->
-                  die ("Failed to parse BuiltinData: " <> toString (renderParseError parseErr))
-                Right parsedBuiltinData -> do
-                  let datum = V3.Datum (BI.BuiltinData parsedBuiltinData)
-                  pure $ AddOutputUTXOWithDatum address value datum
+      datum <- resolveDatumValue dataStructures "output datum" =<< case datumValue of
+        Json.String dataText -> pure dataText
         other ->
           die $
             "Datum must be a string with BuiltinData encoding, got: "
               <> show other
+      pure $ AddOutputUTXOWithDatum address value datum
     RemoveOutputUTXOSpec index -> do
       pure $ RemoveOutputUTXO index
     SetScriptDatumSpec datumValue -> do
-      -- Convert JSON Value to BuiltinData with reference resolution support
-      case datumValue of
-        Json.String dataText -> do
-          -- Check if this is a reference to a builtin_data type
-          if Text.isPrefixOf "@" dataText && Text.length dataText > 1
-            then do
-              -- Reference case: resolve from data structures
-              resolvedBuiltinData <-
-                resolveBuiltinDataReference dataStructures dataText
-              pure $ SetScriptDatum (V3.Datum resolvedBuiltinData)
-            else do
-              -- Literal case: parse as BuiltinData
-              case parseBuiltinDataText dataText of
-                Left parseErr ->
-                  die $
-                    "Failed to parse script datum BuiltinData: "
-                      <> show (renderParseError parseErr)
-                Right builtinData ->
-                  pure $ SetScriptDatum (V3.Datum (BI.BuiltinData builtinData))
+      datum <- resolveDatumValue dataStructures "script datum" =<< case datumValue of
+        Json.String dataText -> pure dataText
         other ->
           die $
             "Script datum must be a string with BuiltinData encoding, got: "
               <> show other
+      pure $ SetScriptDatum datum
 
 {- | Parse AddressSpec into Address with reference resolution.
 
