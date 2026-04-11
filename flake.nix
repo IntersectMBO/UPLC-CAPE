@@ -74,7 +74,7 @@
         # haskell.nix project for building the Cabal project
         project = pkgs.haskell-nix.cabalProject' {
           src = ./.;
-          compiler-nix-name = "ghc966";
+          compiler-nix-name = "ghc967";
 
           # CHaP repository mapping
           inputMap = {
