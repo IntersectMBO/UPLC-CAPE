@@ -6,8 +6,8 @@
 
 import: cabal.project
 
--- Use latest CHaP index-state to access plutus-core 1.60.0.0
-index-state: cardano-haskell-packages 2026-03-30T00:00:00Z
+-- Use latest CHaP index-state to access plutus-core 1.61.0.0
+index-state: cardano-haskell-packages 2026-04-11T06:29:42Z
 
 -- Enable preview flag to build Preview.* modules with BuiltinCasing
 flags: +preview
