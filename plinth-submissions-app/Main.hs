@@ -8,6 +8,7 @@ import Ecd (ecdCode)
 import Factorial (factorialCode)
 import Fibonacci (fibonacciCode)
 import FibonacciIterative (fibonacciIterativeCode)
+import LinearVesting (linearVestingValidatorCode)
 import PlutusCore.Pretty qualified as PP
 import PlutusCore.Quote (runQuoteT)
 import PlutusTx.Code (CompiledCode, getPlcNoAnn)
@@ -39,6 +40,9 @@ main = do
     "submissions/factorial_naive_recursion/Plinth_1.45.0.0_Unisay/factorial.uplc"
     factorialCode
   writeCodeToFile
+    "submissions/linear_vesting/Plinth_1.45.0.0_Unisay/linear_vesting.uplc"
+    linearVestingValidatorCode
+  writeCodeToFile
     "submissions/two_party_escrow/Plinth_1.45.0.0_Unisay/two_party_escrow.uplc"
     twoPartyEscrowValidatorCode
 #ifdef PREVIEW
@@ -55,6 +59,8 @@ main = do
   writeCodeToFile
     "submissions/fibonacci/Plinth_1.60.0.0_Unisay/fibonacci.uplc"
     Preview.fibonacciIterativeCode
+  -- TODO: Preview.LinearVesting excluded — PlutusTx BuiltinCasing
+  -- doesn't support valueOf's ByteString Map traversal (GHC.Prim.Addr#)
   writeCodeToFile
     "submissions/two_party_escrow/Plinth_1.60.0.0_Unisay/two_party_escrow.uplc"
     Preview.twoPartyEscrowValidatorCode
