@@ -1,14 +1,14 @@
 {
   "compiler": {
     "name": "Plinth",
-    "version": "1.60.0.0",
+    "version": "1.61.0.0",
     "commit_hash": "d4c877e0b4b2ba38a90584c0e93368f72792ab51"
   },
   "compilation_config": {
     "optimization_level": "Plinth",
     "target": "uplc",
     "flags": ["Plinth", "BuiltinCasing"],
-    "min_plutus_version": "1.60.0.0"
+    "min_plutus_version": "1.61.0.0"
   },
   "contributors": [
     {
@@ -20,6 +20,6 @@
     "date": "2026-03-30T00:00:00Z",
     "source_available": true,
     "source_repository": "https://github.com/IntersectMBO/UPLC-CAPE",
-    "implementation_notes": "Naive recursive Fibonacci compiled with Plinth 1.60.0.0 and BuiltinCasing. Preview submission requiring plutus-core >= 1.60.0.0 (not yet on mainnet)."
+    "implementation_notes": "Equality Check on Data (ECD) compiled with Plinth 1.61.0.0 and BuiltinCasing. Preview submission requiring plutus-core >= 1.61.0.0 (not yet on mainnet)."
   }
 }
