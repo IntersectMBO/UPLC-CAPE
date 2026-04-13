@@ -44,19 +44,19 @@ main = do
 #ifdef PREVIEW
   -- Preview submissions: re-compiled with BuiltinCasing via Preview.* modules
   writeCodeToFile
-    "submissions/ecd/Plinth_1.60.0.0_Unisay/ecd.uplc"
+    "submissions/ecd/Plinth_1.61.0.0_Unisay/ecd.uplc"
     Preview.ecdCode
   writeCodeToFile
-    "submissions/factorial_naive_recursion/Plinth_1.60.0.0_Unisay/factorial.uplc"
+    "submissions/factorial_naive_recursion/Plinth_1.61.0.0_Unisay/factorial.uplc"
     Preview.factorialCode
   writeCodeToFile
-    "submissions/fibonacci_naive_recursion/Plinth_1.60.0.0_Unisay/fibonacci.uplc"
+    "submissions/fibonacci_naive_recursion/Plinth_1.61.0.0_Unisay/fibonacci.uplc"
     Preview.fibonacciCode
   writeCodeToFile
-    "submissions/fibonacci/Plinth_1.60.0.0_Unisay/fibonacci.uplc"
+    "submissions/fibonacci/Plinth_1.61.0.0_Unisay/fibonacci.uplc"
     Preview.fibonacciIterativeCode
   writeCodeToFile
-    "submissions/two_party_escrow/Plinth_1.60.0.0_Unisay/two_party_escrow.uplc"
+    "submissions/two_party_escrow/Plinth_1.61.0.0_Unisay/two_party_escrow.uplc"
     Preview.twoPartyEscrowValidatorCode
 #endif
 
