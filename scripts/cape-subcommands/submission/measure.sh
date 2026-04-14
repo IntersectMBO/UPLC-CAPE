@@ -373,6 +373,17 @@ main() {
       cape_error "Directory not found: $dir_to_measure"
       exit 1
     fi
+    # Guard: reject submissions that require a newer plutus-core than the evaluator supports
+    local meta="$dir_to_measure/metadata.json"
+    if [[ -f "$meta" ]]; then
+      local min_ver
+      min_ver=$(jq -r '.compilation_config.min_plutus_version // ""' "$meta" 2>/dev/null || true)
+      if cape_is_preview_submission "$min_ver"; then
+        cape_error "Submission requires plutus-core >= $min_ver but the evaluator only supports $CAPE_CURRENT_PLUTUS_VERSION."
+        cape_error "Use 'cape submission measure --preview' to evaluate with a compatible version."
+        exit 1
+      fi
+    fi
     measure_directory "$dir_to_measure"
     exit_code=$?
   fi
