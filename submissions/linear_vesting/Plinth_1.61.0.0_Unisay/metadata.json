@@ -1,0 +1,24 @@
+{
+  "compiler": {
+    "name": "Plinth",
+    "version": "1.61.0.0"
+  },
+  "compilation_config": {
+    "optimization_level": "Plinth",
+    "target": "uplc",
+    "flags": ["Plinth", "BuiltinCasing"],
+    "min_plutus_version": "1.61.0.0"
+  },
+  "contributors": [
+    {
+      "name": "Unisay",
+      "organization": "UPLC-CAPE Project"
+    }
+  ],
+  "submission": {
+    "date": "2026-04-13T00:00:00Z",
+    "source_available": true,
+    "source_repository": "https://github.com/IntersectMBO/UPLC-CAPE",
+    "implementation_notes": "Linear vesting validator compiled with Plinth 1.61.0.0 and BuiltinCasing. Preview submission requiring plutus-core >= 1.61.0.0 (not yet on mainnet)."
+  }
+}

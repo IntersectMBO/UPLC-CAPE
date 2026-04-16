@@ -92,6 +92,8 @@ library
     FibonacciIterative
     PlutusCore.Data.Compact.Parser
     PlutusCore.Data.Compact.Printer
+    LinearVesting
+    LinearVesting.Fixture
     TwoPartyEscrow
     TwoPartyEscrow.Fixture
 
@@ -161,7 +163,17 @@ library cape-preview
     Preview.Factorial
     Preview.Fibonacci
     Preview.FibonacciIterative
+    Preview.LinearVesting
     Preview.TwoPartyEscrow
+
+  other-modules:
+    Ecd
+    Factorial
+    Fibonacci
+    FibonacciIterative
+    LinearVesting
+    TwoPartyEscrow
+    TwoPartyEscrow.Fixture
 
   build-depends:
     , cape
@@ -208,6 +220,8 @@ test-suite cape-tests
     FibonacciSpec
     PlutusCore.Data.Compact.ParserSpec
     PlutusCore.Data.Compact.PrinterSpec
+    LinearVestingSpec
+    LinearVestingSpec.Fixture
     TwoPartyEscrowSpec
     TwoPartyEscrowSpec.Fixture
     ValidatorHelpers
