@@ -1,12 +1,12 @@
 # Benchmark Implementation Notes
 
-**Scenario**: `fibonacci_naive_recursion`
+**Scenario**: `factorial_naive_recursion`
 
-**Submission ID**: `Scalus_0.12.1_Unisay`
+**Submission ID**: `Scalus_0.16.0_Unisay`
 
 ## Implementation Details
 
-- **Compiler**: `Scalus 0.12.1`
+- **Compiler**: `Scalus 0.16.0`
 - **Implementation Approach**: `naive recursive`
 - **Compilation Flags**: `default`
 
@@ -20,4 +20,4 @@
 
 ## Notes
 
-This submission implements the fibonacci_naive_recursion scenario using the prescribed naive recursive approach. The source code is maintained in a separate repository to avoid duplication.
+This submission implements the factorial_naive_recursion scenario using the prescribed naive recursive approach. The source code is maintained in a separate repository to avoid duplication.

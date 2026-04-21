@@ -1,14 +1,14 @@
 # Scalus Factorial Implementation
 
-**Source Code**: [FactorialOpen.scala](https://github.com/Unisay/scalus-cape-submissions/blob/51067e87539321aa77aea6ddd764cef94352202e/factorial/FactorialOpen.scala)
+**Source Code**: [Factorial.scala](https://github.com/Unisay/scalus-cape-submissions/blob/e02e7f74322a81622ff51bb41c6d671e09032379/src/factorial/Factorial.scala)
 
 **Repository**: <https://github.com/Unisay/scalus-cape-submissions>
 
-**Commit**: `51067e87539321aa77aea6ddd764cef94352202e`
+**Commit**: `e02e7f74322a81622ff51bb41c6d671e09032379`
 
-**Path**: `factorial/FactorialOpen.scala`
+**Path**: `src/factorial/Factorial.scala`
 
-This submission uses Scalus compiler version 0.12.1 with a simple recursive factorial implementation via an explicit `pfix` (Y-combinator).
+This submission uses Scalus compiler version 0.16.0 with a simple recursive factorial implementation via an explicit `pfix` (Y-combinator).
 
 ## Reproducing the Compilation
 
@@ -22,7 +22,7 @@ This submission uses Scalus compiler version 0.12.1 with a simple recursive fact
 2. Check out the specific commit:
 
    ```bash
-   git checkout 51067e87539321aa77aea6ddd764cef94352202e
+   git checkout e02e7f74322a81622ff51bb41c6d671e09032379
    ```
 
 3. Follow build instructions in the repository README

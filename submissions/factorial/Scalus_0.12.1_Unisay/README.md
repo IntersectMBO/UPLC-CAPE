@@ -1,24 +1,20 @@
-# Factorial Postfix
+# Factorial (Scalus 0.12.1)
 
-**Scenario:** factorial (postfix multiplication optimization)
+**Scenario:** factorial
 
 ## Implementation
 
-Iterative implementation with tail recursion:
+Simple recursive factorial via an explicit `pfix` (Y-combinator), matching the surface Scalus in [`FactorialOpen.scala`](https://github.com/Unisay/scalus-cape-submissions/blob/51067e87539321aa77aea6ddd764cef94352202e/src/factorial/FactorialOpen.scala):
 
 ```scala
-def factorial(n: BigInt): BigInt =
-  if n <= 0 then BigInt(1)
-  else
-    def factIter(acc: BigInt, count: BigInt): BigInt =
-      if count <= 0 then acc else factIter(acc * count, count - 1)
-    factIter(BigInt(1), n)
+val factorial = pfix: r =>
+  λλ("x"): x =>
+    if x <= 0 then 1 else x * r(x-1)
 ```
 
 ## Characteristics
 
-- **Algorithm:** Iterative with tail recursion (linear time complexity)
-- **Optimization:** Space efficient through accumulator pattern
+- **Algorithm:** Naive recursion via explicit Y-combinator (no accumulator, not tail-recursive — the multiplication wraps the recursive call)
 - **Edge case:** factorial(n) = 1 for n ≤ 0
 
 ## Source Code

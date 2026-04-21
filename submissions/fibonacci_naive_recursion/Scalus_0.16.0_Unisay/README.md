@@ -2,11 +2,11 @@
 
 **Scenario**: `fibonacci_naive_recursion`
 
-**Submission ID**: `Scalus_0.12.1_Unisay`
+**Submission ID**: `Scalus_0.16.0_Unisay`
 
 ## Implementation Details
 
-- **Compiler**: `Scalus 0.12.1`
+- **Compiler**: `Scalus 0.16.0`
 - **Implementation Approach**: `naive recursive`
 - **Compilation Flags**: `default`
 
