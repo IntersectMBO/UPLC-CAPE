@@ -22,39 +22,15 @@
             justify-content: center;
             gap: 20px;
         }
-        .header img {
-            width: 150px;
-            height: auto;
-            flex-shrink: 0;
-        }
-        .header-text {
-            flex-grow: 0;
-        }
-        .header h1 {
-            color: #333;
-            margin: 0 0 10px 0;
-        }
-        .header p {
-            color: #6c757d;
-            margin: 5px 0;
-        }
+        .header img { width: 150px; height: auto; flex-shrink: 0; }
+        .header-text { flex-grow: 0; }
+        .header h1 { color: #333; margin: 0 0 10px 0; }
+        .header p { color: #6c757d; margin: 5px 0; }
 
-        /* Breadcrumb Navigation */
-        .breadcrumb {
-            color: #6c757d;
-            font-size: 0.9em;
-            margin-top: 10px;
-        }
-        .breadcrumb a {
-            color: #667eea;
-            text-decoration: none;
-        }
-        .breadcrumb a:hover {
-            text-decoration: underline;
-        }
-        .breadcrumb-separator {
-            margin: 0 8px;
-        }
+        .breadcrumb { color: #6c757d; font-size: 0.9em; margin-top: 10px; }
+        .breadcrumb a { color: #667eea; text-decoration: none; }
+        .breadcrumb a:hover { text-decoration: underline; }
+        .breadcrumb-separator { margin: 0 8px; }
 
         .benchmark-section {
             background: white;
@@ -67,45 +43,116 @@
             color: #667eea;
             border-bottom: 3px solid #667eea;
             padding-bottom: 10px;
-            margin-bottom: 30px;
+            margin-bottom: 20px;
         }
-        .chart-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
-            gap: 30px;
-            margin-bottom: 30px;
+
+        .tabs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px;
+            border-bottom: 2px solid #e9ecef;
+            margin-bottom: 24px;
         }
-        .chart-container {
-            text-align: center;
-        }
-        .chart-container img {
-            max-width: 100%;
-            height: auto;
-            border-radius: 6px;
-        }
-        .chart-title {
-            font-size: 1.1em;
-            font-weight: 600;
-            color: #495057;
-            margin-bottom: 5px;
-        }
-        .chart-subtitle {
-            font-size: 0.85em;
+        .tab {
+            padding: 10px 16px;
+            background: transparent;
+            border: none;
+            border-bottom: 3px solid transparent;
+            cursor: pointer;
+            font-size: 0.95em;
             color: #6c757d;
-            margin-bottom: 10px;
-            font-style: italic;
+            font-family: inherit;
+            margin-bottom: -2px;
         }
-        .chart-section-title {
-            grid-column: 1 / -1;
-            font-size: 1.3em;
-            font-weight: 700;
+        .tab:hover { color: #495057; }
+        .tab[aria-selected="true"] {
             color: #667eea;
-            text-align: left;
-            margin-top: 20px;
-            margin-bottom: 10px;
-            padding-bottom: 8px;
-            border-bottom: 2px solid #667eea;
+            border-bottom-color: #667eea;
+            font-weight: 600;
         }
+
+        .tab-description {
+            color: #6c757d;
+            font-size: 0.9em;
+            font-style: italic;
+            margin-bottom: 20px;
+        }
+
+        .chart-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9em;
+        }
+        .chart-table tr:hover { background-color: #f8f9fa; }
+        .chart-table td {
+            padding: 8px 10px;
+            border-bottom: 1px solid #f0f0f0;
+            vertical-align: middle;
+        }
+        .chart-label {
+            white-space: nowrap;
+            font-family: 'Courier New', monospace;
+            font-size: 0.88em;
+            color: #495057;
+            width: 1%;
+        }
+        .chart-label a {
+            color: #495057;
+            text-decoration: none;
+        }
+        .chart-label a:hover { color: #667eea; text-decoration: underline; }
+        .chart-bar-cell { width: 100%; }
+        .chart-bar-wrapper {
+            position: relative;
+            height: 26px;
+            width: 100%;
+            background: #f1f3f5;
+            border-radius: 3px;
+            overflow: hidden;
+        }
+        .chart-bar {
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            padding: 0 8px;
+            box-sizing: border-box;
+            color: #fff;
+            font-family: 'Courier New', monospace;
+            font-size: 0.85em;
+            font-weight: 600;
+            text-shadow: 0 1px 1px rgba(0, 0, 0, 0.3);
+            transition: filter 0.15s ease;
+            min-width: 2px;
+        }
+        .chart-bar.exceeds {
+            background-image: repeating-linear-gradient(
+                45deg,
+                rgba(0, 0, 0, 0.12) 0 6px,
+                transparent 6px 12px
+            );
+            background-blend-mode: multiply;
+        }
+        .chart-bar-value-outside {
+            position: absolute;
+            top: 0;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            padding-left: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.85em;
+            color: #495057;
+            pointer-events: none;
+        }
+        .chart-row:hover .chart-bar { filter: brightness(1.08); }
+
+        .loading, .empty {
+            padding: 40px;
+            text-align: center;
+            color: #6c757d;
+        }
+
         .footer {
             text-align: center;
             margin-top: 50px;
@@ -113,73 +160,7 @@
             color: #6c757d;
             border-top: 1px solid #e9ecef;
         }
-        .timestamp {
-            font-style: italic;
-            color: #6c757d;
-            margin-bottom: 20px;
-        }
-        .data-table {
-            background: white;
-            margin-top: 40px;
-            margin-bottom: 40px;
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            overflow-x: auto;
-        }
-        .data-table h3 {
-            color: #667eea;
-            border-bottom: 3px solid #667eea;
-            padding-bottom: 10px;
-            margin-bottom: 20px;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 0.9em;
-        }
-        th, td {
-            padding: 12px;
-            text-align: left;
-            border-bottom: 1px solid #e9ecef;
-        }
-        th {
-            background-color: #f8f9fa;
-            font-weight: 600;
-            color: #495057;
-            position: sticky;
-            top: 0;
-        }
-        td {
-            color: #6c757d;
-        }
-        tr:hover {
-            background-color: #f8f9fa;
-        }
-        .numeric {
-            text-align: right;
-            font-family: 'Courier New', monospace;
-        }
-        table a {
-            text-decoration: none;
-            cursor: pointer;
-            text-align: center;
-            display: block;
-        }
-        .source-link {
-            color: #6c757d;
-            text-decoration: underline;
-            font-size: 0.75em;
-            display: inline;
-        }
-        .budget-warning {
-            background-color: #fff3cd !important;
-            border-left: 4px solid #ffc107;
-        }
-        .budget-critical {
-            background-color: #f8d7da !important;
-            border-left: 4px solid #dc3545;
-        }
+        .timestamp { font-style: italic; color: #6c757d; margin-bottom: 20px; }
     </style>
 </head>
 <body>
@@ -198,90 +179,11 @@
 
     <div class="benchmark-section">
         <h2 class="benchmark-title">📊 ecd benchmark report</h2>
-        <div class="chart-grid">
-            <div class="chart-section-title">Raw measurements</div>
-            <div class="chart-container">
-                <div class="chart-title">💻 CPU Units</div>
-                <div class="chart-subtitle">Lower is Better</div>
-                <img src="images/ecd_cpu_units.png" alt="CPU Units comparison for ecd">
-            </div>
-            <div class="chart-container">
-                <div class="chart-title">🧠 Memory Units</div>
-                <div class="chart-subtitle">Lower is Better</div>
-                <img src="images/ecd_memory_units.png" alt="Memory Units comparison for ecd">
-            </div>
-            <div class="chart-container">
-                <div class="chart-title">📦 Script Size</div>
-                <div class="chart-subtitle">Lower is Better</div>
-                <img src="images/ecd_script_size.png" alt="Script Size comparison for ecd">
-            </div>
-            <div class="chart-container">
-                <div class="chart-title">🌳 Term Size</div>
-                <div class="chart-subtitle">Lower is Better</div>
-                <img src="images/ecd_term_size.png" alt="Term Size comparison for ecd">
-            </div>
-            <div class="chart-section-title">Derived metrics</div>
-            <div class="chart-container">
-                <div class="chart-title">💻 CPU Tx Budget Usage (%)</div>
-                <div class="chart-subtitle"></div>
-                <img src="images/ecd_tx_budget_cpu.png" alt="CPU Transaction Budget comparison for ecd">
-            </div>
-            <div class="chart-container">
-                <div class="chart-title">🧠 Memory Tx Budget Usage (%)</div>
-                <div class="chart-subtitle"></div>
-                <img src="images/ecd_tx_budget_mem.png" alt="Memory Transaction Budget comparison for ecd">
-            </div>
-            <div class="chart-container">
-                <div class="chart-title">💰 Total Fee (₳)</div>
-                <div class="chart-subtitle">Lower is Better</div>
-                <img src="images/ecd_total_fee.png" alt="Total Fee comparison for ecd">
-            </div>
-            <div class="chart-container">
-                <div class="chart-title">📈 Scripts per Transaction</div>
-                <div class="chart-subtitle">Higher is Better</div>
-                <img src="images/ecd_scripts_per_tx.png" alt="Capacity comparison for ecd">
-            </div>
+        <div id="tabs" class="tabs" role="tablist"></div>
+        <div id="tab-description" class="tab-description"></div>
+        <div id="chart-container">
+            <div class="loading">Loading data…</div>
         </div>
-    </div>
-
-    <div class="data-table">
-        <h3>📋 Performance Data</h3>
-        <table>
-            <thead>
-                <tr>
-                    <th>Language</th>
-                    <th>Version</th>
-                    <th>Variant</th>
-                    <th>User</th>
-                    <th class="numeric">CPU Units</th>
-                    <th class="numeric">Memory Units</th>
-                    <th class="numeric">Script Size (bytes)</th>
-                    <th class="numeric">Term Size (nodes)</th>
-                    <th class="numeric">Fee (₳)</th>
-                    <th class="numeric">Tx Budget</th>
-                    <th class="numeric">Block Budget</th>
-                    <th class="numeric">Cap/Tx</th>
-                    <th class="numeric">Cap/Block</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>Plinth<br><a href="https://github.com/IntersectMBO/UPLC-CAPE/blob/main/submissions/ecd/Plinth_1.45.0.0_Unisay/source/README.md" target="_blank" rel="noopener" class="source-link">src</a> <a href="https://github.com/IntersectMBO/UPLC-CAPE/blob/main/submissions/ecd/Plinth_1.45.0.0_Unisay/ecd.uplc" target="_blank" rel="noopener" class="source-link">UPLC</a></td>
-                    <td>1.45.0.0</td>
-                    <td>default</td>
-                    <td>Unisay</td>
-                    <td class="numeric">36668998</td>
-                    <td class="numeric">154557</td>
-                    <td class="numeric">56</td>
-                    <td class="numeric">57</td>
-                    <td class="numeric">0.01</td>
-                    <td class="numeric">0.1%&nbsp;mem<br>0.0%&nbsp;cpu</td>
-                    <td class="numeric">0.0%&nbsp;mem<br>0.0%&nbsp;cpu</td>
-                    <td class="numeric">896</td>
-                    <td class="numeric">3970</td>
-                </tr>
-            </tbody>
-        </table>
     </div>
 
     <div class="breadcrumb">
@@ -292,7 +194,187 @@
 
     <div class="footer">
         <p>Generated by UPLC-CAPE • <a href="https://github.com/IntersectMBO/UPLC-CAPE">View on GitHub</a></p>
-        <p class="timestamp">Generated on: 2026-03-30 18:06:45 CEST</p>
+        <p class="timestamp">Generated on: 2026-04-21 17:07:41 CEST</p>
     </div>
+
+    <script>
+    (function () {
+        const BENCHMARK = "ecd";
+        const REPO_MAIN = "https://github.com/IntersectMBO/UPLC-CAPE/blob/main";
+
+        const METRICS = [
+            { key: "cpu_units",            title: "CPU Units",             subtitle: "Lower is better",                                                direction: "asc", format: fmtInt },
+            { key: "memory_units",         title: "Memory Units",          subtitle: "Lower is better",                                                direction: "asc", format: fmtInt },
+            { key: "script_size_bytes",    title: "Script Size",           subtitle: "Bytes — lower is better",                                        direction: "asc", format: fmtInt },
+            { key: "term_size",            title: "Term Size",             subtitle: "AST nodes — lower is better",                                    direction: "asc", format: fmtInt },
+            { key: "total_fee_lovelace",   title: "Total Fee",             subtitle: "ADA — lower is better",                                          direction: "asc", format: fmtFee },
+            { key: "tx_cpu_budget_pct",    title: "CPU Tx Budget",         subtitle: "% of transaction budget — lower is better • hatched = exceeds 100%", direction: "asc", format: fmtPct, exceedsAt: 100 },
+            { key: "tx_memory_budget_pct", title: "Memory Tx Budget",      subtitle: "% of transaction budget — lower is better • hatched = exceeds 100%", direction: "asc", format: fmtPct, exceedsAt: 100 },
+            { key: "scripts_per_tx",       title: "Scripts per Transaction", subtitle: "Higher is better • 0 = exceeds transaction budget",            direction: "desc", format: fmtInt, exceedsWhenZero: true },
+        ];
+
+        function fmtInt(n) {
+            if (n == null) return "—";
+            return n.toLocaleString("en-US");
+        }
+        function fmtPct(n) {
+            if (n == null) return "—";
+            return n.toFixed(2) + "%";
+        }
+        function fmtFee(lovelace) {
+            if (lovelace == null) return "—";
+            return (lovelace / 1_000_000).toFixed(6) + " ₳";
+        }
+
+        // FNV-1a 32-bit hash, stable across runs.
+        function hash32(str) {
+            let h = 0x811c9dc5 >>> 0;
+            for (let i = 0; i < str.length; i++) {
+                h ^= str.charCodeAt(i);
+                h = Math.imul(h, 0x01000193) >>> 0;
+            }
+            return h;
+        }
+
+        // Colour = HSL(hue from compiler, saturation from variant, lightness from version).
+        // Same compiler → same hue family globally (stable across scenarios); versions and variants
+        // create deterministic shifts within the family. Hue is hash-based so adding new compilers
+        // doesn't shift existing assignments — two hashes can land close (~30°) by chance, but
+        // saturation/lightness keep neighbouring compilers distinguishable.
+        function colorFor(sub) {
+            const compiler = (sub.compiler || "unknown").toLowerCase();
+            const version = sub.version || "";
+            const variant = sub.variant || "";
+
+            const hue = hash32(compiler) % 360;
+            const lightness = 32 + (hash32(version) % 22);   // 32..53
+            const saturation = 55 + (hash32(variant) % 25);  // 55..79
+            return `hsl(${hue}, ${saturation}%, ${lightness}%)`;
+        }
+
+        function submissionLabel(sub) {
+            let label = `${sub.compiler} ${sub.version}`;
+            if (sub.variant && sub.variant !== "default") label += ` · ${sub.variant}`;
+            label += ` · ${sub.user}`;
+            return label;
+        }
+
+        function submissionLink(sub) {
+            if (!sub.submission_dir) return null;
+            return `${REPO_MAIN}/submissions/${BENCHMARK}/${sub.submission_dir}`;
+        }
+
+        function sortForMetric(submissions, metric) {
+            const xs = submissions.filter(s => s.metrics[metric.key] != null);
+            xs.sort((a, b) => {
+                const va = a.metrics[metric.key];
+                const vb = b.metrics[metric.key];
+                return metric.direction === "asc" ? va - vb : vb - va;
+            });
+            return xs;
+        }
+
+        function renderTab(metric, submissions) {
+            const rows = sortForMetric(submissions, metric);
+            if (rows.length === 0) {
+                return `<div class="empty">No submissions have a value for ${escapeHtml(metric.title)}.</div>`;
+            }
+
+            const values = rows.map(s => s.metrics[metric.key]);
+            const maxValue = Math.max(...values, 0);
+
+            const barHtml = rows.map(sub => {
+                const value = sub.metrics[metric.key];
+                const pct = maxValue > 0 ? (value / maxValue) * 100 : 0;
+                const color = colorFor(sub);
+                const exceeds =
+                    (metric.exceedsAt != null && value > metric.exceedsAt) ||
+                    (metric.exceedsWhenZero && value === 0);
+                const formatted = metric.format(value);
+                const label = escapeHtml(submissionLabel(sub));
+                const link = submissionLink(sub);
+                const labelCell = link
+                    ? `<a href="${link}" target="_blank" rel="noopener">${label}</a>`
+                    : label;
+                // Values under 18% of the width get rendered outside the bar so the number stays readable.
+                const valueInside = pct >= 18;
+                const valueNode = valueInside
+                    ? `<span>${escapeHtml(formatted)}</span>`
+                    : "";
+                const valueOutsideNode = valueInside
+                    ? ""
+                    : `<span class="chart-bar-value-outside" style="left:${pct.toFixed(3)}%;">${escapeHtml(formatted)}</span>`;
+                return `
+                <tr class="chart-row">
+                    <td class="chart-label">${labelCell}</td>
+                    <td class="chart-bar-cell">
+                        <div class="chart-bar-wrapper">
+                            <div class="chart-bar${exceeds ? " exceeds" : ""}" style="width:${pct.toFixed(3)}%;background:${color};" title="${label} — ${escapeHtml(formatted)}">${valueNode}</div>
+                            ${valueOutsideNode}
+                        </div>
+                    </td>
+                </tr>`;
+            }).join("");
+
+            return `<table class="chart-table"><tbody>${barHtml}</tbody></table>`;
+        }
+
+        function escapeHtml(s) {
+            return String(s)
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#39;");
+        }
+
+        function currentMetricKey() {
+            const m = /(?:^|[&#])tab=([^&]+)/.exec(window.location.hash);
+            if (m) {
+                const key = decodeURIComponent(m[1]);
+                if (METRICS.some(x => x.key === key)) return key;
+            }
+            return METRICS[0].key;
+        }
+
+        function setMetricKey(key) {
+            window.location.hash = `tab=${encodeURIComponent(key)}`;
+        }
+
+        function renderTabs(activeKey) {
+            const container = document.getElementById("tabs");
+            container.innerHTML = METRICS.map(m => `
+                <button class="tab" role="tab" data-key="${m.key}"
+                        aria-selected="${m.key === activeKey ? "true" : "false"}">${escapeHtml(m.title)}</button>
+            `).join("");
+            container.querySelectorAll(".tab").forEach(btn => {
+                btn.addEventListener("click", () => setMetricKey(btn.dataset.key));
+            });
+        }
+
+        function render(submissions) {
+            const key = currentMetricKey();
+            const metric = METRICS.find(m => m.key === key);
+            renderTabs(key);
+            document.getElementById("tab-description").textContent = metric.subtitle;
+            document.getElementById("chart-container").innerHTML = renderTab(metric, submissions);
+        }
+
+        fetch(`${encodeURIComponent(BENCHMARK)}.json`, { cache: "no-cache" })
+            .then(r => {
+                if (!r.ok) throw new Error(`HTTP ${r.status}`);
+                return r.json();
+            })
+            .then(data => {
+                const submissions = data.submissions || [];
+                render(submissions);
+                window.addEventListener("hashchange", () => render(submissions));
+            })
+            .catch(err => {
+                document.getElementById("chart-container").innerHTML =
+                    `<div class="empty">Failed to load benchmark data: ${escapeHtml(String(err))}</div>`;
+            });
+    })();
+    </script>
 </body>
 </html>

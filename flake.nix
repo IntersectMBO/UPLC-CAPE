@@ -184,10 +184,6 @@
             jq
             tree
 
-            # Plotting utilities
-            gnuplot
-            bc # Calculator for mathematical operations in shell scripts
-
             # Template rendering
             gomplate
 
