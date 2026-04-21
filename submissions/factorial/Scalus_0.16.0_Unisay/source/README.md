@@ -8,7 +8,7 @@
 
 **Path**: `src/factorial/Factorial.scala`
 
-This submission uses Scalus compiler version 0.16.0 with an iterative postfix-multiplication implementation.
+This submission uses Scalus compiler version 0.16.0 with a simple recursive factorial implementation via an explicit `pfix` (Y-combinator).
 
 ## Reproducing the Compilation
 

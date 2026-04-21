@@ -8,7 +8,7 @@
 
 **Path**: `src/fibonacci/Fibonacci.scala`
 
-This submission uses Scalus compiler version 0.16.0 with an iterative implementation built via manual UPLC construction and a pfix Y-combinator.
+This submission uses Scalus compiler version 0.16.0 with a naive recursive Fibonacci implementation via an explicit `pfix` (Y-combinator).
 
 ## Reproducing the Compilation
 

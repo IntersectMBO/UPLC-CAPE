@@ -20,6 +20,6 @@
     "source_available": true,
     "source_repository": "https://github.com/Unisay/scalus-cape-submissions",
     "source_commit_hash": "e02e7f74322a81622ff51bb41c6d671e09032379",
-    "implementation_notes": "Manual UPLC construction with pfix (Y-combinator) for iterative Fibonacci"
+    "implementation_notes": "Naive recursive Fibonacci via explicit pfix (Y-combinator); surface: `pfix: r => λ x. if x ≤ 1 then x else r(x-1) + r(x-2)`"
   }
 }

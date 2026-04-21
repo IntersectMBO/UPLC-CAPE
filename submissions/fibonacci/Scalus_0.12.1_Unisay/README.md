@@ -7,7 +7,7 @@
 ## Implementation Details
 
 - **Compiler**: `Scalus 0.12.1`
-- **Implementation Approach**: `iterative`
+- **Implementation Approach**: `naive recursive via explicit pfix (Y-combinator)`
 - **Compilation Flags**: `default`
 
 ## Performance Results
@@ -20,6 +20,4 @@
 
 ## Notes
 
-This submission implements the Fibonacci scenario using an iterative approach. This optimization provides better performance than the naive recursive approach. The source code is maintained in a separate repository to avoid duplication.
-
-**Note**: The UPLC output uses Scalus bracket notation format, which differs from standard UPLC textual syntax. The verification may require Scalus-specific tooling.
+Surface Scalus defines fibonacci as `pfix: r => λ x. if x ≤ 1 then x else r(x-1) + r(x-2)` — the classic naive O(2^n) recurrence with an explicit Y-combinator (`pfix`), not an iterative or tail-recursive form. The source code is maintained in a separate repository to avoid duplication.

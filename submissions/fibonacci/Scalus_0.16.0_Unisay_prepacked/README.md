@@ -28,5 +28,3 @@ This submission implements the Fibonacci scenario using a prepacked optimization
 - Encodes each Fibonacci number as 3 bytes in big-endian format
 
 This approach trades program size for evaluation performance, resulting in constant-time execution regardless of the input value (within the pre-computed range).
-
-**Note**: The UPLC output uses Scalus bracket notation format, which differs from standard UPLC textual syntax.

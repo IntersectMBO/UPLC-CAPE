@@ -21,5 +21,3 @@
 ## Notes
 
 This submission implements the factorial_naive_recursion scenario using the prescribed naive recursive approach. The source code is maintained in a separate repository to avoid duplication.
-
-**Note**: The UPLC output uses Scalus bracket notation format, which differs from standard UPLC textual syntax. The verification may require Scalus-specific tooling.

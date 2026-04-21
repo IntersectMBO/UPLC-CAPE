@@ -7,7 +7,7 @@
 ## Implementation Details
 
 - **Compiler**: `Scalus 0.16.0`
-- **Implementation Approach**: `iterative (postfix multiplication with accumulator)`
+- **Implementation Approach**: `simple recursive via explicit pfix (Y-combinator)`
 - **Compilation Flags**: `default`
 
 ## Performance Results
@@ -20,6 +20,4 @@
 
 ## Notes
 
-This submission implements the Factorial scenario using an iterative tail-recursive approach with an accumulator. The source code is maintained in a separate repository to avoid duplication.
-
-**Note**: The UPLC output uses Scalus bracket notation format, which differs from standard UPLC textual syntax. The verification may require Scalus-specific tooling.
+Surface Scalus defines factorial as `pfix: r => λ x. if x ≤ 0 then 1 else x * r(x-1)` — plain recursion with an explicit Y-combinator (`pfix`), no accumulator, no tail-recursive rewrite. The source code is maintained in a separate repository to avoid duplication.
