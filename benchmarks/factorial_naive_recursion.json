@@ -1,6 +1,6 @@
 {
   "benchmark": "factorial_naive_recursion",
-  "generated_at": "2026-04-22T12:13:34Z",
+  "generated_at": "2026-04-22T12:32:30Z",
   "submissions": [
     {
       "timestamp": "2025-10-23T14:41:53Z",
@@ -49,7 +49,7 @@
       }
     },
     {
-      "timestamp": "2026-04-22T12:04:49Z",
+      "timestamp": "2026-04-22T12:24:17Z",
       "compiler": "Plinth",
       "version": "1.45.0.0",
       "user": "Unisay",
