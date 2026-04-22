@@ -326,11 +326,11 @@ build_filtered_stats() {
     first_benchmark=false
 
     local category winners_json
-    category=$(categorize_scenario "$benchmark")
+    category=$(categorize_scenario "$bench")
     winners_json=$(find_winners "$benchmark_csv")
 
     echo '    {'
-    echo '      "name": "'$benchmark'",'
+    echo '      "name": "'$bench'",'
     echo '      "category": "'$category'",'
     echo '      "submission_count": '$submission_count','
     echo '      "winners": '$winners_json','
