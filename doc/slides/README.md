@@ -2,118 +2,47 @@
 
 Slidev presentation for the UPLC Conference workshop on UPLC-CAPE (Cardano Application Performance Evaluation).
 
+The source-of-truth is `slides.md`. No checked-in `package.json` / lockfile —
+Slidev is invoked directly via `npx` against the latest release so the
+presentation can always be rebuilt on demand without carrying a pinned
+dependency graph in the repo.
+
 ## Quick Start
 
-### Prerequisites
+Requires Node.js 20+ and `npx` (bundled with npm).
 
-- Nix
-- Direnv (optional, for automatic environment loading)
+```bash
+# Preview locally at http://localhost:3030
+npx -y @slidev/cli@latest slides.md --open
 
-### Setup
+# Build a static site into ./dist
+npx -y @slidev/cli@latest build slides.md
 
-1. **Enter the development environment**:
-
-   ```bash
-   nix-shell
-   ```
-
-   Or with direnv:
-
-   ```bash
-   direnv allow
-   ```
-
-2. **Install dependencies**:
-
-   ```bash
-   pnpm install
-   ```
-
-3. **Start the development server**:
-
-   ```bash
-   pnpm dev
-   ```
-
-   The presentation will open automatically in your browser at <http://localhost:3030>
+# Export to PDF / PPTX (requires Chromium)
+npx -y @slidev/cli@latest export slides.md
+npx -y @slidev/cli@latest export slides.md --format pptx
+```
 
 ## Presenter Mode
 
-To use presenter mode with speaker notes:
-
-1. Start the dev server: `pnpm dev`
-2. Press `P` to enter presenter mode
-3. A new window will open with:
-   - Current slide on your laptop screen
-   - Next slide preview
-   - Speaker notes
-   - Timer
-
-Configure your display settings:
-- **MacBook Pro screen**: Presenter view (with notes)
-- **External display/projector**: Slides view (audience)
-
-## Export Options
-
-### Export to PDF
-
-```bash
-pnpm export-pdf
-```
-
-Output: `slides-export.pdf`
-
-### Export to PowerPoint
-
-```bash
-pnpm export-pptx
-```
-
-Output: `slides-export.pptx`
-
-### Build Static Site
-
-```bash
-pnpm build
-```
-
-Output: `dist/` directory - deploy to any static hosting
+1. Run the dev command above.
+2. Press `P` to open presenter view with speaker notes, next-slide preview and a timer.
+3. Put the presenter window on your laptop and the main slide view on the external display.
 
 ## Theme & Styling
 
-The presentation uses the extracted theme from the IO UPLC PowerPoint template:
+- `colors.json` — full color palette (extracted from IO UPLC template).
+- `styles/` — CSS overrides and custom properties applied by Slidev.
+- `public/` — static assets (backgrounds, logo) referenced from `slides.md`.
 
-- **Colors**: See `colors.json` for the complete color palette
-- **Fonts**: Arial (headings and body)
-- **UnoCSS Config**: `uno.config.ts` - all theme colors available as utility classes
-- **Custom Styles**: `styles/theme.css` - CSS custom properties and Slidev overrides
+Color classes available in markdown:
 
-### Using Theme Colors
-
-In markdown:
-
-```markdown
-<div class="text-primary">Primary blue text</div>
-<div class="bg-secondary text-light">Green background with white text</div>
-```
-
-In CSS:
-
-```css
-.custom-element {
-  color: var(--color-primary);
-  background: var(--color-secondary);
-}
-```
-
-### Available Color Classes
-
-- `text-primary`, `bg-primary` - #058DC7 (Bright Blue)
-- `text-secondary`, `bg-secondary` - #50B432 (Green)
-- `text-tertiary`, `bg-tertiary` - #ED561B (Orange)
-- `text-accent`, `bg-accent` - #24CBE5 (Cyan)
-- `text-warning`, `bg-warning` - #EDEF00 (Yellow)
-- `text-success`, `bg-success` - #64E572 (Light Green)
+- `text-primary`, `bg-primary` — #058DC7 (Bright Blue)
+- `text-secondary`, `bg-secondary` — #50B432 (Green)
+- `text-tertiary`, `bg-tertiary` — #ED561B (Orange)
+- `text-accent`, `bg-accent` — #24CBE5 (Cyan)
+- `text-warning`, `bg-warning` — #EDEF00 (Yellow)
+- `text-success`, `bg-success` — #64E572 (Light Green)
 
 ## Presentation Structure
 
@@ -142,72 +71,21 @@ In CSS:
 
 ## Keyboard Shortcuts
 
-- `Space` / `→` - Next slide
-- `←` - Previous slide
-- `P` - Presenter mode
-- `O` - Slides overview
-- `D` - Dark mode toggle
-- `F` - Fullscreen
-- `?` - Show all shortcuts
-
-## Media Assets
-
-All media files from the PowerPoint template are available in `public/`:
-- 131 images (PNG/JPG)
-- Reference in slides: `/image1.png`, `/image2.png`, etc.
-
-## Troubleshooting
-
-### Port already in use
-
-If port 3030 is already in use:
-
-```bash
-pnpm dev -- --port 3031
-```
-
-### Fonts not loading
-
-Fonts are web-safe (Arial) and should work everywhere. If you see rendering issues, check browser console for errors.
-
-### Export failures
-
-PDF/PPTX export requires Chromium. The Nix environment includes it, but if exports fail:
-
-```bash
-# Verify Chromium is available
-which chromium
-```
-
-## Development
-
-### Editing Slides
-
-Edit `slides.md` - changes hot-reload automatically
-
-### Custom Components
-
-Create Vue components in `components/` directory - they're auto-imported
-
-### Custom Layouts
-
-Create layouts in `layouts/` directory - use with:
-
-```markdown
----
-layout: my-custom-layout
----
-```
+- `Space` / `→` — Next slide
+- `←` — Previous slide
+- `P` — Presenter mode
+- `O` — Slides overview
+- `D` — Dark mode toggle
+- `F` — Fullscreen
+- `?` — Show all shortcuts
 
 ## Resources
 
-- **Slidev Documentation**: <https://sli.dev>
-- **UnoCSS Documentation**: <https://unocss.dev>
-- **Theme Extraction Guide**: `../EXTRACTION-SUMMARY.md`
-- **UPLC-CAPE Repository**: <https://github.com/IntersectMBO/UPLC-CAPE>
-- **Live Results**: <https://intersectmbo.github.io/UPLC-CAPE>
+- Slidev Documentation: <https://sli.dev>
+- UPLC-CAPE Repository: <https://github.com/IntersectMBO/UPLC-CAPE>
+- Live Results: <https://intersectmbo.github.io/UPLC-CAPE>
 
 ## License
 
-Content: Workshop presentation material
-Theme: Extracted from IO UPLC Presentation Template 2025
+Content: Workshop presentation material.
+Theme: Extracted from IO UPLC Presentation Template 2025.
