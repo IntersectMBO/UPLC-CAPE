@@ -17,6 +17,7 @@ import Ecd (ecdCode)
 import Factorial (factorialCode)
 import Fibonacci (fibonacciCode)
 import FibonacciIterative (fibonacciIterativeCode)
+import HTLC (htlcValidator)
 import LinearVesting (linearVestingValidator)
 import PlutusTx qualified
 import PlutusTx.Builtins.Internal (BuiltinData)
@@ -24,12 +25,15 @@ import PlutusTx.Code (CompiledCode)
 import PlutusTx.Prelude (BuiltinUnit)
 import TwoPartyEscrow (twoPartyEscrowValidatorCode)
 
--- Compile splice lives here (not in LinearVesting.hs) as a workaround for a
--- PlutusTx plugin interaction: having @$$(compile ...)@ in the source module
--- without BuiltinCasing blocks cross-library recompilation with
+-- Compile splices live here (not in HTLC.hs / LinearVesting.hs) as a workaround
+-- for a PlutusTx plugin interaction: having @$$(compile ...)@ in the source
+-- module without BuiltinCasing blocks cross-library recompilation with
 -- BuiltinCasing in the corresponding Preview.* module.
 linearVestingValidatorCode :: CompiledCode (BuiltinData -> BuiltinUnit)
 linearVestingValidatorCode = $$(PlutusTx.compile [||linearVestingValidator||])
+
+htlcValidatorCode :: CompiledCode (BuiltinData -> BuiltinUnit)
+htlcValidatorCode = $$(PlutusTx.compile [||htlcValidator||])
 
 main :: IO ()
 main = do
@@ -48,6 +52,9 @@ main = do
   writeCodeToFile
     "submissions/linear_vesting/Plinth_1.45.0.0_Unisay/linear_vesting.uplc"
     linearVestingValidatorCode
+  writeCodeToFile
+    "submissions/htlc/Plinth_1.45.0.0_Unisay/htlc.uplc"
+    htlcValidatorCode
   writeCodeToFile
     "submissions/two_party_escrow/Plinth_1.45.0.0_Unisay/two_party_escrow.uplc"
     twoPartyEscrowValidatorCode

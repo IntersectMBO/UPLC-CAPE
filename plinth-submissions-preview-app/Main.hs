@@ -12,6 +12,7 @@ import Preview.Ecd (ecdCode)
 import Preview.Factorial (factorialCode)
 import Preview.Fibonacci (fibonacciCode)
 import Preview.FibonacciIterative (fibonacciIterativeCode)
+import Preview.HTLC (htlcValidatorCode)
 import Preview.LinearVesting (linearVestingValidatorCode)
 import Preview.TwoPartyEscrow (twoPartyEscrowValidatorCode)
 
@@ -32,6 +33,9 @@ main = do
   writeCodeToFile
     "submissions/linear_vesting/Plinth_1.61.0.0_Unisay/linear_vesting.uplc"
     linearVestingValidatorCode
+  writeCodeToFile
+    "submissions/htlc/Plinth_1.61.0.0_Unisay/htlc.uplc"
+    htlcValidatorCode
   writeCodeToFile
     "submissions/two_party_escrow/Plinth_1.61.0.0_Unisay/two_party_escrow.uplc"
     twoPartyEscrowValidatorCode
