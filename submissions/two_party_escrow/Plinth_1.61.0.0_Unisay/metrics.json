@@ -169,38 +169,38 @@
       "name": "accept_with_remaining_script_output"
     },
     {
-      "cpu_units": 79672395,
+      "cpu_units": 79624395,
       "description": "Refund after deadline with buyer signature should succeed",
       "execution_result": "success",
-      "memory_units": 340624,
+      "memory_units": 340324,
       "name": "refund_successful"
     },
     {
-      "cpu_units": 79672395,
+      "cpu_units": 79624395,
       "description": "Refund exactly 1 second after deadline expiry should succeed",
       "execution_result": "success",
-      "memory_units": 340624,
+      "memory_units": 340324,
       "name": "refund_after_exact_deadline"
     },
     {
-      "cpu_units": 79812232,
+      "cpu_units": 79764232,
       "description": "Refund with multiple script inputs should succeed (no single input validation)",
       "execution_result": "success",
-      "memory_units": 341225,
+      "memory_units": 340925,
       "name": "refund_with_multiple_inputs"
     },
     {
-      "cpu_units": 79812232,
+      "cpu_units": 79764232,
       "description": "Refund with datum attached to buyer's output should succeed",
       "execution_result": "success",
-      "memory_units": 341225,
+      "memory_units": 340925,
       "name": "refund_with_datum_attached"
     },
     {
-      "cpu_units": 106755998,
+      "cpu_units": 106707998,
       "description": "Refund split across two outputs to buyer (50+25 ADA) should succeed",
       "execution_result": "success",
-      "memory_units": 449699,
+      "memory_units": 449399,
       "name": "refund_with_multiple_outputs_to_buyer"
     },
     {
@@ -321,34 +321,34 @@
   },
   "measurements": {
     "block_cpu_budget_pct": 0.2738410075,
-    "block_memory_budget_pct": 0.7253209677419356,
+    "block_memory_budget_pct": 0.7248370967741936,
     "cpu_units": {
       "maximum": 109536403,
       "median": 14991564,
       "minimum": 24688,
-      "sum": 1441041912,
+      "sum": 1440801912,
       "sum_negative": 0,
-      "sum_positive": 1441041912
+      "sum_positive": 1440801912
     },
-    "execution_fee_lovelace": 442282,
+    "execution_fee_lovelace": 442178,
     "memory_units": {
-      "maximum": 449699,
+      "maximum": 449399,
       "median": 62604,
       "minimum": 132,
-      "sum": 5864518,
+      "sum": 5863018,
       "sum_negative": 0,
-      "sum_positive": 5864518
+      "sum_positive": 5863018
     },
-    "reference_script_fee_lovelace": 43605,
-    "script_size_bytes": 2907,
+    "reference_script_fee_lovelace": 43575,
+    "script_size_bytes": 2905,
     "scripts_per_block": 137,
     "scripts_per_tx": 31,
-    "term_size": 2760,
-    "total_fee_lovelace": 485887,
+    "term_size": 2757,
+    "total_fee_lovelace": 485753,
     "tx_cpu_budget_pct": 1.09536403,
-    "tx_memory_budget_pct": 3.2121357142857145
+    "tx_memory_budget_pct": 3.209992857142857
   },
   "scenario": "two_party_escrow",
-  "timestamp": "2026-03-31T11:39:13Z",
+  "timestamp": "2026-04-23T12:32:45Z",
   "version": "1.0.0"
 }

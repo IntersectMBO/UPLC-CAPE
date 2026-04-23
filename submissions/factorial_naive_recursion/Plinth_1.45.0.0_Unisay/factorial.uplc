@@ -7,22 +7,27 @@
       (lam
         n-2
         (force
-          (case
-            (constr
-              0
-              [ [ (builtin lessThanEqualsInteger) n-2 ] (con integer 0) ]
-              (delay (con integer 1))
-              (delay
+          (force
+            [
+              [
                 [
-                  [ (builtin multiplyInteger) n-2 ]
-                  [
-                    [ s-1 s-1 ]
-                    [ [ (builtin subtractInteger) n-2 ] (con integer 1) ]
-                  ]
+                  (force (builtin ifThenElse))
+                  [ [ (builtin lessThanEqualsInteger) n-2 ] (con integer 0) ]
                 ]
+                (delay (delay (con integer 1)))
+              ]
+              (delay
+                (delay
+                  [
+                    [ (builtin multiplyInteger) n-2 ]
+                    [
+                      (lam x-3 [ [ s-1 s-1 ] x-3 ])
+                      [ [ (builtin subtractInteger) n-2 ] (con integer 1) ]
+                    ]
+                  ]
+                )
               )
-            )
-            (force (builtin ifThenElse))
+            ]
           )
         )
       )
