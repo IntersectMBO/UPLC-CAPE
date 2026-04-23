@@ -50,6 +50,43 @@ spec = do
       let ctx = claimContext 150 Fixed.correctPreimage
       expectFailure evaluateValidator ctx
 
+    -- Exercises the exclusive-lowerBound branch of lowerBoundTime:
+    -- LowerBound Finite 99 Exclusive is equivalent to inclusive time=100,
+    -- which equals the timeout and must be rejected.
+    it "fails with exclusive lower bound at timeout-1 (effective time=100)" do
+      let range =
+            Interval
+              (LowerBound (Finite (POSIXTime 99)) False)
+              (UpperBound PosInf True)
+          ctx =
+            buildContextData $
+              ScriptContextBuilder
+                SpendingBaseline
+                [ SetRedeemer Fixed.claimRedeemer
+                , SetScriptDatum Fixed.htlcDatum
+                , AddSignature Fixed.recipientKeyHash
+                , SetValidRangeRaw range
+                , AddInputUTXO Fixed.txOutRef Fixed.lockedValue True (OutputDatum Fixed.htlcDatum)
+                ]
+      expectFailure evaluateValidator ctx
+
+    it "fails with non-finite (NegInf) lower bound" do
+      let range =
+            Interval
+              (LowerBound NegInf True)
+              (UpperBound PosInf True)
+          ctx =
+            buildContextData $
+              ScriptContextBuilder
+                SpendingBaseline
+                [ SetRedeemer Fixed.claimRedeemer
+                , SetScriptDatum Fixed.htlcDatum
+                , AddSignature Fixed.recipientKeyHash
+                , SetValidRangeRaw range
+                , AddInputUTXO Fixed.txOutRef Fixed.lockedValue True (OutputDatum Fixed.htlcDatum)
+                ]
+      expectFailure evaluateValidator ctx
+
     it "fails with wrong preimage" do
       let ctx = claimContext 50 Fixed.wrongPreimage
       expectFailure evaluateValidator ctx
@@ -119,6 +156,26 @@ spec = do
       let ctx = refundContext 101
       expectSuccess evaluateValidator ctx
 
+    -- Mirrors the claim's exclusive-lowerBound test:
+    -- LowerBound Finite 100 Exclusive is equivalent to inclusive time=101,
+    -- which is strictly after the timeout and must be accepted.
+    it "succeeds with exclusive lower bound at timeout (effective time=101)" do
+      let range =
+            Interval
+              (LowerBound (Finite (POSIXTime 100)) False)
+              (UpperBound PosInf True)
+          ctx =
+            buildContextData $
+              ScriptContextBuilder
+                SpendingBaseline
+                [ SetRedeemer Fixed.refundRedeemer
+                , SetScriptDatum Fixed.htlcDatum
+                , AddSignature Fixed.payerKeyHash
+                , SetValidRangeRaw range
+                , AddInputUTXO Fixed.txOutRef Fixed.lockedValue True (OutputDatum Fixed.htlcDatum)
+                ]
+      expectSuccess evaluateValidator ctx
+
     it "succeeds well after timeout (time=200)" do
       let ctx = refundContext 200
       expectSuccess evaluateValidator ctx
@@ -184,6 +241,33 @@ spec = do
                     Fixed.lockedValue
                     True
                     (OutputDatum Fixed.htlcDatum)
+                ]
+      expectFailure evaluateValidator ctx
+
+    it "fails when payer address is a script credential (not pubkey)" do
+      let scriptPayerDatum =
+            Datum . toBuiltinData $
+              HTLCDatum
+                { payer = Fixed.scriptAddr
+                , recipient = Fixed.recipientAddr
+                , secretHash = Fixed.secretHashBytes
+                , timeout = Fixed.timeoutPosix
+                }
+          ctx =
+            buildContextData $
+              ScriptContextBuilder
+                SpendingBaseline
+                [ SetRedeemer Fixed.refundRedeemer
+                , SetScriptDatum scriptPayerDatum
+                , -- Add PubKeyHash "" as signer so that if extractPubKeyHash
+                  -- silently returns "" the signature check passes
+                  AddSignature (PubKeyHash "")
+                , SetValidRange (Just (POSIXTime 200)) Nothing
+                , AddInputUTXO
+                    Fixed.txOutRef
+                    Fixed.lockedValue
+                    True
+                    (OutputDatum scriptPayerDatum)
                 ]
       expectFailure evaluateValidator ctx
 

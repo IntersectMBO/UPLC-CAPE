@@ -30,6 +30,7 @@ data PatchOperation
   | SetRedeemer Redeemer
   | AddInputUTXO TxOutRef Value Bool OutputDatum
   | SetValidRange (Maybe POSIXTime) (Maybe POSIXTime)
+  | SetValidRangeRaw POSIXTimeRange
   | AddOutputUTXO Address Value
   | RemoveOutputUTXO Int
   | SetScriptDatum Datum
@@ -163,6 +164,10 @@ applyPatch ctx patch =
                   toTime
               )
           updatedTxInfo = txInfo {txInfoValidRange = newRange}
+      pure $ ctx {scriptContextTxInfo = updatedTxInfo}
+    SetValidRangeRaw range -> do
+      let txInfo = scriptContextTxInfo ctx
+          updatedTxInfo = txInfo {txInfoValidRange = range}
       pure $ ctx {scriptContextTxInfo = updatedTxInfo}
     AddOutputUTXO address value -> do
       let txInfo = scriptContextTxInfo ctx
