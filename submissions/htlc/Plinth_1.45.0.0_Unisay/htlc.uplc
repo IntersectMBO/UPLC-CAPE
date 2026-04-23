@@ -1,469 +1,535 @@
 (program
   1.1.0
-  [
-    (lam
-      caseList'-0
-      [
-        (lam
-          fail-1
-          [
-            (lam
-              go-2
+  (lam
+    scriptContextData-0
+    [
+      (lam
+        `$mScriptContext`-1
+        [
+          (lam
+            traceError-2
+            [
               (lam
-                scriptContextData-3
+                cse-3
                 [
                   (lam
-                    traceError-4
+                    redeemer-4
                     [
                       (lam
-                        cse-5
+                        `$fUnsafeFromDataBuiltinData_$cunsafeFromBuiltinData`-5
                         [
                           (lam
-                            redeemer-6
+                            `$fUnsafeFromDataMaybe_$cunsafeFromBuiltinData`-6
                             [
                               (lam
-                                `$fUnsafeFromDataMaybe_$cunsafeFromBuiltinData`-7
+                                `$mSpendingScript`-7
                                 [
                                   (lam
                                     datum-8
                                     (force
                                       [
                                         (lam
-                                          `$mTxInfo`-9
+                                          caseList'-9
                                           [
                                             (lam
-                                              txSignedBy-10
+                                              find-10
                                               [
                                                 (lam
-                                                  txInfoValidRange-11
+                                                  `$mTxInfo`-11
                                                   [
                                                     (lam
-                                                      txInfoValidRange-12
+                                                      txSignedBy-12
                                                       [
                                                         (lam
-                                                          scriptContextTxInfo-13
+                                                          txInfoValidRange-13
                                                           [
                                                             (lam
-                                                              scriptContextTxInfo-14
+                                                              txInfoValidRange-14
                                                               [
                                                                 (lam
-                                                                  lowerBoundTime-15
+                                                                  scriptContextTxInfo-15
                                                                   [
                                                                     (lam
-                                                                      extractPubKeyHash-16
+                                                                      scriptContextTxInfo-16
                                                                       [
                                                                         (lam
-                                                                          countScriptInputs-17
-                                                                          (case
-                                                                            redeemer-6
+                                                                          `$mTxOut`-17
+                                                                          [
                                                                             (lam
-                                                                              preimage-18
-                                                                              (delay
-                                                                                (case
-                                                                                  datum-8
-                                                                                  (lam
-                                                                                    ds-19
+                                                                              ownInputScriptHash-18
+                                                                              [
+                                                                                (lam
+                                                                                  lowerBoundTime-19
+                                                                                  [
                                                                                     (lam
-                                                                                      ds-20
-                                                                                      (lam
-                                                                                        ds-21
+                                                                                      extractPubKeyHash-20
+                                                                                      [
                                                                                         (lam
-                                                                                          ds-22
-                                                                                          [
+                                                                                          countScriptInputs-21
+                                                                                          (case
+                                                                                            redeemer-4
                                                                                             (lam
-                                                                                              recipientHash-23
-                                                                                              [
-                                                                                                (lam
-                                                                                                  nt-24
-                                                                                                  [
+                                                                                              preimage-22
+                                                                                              (delay
+                                                                                                (case
+                                                                                                  datum-8
+                                                                                                  (lam
+                                                                                                    ds-23
                                                                                                     (lam
-                                                                                                      signed-25
-                                                                                                      [
+                                                                                                      ds-24
+                                                                                                      (lam
+                                                                                                        ds-25
                                                                                                         (lam
-                                                                                                          nt-26
-                                                                                                          (force
-                                                                                                            (case
-                                                                                                              signed-25
-                                                                                                              (delay
-                                                                                                                (force
-                                                                                                                  (force
-                                                                                                                    [
+                                                                                                          ds-26
+                                                                                                          [
+                                                                                                            (lam
+                                                                                                              ownScriptHash-27
+                                                                                                              [
+                                                                                                                (lam
+                                                                                                                  recipientHash-28
+                                                                                                                  [
+                                                                                                                    (lam
+                                                                                                                      nt-29
                                                                                                                       [
-                                                                                                                        [
-                                                                                                                          (force
-                                                                                                                            (builtin
-                                                                                                                              ifThenElse
-                                                                                                                            )
-                                                                                                                          )
+                                                                                                                        (lam
+                                                                                                                          signed-30
                                                                                                                           [
-                                                                                                                            [
-                                                                                                                              (builtin
-                                                                                                                                equalsByteString
-                                                                                                                              )
-                                                                                                                              [
-                                                                                                                                (builtin
-                                                                                                                                  sha2_256
-                                                                                                                                )
-                                                                                                                                preimage-18
-                                                                                                                              ]
-                                                                                                                            ]
-                                                                                                                            ds-21
-                                                                                                                          ]
-                                                                                                                        ]
-                                                                                                                        (delay
-                                                                                                                          (delay
-                                                                                                                            (force
+                                                                                                                            (lam
+                                                                                                                              nt-31
                                                                                                                               (force
-                                                                                                                                [
-                                                                                                                                  [
-                                                                                                                                    [
+                                                                                                                                (case
+                                                                                                                                  signed-30
+                                                                                                                                  (delay
+                                                                                                                                    (force
                                                                                                                                       (force
-                                                                                                                                        (builtin
-                                                                                                                                          ifThenElse
-                                                                                                                                        )
-                                                                                                                                      )
-                                                                                                                                      [
                                                                                                                                         [
-                                                                                                                                          (builtin
-                                                                                                                                            lessThanEqualsInteger
-                                                                                                                                          )
-                                                                                                                                          ds-22
-                                                                                                                                        ]
-                                                                                                                                        nt-26
-                                                                                                                                      ]
-                                                                                                                                    ]
-                                                                                                                                    (delay
-                                                                                                                                      (delay
-                                                                                                                                        [
-                                                                                                                                          (lam
-                                                                                                                                            x-27
-                                                                                                                                            (error
-
-                                                                                                                                            )
-                                                                                                                                          )
                                                                                                                                           [
                                                                                                                                             [
                                                                                                                                               (force
                                                                                                                                                 (builtin
-                                                                                                                                                  trace
+                                                                                                                                                  ifThenElse
                                                                                                                                                 )
                                                                                                                                               )
-                                                                                                                                              (con
-                                                                                                                                                string
-                                                                                                                                                "Claim not permitted at or after timeout"
-                                                                                                                                              )
+                                                                                                                                              [
+                                                                                                                                                [
+                                                                                                                                                  (builtin
+                                                                                                                                                    equalsByteString
+                                                                                                                                                  )
+                                                                                                                                                  [
+                                                                                                                                                    (builtin
+                                                                                                                                                      sha2_256
+                                                                                                                                                    )
+                                                                                                                                                    preimage-22
+                                                                                                                                                  ]
+                                                                                                                                                ]
+                                                                                                                                                ds-25
+                                                                                                                                              ]
                                                                                                                                             ]
-                                                                                                                                            (constr
-                                                                                                                                              0
+                                                                                                                                            (delay
+                                                                                                                                              (delay
+                                                                                                                                                (force
+                                                                                                                                                  (force
+                                                                                                                                                    [
+                                                                                                                                                      [
+                                                                                                                                                        [
+                                                                                                                                                          (force
+                                                                                                                                                            (builtin
+                                                                                                                                                              ifThenElse
+                                                                                                                                                            )
+                                                                                                                                                          )
+                                                                                                                                                          [
+                                                                                                                                                            [
+                                                                                                                                                              (builtin
+                                                                                                                                                                lessThanEqualsInteger
+                                                                                                                                                              )
+                                                                                                                                                              ds-26
+                                                                                                                                                            ]
+                                                                                                                                                            nt-31
+                                                                                                                                                          ]
+                                                                                                                                                        ]
+                                                                                                                                                        (delay
+                                                                                                                                                          (delay
+                                                                                                                                                            [
+                                                                                                                                                              (lam
+                                                                                                                                                                x-32
+                                                                                                                                                                (error
+
+                                                                                                                                                                )
+                                                                                                                                                              )
+                                                                                                                                                              [
+                                                                                                                                                                [
+                                                                                                                                                                  (force
+                                                                                                                                                                    (builtin
+                                                                                                                                                                      trace
+                                                                                                                                                                    )
+                                                                                                                                                                  )
+                                                                                                                                                                  (con
+                                                                                                                                                                    string
+                                                                                                                                                                    "Claim not permitted at or after timeout"
+                                                                                                                                                                  )
+                                                                                                                                                                ]
+                                                                                                                                                                (constr
+                                                                                                                                                                  0
+                                                                                                                                                                )
+                                                                                                                                                              ]
+                                                                                                                                                            ]
+                                                                                                                                                          )
+                                                                                                                                                        )
+                                                                                                                                                      ]
+                                                                                                                                                      (delay
+                                                                                                                                                        (delay
+                                                                                                                                                          (force
+                                                                                                                                                            (force
+                                                                                                                                                              [
+                                                                                                                                                                [
+                                                                                                                                                                  [
+                                                                                                                                                                    (force
+                                                                                                                                                                      (builtin
+                                                                                                                                                                        ifThenElse
+                                                                                                                                                                      )
+                                                                                                                                                                    )
+                                                                                                                                                                    [
+                                                                                                                                                                      [
+                                                                                                                                                                        (builtin
+                                                                                                                                                                          equalsInteger
+                                                                                                                                                                        )
+                                                                                                                                                                        (con
+                                                                                                                                                                          integer
+                                                                                                                                                                          1
+                                                                                                                                                                        )
+                                                                                                                                                                      ]
+                                                                                                                                                                      [
+                                                                                                                                                                        [
+                                                                                                                                                                          countScriptInputs-21
+                                                                                                                                                                          nt-29
+                                                                                                                                                                        ]
+                                                                                                                                                                        ownScriptHash-27
+                                                                                                                                                                      ]
+                                                                                                                                                                    ]
+                                                                                                                                                                  ]
+                                                                                                                                                                  (delay
+                                                                                                                                                                    (delay
+                                                                                                                                                                      (con
+                                                                                                                                                                        unit
+                                                                                                                                                                        ()
+                                                                                                                                                                      )
+                                                                                                                                                                    )
+                                                                                                                                                                  )
+                                                                                                                                                                ]
+                                                                                                                                                                (delay
+                                                                                                                                                                  (delay
+                                                                                                                                                                    [
+                                                                                                                                                                      (lam
+                                                                                                                                                                        x-33
+                                                                                                                                                                        (error
+
+                                                                                                                                                                        )
+                                                                                                                                                                      )
+                                                                                                                                                                      [
+                                                                                                                                                                        [
+                                                                                                                                                                          (force
+                                                                                                                                                                            (builtin
+                                                                                                                                                                              trace
+                                                                                                                                                                            )
+                                                                                                                                                                          )
+                                                                                                                                                                          (con
+                                                                                                                                                                            string
+                                                                                                                                                                            "Double satisfaction"
+                                                                                                                                                                          )
+                                                                                                                                                                        ]
+                                                                                                                                                                        (constr
+                                                                                                                                                                          0
+                                                                                                                                                                        )
+                                                                                                                                                                      ]
+                                                                                                                                                                    ]
+                                                                                                                                                                  )
+                                                                                                                                                                )
+                                                                                                                                                              ]
+                                                                                                                                                            )
+                                                                                                                                                          )
+                                                                                                                                                        )
+                                                                                                                                                      )
+                                                                                                                                                    ]
+                                                                                                                                                  )
+                                                                                                                                                )
+                                                                                                                                              )
                                                                                                                                             )
                                                                                                                                           ]
+                                                                                                                                          (delay
+                                                                                                                                            (delay
+                                                                                                                                              [
+                                                                                                                                                (lam
+                                                                                                                                                  x-34
+                                                                                                                                                  (error
+
+                                                                                                                                                  )
+                                                                                                                                                )
+                                                                                                                                                [
+                                                                                                                                                  [
+                                                                                                                                                    (force
+                                                                                                                                                      (builtin
+                                                                                                                                                        trace
+                                                                                                                                                      )
+                                                                                                                                                    )
+                                                                                                                                                    (con
+                                                                                                                                                      string
+                                                                                                                                                      "Preimage does not match stored hash"
+                                                                                                                                                    )
+                                                                                                                                                  ]
+                                                                                                                                                  (constr
+                                                                                                                                                    0
+                                                                                                                                                  )
+                                                                                                                                                ]
+                                                                                                                                              ]
+                                                                                                                                            )
+                                                                                                                                          )
                                                                                                                                         ]
                                                                                                                                       )
                                                                                                                                     )
-                                                                                                                                  ]
+                                                                                                                                  )
                                                                                                                                   (delay
-                                                                                                                                    (delay
-                                                                                                                                      (force
+                                                                                                                                    [
+                                                                                                                                      (lam
+                                                                                                                                        x-35
+                                                                                                                                        (error
+
+                                                                                                                                        )
+                                                                                                                                      )
+                                                                                                                                      [
+                                                                                                                                        [
+                                                                                                                                          (force
+                                                                                                                                            (builtin
+                                                                                                                                              trace
+                                                                                                                                            )
+                                                                                                                                          )
+                                                                                                                                          (con
+                                                                                                                                            string
+                                                                                                                                            "Missing recipient signature"
+                                                                                                                                          )
+                                                                                                                                        ]
+                                                                                                                                        (constr
+                                                                                                                                          0
+                                                                                                                                        )
+                                                                                                                                      ]
+                                                                                                                                    ]
+                                                                                                                                  )
+                                                                                                                                )
+                                                                                                                              )
+                                                                                                                            )
+                                                                                                                            [
+                                                                                                                              lowerBoundTime-19
+                                                                                                                              [
+                                                                                                                                [
+                                                                                                                                  [
+                                                                                                                                    `$mTxInfo`-11
+                                                                                                                                    nt-29
+                                                                                                                                  ]
+                                                                                                                                  txInfoValidRange-13
+                                                                                                                                ]
+                                                                                                                                txInfoValidRange-14
+                                                                                                                              ]
+                                                                                                                            ]
+                                                                                                                          ]
+                                                                                                                        )
+                                                                                                                        [
+                                                                                                                          [
+                                                                                                                            txSignedBy-12
+                                                                                                                            nt-29
+                                                                                                                          ]
+                                                                                                                          recipientHash-28
+                                                                                                                        ]
+                                                                                                                      ]
+                                                                                                                    )
+                                                                                                                    [
+                                                                                                                      [
+                                                                                                                        cse-3
+                                                                                                                        scriptContextTxInfo-15
+                                                                                                                      ]
+                                                                                                                      scriptContextTxInfo-16
+                                                                                                                    ]
+                                                                                                                  ]
+                                                                                                                )
+                                                                                                                [
+                                                                                                                  extractPubKeyHash-20
+                                                                                                                  ds-24
+                                                                                                                ]
+                                                                                                              ]
+                                                                                                            )
+                                                                                                            [
+                                                                                                              ownInputScriptHash-18
+                                                                                                              scriptContextData-0
+                                                                                                            ]
+                                                                                                          ]
+                                                                                                        )
+                                                                                                      )
+                                                                                                    )
+                                                                                                  )
+                                                                                                )
+                                                                                              )
+                                                                                            )
+                                                                                            (delay
+                                                                                              (case
+                                                                                                datum-8
+                                                                                                (lam
+                                                                                                  ds-36
+                                                                                                  (lam
+                                                                                                    ds-37
+                                                                                                    (lam
+                                                                                                      ds-38
+                                                                                                      (lam
+                                                                                                        ds-39
+                                                                                                        [
+                                                                                                          (lam
+                                                                                                            ownScriptHash-40
+                                                                                                            [
+                                                                                                              (lam
+                                                                                                                payerHash-41
+                                                                                                                [
+                                                                                                                  (lam
+                                                                                                                    nt-42
+                                                                                                                    [
+                                                                                                                      (lam
+                                                                                                                        nt-43
+                                                                                                                        (force
+                                                                                                                          (case
+                                                                                                                            [
+                                                                                                                              [
+                                                                                                                                txSignedBy-12
+                                                                                                                                nt-42
+                                                                                                                              ]
+                                                                                                                              payerHash-41
+                                                                                                                            ]
+                                                                                                                            (delay
+                                                                                                                              (force
+                                                                                                                                (force
+                                                                                                                                  [
+                                                                                                                                    [
+                                                                                                                                      [
                                                                                                                                         (force
+                                                                                                                                          (builtin
+                                                                                                                                            ifThenElse
+                                                                                                                                          )
+                                                                                                                                        )
+                                                                                                                                        [
                                                                                                                                           [
+                                                                                                                                            (builtin
+                                                                                                                                              lessThanEqualsInteger
+                                                                                                                                            )
+                                                                                                                                            nt-43
+                                                                                                                                          ]
+                                                                                                                                          ds-39
+                                                                                                                                        ]
+                                                                                                                                      ]
+                                                                                                                                      (delay
+                                                                                                                                        (delay
+                                                                                                                                          [
+                                                                                                                                            (lam
+                                                                                                                                              x-44
+                                                                                                                                              (error
+
+                                                                                                                                              )
+                                                                                                                                            )
                                                                                                                                             [
                                                                                                                                               [
                                                                                                                                                 (force
                                                                                                                                                   (builtin
-                                                                                                                                                    ifThenElse
+                                                                                                                                                    trace
                                                                                                                                                   )
                                                                                                                                                 )
-                                                                                                                                                [
-                                                                                                                                                  [
-                                                                                                                                                    (builtin
-                                                                                                                                                      equalsInteger
-                                                                                                                                                    )
-                                                                                                                                                    (con
-                                                                                                                                                      integer
-                                                                                                                                                      1
-                                                                                                                                                    )
-                                                                                                                                                  ]
-                                                                                                                                                  [
-                                                                                                                                                    countScriptInputs-17
-                                                                                                                                                    nt-24
-                                                                                                                                                  ]
-                                                                                                                                                ]
+                                                                                                                                                (con
+                                                                                                                                                  string
+                                                                                                                                                  "Refund not permitted until after timeout"
+                                                                                                                                                )
                                                                                                                                               ]
-                                                                                                                                              (delay
-                                                                                                                                                (delay
-                                                                                                                                                  (con
-                                                                                                                                                    unit
-                                                                                                                                                    ()
-                                                                                                                                                  )
-                                                                                                                                                )
+                                                                                                                                              (constr
+                                                                                                                                                0
                                                                                                                                               )
                                                                                                                                             ]
-                                                                                                                                            (delay
-                                                                                                                                              (delay
+                                                                                                                                          ]
+                                                                                                                                        )
+                                                                                                                                      )
+                                                                                                                                    ]
+                                                                                                                                    (delay
+                                                                                                                                      (delay
+                                                                                                                                        (force
+                                                                                                                                          (force
+                                                                                                                                            [
+                                                                                                                                              [
                                                                                                                                                 [
-                                                                                                                                                  (lam
-                                                                                                                                                    x-28
-                                                                                                                                                    (error
-
+                                                                                                                                                  (force
+                                                                                                                                                    (builtin
+                                                                                                                                                      ifThenElse
                                                                                                                                                     )
                                                                                                                                                   )
                                                                                                                                                   [
                                                                                                                                                     [
-                                                                                                                                                      (force
-                                                                                                                                                        (builtin
-                                                                                                                                                          trace
-                                                                                                                                                        )
+                                                                                                                                                      (builtin
+                                                                                                                                                        equalsInteger
                                                                                                                                                       )
                                                                                                                                                       (con
-                                                                                                                                                        string
-                                                                                                                                                        "Double satisfaction"
+                                                                                                                                                        integer
+                                                                                                                                                        1
                                                                                                                                                       )
                                                                                                                                                     ]
-                                                                                                                                                    (constr
-                                                                                                                                                      0
-                                                                                                                                                    )
+                                                                                                                                                    [
+                                                                                                                                                      [
+                                                                                                                                                        countScriptInputs-21
+                                                                                                                                                        nt-42
+                                                                                                                                                      ]
+                                                                                                                                                      ownScriptHash-40
+                                                                                                                                                    ]
                                                                                                                                                   ]
                                                                                                                                                 ]
+                                                                                                                                                (delay
+                                                                                                                                                  (delay
+                                                                                                                                                    (con
+                                                                                                                                                      unit
+                                                                                                                                                      ()
+                                                                                                                                                    )
+                                                                                                                                                  )
+                                                                                                                                                )
+                                                                                                                                              ]
+                                                                                                                                              (delay
+                                                                                                                                                (delay
+                                                                                                                                                  [
+                                                                                                                                                    (lam
+                                                                                                                                                      x-45
+                                                                                                                                                      (error
+
+                                                                                                                                                      )
+                                                                                                                                                    )
+                                                                                                                                                    [
+                                                                                                                                                      [
+                                                                                                                                                        (force
+                                                                                                                                                          (builtin
+                                                                                                                                                            trace
+                                                                                                                                                          )
+                                                                                                                                                        )
+                                                                                                                                                        (con
+                                                                                                                                                          string
+                                                                                                                                                          "Double satisfaction"
+                                                                                                                                                        )
+                                                                                                                                                      ]
+                                                                                                                                                      (constr
+                                                                                                                                                        0
+                                                                                                                                                      )
+                                                                                                                                                    ]
+                                                                                                                                                  ]
+                                                                                                                                                )
                                                                                                                                               )
-                                                                                                                                            )
-                                                                                                                                          ]
+                                                                                                                                            ]
+                                                                                                                                          )
                                                                                                                                         )
                                                                                                                                       )
                                                                                                                                     )
-                                                                                                                                  )
-                                                                                                                                ]
-                                                                                                                              )
-                                                                                                                            )
-                                                                                                                          )
-                                                                                                                        )
-                                                                                                                      ]
-                                                                                                                      (delay
-                                                                                                                        (delay
-                                                                                                                          [
-                                                                                                                            (lam
-                                                                                                                              x-29
-                                                                                                                              (error
-
-                                                                                                                              )
-                                                                                                                            )
-                                                                                                                            [
-                                                                                                                              [
-                                                                                                                                (force
-                                                                                                                                  (builtin
-                                                                                                                                    trace
-                                                                                                                                  )
-                                                                                                                                )
-                                                                                                                                (con
-                                                                                                                                  string
-                                                                                                                                  "Preimage does not match stored hash"
-                                                                                                                                )
-                                                                                                                              ]
-                                                                                                                              (constr
-                                                                                                                                0
-                                                                                                                              )
-                                                                                                                            ]
-                                                                                                                          ]
-                                                                                                                        )
-                                                                                                                      )
-                                                                                                                    ]
-                                                                                                                  )
-                                                                                                                )
-                                                                                                              )
-                                                                                                              (delay
-                                                                                                                [
-                                                                                                                  (lam
-                                                                                                                    x-30
-                                                                                                                    (error
-
-                                                                                                                    )
-                                                                                                                  )
-                                                                                                                  [
-                                                                                                                    [
-                                                                                                                      (force
-                                                                                                                        (builtin
-                                                                                                                          trace
-                                                                                                                        )
-                                                                                                                      )
-                                                                                                                      (con
-                                                                                                                        string
-                                                                                                                        "Missing recipient signature"
-                                                                                                                      )
-                                                                                                                    ]
-                                                                                                                    (constr
-                                                                                                                      0
-                                                                                                                    )
-                                                                                                                  ]
-                                                                                                                ]
-                                                                                                              )
-                                                                                                            )
-                                                                                                          )
-                                                                                                        )
-                                                                                                        [
-                                                                                                          lowerBoundTime-15
-                                                                                                          [
-                                                                                                            [
-                                                                                                              [
-                                                                                                                `$mTxInfo`-9
-                                                                                                                nt-24
-                                                                                                              ]
-                                                                                                              txInfoValidRange-11
-                                                                                                            ]
-                                                                                                            txInfoValidRange-12
-                                                                                                          ]
-                                                                                                        ]
-                                                                                                      ]
-                                                                                                    )
-                                                                                                    [
-                                                                                                      [
-                                                                                                        txSignedBy-10
-                                                                                                        nt-24
-                                                                                                      ]
-                                                                                                      recipientHash-23
-                                                                                                    ]
-                                                                                                  ]
-                                                                                                )
-                                                                                                [
-                                                                                                  [
-                                                                                                    cse-5
-                                                                                                    scriptContextTxInfo-13
-                                                                                                  ]
-                                                                                                  scriptContextTxInfo-14
-                                                                                                ]
-                                                                                              ]
-                                                                                            )
-                                                                                            [
-                                                                                              extractPubKeyHash-16
-                                                                                              ds-20
-                                                                                            ]
-                                                                                          ]
-                                                                                        )
-                                                                                      )
-                                                                                    )
-                                                                                  )
-                                                                                )
-                                                                              )
-                                                                            )
-                                                                            (delay
-                                                                              (case
-                                                                                datum-8
-                                                                                (lam
-                                                                                  ds-31
-                                                                                  (lam
-                                                                                    ds-32
-                                                                                    (lam
-                                                                                      ds-33
-                                                                                      (lam
-                                                                                        ds-34
-                                                                                        [
-                                                                                          (lam
-                                                                                            payerHash-35
-                                                                                            [
-                                                                                              (lam
-                                                                                                nt-36
-                                                                                                [
-                                                                                                  (lam
-                                                                                                    nt-37
-                                                                                                    (force
-                                                                                                      (case
-                                                                                                        [
-                                                                                                          [
-                                                                                                            txSignedBy-10
-                                                                                                            nt-36
-                                                                                                          ]
-                                                                                                          payerHash-35
-                                                                                                        ]
-                                                                                                        (delay
-                                                                                                          (force
-                                                                                                            (force
-                                                                                                              [
-                                                                                                                [
-                                                                                                                  [
-                                                                                                                    (force
-                                                                                                                      (builtin
-                                                                                                                        ifThenElse
-                                                                                                                      )
-                                                                                                                    )
-                                                                                                                    [
-                                                                                                                      [
-                                                                                                                        (builtin
-                                                                                                                          lessThanEqualsInteger
-                                                                                                                        )
-                                                                                                                        nt-37
-                                                                                                                      ]
-                                                                                                                      ds-34
-                                                                                                                    ]
-                                                                                                                  ]
-                                                                                                                  (delay
-                                                                                                                    (delay
-                                                                                                                      [
-                                                                                                                        (lam
-                                                                                                                          x-38
-                                                                                                                          (error
-
-                                                                                                                          )
-                                                                                                                        )
-                                                                                                                        [
-                                                                                                                          [
-                                                                                                                            (force
-                                                                                                                              (builtin
-                                                                                                                                trace
-                                                                                                                              )
-                                                                                                                            )
-                                                                                                                            (con
-                                                                                                                              string
-                                                                                                                              "Refund not permitted until after timeout"
-                                                                                                                            )
-                                                                                                                          ]
-                                                                                                                          (constr
-                                                                                                                            0
-                                                                                                                          )
-                                                                                                                        ]
-                                                                                                                      ]
-                                                                                                                    )
-                                                                                                                  )
-                                                                                                                ]
-                                                                                                                (delay
-                                                                                                                  (delay
-                                                                                                                    (force
-                                                                                                                      (force
-                                                                                                                        [
-                                                                                                                          [
-                                                                                                                            [
-                                                                                                                              (force
-                                                                                                                                (builtin
-                                                                                                                                  ifThenElse
-                                                                                                                                )
-                                                                                                                              )
-                                                                                                                              [
-                                                                                                                                [
-                                                                                                                                  (builtin
-                                                                                                                                    equalsInteger
-                                                                                                                                  )
-                                                                                                                                  (con
-                                                                                                                                    integer
-                                                                                                                                    1
-                                                                                                                                  )
-                                                                                                                                ]
-                                                                                                                                [
-                                                                                                                                  countScriptInputs-17
-                                                                                                                                  nt-36
-                                                                                                                                ]
-                                                                                                                              ]
-                                                                                                                            ]
-                                                                                                                            (delay
-                                                                                                                              (delay
-                                                                                                                                (con
-                                                                                                                                  unit
-                                                                                                                                  ()
+                                                                                                                                  ]
                                                                                                                                 )
                                                                                                                               )
                                                                                                                             )
-                                                                                                                          ]
-                                                                                                                          (delay
                                                                                                                             (delay
                                                                                                                               [
                                                                                                                                 (lam
-                                                                                                                                  x-39
+                                                                                                                                  x-46
                                                                                                                                   (error
 
                                                                                                                                   )
@@ -477,7 +543,7 @@
                                                                                                                                     )
                                                                                                                                     (con
                                                                                                                                       string
-                                                                                                                                      "Double satisfaction"
+                                                                                                                                      "Missing payer signature"
                                                                                                                                     )
                                                                                                                                   ]
                                                                                                                                   (constr
@@ -487,134 +553,43 @@
                                                                                                                               ]
                                                                                                                             )
                                                                                                                           )
-                                                                                                                        ]
+                                                                                                                        )
                                                                                                                       )
-                                                                                                                    )
+                                                                                                                      [
+                                                                                                                        lowerBoundTime-19
+                                                                                                                        [
+                                                                                                                          [
+                                                                                                                            [
+                                                                                                                              `$mTxInfo`-11
+                                                                                                                              nt-42
+                                                                                                                            ]
+                                                                                                                            txInfoValidRange-13
+                                                                                                                          ]
+                                                                                                                          txInfoValidRange-14
+                                                                                                                        ]
+                                                                                                                      ]
+                                                                                                                    ]
                                                                                                                   )
-                                                                                                                )
-                                                                                                              ]
-                                                                                                            )
-                                                                                                          )
-                                                                                                        )
-                                                                                                        (delay
-                                                                                                          [
-                                                                                                            (lam
-                                                                                                              x-40
-                                                                                                              (error
-
+                                                                                                                  [
+                                                                                                                    [
+                                                                                                                      cse-3
+                                                                                                                      scriptContextTxInfo-15
+                                                                                                                    ]
+                                                                                                                    scriptContextTxInfo-16
+                                                                                                                  ]
+                                                                                                                ]
                                                                                                               )
-                                                                                                            )
-                                                                                                            [
                                                                                                               [
-                                                                                                                (force
-                                                                                                                  (builtin
-                                                                                                                    trace
-                                                                                                                  )
-                                                                                                                )
-                                                                                                                (con
-                                                                                                                  string
-                                                                                                                  "Missing payer signature"
-                                                                                                                )
+                                                                                                                extractPubKeyHash-20
+                                                                                                                ds-36
                                                                                                               ]
-                                                                                                              (constr
-                                                                                                                0
-                                                                                                              )
                                                                                                             ]
-                                                                                                          ]
-                                                                                                        )
-                                                                                                      )
-                                                                                                    )
-                                                                                                  )
-                                                                                                  [
-                                                                                                    lowerBoundTime-15
-                                                                                                    [
-                                                                                                      [
-                                                                                                        [
-                                                                                                          `$mTxInfo`-9
-                                                                                                          nt-36
-                                                                                                        ]
-                                                                                                        txInfoValidRange-11
-                                                                                                      ]
-                                                                                                      txInfoValidRange-12
-                                                                                                    ]
-                                                                                                  ]
-                                                                                                ]
-                                                                                              )
-                                                                                              [
-                                                                                                [
-                                                                                                  cse-5
-                                                                                                  scriptContextTxInfo-13
-                                                                                                ]
-                                                                                                scriptContextTxInfo-14
-                                                                                              ]
-                                                                                            ]
-                                                                                          )
-                                                                                          [
-                                                                                            extractPubKeyHash-16
-                                                                                            ds-31
-                                                                                          ]
-                                                                                        ]
-                                                                                      )
-                                                                                    )
-                                                                                  )
-                                                                                )
-                                                                              )
-                                                                            )
-                                                                          )
-                                                                        )
-                                                                        (lam
-                                                                          txInfo-41
-                                                                          [
-                                                                            [
-                                                                              go-2
-                                                                              (con
-                                                                                integer
-                                                                                0
-                                                                              )
-                                                                            ]
-                                                                            [
-                                                                              [
-                                                                                [
-                                                                                  `$mTxInfo`-9
-                                                                                  txInfo-41
-                                                                                ]
-                                                                                (lam
-                                                                                  ds-42
-                                                                                  (lam
-                                                                                    ds-43
-                                                                                    (lam
-                                                                                      ds-44
-                                                                                      (lam
-                                                                                        ds-45
-                                                                                        (lam
-                                                                                          ds-46
-                                                                                          (lam
-                                                                                            ds-47
-                                                                                            (lam
-                                                                                              ds-48
-                                                                                              (lam
-                                                                                                ds-49
-                                                                                                (lam
-                                                                                                  ds-50
-                                                                                                  (lam
-                                                                                                    ds-51
-                                                                                                    (lam
-                                                                                                      ds-52
-                                                                                                      (lam
-                                                                                                        ds-53
-                                                                                                        (lam
-                                                                                                          ds-54
-                                                                                                          (lam
-                                                                                                            ds-55
-                                                                                                            (lam
-                                                                                                              ds-56
-                                                                                                              (lam
-                                                                                                                ds-57
-                                                                                                                ds-42
-                                                                                                              )
-                                                                                                            )
                                                                                                           )
-                                                                                                        )
+                                                                                                          [
+                                                                                                            ownInputScriptHash-18
+                                                                                                            scriptContextData-0
+                                                                                                          ]
+                                                                                                        ]
                                                                                                       )
                                                                                                     )
                                                                                                   )
@@ -623,64 +598,760 @@
                                                                                             )
                                                                                           )
                                                                                         )
-                                                                                      )
-                                                                                    )
-                                                                                  )
-                                                                                )
-                                                                              ]
-                                                                              (lam
-                                                                                void-58
-                                                                                (error
+                                                                                        (lam
+                                                                                          txInfo-47
+                                                                                          (lam
+                                                                                            scriptHash-48
+                                                                                            [
+                                                                                              [
+                                                                                                [
+                                                                                                  (lam
+                                                                                                    s-49
+                                                                                                    [
+                                                                                                      s-49
+                                                                                                      s-49
+                                                                                                    ]
+                                                                                                  )
+                                                                                                  (lam
+                                                                                                    s-50
+                                                                                                    (lam
+                                                                                                      acc-51
+                                                                                                      [
+                                                                                                        [
+                                                                                                          caseList'-9
+                                                                                                          acc-51
+                                                                                                        ]
+                                                                                                        (lam
+                                                                                                          h-52
+                                                                                                          (lam
+                                                                                                            t-53
+                                                                                                            [
+                                                                                                              [
+                                                                                                                (lam
+                                                                                                                  x-54
+                                                                                                                  [
+                                                                                                                    [
+                                                                                                                      s-50
+                                                                                                                      s-50
+                                                                                                                    ]
+                                                                                                                    x-54
+                                                                                                                  ]
+                                                                                                                )
+                                                                                                                [
+                                                                                                                  [
+                                                                                                                    [
+                                                                                                                      `$mTxOut`-17
+                                                                                                                      [
+                                                                                                                        (force
+                                                                                                                          (builtin
+                                                                                                                            headList
+                                                                                                                          )
+                                                                                                                        )
+                                                                                                                        [
+                                                                                                                          (force
+                                                                                                                            (builtin
+                                                                                                                              tailList
+                                                                                                                            )
+                                                                                                                          )
+                                                                                                                          [
+                                                                                                                            (force
+                                                                                                                              (force
+                                                                                                                                (builtin
+                                                                                                                                  sndPair
+                                                                                                                                )
+                                                                                                                              )
+                                                                                                                            )
+                                                                                                                            [
+                                                                                                                              (builtin
+                                                                                                                                unConstrData
+                                                                                                                              )
+                                                                                                                              h-52
+                                                                                                                            ]
+                                                                                                                          ]
+                                                                                                                        ]
+                                                                                                                      ]
+                                                                                                                    ]
+                                                                                                                    (lam
+                                                                                                                      ds-55
+                                                                                                                      (lam
+                                                                                                                        ds-56
+                                                                                                                        (lam
+                                                                                                                          ds-57
+                                                                                                                          (lam
+                                                                                                                            ds-58
+                                                                                                                            [
+                                                                                                                              (lam
+                                                                                                                                tup-59
+                                                                                                                                (force
+                                                                                                                                  (force
+                                                                                                                                    [
+                                                                                                                                      [
+                                                                                                                                        [
+                                                                                                                                          (force
+                                                                                                                                            (builtin
+                                                                                                                                              ifThenElse
+                                                                                                                                            )
+                                                                                                                                          )
+                                                                                                                                          [
+                                                                                                                                            [
+                                                                                                                                              (builtin
+                                                                                                                                                equalsInteger
+                                                                                                                                              )
+                                                                                                                                              (con
+                                                                                                                                                integer
+                                                                                                                                                1
+                                                                                                                                              )
+                                                                                                                                            ]
+                                                                                                                                            [
+                                                                                                                                              (force
+                                                                                                                                                (force
+                                                                                                                                                  (builtin
+                                                                                                                                                    fstPair
+                                                                                                                                                  )
+                                                                                                                                                )
+                                                                                                                                              )
+                                                                                                                                              tup-59
+                                                                                                                                            ]
+                                                                                                                                          ]
+                                                                                                                                        ]
+                                                                                                                                        (delay
+                                                                                                                                          (delay
+                                                                                                                                            (force
+                                                                                                                                              (force
+                                                                                                                                                [
+                                                                                                                                                  [
+                                                                                                                                                    [
+                                                                                                                                                      (force
+                                                                                                                                                        (builtin
+                                                                                                                                                          ifThenElse
+                                                                                                                                                        )
+                                                                                                                                                      )
+                                                                                                                                                      [
+                                                                                                                                                        [
+                                                                                                                                                          (builtin
+                                                                                                                                                            equalsByteString
+                                                                                                                                                          )
+                                                                                                                                                          [
+                                                                                                                                                            (builtin
+                                                                                                                                                              unBData
+                                                                                                                                                            )
+                                                                                                                                                            [
+                                                                                                                                                              (force
+                                                                                                                                                                (builtin
+                                                                                                                                                                  headList
+                                                                                                                                                                )
+                                                                                                                                                              )
+                                                                                                                                                              [
+                                                                                                                                                                (force
+                                                                                                                                                                  (force
+                                                                                                                                                                    (builtin
+                                                                                                                                                                      sndPair
+                                                                                                                                                                    )
+                                                                                                                                                                  )
+                                                                                                                                                                )
+                                                                                                                                                                tup-59
+                                                                                                                                                              ]
+                                                                                                                                                            ]
+                                                                                                                                                          ]
+                                                                                                                                                        ]
+                                                                                                                                                        scriptHash-48
+                                                                                                                                                      ]
+                                                                                                                                                    ]
+                                                                                                                                                    (delay
+                                                                                                                                                      (delay
+                                                                                                                                                        [
+                                                                                                                                                          [
+                                                                                                                                                            (builtin
+                                                                                                                                                              addInteger
+                                                                                                                                                            )
+                                                                                                                                                            (con
+                                                                                                                                                              integer
+                                                                                                                                                              1
+                                                                                                                                                            )
+                                                                                                                                                          ]
+                                                                                                                                                          acc-51
+                                                                                                                                                        ]
+                                                                                                                                                      )
+                                                                                                                                                    )
+                                                                                                                                                  ]
+                                                                                                                                                  (delay
+                                                                                                                                                    (delay
+                                                                                                                                                      acc-51
+                                                                                                                                                    )
+                                                                                                                                                  )
+                                                                                                                                                ]
+                                                                                                                                              )
+                                                                                                                                            )
+                                                                                                                                          )
+                                                                                                                                        )
+                                                                                                                                      ]
+                                                                                                                                      (delay
+                                                                                                                                        (delay
+                                                                                                                                          acc-51
+                                                                                                                                        )
+                                                                                                                                      )
+                                                                                                                                    ]
+                                                                                                                                  )
+                                                                                                                                )
+                                                                                                                              )
+                                                                                                                              [
+                                                                                                                                (builtin
+                                                                                                                                  unConstrData
+                                                                                                                                )
+                                                                                                                                [
+                                                                                                                                  (force
+                                                                                                                                    (builtin
+                                                                                                                                      headList
+                                                                                                                                    )
+                                                                                                                                  )
+                                                                                                                                  [
+                                                                                                                                    (force
+                                                                                                                                      (force
+                                                                                                                                        (builtin
+                                                                                                                                          sndPair
+                                                                                                                                        )
+                                                                                                                                      )
+                                                                                                                                    )
+                                                                                                                                    [
+                                                                                                                                      (builtin
+                                                                                                                                        unConstrData
+                                                                                                                                      )
+                                                                                                                                      ds-55
+                                                                                                                                    ]
+                                                                                                                                  ]
+                                                                                                                                ]
+                                                                                                                              ]
+                                                                                                                            ]
+                                                                                                                          )
+                                                                                                                        )
+                                                                                                                      )
+                                                                                                                    )
+                                                                                                                  ]
+                                                                                                                  (lam
+                                                                                                                    void-60
+                                                                                                                    (case
+                                                                                                                      (error
 
-                                                                                )
-                                                                              )
-                                                                            ]
-                                                                          ]
-                                                                        )
-                                                                      ]
-                                                                    )
-                                                                    (lam
-                                                                      ds-59
-                                                                      [
-                                                                        (lam
-                                                                          tup-60
-                                                                          (force
-                                                                            (force
-                                                                              [
-                                                                                [
-                                                                                  [
-                                                                                    (force
-                                                                                      (builtin
-                                                                                        ifThenElse
-                                                                                      )
-                                                                                    )
-                                                                                    [
-                                                                                      [
-                                                                                        (builtin
-                                                                                          equalsInteger
-                                                                                        )
-                                                                                        (con
-                                                                                          integer
-                                                                                          0
+                                                                                                                      )
+                                                                                                                      (error
+
+                                                                                                                      )
+                                                                                                                    )
+                                                                                                                  )
+                                                                                                                ]
+                                                                                                              ]
+                                                                                                              t-53
+                                                                                                            ]
+                                                                                                          )
+                                                                                                        )
+                                                                                                      ]
+                                                                                                    )
+                                                                                                  )
+                                                                                                ]
+                                                                                                (con
+                                                                                                  integer
+                                                                                                  0
+                                                                                                )
+                                                                                              ]
+                                                                                              [
+                                                                                                [
+                                                                                                  [
+                                                                                                    `$mTxInfo`-11
+                                                                                                    txInfo-47
+                                                                                                  ]
+                                                                                                  (lam
+                                                                                                    ds-61
+                                                                                                    (lam
+                                                                                                      ds-62
+                                                                                                      (lam
+                                                                                                        ds-63
+                                                                                                        (lam
+                                                                                                          ds-64
+                                                                                                          (lam
+                                                                                                            ds-65
+                                                                                                            (lam
+                                                                                                              ds-66
+                                                                                                              (lam
+                                                                                                                ds-67
+                                                                                                                (lam
+                                                                                                                  ds-68
+                                                                                                                  (lam
+                                                                                                                    ds-69
+                                                                                                                    (lam
+                                                                                                                      ds-70
+                                                                                                                      (lam
+                                                                                                                        ds-71
+                                                                                                                        (lam
+                                                                                                                          ds-72
+                                                                                                                          (lam
+                                                                                                                            ds-73
+                                                                                                                            (lam
+                                                                                                                              ds-74
+                                                                                                                              (lam
+                                                                                                                                ds-75
+                                                                                                                                (lam
+                                                                                                                                  ds-76
+                                                                                                                                  ds-61
+                                                                                                                                )
+                                                                                                                              )
+                                                                                                                            )
+                                                                                                                          )
+                                                                                                                        )
+                                                                                                                      )
+                                                                                                                    )
+                                                                                                                  )
+                                                                                                                )
+                                                                                                              )
+                                                                                                            )
+                                                                                                          )
+                                                                                                        )
+                                                                                                      )
+                                                                                                    )
+                                                                                                  )
+                                                                                                ]
+                                                                                                (lam
+                                                                                                  void-77
+                                                                                                  (error
+
+                                                                                                  )
+                                                                                                )
+                                                                                              ]
+                                                                                            ]
+                                                                                          )
                                                                                         )
                                                                                       ]
+                                                                                    )
+                                                                                    (lam
+                                                                                      ds-78
                                                                                       [
-                                                                                        (force
+                                                                                        (lam
+                                                                                          tup-79
                                                                                           (force
-                                                                                            (builtin
-                                                                                              fstPair
+                                                                                            (force
+                                                                                              [
+                                                                                                [
+                                                                                                  [
+                                                                                                    (force
+                                                                                                      (builtin
+                                                                                                        ifThenElse
+                                                                                                      )
+                                                                                                    )
+                                                                                                    [
+                                                                                                      [
+                                                                                                        (builtin
+                                                                                                          equalsInteger
+                                                                                                        )
+                                                                                                        (con
+                                                                                                          integer
+                                                                                                          0
+                                                                                                        )
+                                                                                                      ]
+                                                                                                      [
+                                                                                                        (force
+                                                                                                          (force
+                                                                                                            (builtin
+                                                                                                              fstPair
+                                                                                                            )
+                                                                                                          )
+                                                                                                        )
+                                                                                                        tup-79
+                                                                                                      ]
+                                                                                                    ]
+                                                                                                  ]
+                                                                                                  (delay
+                                                                                                    (delay
+                                                                                                      [
+                                                                                                        (builtin
+                                                                                                          unBData
+                                                                                                        )
+                                                                                                        [
+                                                                                                          (force
+                                                                                                            (builtin
+                                                                                                              headList
+                                                                                                            )
+                                                                                                          )
+                                                                                                          [
+                                                                                                            (force
+                                                                                                              (force
+                                                                                                                (builtin
+                                                                                                                  sndPair
+                                                                                                                )
+                                                                                                              )
+                                                                                                            )
+                                                                                                            tup-79
+                                                                                                          ]
+                                                                                                        ]
+                                                                                                      ]
+                                                                                                    )
+                                                                                                  )
+                                                                                                ]
+                                                                                                (delay
+                                                                                                  (delay
+                                                                                                    [
+                                                                                                      (lam
+                                                                                                        x-80
+                                                                                                        (error
+
+                                                                                                        )
+                                                                                                      )
+                                                                                                      [
+                                                                                                        [
+                                                                                                          (force
+                                                                                                            (builtin
+                                                                                                              trace
+                                                                                                            )
+                                                                                                          )
+                                                                                                          (con
+                                                                                                            string
+                                                                                                            "Expected PubKeyCredential address"
+                                                                                                          )
+                                                                                                        ]
+                                                                                                        (constr
+                                                                                                          0
+                                                                                                        )
+                                                                                                      ]
+                                                                                                    ]
+                                                                                                  )
+                                                                                                )
+                                                                                              ]
                                                                                             )
                                                                                           )
                                                                                         )
-                                                                                        tup-60
+                                                                                        [
+                                                                                          (builtin
+                                                                                            unConstrData
+                                                                                          )
+                                                                                          [
+                                                                                            (force
+                                                                                              (builtin
+                                                                                                headList
+                                                                                              )
+                                                                                            )
+                                                                                            [
+                                                                                              (force
+                                                                                                (force
+                                                                                                  (builtin
+                                                                                                    sndPair
+                                                                                                  )
+                                                                                                )
+                                                                                              )
+                                                                                              [
+                                                                                                (builtin
+                                                                                                  unConstrData
+                                                                                                )
+                                                                                                ds-78
+                                                                                              ]
+                                                                                            ]
+                                                                                          ]
+                                                                                        ]
                                                                                       ]
-                                                                                    ]
+                                                                                    )
                                                                                   ]
-                                                                                  (delay
-                                                                                    (delay
+                                                                                )
+                                                                                (lam
+                                                                                  ds-81
+                                                                                  [
+                                                                                    (lam
+                                                                                      l-82
+                                                                                      [
+                                                                                        (lam
+                                                                                          tup-83
+                                                                                          (force
+                                                                                            (force
+                                                                                              [
+                                                                                                [
+                                                                                                  [
+                                                                                                    (force
+                                                                                                      (builtin
+                                                                                                        ifThenElse
+                                                                                                      )
+                                                                                                    )
+                                                                                                    [
+                                                                                                      [
+                                                                                                        (builtin
+                                                                                                          equalsInteger
+                                                                                                        )
+                                                                                                        (con
+                                                                                                          integer
+                                                                                                          1
+                                                                                                        )
+                                                                                                      ]
+                                                                                                      [
+                                                                                                        (force
+                                                                                                          (force
+                                                                                                            (builtin
+                                                                                                              fstPair
+                                                                                                            )
+                                                                                                          )
+                                                                                                        )
+                                                                                                        tup-83
+                                                                                                      ]
+                                                                                                    ]
+                                                                                                  ]
+                                                                                                  (delay
+                                                                                                    (delay
+                                                                                                      (force
+                                                                                                        (case
+                                                                                                          [
+                                                                                                            (lam
+                                                                                                              tup-84
+                                                                                                              [
+                                                                                                                (lam
+                                                                                                                  index-85
+                                                                                                                  [
+                                                                                                                    (lam
+                                                                                                                      args-86
+                                                                                                                      (force
+                                                                                                                        (force
+                                                                                                                          [
+                                                                                                                            [
+                                                                                                                              [
+                                                                                                                                (force
+                                                                                                                                  (builtin
+                                                                                                                                    ifThenElse
+                                                                                                                                  )
+                                                                                                                                )
+                                                                                                                                [
+                                                                                                                                  [
+                                                                                                                                    (builtin
+                                                                                                                                      equalsInteger
+                                                                                                                                    )
+                                                                                                                                    (con
+                                                                                                                                      integer
+                                                                                                                                      0
+                                                                                                                                    )
+                                                                                                                                  ]
+                                                                                                                                  index-85
+                                                                                                                                ]
+                                                                                                                              ]
+                                                                                                                              (delay
+                                                                                                                                (delay
+                                                                                                                                  (constr
+                                                                                                                                    1
+                                                                                                                                  )
+                                                                                                                                )
+                                                                                                                              )
+                                                                                                                            ]
+                                                                                                                            (delay
+                                                                                                                              (delay
+                                                                                                                                (force
+                                                                                                                                  (force
+                                                                                                                                    [
+                                                                                                                                      [
+                                                                                                                                        [
+                                                                                                                                          (force
+                                                                                                                                            (builtin
+                                                                                                                                              ifThenElse
+                                                                                                                                            )
+                                                                                                                                          )
+                                                                                                                                          [
+                                                                                                                                            [
+                                                                                                                                              (builtin
+                                                                                                                                                equalsInteger
+                                                                                                                                              )
+                                                                                                                                              (con
+                                                                                                                                                integer
+                                                                                                                                                1
+                                                                                                                                              )
+                                                                                                                                            ]
+                                                                                                                                            index-85
+                                                                                                                                          ]
+                                                                                                                                        ]
+                                                                                                                                        (delay
+                                                                                                                                          (delay
+                                                                                                                                            (constr
+                                                                                                                                              0
+                                                                                                                                            )
+                                                                                                                                          )
+                                                                                                                                        )
+                                                                                                                                      ]
+                                                                                                                                      (delay
+                                                                                                                                        (delay
+                                                                                                                                          [
+                                                                                                                                            traceError-2
+                                                                                                                                            (con
+                                                                                                                                              string
+                                                                                                                                              "PT1"
+                                                                                                                                            )
+                                                                                                                                          ]
+                                                                                                                                        )
+                                                                                                                                      )
+                                                                                                                                    ]
+                                                                                                                                  )
+                                                                                                                                )
+                                                                                                                              )
+                                                                                                                            )
+                                                                                                                          ]
+                                                                                                                        )
+                                                                                                                      )
+                                                                                                                    )
+                                                                                                                    [
+                                                                                                                      (force
+                                                                                                                        (force
+                                                                                                                          (builtin
+                                                                                                                            sndPair
+                                                                                                                          )
+                                                                                                                        )
+                                                                                                                      )
+                                                                                                                      tup-84
+                                                                                                                    ]
+                                                                                                                  ]
+                                                                                                                )
+                                                                                                                [
+                                                                                                                  (force
+                                                                                                                    (force
+                                                                                                                      (builtin
+                                                                                                                        fstPair
+                                                                                                                      )
+                                                                                                                    )
+                                                                                                                  )
+                                                                                                                  tup-84
+                                                                                                                ]
+                                                                                                              ]
+                                                                                                            )
+                                                                                                            [
+                                                                                                              (builtin
+                                                                                                                unConstrData
+                                                                                                              )
+                                                                                                              [
+                                                                                                                (force
+                                                                                                                  (builtin
+                                                                                                                    headList
+                                                                                                                  )
+                                                                                                                )
+                                                                                                                [
+                                                                                                                  (force
+                                                                                                                    (builtin
+                                                                                                                      tailList
+                                                                                                                    )
+                                                                                                                  )
+                                                                                                                  l-82
+                                                                                                                ]
+                                                                                                              ]
+                                                                                                            ]
+                                                                                                          ]
+                                                                                                          (delay
+                                                                                                            [
+                                                                                                              (builtin
+                                                                                                                unIData
+                                                                                                              )
+                                                                                                              [
+                                                                                                                (force
+                                                                                                                  (builtin
+                                                                                                                    headList
+                                                                                                                  )
+                                                                                                                )
+                                                                                                                [
+                                                                                                                  (force
+                                                                                                                    (force
+                                                                                                                      (builtin
+                                                                                                                        sndPair
+                                                                                                                      )
+                                                                                                                    )
+                                                                                                                  )
+                                                                                                                  tup-83
+                                                                                                                ]
+                                                                                                              ]
+                                                                                                            ]
+                                                                                                          )
+                                                                                                          (delay
+                                                                                                            [
+                                                                                                              [
+                                                                                                                (builtin
+                                                                                                                  addInteger
+                                                                                                                )
+                                                                                                                (con
+                                                                                                                  integer
+                                                                                                                  1
+                                                                                                                )
+                                                                                                              ]
+                                                                                                              [
+                                                                                                                (builtin
+                                                                                                                  unIData
+                                                                                                                )
+                                                                                                                [
+                                                                                                                  (force
+                                                                                                                    (builtin
+                                                                                                                      headList
+                                                                                                                    )
+                                                                                                                  )
+                                                                                                                  [
+                                                                                                                    (force
+                                                                                                                      (force
+                                                                                                                        (builtin
+                                                                                                                          sndPair
+                                                                                                                        )
+                                                                                                                      )
+                                                                                                                    )
+                                                                                                                    tup-83
+                                                                                                                  ]
+                                                                                                                ]
+                                                                                                              ]
+                                                                                                            ]
+                                                                                                          )
+                                                                                                        )
+                                                                                                      )
+                                                                                                    )
+                                                                                                  )
+                                                                                                ]
+                                                                                                (delay
+                                                                                                  (delay
+                                                                                                    [
+                                                                                                      (lam
+                                                                                                        x-87
+                                                                                                        (error
+
+                                                                                                        )
+                                                                                                      )
+                                                                                                      [
+                                                                                                        [
+                                                                                                          (force
+                                                                                                            (builtin
+                                                                                                              trace
+                                                                                                            )
+                                                                                                          )
+                                                                                                          (con
+                                                                                                            string
+                                                                                                            "Time range not Finite"
+                                                                                                          )
+                                                                                                        ]
+                                                                                                        (constr
+                                                                                                          0
+                                                                                                        )
+                                                                                                      ]
+                                                                                                    ]
+                                                                                                  )
+                                                                                                )
+                                                                                              ]
+                                                                                            )
+                                                                                          )
+                                                                                        )
+                                                                                        [
+                                                                                          (builtin
+                                                                                            unConstrData
+                                                                                          )
+                                                                                          [
+                                                                                            (force
+                                                                                              (builtin
+                                                                                                headList
+                                                                                              )
+                                                                                            )
+                                                                                            l-82
+                                                                                          ]
+                                                                                        ]
+                                                                                      ]
+                                                                                    )
+                                                                                    [
+                                                                                      (force
+                                                                                        (force
+                                                                                          (builtin
+                                                                                            sndPair
+                                                                                          )
+                                                                                        )
+                                                                                      )
                                                                                       [
                                                                                         (builtin
-                                                                                          unBData
+                                                                                          unConstrData
                                                                                         )
                                                                                         [
                                                                                           (force
@@ -696,129 +1367,366 @@
                                                                                                 )
                                                                                               )
                                                                                             )
-                                                                                            tup-60
+                                                                                            [
+                                                                                              (builtin
+                                                                                                unConstrData
+                                                                                              )
+                                                                                              ds-81
+                                                                                            ]
                                                                                           ]
                                                                                         ]
                                                                                       ]
-                                                                                    )
-                                                                                  )
-                                                                                ]
-                                                                                (delay
-                                                                                  (delay
-                                                                                    [
-                                                                                      (lam
-                                                                                        x-61
-                                                                                        (error
-
-                                                                                        )
-                                                                                      )
-                                                                                      [
-                                                                                        [
-                                                                                          (force
-                                                                                            (builtin
-                                                                                              trace
-                                                                                            )
-                                                                                          )
-                                                                                          (con
-                                                                                            string
-                                                                                            "Expected PubKeyCredential address"
-                                                                                          )
-                                                                                        ]
-                                                                                        (constr
-                                                                                          0
-                                                                                        )
-                                                                                      ]
-                                                                                    ]
-                                                                                  )
-                                                                                )
-                                                                              ]
-                                                                            )
-                                                                          )
-                                                                        )
-                                                                        [
-                                                                          (builtin
-                                                                            unConstrData
-                                                                          )
-                                                                          [
-                                                                            (force
-                                                                              (builtin
-                                                                                headList
-                                                                              )
-                                                                            )
-                                                                            [
-                                                                              (force
-                                                                                (force
-                                                                                  (builtin
-                                                                                    sndPair
-                                                                                  )
-                                                                                )
-                                                                              )
-                                                                              [
-                                                                                (builtin
-                                                                                  unConstrData
-                                                                                )
-                                                                                ds-59
-                                                                              ]
-                                                                            ]
-                                                                          ]
-                                                                        ]
-                                                                      ]
-                                                                    )
-                                                                  ]
-                                                                )
-                                                                (lam
-                                                                  ds-62
-                                                                  [
-                                                                    (lam
-                                                                      l-63
-                                                                      [
-                                                                        (lam
-                                                                          tup-64
-                                                                          (force
-                                                                            (force
-                                                                              [
-                                                                                [
-                                                                                  [
-                                                                                    (force
-                                                                                      (builtin
-                                                                                        ifThenElse
-                                                                                      )
-                                                                                    )
-                                                                                    [
-                                                                                      [
-                                                                                        (builtin
-                                                                                          equalsInteger
-                                                                                        )
-                                                                                        (con
-                                                                                          integer
-                                                                                          1
-                                                                                        )
-                                                                                      ]
-                                                                                      [
-                                                                                        (force
-                                                                                          (force
-                                                                                            (builtin
-                                                                                              fstPair
-                                                                                            )
-                                                                                          )
-                                                                                        )
-                                                                                        tup-64
-                                                                                      ]
                                                                                     ]
                                                                                   ]
-                                                                                  (delay
-                                                                                    (delay
-                                                                                      (force
-                                                                                        (case
-                                                                                          [
-                                                                                            (lam
-                                                                                              tup-65
+                                                                                )
+                                                                              ]
+                                                                            )
+                                                                            (lam
+                                                                              ctx-88
+                                                                              (force
+                                                                                (case
+                                                                                  [
+                                                                                    [
+                                                                                      [
+                                                                                        `$mScriptContext`-1
+                                                                                        ctx-88
+                                                                                      ]
+                                                                                      (lam
+                                                                                        ds-89
+                                                                                        (lam
+                                                                                          ds-90
+                                                                                          (lam
+                                                                                            ds-91
+                                                                                            [
                                                                                               [
+                                                                                                [
+                                                                                                  `$mTxInfo`-11
+                                                                                                  ds-89
+                                                                                                ]
                                                                                                 (lam
-                                                                                                  index-66
+                                                                                                  ds-92
+                                                                                                  (lam
+                                                                                                    ds-93
+                                                                                                    (lam
+                                                                                                      ds-94
+                                                                                                      (lam
+                                                                                                        ds-95
+                                                                                                        (lam
+                                                                                                          ds-96
+                                                                                                          (lam
+                                                                                                            ds-97
+                                                                                                            (lam
+                                                                                                              ds-98
+                                                                                                              (lam
+                                                                                                                ds-99
+                                                                                                                (lam
+                                                                                                                  ds-100
+                                                                                                                  (lam
+                                                                                                                    ds-101
+                                                                                                                    (lam
+                                                                                                                      ds-102
+                                                                                                                      (lam
+                                                                                                                        ds-103
+                                                                                                                        (lam
+                                                                                                                          ds-104
+                                                                                                                          (lam
+                                                                                                                            ds-105
+                                                                                                                            (lam
+                                                                                                                              ds-106
+                                                                                                                              (lam
+                                                                                                                                ds-107
+                                                                                                                                [
+                                                                                                                                  [
+                                                                                                                                    [
+                                                                                                                                      `$mSpendingScript`-7
+                                                                                                                                      ds-91
+                                                                                                                                    ]
+                                                                                                                                    (lam
+                                                                                                                                      txOutRef-108
+                                                                                                                                      (lam
+                                                                                                                                        ds-109
+                                                                                                                                        [
+                                                                                                                                          [
+                                                                                                                                            [
+                                                                                                                                              find-10
+                                                                                                                                              `$fUnsafeFromDataBuiltinData_$cunsafeFromBuiltinData`-5
+                                                                                                                                            ]
+                                                                                                                                            (lam
+                                                                                                                                              ds-110
+                                                                                                                                              [
+                                                                                                                                                (lam
+                                                                                                                                                  l-111
+                                                                                                                                                  (force
+                                                                                                                                                    (force
+                                                                                                                                                      [
+                                                                                                                                                        [
+                                                                                                                                                          [
+                                                                                                                                                            (force
+                                                                                                                                                              (builtin
+                                                                                                                                                                ifThenElse
+                                                                                                                                                              )
+                                                                                                                                                            )
+                                                                                                                                                            [
+                                                                                                                                                              (lam
+                                                                                                                                                                txOutRefId-112
+                                                                                                                                                                [
+                                                                                                                                                                  [
+                                                                                                                                                                    (builtin
+                                                                                                                                                                      equalsByteString
+                                                                                                                                                                    )
+                                                                                                                                                                    [
+                                                                                                                                                                      txOutRefId-112
+                                                                                                                                                                      l-111
+                                                                                                                                                                    ]
+                                                                                                                                                                  ]
+                                                                                                                                                                  [
+                                                                                                                                                                    txOutRefId-112
+                                                                                                                                                                    txOutRef-108
+                                                                                                                                                                  ]
+                                                                                                                                                                ]
+                                                                                                                                                              )
+                                                                                                                                                              (lam
+                                                                                                                                                                ds-113
+                                                                                                                                                                [
+                                                                                                                                                                  (builtin
+                                                                                                                                                                    unBData
+                                                                                                                                                                  )
+                                                                                                                                                                  [
+                                                                                                                                                                    (force
+                                                                                                                                                                      (builtin
+                                                                                                                                                                        headList
+                                                                                                                                                                      )
+                                                                                                                                                                    )
+                                                                                                                                                                    [
+                                                                                                                                                                      (force
+                                                                                                                                                                        (force
+                                                                                                                                                                          (builtin
+                                                                                                                                                                            sndPair
+                                                                                                                                                                          )
+                                                                                                                                                                        )
+                                                                                                                                                                      )
+                                                                                                                                                                      [
+                                                                                                                                                                        (builtin
+                                                                                                                                                                          unConstrData
+                                                                                                                                                                        )
+                                                                                                                                                                        ds-113
+                                                                                                                                                                      ]
+                                                                                                                                                                    ]
+                                                                                                                                                                  ]
+                                                                                                                                                                ]
+                                                                                                                                                              )
+                                                                                                                                                            ]
+                                                                                                                                                          ]
+                                                                                                                                                          (delay
+                                                                                                                                                            (delay
+                                                                                                                                                              [
+                                                                                                                                                                [
+                                                                                                                                                                  [
+                                                                                                                                                                    (force
+                                                                                                                                                                      (builtin
+                                                                                                                                                                        ifThenElse
+                                                                                                                                                                      )
+                                                                                                                                                                    )
+                                                                                                                                                                    [
+                                                                                                                                                                      (lam
+                                                                                                                                                                        txOutRefIdx-114
+                                                                                                                                                                        [
+                                                                                                                                                                          [
+                                                                                                                                                                            (builtin
+                                                                                                                                                                              equalsInteger
+                                                                                                                                                                            )
+                                                                                                                                                                            [
+                                                                                                                                                                              txOutRefIdx-114
+                                                                                                                                                                              l-111
+                                                                                                                                                                            ]
+                                                                                                                                                                          ]
+                                                                                                                                                                          [
+                                                                                                                                                                            txOutRefIdx-114
+                                                                                                                                                                            txOutRef-108
+                                                                                                                                                                          ]
+                                                                                                                                                                        ]
+                                                                                                                                                                      )
+                                                                                                                                                                      (lam
+                                                                                                                                                                        ds-115
+                                                                                                                                                                        [
+                                                                                                                                                                          (builtin
+                                                                                                                                                                            unIData
+                                                                                                                                                                          )
+                                                                                                                                                                          [
+                                                                                                                                                                            (force
+                                                                                                                                                                              (builtin
+                                                                                                                                                                                headList
+                                                                                                                                                                              )
+                                                                                                                                                                            )
+                                                                                                                                                                            [
+                                                                                                                                                                              (force
+                                                                                                                                                                                (builtin
+                                                                                                                                                                                  tailList
+                                                                                                                                                                                )
+                                                                                                                                                                              )
+                                                                                                                                                                              [
+                                                                                                                                                                                (force
+                                                                                                                                                                                  (force
+                                                                                                                                                                                    (builtin
+                                                                                                                                                                                      sndPair
+                                                                                                                                                                                    )
+                                                                                                                                                                                  )
+                                                                                                                                                                                )
+                                                                                                                                                                                [
+                                                                                                                                                                                  (builtin
+                                                                                                                                                                                    unConstrData
+                                                                                                                                                                                  )
+                                                                                                                                                                                  ds-115
+                                                                                                                                                                                ]
+                                                                                                                                                                              ]
+                                                                                                                                                                            ]
+                                                                                                                                                                          ]
+                                                                                                                                                                        ]
+                                                                                                                                                                      )
+                                                                                                                                                                    ]
+                                                                                                                                                                  ]
+                                                                                                                                                                  (constr
+                                                                                                                                                                    0
+                                                                                                                                                                  )
+                                                                                                                                                                ]
+                                                                                                                                                                (constr
+                                                                                                                                                                  1
+                                                                                                                                                                )
+                                                                                                                                                              ]
+                                                                                                                                                            )
+                                                                                                                                                          )
+                                                                                                                                                        ]
+                                                                                                                                                        (delay
+                                                                                                                                                          (delay
+                                                                                                                                                            (constr
+                                                                                                                                                              1
+                                                                                                                                                            )
+                                                                                                                                                          )
+                                                                                                                                                        )
+                                                                                                                                                      ]
+                                                                                                                                                    )
+                                                                                                                                                  )
+                                                                                                                                                )
+                                                                                                                                                [
+                                                                                                                                                  (force
+                                                                                                                                                    (builtin
+                                                                                                                                                      headList
+                                                                                                                                                    )
+                                                                                                                                                  )
+                                                                                                                                                  [
+                                                                                                                                                    (force
+                                                                                                                                                      (force
+                                                                                                                                                        (builtin
+                                                                                                                                                          sndPair
+                                                                                                                                                        )
+                                                                                                                                                      )
+                                                                                                                                                    )
+                                                                                                                                                    [
+                                                                                                                                                      (builtin
+                                                                                                                                                        unConstrData
+                                                                                                                                                      )
+                                                                                                                                                      ds-110
+                                                                                                                                                    ]
+                                                                                                                                                  ]
+                                                                                                                                                ]
+                                                                                                                                              ]
+                                                                                                                                            )
+                                                                                                                                          ]
+                                                                                                                                          ds-92
+                                                                                                                                        ]
+                                                                                                                                      )
+                                                                                                                                    )
+                                                                                                                                  ]
+                                                                                                                                  (lam
+                                                                                                                                    void-116
+                                                                                                                                    (constr
+                                                                                                                                      1
+                                                                                                                                    )
+                                                                                                                                  )
+                                                                                                                                ]
+                                                                                                                              )
+                                                                                                                            )
+                                                                                                                          )
+                                                                                                                        )
+                                                                                                                      )
+                                                                                                                    )
+                                                                                                                  )
+                                                                                                                )
+                                                                                                              )
+                                                                                                            )
+                                                                                                          )
+                                                                                                        )
+                                                                                                      )
+                                                                                                    )
+                                                                                                  )
+                                                                                                )
+                                                                                              ]
+                                                                                              (lam
+                                                                                                void-117
+                                                                                                (constr
+                                                                                                  1
+                                                                                                )
+                                                                                              )
+                                                                                            ]
+                                                                                          )
+                                                                                        )
+                                                                                      )
+                                                                                    ]
+                                                                                    (lam
+                                                                                      void-118
+                                                                                      (constr
+                                                                                        1
+                                                                                      )
+                                                                                    )
+                                                                                  ]
+                                                                                  (lam
+                                                                                    ds-119
+                                                                                    (delay
+                                                                                      [
+                                                                                        [
+                                                                                          [
+                                                                                            `$mTxOut`-17
+                                                                                            [
+                                                                                              (force
+                                                                                                (builtin
+                                                                                                  headList
+                                                                                                )
+                                                                                              )
+                                                                                              [
+                                                                                                (force
+                                                                                                  (builtin
+                                                                                                    tailList
+                                                                                                  )
+                                                                                                )
+                                                                                                [
+                                                                                                  (force
+                                                                                                    (force
+                                                                                                      (builtin
+                                                                                                        sndPair
+                                                                                                      )
+                                                                                                    )
+                                                                                                  )
+                                                                                                  [
+                                                                                                    (builtin
+                                                                                                      unConstrData
+                                                                                                    )
+                                                                                                    ds-119
+                                                                                                  ]
+                                                                                                ]
+                                                                                              ]
+                                                                                            ]
+                                                                                          ]
+                                                                                          (lam
+                                                                                            ds-120
+                                                                                            (lam
+                                                                                              ds-121
+                                                                                              (lam
+                                                                                                ds-122
+                                                                                                (lam
+                                                                                                  ds-123
                                                                                                   [
                                                                                                     (lam
-                                                                                                      args-67
+                                                                                                      tup-124
                                                                                                       (force
                                                                                                         (force
                                                                                                           [
@@ -836,67 +1744,74 @@
                                                                                                                     )
                                                                                                                     (con
                                                                                                                       integer
-                                                                                                                      0
+                                                                                                                      1
                                                                                                                     )
                                                                                                                   ]
-                                                                                                                  index-66
+                                                                                                                  [
+                                                                                                                    (force
+                                                                                                                      (force
+                                                                                                                        (builtin
+                                                                                                                          fstPair
+                                                                                                                        )
+                                                                                                                      )
+                                                                                                                    )
+                                                                                                                    tup-124
+                                                                                                                  ]
                                                                                                                 ]
                                                                                                               ]
                                                                                                               (delay
                                                                                                                 (delay
-                                                                                                                  (constr
-                                                                                                                    1
-                                                                                                                  )
+                                                                                                                  [
+                                                                                                                    (builtin
+                                                                                                                      unBData
+                                                                                                                    )
+                                                                                                                    [
+                                                                                                                      (force
+                                                                                                                        (builtin
+                                                                                                                          headList
+                                                                                                                        )
+                                                                                                                      )
+                                                                                                                      [
+                                                                                                                        (force
+                                                                                                                          (force
+                                                                                                                            (builtin
+                                                                                                                              sndPair
+                                                                                                                            )
+                                                                                                                          )
+                                                                                                                        )
+                                                                                                                        tup-124
+                                                                                                                      ]
+                                                                                                                    ]
+                                                                                                                  ]
                                                                                                                 )
                                                                                                               )
                                                                                                             ]
                                                                                                             (delay
                                                                                                               (delay
-                                                                                                                (force
-                                                                                                                  (force
+                                                                                                                [
+                                                                                                                  (lam
+                                                                                                                    x-125
+                                                                                                                    (error
+
+                                                                                                                    )
+                                                                                                                  )
+                                                                                                                  [
                                                                                                                     [
-                                                                                                                      [
-                                                                                                                        [
-                                                                                                                          (force
-                                                                                                                            (builtin
-                                                                                                                              ifThenElse
-                                                                                                                            )
-                                                                                                                          )
-                                                                                                                          [
-                                                                                                                            [
-                                                                                                                              (builtin
-                                                                                                                                equalsInteger
-                                                                                                                              )
-                                                                                                                              (con
-                                                                                                                                integer
-                                                                                                                                1
-                                                                                                                              )
-                                                                                                                            ]
-                                                                                                                            index-66
-                                                                                                                          ]
-                                                                                                                        ]
-                                                                                                                        (delay
-                                                                                                                          (delay
-                                                                                                                            (constr
-                                                                                                                              0
-                                                                                                                            )
-                                                                                                                          )
-                                                                                                                        )
-                                                                                                                      ]
-                                                                                                                      (delay
-                                                                                                                        (delay
-                                                                                                                          [
-                                                                                                                            traceError-4
-                                                                                                                            (con
-                                                                                                                              string
-                                                                                                                              "PT1"
-                                                                                                                            )
-                                                                                                                          ]
+                                                                                                                      (force
+                                                                                                                        (builtin
+                                                                                                                          trace
                                                                                                                         )
                                                                                                                       )
+                                                                                                                      (con
+                                                                                                                        string
+                                                                                                                        "Own input address is not a script credential"
+                                                                                                                      )
                                                                                                                     ]
-                                                                                                                  )
-                                                                                                                )
+                                                                                                                    (constr
+                                                                                                                      0
+                                                                                                                    )
+                                                                                                                  ]
+                                                                                                                ]
                                                                                                               )
                                                                                                             )
                                                                                                           ]
@@ -904,119 +1819,56 @@
                                                                                                       )
                                                                                                     )
                                                                                                     [
-                                                                                                      (force
+                                                                                                      (builtin
+                                                                                                        unConstrData
+                                                                                                      )
+                                                                                                      [
                                                                                                         (force
                                                                                                           (builtin
-                                                                                                            sndPair
+                                                                                                            headList
                                                                                                           )
                                                                                                         )
-                                                                                                      )
-                                                                                                      tup-65
+                                                                                                        [
+                                                                                                          (force
+                                                                                                            (force
+                                                                                                              (builtin
+                                                                                                                sndPair
+                                                                                                              )
+                                                                                                            )
+                                                                                                          )
+                                                                                                          [
+                                                                                                            (builtin
+                                                                                                              unConstrData
+                                                                                                            )
+                                                                                                            ds-120
+                                                                                                          ]
+                                                                                                        ]
+                                                                                                      ]
                                                                                                     ]
                                                                                                   ]
                                                                                                 )
-                                                                                                [
-                                                                                                  (force
-                                                                                                    (force
-                                                                                                      (builtin
-                                                                                                        fstPair
-                                                                                                      )
-                                                                                                    )
-                                                                                                  )
-                                                                                                  tup-65
-                                                                                                ]
-                                                                                              ]
+                                                                                              )
                                                                                             )
-                                                                                            [
-                                                                                              (builtin
-                                                                                                unConstrData
-                                                                                              )
-                                                                                              [
-                                                                                                (force
-                                                                                                  (builtin
-                                                                                                    headList
-                                                                                                  )
-                                                                                                )
-                                                                                                [
-                                                                                                  (force
-                                                                                                    (builtin
-                                                                                                      tailList
-                                                                                                    )
-                                                                                                  )
-                                                                                                  l-63
-                                                                                                ]
-                                                                                              ]
-                                                                                            ]
-                                                                                          ]
-                                                                                          (delay
-                                                                                            [
-                                                                                              (builtin
-                                                                                                unIData
-                                                                                              )
-                                                                                              [
-                                                                                                (force
-                                                                                                  (builtin
-                                                                                                    headList
-                                                                                                  )
-                                                                                                )
-                                                                                                [
-                                                                                                  (force
-                                                                                                    (force
-                                                                                                      (builtin
-                                                                                                        sndPair
-                                                                                                      )
-                                                                                                    )
-                                                                                                  )
-                                                                                                  tup-64
-                                                                                                ]
-                                                                                              ]
-                                                                                            ]
                                                                                           )
-                                                                                          (delay
-                                                                                            [
-                                                                                              [
-                                                                                                (builtin
-                                                                                                  addInteger
-                                                                                                )
-                                                                                                (con
-                                                                                                  integer
-                                                                                                  1
-                                                                                                )
-                                                                                              ]
-                                                                                              [
-                                                                                                (builtin
-                                                                                                  unIData
-                                                                                                )
-                                                                                                [
-                                                                                                  (force
-                                                                                                    (builtin
-                                                                                                      headList
-                                                                                                    )
-                                                                                                  )
-                                                                                                  [
-                                                                                                    (force
-                                                                                                      (force
-                                                                                                        (builtin
-                                                                                                          sndPair
-                                                                                                        )
-                                                                                                      )
-                                                                                                    )
-                                                                                                    tup-64
-                                                                                                  ]
-                                                                                                ]
-                                                                                              ]
-                                                                                            ]
+                                                                                        ]
+                                                                                        (lam
+                                                                                          void-126
+                                                                                          (case
+                                                                                            (error
+
+                                                                                            )
+                                                                                            (error
+
+                                                                                            )
                                                                                           )
                                                                                         )
-                                                                                      )
+                                                                                      ]
                                                                                     )
                                                                                   )
-                                                                                ]
-                                                                                (delay
                                                                                   (delay
                                                                                     [
                                                                                       (lam
-                                                                                        x-68
+                                                                                        x-127
                                                                                         (error
 
                                                                                         )
@@ -1030,7 +1882,7 @@
                                                                                           )
                                                                                           (con
                                                                                             string
-                                                                                            "Time range not Finite"
+                                                                                            "Own input not found"
                                                                                           )
                                                                                         ]
                                                                                         (constr
@@ -1040,115 +1892,188 @@
                                                                                     ]
                                                                                   )
                                                                                 )
+                                                                              )
+                                                                            )
+                                                                          ]
+                                                                        )
+                                                                        (lam
+                                                                          scrut-128
+                                                                          (lam
+                                                                            cont-129
+                                                                            (lam
+                                                                              fail-130
+                                                                              [
+                                                                                (lam
+                                                                                  l-131
+                                                                                  [
+                                                                                    (lam
+                                                                                      l-132
+                                                                                      [
+                                                                                        (lam
+                                                                                          l-133
+                                                                                          [
+                                                                                            [
+                                                                                              [
+                                                                                                [
+                                                                                                  cont-129
+                                                                                                  [
+                                                                                                    (force
+                                                                                                      (builtin
+                                                                                                        headList
+                                                                                                      )
+                                                                                                    )
+                                                                                                    l-131
+                                                                                                  ]
+                                                                                                ]
+                                                                                                [
+                                                                                                  (builtin
+                                                                                                    unMapData
+                                                                                                  )
+                                                                                                  [
+                                                                                                    (force
+                                                                                                      (builtin
+                                                                                                        headList
+                                                                                                      )
+                                                                                                    )
+                                                                                                    l-132
+                                                                                                  ]
+                                                                                                ]
+                                                                                              ]
+                                                                                              [
+                                                                                                (force
+                                                                                                  (builtin
+                                                                                                    headList
+                                                                                                  )
+                                                                                                )
+                                                                                                l-133
+                                                                                              ]
+                                                                                            ]
+                                                                                            [
+                                                                                              [
+                                                                                                `$fUnsafeFromDataMaybe_$cunsafeFromBuiltinData`-6
+                                                                                                (builtin
+                                                                                                  unBData
+                                                                                                )
+                                                                                              ]
+                                                                                              [
+                                                                                                (force
+                                                                                                  (builtin
+                                                                                                    headList
+                                                                                                  )
+                                                                                                )
+                                                                                                [
+                                                                                                  (force
+                                                                                                    (builtin
+                                                                                                      tailList
+                                                                                                    )
+                                                                                                  )
+                                                                                                  l-133
+                                                                                                ]
+                                                                                              ]
+                                                                                            ]
+                                                                                          ]
+                                                                                        )
+                                                                                        [
+                                                                                          (force
+                                                                                            (builtin
+                                                                                              tailList
+                                                                                            )
+                                                                                          )
+                                                                                          l-132
+                                                                                        ]
+                                                                                      ]
+                                                                                    )
+                                                                                    [
+                                                                                      (force
+                                                                                        (builtin
+                                                                                          tailList
+                                                                                        )
+                                                                                      )
+                                                                                      l-131
+                                                                                    ]
+                                                                                  ]
+                                                                                )
+                                                                                [
+                                                                                  (force
+                                                                                    (force
+                                                                                      (builtin
+                                                                                        sndPair
+                                                                                      )
+                                                                                    )
+                                                                                  )
+                                                                                  [
+                                                                                    (builtin
+                                                                                      unConstrData
+                                                                                    )
+                                                                                    scrut-128
+                                                                                  ]
+                                                                                ]
                                                                               ]
                                                                             )
                                                                           )
                                                                         )
-                                                                        [
-                                                                          (builtin
-                                                                            unConstrData
-                                                                          )
-                                                                          [
-                                                                            (force
-                                                                              (builtin
-                                                                                headList
-                                                                              )
-                                                                            )
-                                                                            l-63
-                                                                          ]
-                                                                        ]
                                                                       ]
                                                                     )
-                                                                    [
-                                                                      (force
-                                                                        (force
-                                                                          (builtin
-                                                                            sndPair
-                                                                          )
-                                                                        )
-                                                                      )
-                                                                      [
-                                                                        (builtin
-                                                                          unConstrData
-                                                                        )
-                                                                        [
-                                                                          (force
-                                                                            (builtin
-                                                                              headList
-                                                                            )
-                                                                          )
-                                                                          [
-                                                                            (force
-                                                                              (force
-                                                                                (builtin
-                                                                                  sndPair
-                                                                                )
-                                                                              )
-                                                                            )
-                                                                            [
-                                                                              (builtin
-                                                                                unConstrData
-                                                                              )
-                                                                              ds-62
-                                                                            ]
-                                                                          ]
-                                                                        ]
-                                                                      ]
-                                                                    ]
+                                                                    (lam
+                                                                      void-134
+                                                                      (error)
+                                                                    )
                                                                   ]
+                                                                )
+                                                                (lam
+                                                                  ds-135
+                                                                  (lam
+                                                                    ds-136
+                                                                    (lam
+                                                                      ds-137
+                                                                      ds-135
+                                                                    )
+                                                                  )
                                                                 )
                                                               ]
                                                             )
                                                             (lam
-                                                              void-69 (error)
+                                                              void-138 (error)
                                                             )
                                                           ]
                                                         )
                                                         (lam
-                                                          ds-70
+                                                          ds-139
                                                           (lam
-                                                            ds-71
-                                                            (lam ds-72 ds-70)
-                                                          )
-                                                        )
-                                                      ]
-                                                    )
-                                                    (lam void-73 (error))
-                                                  ]
-                                                )
-                                                (lam
-                                                  ds-74
-                                                  (lam
-                                                    ds-75
-                                                    (lam
-                                                      ds-76
-                                                      (lam
-                                                        ds-77
-                                                        (lam
-                                                          ds-78
-                                                          (lam
-                                                            ds-79
+                                                            ds-140
                                                             (lam
-                                                              ds-80
+                                                              ds-141
                                                               (lam
-                                                                ds-81
+                                                                ds-142
                                                                 (lam
-                                                                  ds-82
+                                                                  ds-143
                                                                   (lam
-                                                                    ds-83
+                                                                    ds-144
                                                                     (lam
-                                                                      ds-84
+                                                                      ds-145
                                                                       (lam
-                                                                        ds-85
+                                                                        ds-146
                                                                         (lam
-                                                                          ds-86
+                                                                          ds-147
                                                                           (lam
-                                                                            ds-87
+                                                                            ds-148
                                                                             (lam
-                                                                              ds-88
+                                                                              ds-149
                                                                               (lam
-                                                                                ds-89
-                                                                                ds-81
+                                                                                ds-150
+                                                                                (lam
+                                                                                  ds-151
+                                                                                  (lam
+                                                                                    ds-152
+                                                                                    (lam
+                                                                                      ds-153
+                                                                                      (lam
+                                                                                        ds-154
+                                                                                        ds-146
+                                                                                      )
+                                                                                    )
+                                                                                  )
+                                                                                )
                                                                               )
                                                                             )
                                                                           )
@@ -1161,71 +2086,105 @@
                                                             )
                                                           )
                                                         )
-                                                      )
+                                                      ]
                                                     )
-                                                  )
-                                                )
-                                              ]
-                                            )
-                                            (lam
-                                              ds-90
-                                              (lam
-                                                k-91
-                                                [
-                                                  (lam
-                                                    go-92
-                                                    [
-                                                      [
-                                                        [ `$mTxInfo`-9 ds-90 ]
-                                                        (lam
-                                                          ds-93
-                                                          (lam
-                                                            ds-94
+                                                    (lam
+                                                      ds-155
+                                                      (lam
+                                                        k-156
+                                                        [
+                                                          [
+                                                            [
+                                                              `$mTxInfo`-11
+                                                              ds-155
+                                                            ]
                                                             (lam
-                                                              ds-95
+                                                              ds-157
                                                               (lam
-                                                                ds-96
+                                                                ds-158
                                                                 (lam
-                                                                  ds-97
+                                                                  ds-159
                                                                   (lam
-                                                                    ds-98
+                                                                    ds-160
                                                                     (lam
-                                                                      ds-99
+                                                                      ds-161
                                                                       (lam
-                                                                        ds-100
+                                                                        ds-162
                                                                         (lam
-                                                                          ds-101
+                                                                          ds-163
                                                                           (lam
-                                                                            ds-102
+                                                                            ds-164
                                                                             (lam
-                                                                              ds-103
+                                                                              ds-165
                                                                               (lam
-                                                                                ds-104
+                                                                                ds-166
                                                                                 (lam
-                                                                                  ds-105
+                                                                                  ds-167
                                                                                   (lam
-                                                                                    ds-106
+                                                                                    ds-168
                                                                                     (lam
-                                                                                      ds-107
+                                                                                      ds-169
                                                                                       (lam
-                                                                                        ds-108
-                                                                                        (force
-                                                                                          (case
-                                                                                            [
-                                                                                              go-92
-                                                                                              ds-101
-                                                                                            ]
-                                                                                            (lam
-                                                                                              ds-109
-                                                                                              (delay
-                                                                                                (constr
-                                                                                                  0
+                                                                                        ds-170
+                                                                                        (lam
+                                                                                          ds-171
+                                                                                          (lam
+                                                                                            ds-172
+                                                                                            (force
+                                                                                              (case
+                                                                                                [
+                                                                                                  [
+                                                                                                    [
+                                                                                                      find-10
+                                                                                                      (builtin
+                                                                                                        unBData
+                                                                                                      )
+                                                                                                    ]
+                                                                                                    (lam
+                                                                                                      y-173
+                                                                                                      [
+                                                                                                        [
+                                                                                                          [
+                                                                                                            (force
+                                                                                                              (builtin
+                                                                                                                ifThenElse
+                                                                                                              )
+                                                                                                            )
+                                                                                                            [
+                                                                                                              [
+                                                                                                                (builtin
+                                                                                                                  equalsByteString
+                                                                                                                )
+                                                                                                                k-156
+                                                                                                              ]
+                                                                                                              y-173
+                                                                                                            ]
+                                                                                                          ]
+                                                                                                          (constr
+                                                                                                            0
+                                                                                                          )
+                                                                                                        ]
+                                                                                                        (constr
+                                                                                                          1
+                                                                                                        )
+                                                                                                      ]
+                                                                                                    )
+                                                                                                  ]
+                                                                                                  ds-165
+                                                                                                ]
+                                                                                                (lam
+                                                                                                  ds-174
+                                                                                                  (delay
+                                                                                                    (constr
+                                                                                                      0
+                                                                                                    )
+                                                                                                  )
                                                                                                 )
-                                                                                              )
-                                                                                            )
-                                                                                            (delay
-                                                                                              (constr
-                                                                                                1
+                                                                                                (delay
+                                                                                                  (constr
+                                                                                                    1
+                                                                                                  )
+                                                                                                )
                                                                                               )
                                                                                             )
                                                                                           )
@@ -1244,156 +2203,72 @@
                                                                 )
                                                               )
                                                             )
-                                                          )
-                                                        )
-                                                      ]
-                                                      (lam
-                                                        void-110
-                                                        (case (error) (error))
-                                                      )
-                                                    ]
-                                                  )
-                                                  [
-                                                    (lam s-111 [ s-111 s-111 ])
-                                                    (lam
-                                                      s-112
-                                                      (lam
-                                                        ds-113
-                                                        [
-                                                          [
-                                                            [
-                                                              caseList'-0
-                                                              (constr 1)
-                                                            ]
-                                                            (lam
-                                                              x-114
-                                                              (lam
-                                                                eta-115
-                                                                [
-                                                                  (lam
-                                                                    h-116
-                                                                    (force
-                                                                      (force
-                                                                        [
-                                                                          [
-                                                                            [
-                                                                              (force
-                                                                                (builtin
-                                                                                  ifThenElse
-                                                                                )
-                                                                              )
-                                                                              [
-                                                                                [
-                                                                                  (builtin
-                                                                                    equalsByteString
-                                                                                  )
-                                                                                  k-91
-                                                                                ]
-                                                                                h-116
-                                                                              ]
-                                                                            ]
-                                                                            (delay
-                                                                              (delay
-                                                                                (constr
-                                                                                  0
-                                                                                  h-116
-                                                                                )
-                                                                              )
-                                                                            )
-                                                                          ]
-                                                                          (delay
-                                                                            (delay
-                                                                              [
-                                                                                [
-                                                                                  s-112
-                                                                                  s-112
-                                                                                ]
-                                                                                eta-115
-                                                                              ]
-                                                                            )
-                                                                          )
-                                                                        ]
-                                                                      )
-                                                                    )
-                                                                  )
-                                                                  [
-                                                                    (builtin
-                                                                      unBData
-                                                                    )
-                                                                    x-114
-                                                                  ]
-                                                                ]
-                                                              )
-                                                            )
                                                           ]
-                                                          ds-113
+                                                          (lam
+                                                            void-175
+                                                            (case
+                                                              (error) (error)
+                                                            )
+                                                          )
                                                         ]
                                                       )
                                                     )
                                                   ]
-                                                ]
-                                              )
-                                            )
-                                          ]
-                                        )
-                                        (lam
-                                          scrut-117
-                                          (lam
-                                            cont-118
-                                            (lam
-                                              fail-119
-                                              [
+                                                )
                                                 (lam
-                                                  l-120
-                                                  [
+                                                  scrut-176
+                                                  (lam
+                                                    cont-177
                                                     (lam
-                                                      l-121
+                                                      fail-178
                                                       [
                                                         (lam
-                                                          l-122
+                                                          l-179
                                                           [
                                                             (lam
-                                                              l-123
+                                                              l-180
                                                               [
                                                                 (lam
-                                                                  l-124
+                                                                  l-181
                                                                   [
                                                                     (lam
-                                                                      l-125
+                                                                      l-182
                                                                       [
                                                                         (lam
-                                                                          l-126
+                                                                          l-183
                                                                           [
                                                                             (lam
-                                                                              l-127
+                                                                              l-184
                                                                               [
                                                                                 (lam
-                                                                                  l-128
+                                                                                  l-185
                                                                                   [
                                                                                     (lam
-                                                                                      l-129
+                                                                                      l-186
                                                                                       [
                                                                                         (lam
-                                                                                          l-130
+                                                                                          l-187
                                                                                           [
                                                                                             (lam
-                                                                                              l-131
+                                                                                              l-188
                                                                                               [
                                                                                                 (lam
-                                                                                                  l-132
+                                                                                                  l-189
                                                                                                   [
                                                                                                     (lam
-                                                                                                      l-133
+                                                                                                      l-190
                                                                                                       [
                                                                                                         (lam
-                                                                                                          l-134
+                                                                                                          l-191
                                                                                                           [
                                                                                                             (lam
-                                                                                                              cse-135
+                                                                                                              l-192
                                                                                                               [
-                                                                                                                [
+                                                                                                                (lam
+                                                                                                                  l-193
                                                                                                                   [
-                                                                                                                    [
+                                                                                                                    (lam
+                                                                                                                      cse-194
                                                                                                                       [
                                                                                                                         [
                                                                                                                           [
@@ -1406,10 +2281,70 @@
                                                                                                                                         [
                                                                                                                                           [
                                                                                                                                             [
-                                                                                                                                              cont-118
+                                                                                                                                              [
+                                                                                                                                                [
+                                                                                                                                                  [
+                                                                                                                                                    [
+                                                                                                                                                      cont-177
+                                                                                                                                                      [
+                                                                                                                                                        (builtin
+                                                                                                                                                          unListData
+                                                                                                                                                        )
+                                                                                                                                                        [
+                                                                                                                                                          (force
+                                                                                                                                                            (builtin
+                                                                                                                                                              headList
+                                                                                                                                                            )
+                                                                                                                                                          )
+                                                                                                                                                          l-179
+                                                                                                                                                        ]
+                                                                                                                                                      ]
+                                                                                                                                                    ]
+                                                                                                                                                    [
+                                                                                                                                                      (builtin
+                                                                                                                                                        unListData
+                                                                                                                                                      )
+                                                                                                                                                      [
+                                                                                                                                                        (force
+                                                                                                                                                          (builtin
+                                                                                                                                                            headList
+                                                                                                                                                          )
+                                                                                                                                                        )
+                                                                                                                                                        l-180
+                                                                                                                                                      ]
+                                                                                                                                                    ]
+                                                                                                                                                  ]
+                                                                                                                                                  [
+                                                                                                                                                    (builtin
+                                                                                                                                                      unListData
+                                                                                                                                                    )
+                                                                                                                                                    [
+                                                                                                                                                      (force
+                                                                                                                                                        (builtin
+                                                                                                                                                          headList
+                                                                                                                                                        )
+                                                                                                                                                      )
+                                                                                                                                                      l-181
+                                                                                                                                                    ]
+                                                                                                                                                  ]
+                                                                                                                                                ]
+                                                                                                                                                [
+                                                                                                                                                  (builtin
+                                                                                                                                                    unIData
+                                                                                                                                                  )
+                                                                                                                                                  [
+                                                                                                                                                    (force
+                                                                                                                                                      (builtin
+                                                                                                                                                        headList
+                                                                                                                                                      )
+                                                                                                                                                    )
+                                                                                                                                                    l-182
+                                                                                                                                                  ]
+                                                                                                                                                ]
+                                                                                                                                              ]
                                                                                                                                               [
                                                                                                                                                 (builtin
-                                                                                                                                                  unListData
+                                                                                                                                                  unMapData
                                                                                                                                                 )
                                                                                                                                                 [
                                                                                                                                                   (force
@@ -1417,7 +2352,7 @@
                                                                                                                                                       headList
                                                                                                                                                     )
                                                                                                                                                   )
-                                                                                                                                                  l-120
+                                                                                                                                                  l-183
                                                                                                                                                 ]
                                                                                                                                               ]
                                                                                                                                             ]
@@ -1431,13 +2366,13 @@
                                                                                                                                                     headList
                                                                                                                                                   )
                                                                                                                                                 )
-                                                                                                                                                l-121
+                                                                                                                                                l-184
                                                                                                                                               ]
                                                                                                                                             ]
                                                                                                                                           ]
                                                                                                                                           [
                                                                                                                                             (builtin
-                                                                                                                                              unListData
+                                                                                                                                              unMapData
                                                                                                                                             )
                                                                                                                                             [
                                                                                                                                               (force
@@ -1445,27 +2380,22 @@
                                                                                                                                                   headList
                                                                                                                                                 )
                                                                                                                                               )
-                                                                                                                                              l-122
+                                                                                                                                              l-185
                                                                                                                                             ]
                                                                                                                                           ]
                                                                                                                                         ]
                                                                                                                                         [
-                                                                                                                                          (builtin
-                                                                                                                                            unIData
-                                                                                                                                          )
-                                                                                                                                          [
-                                                                                                                                            (force
-                                                                                                                                              (builtin
-                                                                                                                                                headList
-                                                                                                                                              )
+                                                                                                                                          (force
+                                                                                                                                            (builtin
+                                                                                                                                              headList
                                                                                                                                             )
-                                                                                                                                            l-123
-                                                                                                                                          ]
+                                                                                                                                          )
+                                                                                                                                          l-186
                                                                                                                                         ]
                                                                                                                                       ]
                                                                                                                                       [
                                                                                                                                         (builtin
-                                                                                                                                          unMapData
+                                                                                                                                          unListData
                                                                                                                                         )
                                                                                                                                         [
                                                                                                                                           (force
@@ -1473,13 +2403,13 @@
                                                                                                                                               headList
                                                                                                                                             )
                                                                                                                                           )
-                                                                                                                                          l-124
+                                                                                                                                          l-187
                                                                                                                                         ]
                                                                                                                                       ]
                                                                                                                                     ]
                                                                                                                                     [
                                                                                                                                       (builtin
-                                                                                                                                        unListData
+                                                                                                                                        unMapData
                                                                                                                                       )
                                                                                                                                       [
                                                                                                                                         (force
@@ -1487,7 +2417,7 @@
                                                                                                                                             headList
                                                                                                                                           )
                                                                                                                                         )
-                                                                                                                                        l-125
+                                                                                                                                        l-188
                                                                                                                                       ]
                                                                                                                                     ]
                                                                                                                                   ]
@@ -1501,22 +2431,27 @@
                                                                                                                                           headList
                                                                                                                                         )
                                                                                                                                       )
-                                                                                                                                      l-126
+                                                                                                                                      l-189
                                                                                                                                     ]
                                                                                                                                   ]
                                                                                                                                 ]
                                                                                                                                 [
-                                                                                                                                  (force
-                                                                                                                                    (builtin
-                                                                                                                                      headList
-                                                                                                                                    )
+                                                                                                                                  (builtin
+                                                                                                                                    unBData
                                                                                                                                   )
-                                                                                                                                  l-127
+                                                                                                                                  [
+                                                                                                                                    (force
+                                                                                                                                      (builtin
+                                                                                                                                        headList
+                                                                                                                                      )
+                                                                                                                                    )
+                                                                                                                                    l-190
+                                                                                                                                  ]
                                                                                                                                 ]
                                                                                                                               ]
                                                                                                                               [
                                                                                                                                 (builtin
-                                                                                                                                  unListData
+                                                                                                                                  unMapData
                                                                                                                                 )
                                                                                                                                 [
                                                                                                                                   (force
@@ -1524,13 +2459,13 @@
                                                                                                                                       headList
                                                                                                                                     )
                                                                                                                                   )
-                                                                                                                                  l-128
+                                                                                                                                  l-191
                                                                                                                                 ]
                                                                                                                               ]
                                                                                                                             ]
                                                                                                                             [
                                                                                                                               (builtin
-                                                                                                                                unMapData
+                                                                                                                                unListData
                                                                                                                               )
                                                                                                                               [
                                                                                                                                 (force
@@ -1538,103 +2473,67 @@
                                                                                                                                     headList
                                                                                                                                   )
                                                                                                                                 )
-                                                                                                                                l-129
+                                                                                                                                l-192
                                                                                                                               ]
                                                                                                                             ]
                                                                                                                           ]
                                                                                                                           [
-                                                                                                                            (builtin
-                                                                                                                              unMapData
-                                                                                                                            )
+                                                                                                                            cse-194
                                                                                                                             [
                                                                                                                               (force
                                                                                                                                 (builtin
                                                                                                                                   headList
                                                                                                                                 )
                                                                                                                               )
-                                                                                                                              l-130
+                                                                                                                              l-193
                                                                                                                             ]
                                                                                                                           ]
                                                                                                                         ]
                                                                                                                         [
-                                                                                                                          (builtin
-                                                                                                                            unBData
-                                                                                                                          )
+                                                                                                                          cse-194
                                                                                                                           [
                                                                                                                             (force
                                                                                                                               (builtin
                                                                                                                                 headList
                                                                                                                               )
                                                                                                                             )
-                                                                                                                            l-131
+                                                                                                                            [
+                                                                                                                              (force
+                                                                                                                                (builtin
+                                                                                                                                  tailList
+                                                                                                                                )
+                                                                                                                              )
+                                                                                                                              l-193
+                                                                                                                            ]
                                                                                                                           ]
                                                                                                                         ]
                                                                                                                       ]
-                                                                                                                      [
-                                                                                                                        (builtin
-                                                                                                                          unMapData
-                                                                                                                        )
-                                                                                                                        [
-                                                                                                                          (force
-                                                                                                                            (builtin
-                                                                                                                              headList
-                                                                                                                            )
-                                                                                                                          )
-                                                                                                                          l-132
-                                                                                                                        ]
-                                                                                                                      ]
-                                                                                                                    ]
-                                                                                                                    [
-                                                                                                                      (builtin
-                                                                                                                        unListData
-                                                                                                                      )
-                                                                                                                      [
-                                                                                                                        (force
-                                                                                                                          (builtin
-                                                                                                                            headList
-                                                                                                                          )
-                                                                                                                        )
-                                                                                                                        l-133
-                                                                                                                      ]
-                                                                                                                    ]
-                                                                                                                  ]
-                                                                                                                  [
-                                                                                                                    cse-135
-                                                                                                                    [
-                                                                                                                      (force
-                                                                                                                        (builtin
-                                                                                                                          headList
-                                                                                                                        )
-                                                                                                                      )
-                                                                                                                      l-134
-                                                                                                                    ]
-                                                                                                                  ]
-                                                                                                                ]
-                                                                                                                [
-                                                                                                                  cse-135
-                                                                                                                  [
-                                                                                                                    (force
-                                                                                                                      (builtin
-                                                                                                                        headList
-                                                                                                                      )
                                                                                                                     )
                                                                                                                     [
-                                                                                                                      (force
-                                                                                                                        (builtin
-                                                                                                                          tailList
-                                                                                                                        )
+                                                                                                                      `$fUnsafeFromDataMaybe_$cunsafeFromBuiltinData`-6
+                                                                                                                      (builtin
+                                                                                                                        unIData
                                                                                                                       )
-                                                                                                                      l-134
                                                                                                                     ]
                                                                                                                   ]
+                                                                                                                )
+                                                                                                                [
+                                                                                                                  (force
+                                                                                                                    (builtin
+                                                                                                                      tailList
+                                                                                                                    )
+                                                                                                                  )
+                                                                                                                  l-192
                                                                                                                 ]
                                                                                                               ]
                                                                                                             )
                                                                                                             [
-                                                                                                              `$fUnsafeFromDataMaybe_$cunsafeFromBuiltinData`-7
-                                                                                                              (builtin
-                                                                                                                unIData
+                                                                                                              (force
+                                                                                                                (builtin
+                                                                                                                  tailList
+                                                                                                                )
                                                                                                               )
+                                                                                                              l-191
                                                                                                             ]
                                                                                                           ]
                                                                                                         )
@@ -1644,7 +2543,7 @@
                                                                                                               tailList
                                                                                                             )
                                                                                                           )
-                                                                                                          l-133
+                                                                                                          l-190
                                                                                                         ]
                                                                                                       ]
                                                                                                     )
@@ -1654,7 +2553,7 @@
                                                                                                           tailList
                                                                                                         )
                                                                                                       )
-                                                                                                      l-132
+                                                                                                      l-189
                                                                                                     ]
                                                                                                   ]
                                                                                                 )
@@ -1664,7 +2563,7 @@
                                                                                                       tailList
                                                                                                     )
                                                                                                   )
-                                                                                                  l-131
+                                                                                                  l-188
                                                                                                 ]
                                                                                               ]
                                                                                             )
@@ -1674,7 +2573,7 @@
                                                                                                   tailList
                                                                                                 )
                                                                                               )
-                                                                                              l-130
+                                                                                              l-187
                                                                                             ]
                                                                                           ]
                                                                                         )
@@ -1684,7 +2583,7 @@
                                                                                               tailList
                                                                                             )
                                                                                           )
-                                                                                          l-129
+                                                                                          l-186
                                                                                         ]
                                                                                       ]
                                                                                     )
@@ -1694,7 +2593,7 @@
                                                                                           tailList
                                                                                         )
                                                                                       )
-                                                                                      l-128
+                                                                                      l-185
                                                                                     ]
                                                                                   ]
                                                                                 )
@@ -1704,7 +2603,7 @@
                                                                                       tailList
                                                                                     )
                                                                                   )
-                                                                                  l-127
+                                                                                  l-184
                                                                                 ]
                                                                               ]
                                                                             )
@@ -1714,7 +2613,7 @@
                                                                                   tailList
                                                                                 )
                                                                               )
-                                                                              l-126
+                                                                              l-183
                                                                             ]
                                                                           ]
                                                                         )
@@ -1724,7 +2623,7 @@
                                                                               tailList
                                                                             )
                                                                           )
-                                                                          l-125
+                                                                          l-182
                                                                         ]
                                                                       ]
                                                                     )
@@ -1734,7 +2633,7 @@
                                                                           tailList
                                                                         )
                                                                       )
-                                                                      l-124
+                                                                      l-181
                                                                     ]
                                                                   ]
                                                                 )
@@ -1744,7 +2643,7 @@
                                                                       tailList
                                                                     )
                                                                   )
-                                                                  l-123
+                                                                  l-180
                                                                 ]
                                                               ]
                                                             )
@@ -1754,34 +2653,141 @@
                                                                   tailList
                                                                 )
                                                               )
-                                                              l-122
+                                                              l-179
                                                             ]
                                                           ]
                                                         )
                                                         [
                                                           (force
-                                                            (builtin tailList)
+                                                            (force
+                                                              (builtin sndPair)
+                                                            )
                                                           )
-                                                          l-121
+                                                          [
+                                                            (builtin
+                                                              unConstrData
+                                                            )
+                                                            scrut-176
+                                                          ]
                                                         ]
                                                       ]
                                                     )
-                                                    [
-                                                      (force (builtin tailList))
-                                                      l-120
-                                                    ]
-                                                  ]
+                                                  )
                                                 )
+                                              ]
+                                            )
+                                            (lam
+                                              `$dUnsafeFromData`-195
+                                              (lam
+                                                pred'-196
                                                 [
-                                                  (force
-                                                    (force (builtin sndPair))
+                                                  (lam
+                                                    go-197
+                                                    (lam
+                                                      eta-198 [ go-197 eta-198 ]
+                                                    )
                                                   )
                                                   [
-                                                    (builtin unConstrData)
-                                                    scrut-117
+                                                    (lam s-199 [ s-199 s-199 ])
+                                                    (lam
+                                                      s-200
+                                                      (lam
+                                                        ds-201
+                                                        [
+                                                          [
+                                                            [
+                                                              caseList'-9
+                                                              (constr 1)
+                                                            ]
+                                                            (lam
+                                                              x-202
+                                                              (lam
+                                                                eta-203
+                                                                [
+                                                                  (lam
+                                                                    h-204
+                                                                    (force
+                                                                      (case
+                                                                        [
+                                                                          pred'-196
+                                                                          h-204
+                                                                        ]
+                                                                        (delay
+                                                                          (constr
+                                                                            0
+                                                                            h-204
+                                                                          )
+                                                                        )
+                                                                        (delay
+                                                                          [
+                                                                            [
+                                                                              s-200
+                                                                              s-200
+                                                                            ]
+                                                                            eta-203
+                                                                          ]
+                                                                        )
+                                                                      )
+                                                                    )
+                                                                  )
+                                                                  [
+                                                                    `$dUnsafeFromData`-195
+                                                                    x-202
+                                                                  ]
+                                                                ]
+                                                              )
+                                                            )
+                                                          ]
+                                                          ds-201
+                                                        ]
+                                                      )
+                                                    )
                                                   ]
                                                 ]
-                                              ]
+                                              )
+                                            )
+                                          ]
+                                        )
+                                        (lam
+                                          z-205
+                                          (lam
+                                            f-206
+                                            (lam
+                                              xs-207
+                                              (force
+                                                [
+                                                  [
+                                                    [
+                                                      (force
+                                                        (force
+                                                          (builtin chooseList)
+                                                        )
+                                                      )
+                                                      xs-207
+                                                    ]
+                                                    (delay z-205)
+                                                  ]
+                                                  (delay
+                                                    [
+                                                      [
+                                                        f-206
+                                                        [
+                                                          (force
+                                                            (builtin headList)
+                                                          )
+                                                          xs-207
+                                                        ]
+                                                      ]
+                                                      [
+                                                        (force
+                                                          (builtin tailList)
+                                                        )
+                                                        xs-207
+                                                      ]
+                                                    ]
+                                                  )
+                                                ]
+                                              )
                                             )
                                           )
                                         )
@@ -1790,37 +2796,278 @@
                                   )
                                   [
                                     (lam
-                                      tup-136
-                                      (force
-                                        (force
+                                      fail-208
+                                      [
+                                        [
                                           [
+                                            `$mSpendingScript`-7
                                             [
                                               [
-                                                (force (builtin ifThenElse))
-                                                [
-                                                  [
-                                                    (builtin equalsInteger)
-                                                    (con integer 1)
-                                                  ]
-                                                  [
-                                                    (force
-                                                      (force (builtin fstPair))
+                                                cse-3
+                                                (lam
+                                                  ds-209
+                                                  (lam
+                                                    ds-210 (lam ds-211 ds-211)
+                                                  )
+                                                )
+                                              ]
+                                              (lam void-212 (error))
+                                            ]
+                                          ]
+                                          (lam
+                                            ds-213
+                                            (lam
+                                              ds-214
+                                              (force
+                                                (case
+                                                  ds-214
+                                                  (lam
+                                                    datum-215
+                                                    (delay
+                                                      [
+                                                        (lam
+                                                          tup-216
+                                                          [
+                                                            (lam
+                                                              index-217
+                                                              [
+                                                                (lam
+                                                                  args-218
+                                                                  (force
+                                                                    (force
+                                                                      [
+                                                                        [
+                                                                          [
+                                                                            (force
+                                                                              (builtin
+                                                                                ifThenElse
+                                                                              )
+                                                                            )
+                                                                            [
+                                                                              [
+                                                                                (builtin
+                                                                                  equalsInteger
+                                                                                )
+                                                                                (con
+                                                                                  integer
+                                                                                  0
+                                                                                )
+                                                                              ]
+                                                                              index-217
+                                                                            ]
+                                                                          ]
+                                                                          (delay
+                                                                            (delay
+                                                                              [
+                                                                                (lam
+                                                                                  l-219
+                                                                                  [
+                                                                                    (lam
+                                                                                      l-220
+                                                                                      (constr
+                                                                                        0
+                                                                                        [
+                                                                                          (force
+                                                                                            (builtin
+                                                                                              headList
+                                                                                            )
+                                                                                          )
+                                                                                          args-218
+                                                                                        ]
+                                                                                        [
+                                                                                          (force
+                                                                                            (builtin
+                                                                                              headList
+                                                                                            )
+                                                                                          )
+                                                                                          l-219
+                                                                                        ]
+                                                                                        [
+                                                                                          (builtin
+                                                                                            unBData
+                                                                                          )
+                                                                                          [
+                                                                                            (force
+                                                                                              (builtin
+                                                                                                headList
+                                                                                              )
+                                                                                            )
+                                                                                            l-220
+                                                                                          ]
+                                                                                        ]
+                                                                                        [
+                                                                                          (builtin
+                                                                                            unIData
+                                                                                          )
+                                                                                          [
+                                                                                            (force
+                                                                                              (builtin
+                                                                                                headList
+                                                                                              )
+                                                                                            )
+                                                                                            [
+                                                                                              (force
+                                                                                                (builtin
+                                                                                                  tailList
+                                                                                                )
+                                                                                              )
+                                                                                              l-220
+                                                                                            ]
+                                                                                          ]
+                                                                                        ]
+                                                                                      )
+                                                                                    )
+                                                                                    [
+                                                                                      (force
+                                                                                        (builtin
+                                                                                          tailList
+                                                                                        )
+                                                                                      )
+                                                                                      l-219
+                                                                                    ]
+                                                                                  ]
+                                                                                )
+                                                                                [
+                                                                                  (force
+                                                                                    (builtin
+                                                                                      tailList
+                                                                                    )
+                                                                                  )
+                                                                                  args-218
+                                                                                ]
+                                                                              ]
+                                                                            )
+                                                                          )
+                                                                        ]
+                                                                        (delay
+                                                                          (delay
+                                                                            [
+                                                                              traceError-2
+                                                                              (con
+                                                                                string
+                                                                                "PT1"
+                                                                              )
+                                                                            ]
+                                                                          )
+                                                                        )
+                                                                      ]
+                                                                    )
+                                                                  )
+                                                                )
+                                                                [
+                                                                  (force
+                                                                    (force
+                                                                      (builtin
+                                                                        sndPair
+                                                                      )
+                                                                    )
+                                                                  )
+                                                                  tup-216
+                                                                ]
+                                                              ]
+                                                            )
+                                                            [
+                                                              (force
+                                                                (force
+                                                                  (builtin
+                                                                    fstPair
+                                                                  )
+                                                                )
+                                                              )
+                                                              tup-216
+                                                            ]
+                                                          ]
+                                                        )
+                                                        [
+                                                          (builtin unConstrData)
+                                                          datum-215
+                                                        ]
+                                                      ]
                                                     )
-                                                    tup-136
+                                                  )
+                                                  (delay
+                                                    [ fail-208 (con unit ()) ]
+                                                  )
+                                                )
+                                              )
+                                            )
+                                          )
+                                        ]
+                                        (lam
+                                          void-221 [ fail-208 (con unit ()) ]
+                                        )
+                                      ]
+                                    )
+                                    (lam
+                                      ds-222
+                                      [
+                                        (lam x-223 (error))
+                                        [
+                                          [
+                                            (force (builtin trace))
+                                            (con
+                                              string
+                                              "Expected SpendingScript with datum"
+                                            )
+                                          ]
+                                          (constr 0)
+                                        ]
+                                      ]
+                                    )
+                                  ]
+                                ]
+                              )
+                              (lam
+                                scrut-224
+                                (lam
+                                  cont-225
+                                  (lam
+                                    fail-226
+                                    [
+                                      (lam
+                                        tup-227
+                                        (force
+                                          (force
+                                            [
+                                              [
+                                                [
+                                                  (force (builtin ifThenElse))
+                                                  [
+                                                    [
+                                                      (builtin equalsInteger)
+                                                      (con integer 1)
+                                                    ]
+                                                    [
+                                                      (force
+                                                        (force
+                                                          (builtin fstPair)
+                                                        )
+                                                      )
+                                                      tup-227
+                                                    ]
                                                   ]
                                                 ]
-                                              ]
-                                              (delay
                                                 (delay
-                                                  [
-                                                    (lam
-                                                      l-137
-                                                      (force
-                                                        (case
+                                                  (delay
+                                                    [
+                                                      (lam
+                                                        l-228
+                                                        [
+                                                          [
+                                                            cont-225
+                                                            [
+                                                              (force
+                                                                (builtin
+                                                                  headList
+                                                                )
+                                                              )
+                                                              l-228
+                                                            ]
+                                                          ]
                                                           [
                                                             [
-                                                              `$fUnsafeFromDataMaybe_$cunsafeFromBuiltinData`-7
-                                                              (lam d-138 d-138)
+                                                              `$fUnsafeFromDataMaybe_$cunsafeFromBuiltinData`-6
+                                                              `$fUnsafeFromDataBuiltinData_$cunsafeFromBuiltinData`-5
                                                             ]
                                                             [
                                                               (force
@@ -1834,626 +3081,286 @@
                                                                     tailList
                                                                   )
                                                                 )
-                                                                l-137
+                                                                l-228
                                                               ]
                                                             ]
                                                           ]
-                                                          (lam
-                                                            datum-139
-                                                            (delay
-                                                              [
-                                                                (lam
-                                                                  tup-140
-                                                                  [
-                                                                    (lam
-                                                                      index-141
-                                                                      [
-                                                                        (lam
-                                                                          args-142
-                                                                          (force
-                                                                            (force
-                                                                              [
-                                                                                [
-                                                                                  [
-                                                                                    (force
-                                                                                      (builtin
-                                                                                        ifThenElse
-                                                                                      )
-                                                                                    )
-                                                                                    [
-                                                                                      [
-                                                                                        (builtin
-                                                                                          equalsInteger
-                                                                                        )
-                                                                                        (con
-                                                                                          integer
-                                                                                          0
-                                                                                        )
-                                                                                      ]
-                                                                                      index-141
-                                                                                    ]
-                                                                                  ]
-                                                                                  (delay
-                                                                                    (delay
-                                                                                      [
-                                                                                        (lam
-                                                                                          l-143
-                                                                                          [
-                                                                                            (lam
-                                                                                              l-144
-                                                                                              (constr
-                                                                                                0
-                                                                                                [
-                                                                                                  (force
-                                                                                                    (builtin
-                                                                                                      headList
-                                                                                                    )
-                                                                                                  )
-                                                                                                  args-142
-                                                                                                ]
-                                                                                                [
-                                                                                                  (force
-                                                                                                    (builtin
-                                                                                                      headList
-                                                                                                    )
-                                                                                                  )
-                                                                                                  l-143
-                                                                                                ]
-                                                                                                [
-                                                                                                  (builtin
-                                                                                                    unBData
-                                                                                                  )
-                                                                                                  [
-                                                                                                    (force
-                                                                                                      (builtin
-                                                                                                        headList
-                                                                                                      )
-                                                                                                    )
-                                                                                                    l-144
-                                                                                                  ]
-                                                                                                ]
-                                                                                                [
-                                                                                                  (builtin
-                                                                                                    unIData
-                                                                                                  )
-                                                                                                  [
-                                                                                                    (force
-                                                                                                      (builtin
-                                                                                                        headList
-                                                                                                      )
-                                                                                                    )
-                                                                                                    [
-                                                                                                      (force
-                                                                                                        (builtin
-                                                                                                          tailList
-                                                                                                        )
-                                                                                                      )
-                                                                                                      l-144
-                                                                                                    ]
-                                                                                                  ]
-                                                                                                ]
-                                                                                              )
-                                                                                            )
-                                                                                            [
-                                                                                              (force
-                                                                                                (builtin
-                                                                                                  tailList
-                                                                                                )
-                                                                                              )
-                                                                                              l-143
-                                                                                            ]
-                                                                                          ]
-                                                                                        )
-                                                                                        [
-                                                                                          (force
-                                                                                            (builtin
-                                                                                              tailList
-                                                                                            )
-                                                                                          )
-                                                                                          args-142
-                                                                                        ]
-                                                                                      ]
-                                                                                    )
-                                                                                  )
-                                                                                ]
-                                                                                (delay
-                                                                                  (delay
-                                                                                    [
-                                                                                      traceError-4
-                                                                                      (con
-                                                                                        string
-                                                                                        "PT1"
-                                                                                      )
-                                                                                    ]
-                                                                                  )
-                                                                                )
-                                                                              ]
-                                                                            )
-                                                                          )
-                                                                        )
-                                                                        [
-                                                                          (force
-                                                                            (force
-                                                                              (builtin
-                                                                                sndPair
-                                                                              )
-                                                                            )
-                                                                          )
-                                                                          tup-140
-                                                                        ]
-                                                                      ]
-                                                                    )
-                                                                    [
-                                                                      (force
-                                                                        (force
-                                                                          (builtin
-                                                                            fstPair
-                                                                          )
-                                                                        )
-                                                                      )
-                                                                      tup-140
-                                                                    ]
-                                                                  ]
-                                                                )
-                                                                [
-                                                                  (builtin
-                                                                    unConstrData
-                                                                  )
-                                                                  datum-139
-                                                                ]
-                                                              ]
-                                                            )
-                                                          )
-                                                          (delay
-                                                            [
-                                                              fail-1
-                                                              (con unit ())
-                                                            ]
-                                                          )
-                                                        )
+                                                        ]
                                                       )
-                                                    )
-                                                    [
-                                                      (force
-                                                        (force
-                                                          (builtin sndPair)
-                                                        )
-                                                      )
-                                                      tup-136
-                                                    ]
-                                                  ]
-                                                )
-                                              )
-                                            ]
-                                            (delay
-                                              (delay [ fail-1 (con unit ()) ])
-                                            )
-                                          ]
-                                        )
-                                      )
-                                    )
-                                    [
-                                      (builtin unConstrData)
-                                      [
-                                        [
-                                          cse-5
-                                          (lam
-                                            ds-145
-                                            (lam ds-146 (lam ds-147 ds-147))
-                                          )
-                                        ]
-                                        (lam void-148 (error))
-                                      ]
-                                    ]
-                                  ]
-                                ]
-                              )
-                              (lam
-                                `$dUnsafeFromData`-149
-                                (lam
-                                  d-150
-                                  [
-                                    (lam
-                                      tup-151
-                                      [
-                                        (lam
-                                          index-152
-                                          [
-                                            (lam
-                                              args-153
-                                              (force
-                                                (force
-                                                  [
-                                                    [
                                                       [
                                                         (force
-                                                          (builtin ifThenElse)
-                                                        )
-                                                        [
-                                                          [
-                                                            (builtin
-                                                              equalsInteger
-                                                            )
-                                                            (con integer 1)
-                                                          ]
-                                                          index-152
-                                                        ]
-                                                      ]
-                                                      (delay (delay (constr 1)))
-                                                    ]
-                                                    (delay
-                                                      (delay
-                                                        (force
                                                           (force
-                                                            [
-                                                              [
-                                                                [
-                                                                  (force
-                                                                    (builtin
-                                                                      ifThenElse
-                                                                    )
-                                                                  )
-                                                                  [
-                                                                    [
-                                                                      (builtin
-                                                                        equalsInteger
-                                                                      )
-                                                                      (con
-                                                                        integer
-                                                                        0
-                                                                      )
-                                                                    ]
-                                                                    index-152
-                                                                  ]
-                                                                ]
-                                                                (delay
-                                                                  (delay
-                                                                    (constr
-                                                                      0
-                                                                      [
-                                                                        `$dUnsafeFromData`-149
-                                                                        [
-                                                                          (force
-                                                                            (builtin
-                                                                              headList
-                                                                            )
-                                                                          )
-                                                                          args-153
-                                                                        ]
-                                                                      ]
-                                                                    )
-                                                                  )
-                                                                )
-                                                              ]
-                                                              (delay
-                                                                (delay
-                                                                  [
-                                                                    traceError-4
-                                                                    (con
-                                                                      string
-                                                                      "PT1"
-                                                                    )
-                                                                  ]
-                                                                )
-                                                              )
-                                                            ]
+                                                            (builtin sndPair)
                                                           )
                                                         )
-                                                      )
-                                                    )
-                                                  ]
+                                                        tup-227
+                                                      ]
+                                                    ]
+                                                  )
+                                                )
+                                              ]
+                                              (delay
+                                                (delay
+                                                  [ fail-226 (con unit ()) ]
                                                 )
                                               )
-                                            )
-                                            [
-                                              (force (force (builtin sndPair)))
-                                              tup-151
                                             ]
-                                          ]
+                                          )
                                         )
-                                        [
-                                          (force (force (builtin fstPair)))
-                                          tup-151
-                                        ]
-                                      ]
-                                    )
-                                    [ (builtin unConstrData) d-150 ]
-                                  ]
+                                      )
+                                      [ (builtin unConstrData) scrut-224 ]
+                                    ]
+                                  )
                                 )
                               )
                             ]
                           )
-                          [
+                          (lam
+                            `$dUnsafeFromData`-229
                             (lam
-                              tup-154
+                              d-230
                               [
                                 (lam
-                                  index-155
+                                  tup-231
                                   [
                                     (lam
-                                      args-156
-                                      (force
-                                        (force
-                                          [
-                                            [
+                                      index-232
+                                      [
+                                        (lam
+                                          args-233
+                                          (force
+                                            (force
                                               [
-                                                (force (builtin ifThenElse))
                                                 [
                                                   [
-                                                    (builtin equalsInteger)
-                                                    (con integer 0)
+                                                    (force (builtin ifThenElse))
+                                                    [
+                                                      [
+                                                        (builtin equalsInteger)
+                                                        (con integer 1)
+                                                      ]
+                                                      index-232
+                                                    ]
                                                   ]
-                                                  index-155
+                                                  (delay (delay (constr 1)))
                                                 ]
-                                              ]
-                                              (delay
                                                 (delay
-                                                  (constr
-                                                    0
-                                                    [
-                                                      (builtin unBData)
-                                                      [
-                                                        (force
-                                                          (builtin headList)
-                                                        )
-                                                        args-156
-                                                      ]
-                                                    ]
-                                                  )
-                                                )
-                                              )
-                                            ]
-                                            (delay
-                                              (delay
-                                                (force
-                                                  (force
-                                                    [
-                                                      [
-                                                        [
-                                                          (force
-                                                            (builtin ifThenElse)
-                                                          )
-                                                          [
-                                                            [
-                                                              (builtin
-                                                                equalsInteger
-                                                              )
-                                                              (con integer 1)
-                                                            ]
-                                                            index-155
-                                                          ]
-                                                        ]
-                                                        (delay
-                                                          (delay (constr 1))
-                                                        )
-                                                      ]
-                                                      (delay
-                                                        (delay
-                                                          [
-                                                            traceError-4
-                                                            (con string "PT1")
-                                                          ]
-                                                        )
-                                                      )
-                                                    ]
-                                                  )
-                                                )
-                                              )
-                                            )
-                                          ]
-                                        )
-                                      )
-                                    )
-                                    [
-                                      (force (force (builtin sndPair))) tup-154
-                                    ]
-                                  ]
-                                )
-                                [ (force (force (builtin fstPair))) tup-154 ]
-                              ]
-                            )
-                            [
-                              (builtin unConstrData)
-                              [
-                                [
-                                  cse-5
-                                  (lam ds-157 (lam ds-158 (lam ds-159 ds-158)))
-                                ]
-                                (lam void-160 (error))
-                              ]
-                            ]
-                          ]
-                        ]
-                      )
-                      (lam
-                        cont-161
-                        (lam
-                          fail-162
-                          [
-                            (lam
-                              l-163
-                              [
-                                (lam
-                                  l-164
-                                  [
-                                    [
-                                      [
-                                        cont-161
-                                        [ (force (builtin headList)) l-163 ]
-                                      ]
-                                      [ (force (builtin headList)) l-164 ]
-                                    ]
-                                    [
-                                      (force (builtin headList))
-                                      [ (force (builtin tailList)) l-164 ]
-                                    ]
-                                  ]
-                                )
-                                [ (force (builtin tailList)) l-163 ]
-                              ]
-                            )
-                            [
-                              (force (force (builtin sndPair)))
-                              [ (builtin unConstrData) scriptContextData-3 ]
-                            ]
-                          ]
-                        )
-                      )
-                    ]
-                  )
-                  (lam
-                    str-165
-                    [
-                      (lam x-166 (error))
-                      [ [ (force (builtin trace)) str-165 ] (constr 0) ]
-                    ]
-                  )
-                ]
-              )
-            )
-            [
-              (lam s-167 [ s-167 s-167 ])
-              (lam
-                s-168
-                (lam
-                  acc-169
-                  [
-                    [ caseList'-0 acc-169 ]
-                    (lam
-                      h-170
-                      (lam
-                        t-171
-                        [
-                          [
-                            (lam x-172 [ [ s-168 s-168 ] x-172 ])
-                            (force
-                              (force
-                                [
-                                  [
-                                    [
-                                      (force (builtin ifThenElse))
-                                      [
-                                        [
-                                          (builtin equalsInteger)
-                                          (con integer 1)
-                                        ]
-                                        [
-                                          (force (force (builtin fstPair)))
-                                          [
-                                            (builtin unConstrData)
-                                            [
-                                              (force (builtin headList))
-                                              [
-                                                (force
-                                                  (force (builtin sndPair))
-                                                )
-                                                [
-                                                  (builtin unConstrData)
-                                                  [
-                                                    (force (builtin headList))
-                                                    [
+                                                  (delay
+                                                    (force
                                                       (force
-                                                        (force
-                                                          (builtin sndPair)
-                                                        )
-                                                      )
-                                                      [
-                                                        (builtin unConstrData)
                                                         [
-                                                          (force
-                                                            (builtin headList)
-                                                          )
                                                           [
-                                                            (force
-                                                              (builtin tailList)
-                                                            )
                                                             [
                                                               (force
-                                                                (force
-                                                                  (builtin
-                                                                    sndPair
-                                                                  )
+                                                                (builtin
+                                                                  ifThenElse
                                                                 )
                                                               )
                                                               [
-                                                                (builtin
-                                                                  unConstrData
-                                                                )
-                                                                h-170
+                                                                [
+                                                                  (builtin
+                                                                    equalsInteger
+                                                                  )
+                                                                  (con
+                                                                    integer 0
+                                                                  )
+                                                                ]
+                                                                index-232
                                                               ]
                                                             ]
+                                                            (delay
+                                                              (delay
+                                                                (constr
+                                                                  0
+                                                                  [
+                                                                    `$dUnsafeFromData`-229
+                                                                    [
+                                                                      (force
+                                                                        (builtin
+                                                                          headList
+                                                                        )
+                                                                      )
+                                                                      args-233
+                                                                    ]
+                                                                  ]
+                                                                )
+                                                              )
+                                                            )
                                                           ]
+                                                          (delay
+                                                            (delay
+                                                              [
+                                                                traceError-2
+                                                                (con
+                                                                  string "PT1"
+                                                                )
+                                                              ]
+                                                            )
+                                                          )
                                                         ]
-                                                      ]
-                                                    ]
-                                                  ]
-                                                ]
+                                                      )
+                                                    )
+                                                  )
+                                                )
                                               ]
-                                            ]
-                                          ]
+                                            )
+                                          )
+                                        )
+                                        [
+                                          (force (force (builtin sndPair)))
+                                          tup-231
                                         ]
                                       ]
+                                    )
+                                    [
+                                      (force (force (builtin fstPair))) tup-231
+                                    ]
+                                  ]
+                                )
+                                [ (builtin unConstrData) d-230 ]
+                              ]
+                            )
+                          )
+                        ]
+                      )
+                      (lam d-234 d-234)
+                    ]
+                  )
+                  [
+                    (lam
+                      tup-235
+                      [
+                        (lam
+                          index-236
+                          [
+                            (lam
+                              args-237
+                              (force
+                                (force
+                                  [
+                                    [
+                                      [
+                                        (force (builtin ifThenElse))
+                                        [
+                                          [
+                                            (builtin equalsInteger)
+                                            (con integer 0)
+                                          ]
+                                          index-236
+                                        ]
+                                      ]
+                                      (delay
+                                        (delay
+                                          (constr
+                                            0
+                                            [
+                                              (builtin unBData)
+                                              [
+                                                (force (builtin headList))
+                                                args-237
+                                              ]
+                                            ]
+                                          )
+                                        )
+                                      )
                                     ]
                                     (delay
                                       (delay
-                                        [
-                                          [
-                                            (builtin addInteger) (con integer 1)
-                                          ]
-                                          acc-169
-                                        ]
+                                        (force
+                                          (force
+                                            [
+                                              [
+                                                [
+                                                  (force (builtin ifThenElse))
+                                                  [
+                                                    [
+                                                      (builtin equalsInteger)
+                                                      (con integer 1)
+                                                    ]
+                                                    index-236
+                                                  ]
+                                                ]
+                                                (delay (delay (constr 1)))
+                                              ]
+                                              (delay
+                                                (delay
+                                                  [
+                                                    traceError-2
+                                                    (con string "PT1")
+                                                  ]
+                                                )
+                                              )
+                                            ]
+                                          )
+                                        )
                                       )
                                     )
                                   ]
-                                  (delay (delay acc-169))
-                                ]
+                                )
                               )
                             )
+                            [ (force (force (builtin sndPair))) tup-235 ]
                           ]
-                          t-171
-                        ]
-                      )
+                        )
+                        [ (force (force (builtin fstPair))) tup-235 ]
+                      ]
                     )
+                    [
+                      (builtin unConstrData)
+                      [
+                        [ cse-3 (lam ds-238 (lam ds-239 (lam ds-240 ds-239))) ]
+                        (lam void-241 (error))
+                      ]
+                    ]
                   ]
-                )
-              )
-            ]
-          ]
-        )
-        (lam
-          ds-173
-          [
-            (lam x-174 (error))
-            [
-              [
-                (force (builtin trace))
-                (con string "Expected SpendingScript with datum")
-              ]
-              (constr 0)
-            ]
-          ]
-        )
-      ]
-    )
-    (lam
-      z-175
-      (lam
-        f-176
-        (lam
-          xs-177
-          (force
-            [
-              [ [ (force (force (builtin chooseList))) xs-177 ] (delay z-175) ]
-              (delay
-                [
-                  [ f-176 [ (force (builtin headList)) xs-177 ] ]
-                  [ (force (builtin tailList)) xs-177 ]
                 ]
               )
+              [ `$mScriptContext`-1 scriptContextData-0 ]
+            ]
+          )
+          (lam
+            str-242
+            [
+              (lam x-243 (error))
+              [ [ (force (builtin trace)) str-242 ] (constr 0) ]
+            ]
+          )
+        ]
+      )
+      (lam
+        scrut-244
+        (lam
+          cont-245
+          (lam
+            fail-246
+            [
+              (lam
+                l-247
+                [
+                  (lam
+                    l-248
+                    [
+                      [
+                        [ cont-245 [ (force (builtin headList)) l-247 ] ]
+                        [ (force (builtin headList)) l-248 ]
+                      ]
+                      [
+                        (force (builtin headList))
+                        [ (force (builtin tailList)) l-248 ]
+                      ]
+                    ]
+                  )
+                  [ (force (builtin tailList)) l-247 ]
+                ]
+              )
+              [
+                (force (force (builtin sndPair)))
+                [ (builtin unConstrData) scrut-244 ]
+              ]
             ]
           )
         )
       )
-    )
-  ]
+    ]
+  )
 )

@@ -33,7 +33,7 @@ module HTLC (
 ) where
 
 import PlutusLedgerApi.Data.V3
-import PlutusLedgerApi.V3.Data.Contexts (txSignedBy)
+import PlutusLedgerApi.V3.Data.Contexts (findOwnInput, txSignedBy)
 import PlutusTx
 import PlutusTx.Builtins (
   equalsByteString,
@@ -104,7 +104,7 @@ validateClaim ctx HTLCDatum {recipient, secretHash, timeout} preimage =
         traceError "Preimage does not match stored hash"
     | lessThanEqualsInteger timeoutInt currentTime ->
         traceError "Claim not permitted at or after timeout"
-    | not (equalsInteger (countScriptInputs txInfo) 1) ->
+    | not (equalsInteger (countScriptInputs txInfo ownScriptHash) 1) ->
         traceError "Double satisfaction"
     | otherwise -> unitval
   where
@@ -113,6 +113,7 @@ validateClaim ctx HTLCDatum {recipient, secretHash, timeout} preimage =
     signed = txSignedBy txInfo (PubKeyHash recipientHash)
     POSIXTime currentTime = lowerBoundTime (txInfoValidRange txInfo)
     POSIXTime timeoutInt = timeout
+    ownScriptHash = ownInputScriptHash ctx
 
 -- | Validates refund: payer reclaims funds after timeout.
 {-# INLINEABLE validateRefund #-}
@@ -123,7 +124,7 @@ validateRefund ctx HTLCDatum {payer, timeout} =
         traceError "Missing payer signature"
     | lessThanEqualsInteger currentTime timeoutInt ->
         traceError "Refund not permitted until after timeout"
-    | not (equalsInteger (countScriptInputs txInfo) 1) ->
+    | not (equalsInteger (countScriptInputs txInfo ownScriptHash) 1) ->
         traceError "Double satisfaction"
     | otherwise -> unitval
   where
@@ -131,6 +132,7 @@ validateRefund ctx HTLCDatum {payer, timeout} =
     payerHash = extractPubKeyHash payer
     POSIXTime currentTime = lowerBoundTime (txInfoValidRange txInfo)
     POSIXTime timeoutInt = timeout
+    ownScriptHash = ownInputScriptHash ctx
 
 --------------------------------------------------------------------------------
 -- Helper Functions ------------------------------------------------------------
@@ -152,18 +154,29 @@ extractPubKeyHash :: Address -> BuiltinByteString
 extractPubKeyHash (Address (PubKeyCredential (PubKeyHash pkh)) _) = pkh
 extractPubKeyHash _ = traceError "Expected PubKeyCredential address"
 
--- | Count script inputs in the transaction (inputs whose address is a script credential).
+-- | Count inputs whose address is a script credential matching the given hash.
 {-# INLINEABLE countScriptInputs #-}
-countScriptInputs :: TxInfo -> Integer
-countScriptInputs txInfo =
+countScriptInputs :: TxInfo -> BuiltinByteString -> Integer
+countScriptInputs txInfo scriptHash =
   List.foldl
     ( \acc TxInInfo {txInInfoResolved = TxOut {txOutAddress}} ->
         case txOutAddress of
-          Address (ScriptCredential _) _ -> acc + 1
+          Address (ScriptCredential (ScriptHash sh)) _ ->
+            if sh == scriptHash then acc + 1 else acc
           _ -> acc
     )
     0
     (txInfoInputs txInfo)
+
+-- | Look up the script hash of the currently-spending input.
+{-# INLINEABLE ownInputScriptHash #-}
+ownInputScriptHash :: ScriptContext -> BuiltinByteString
+ownInputScriptHash ctx = case findOwnInput ctx of
+  Just TxInInfo {txInInfoResolved = TxOut {txOutAddress}} ->
+    case txOutAddress of
+      Address (ScriptCredential (ScriptHash sh)) _ -> sh
+      _ -> traceError "Own input address is not a script credential"
+  Nothing -> traceError "Own input not found"
 
 -- | Extract HTLCDatum from SpendingScript info.
 {-# INLINEABLE spendingDatum #-}

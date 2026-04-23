@@ -151,6 +151,39 @@ spec = do
                 ]
       expectFailure evaluateValidator ctx
 
+    -- An unrelated script input co-spent in the same tx must not trip the
+    -- double-satisfaction guard. The spec pins the count to "exactly one
+    -- input from *this* script address", not "exactly one script input
+    -- overall" — otherwise the validator wrongly rejects legitimate
+    -- multi-script transactions.
+    it "succeeds when tx co-spends an unrelated script input" do
+      let otherScriptAddr =
+            Address
+              ( ScriptCredential
+                  (ScriptHash "2222222222222222222222222222222222222222222222222222222222")
+              )
+              Nothing
+          otherScriptIn =
+            TxInInfo
+              ( TxOutRef
+                  (TxId "5555555555555555555555555555555555555555555555555555555555555555")
+                  0
+              )
+              ( TxOut otherScriptAddr (lovelaceValue (Lovelace 1_000_000)) NoOutputDatum Nothing
+              )
+          ctx =
+            buildContextData $
+              ScriptContextBuilder
+                SpendingBaseline
+                [ SetRedeemer Fixed.claimRedeemer
+                , SetScriptDatum Fixed.htlcDatum
+                , AddSignature Fixed.recipientKeyHash
+                , SetValidRange (Just (POSIXTime 50)) Nothing
+                , AddInputUTXO Fixed.txOutRef Fixed.lockedValue True (OutputDatum Fixed.htlcDatum)
+                , AddInputUTXORaw otherScriptIn
+                ]
+      expectSuccess evaluateValidator ctx
+
   describe "Refund" do
     it "succeeds just after timeout (time=101)" do
       let ctx = refundContext 101

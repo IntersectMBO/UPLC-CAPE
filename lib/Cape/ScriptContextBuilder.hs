@@ -29,6 +29,7 @@ data PatchOperation
   | RemoveSignature PubKeyHash
   | SetRedeemer Redeemer
   | AddInputUTXO TxOutRef Value Bool OutputDatum
+  | AddInputUTXORaw TxInInfo
   | SetValidRange (Maybe POSIXTime) (Maybe POSIXTime)
   | SetValidRangeRaw POSIXTimeRange
   | AddOutputUTXO Address Value
@@ -149,6 +150,11 @@ applyPatch ctx patch =
                 "AddInputUTXO with is_own_input=true can only be applied to spending scripts"
                 patch
         else pure updatedCtx
+    AddInputUTXORaw txIn -> do
+      let txInfo = scriptContextTxInfo ctx
+          updatedInputs = List.cons txIn (txInfoInputs txInfo)
+          updatedTxInfo = txInfo {txInfoInputs = updatedInputs}
+      pure $ ctx {scriptContextTxInfo = updatedTxInfo}
     SetValidRange fromTime toTime -> do
       let txInfo = scriptContextTxInfo ctx
           newRange =
