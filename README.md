@@ -132,6 +132,8 @@ For implementation details, see [ADR: PR Preview Deployment](doc/adr/20251022-pr
 | [Factorial](scenarios/factorial/factorial.md) | Synthetic | Recursive algorithm performance | Ready |
 | [Factorial (Naive Recursion)](scenarios/factorial_naive_recursion/factorial_naive_recursion.md) | Synthetic | Prescribed naive recursive algorithm for compiler optimization comparison | Ready |
 | [Two-Party Escrow](scenarios/two_party_escrow/two_party_escrow.md) | Real-world | Smart contract escrow validator | Ready |
+| [Linear Vesting](scenarios/linear_vesting/linear_vesting.md) | Real-world | Time-based token vesting validator | Ready |
+| [HTLC](scenarios/htlc/htlc.md) | Real-world | Hashed time-locked contract validator | Ready |
 | Streaming Payments | Real-world | Payment channel implementation | Planned |
 | Simple DAO Voting | Real-world | Governance mechanism | Planned |
 | Time-locked Staking | Real-world | Staking protocol | Planned |
