@@ -8,3 +8,4 @@ dist-newstyle/
 build-and-deploy.sh
 result
 result-*
+*.code-workspace

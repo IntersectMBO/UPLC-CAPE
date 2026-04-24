@@ -102,7 +102,7 @@ validateClaim ctx HTLCDatum {recipient, secretHash, timeout} preimage =
         traceError "Missing recipient signature"
     | not (equalsByteString (sha2_256 preimage) secretHash) ->
         traceError "Preimage does not match stored hash"
-    | lessThanEqualsInteger timeoutInt currentTime ->
+    | lessThanEqualsInteger timeoutInt upperTime ->
         traceError "Claim not permitted at or after timeout"
     | not (equalsInteger (countScriptInputs txInfo ownScriptHash) 1) ->
         traceError "Double satisfaction"
@@ -111,7 +111,7 @@ validateClaim ctx HTLCDatum {recipient, secretHash, timeout} preimage =
     txInfo = scriptContextTxInfo ctx
     recipientHash = extractPubKeyHash recipient
     signed = txSignedBy txInfo (PubKeyHash recipientHash)
-    POSIXTime currentTime = lowerBoundTime (txInfoValidRange txInfo)
+    POSIXTime upperTime = upperBoundTime (txInfoValidRange txInfo)
     POSIXTime timeoutInt = timeout
     ownScriptHash = ownInputScriptHash ctx
 
@@ -146,7 +146,17 @@ there but not re-exported.
 lowerBoundTime :: POSIXTimeRange -> POSIXTime
 lowerBoundTime (Interval (LowerBound (Finite t) True) _) = t
 lowerBoundTime (Interval (LowerBound (Finite (POSIXTime t)) False) _) = POSIXTime (t + 1)
-lowerBoundTime _ = traceError "Time range not Finite"
+lowerBoundTime _ = traceError "Lower bound of valid range must be finite"
+
+{- | Extract the normalised inclusive upper bound from a POSIXTimeRange,
+failing if it is not finite. Used by 'validateClaim' to check that the
+transaction's validity window ends strictly before the timeout.
+-}
+{-# INLINEABLE upperBoundTime #-}
+upperBoundTime :: POSIXTimeRange -> POSIXTime
+upperBoundTime (Interval _ (UpperBound (Finite t) True)) = t
+upperBoundTime (Interval _ (UpperBound (Finite (POSIXTime t)) False)) = POSIXTime (t - 1)
+upperBoundTime _ = traceError "Upper bound of valid range must be finite"
 
 -- | Extract PubKeyHash bytes from an Address.
 {-# INLINEABLE extractPubKeyHash #-}

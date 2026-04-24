@@ -70,8 +70,8 @@ When testing this validator, the test framework uses generic dummy constants for
 
 - The validator is spending from a script address with the above dummy script hash
 - No continuing output is required: both claim and refund fully consume the script UTXO
-- Claim validation requires recipient signature, a preimage whose SHA-256 digest matches the datum hash, and current time strictly less than the timeout
-- Refund validation requires payer signature and current time strictly greater than the timeout
+- Claim validation requires recipient signature, a preimage whose SHA-256 digest matches the datum hash, and the upper bound of the valid range to be finite and strictly less than the timeout
+- Refund validation requires payer signature and the lower bound of the valid range to be finite and strictly greater than the timeout
 
 **Test Framework Behavior:**
 
@@ -91,8 +91,8 @@ flowchart LR
 
 | Current State | Event | Condition | Next State |
 | --- | --- | --- | --- |
-| **Locked** | `Claim(preimage)` | `sha2_256(preimage) == hash`, recipient sig, `currentTime < timeout` | **Claimed** |
-| **Locked** | `Refund()` | Payer sig, `currentTime > timeout` | **Refunded** |
+| **Locked** | `Claim(preimage)` | `sha2_256(preimage) == hash`, recipient sig, `upperBound(validRange) < timeout` | **Claimed** |
+| **Locked** | `Refund()` | Payer sig, `lowerBound(validRange) > timeout` | **Refunded** |
 | **Claimed** | - | Funds delivered to recipient | **Final** |
 | **Refunded** | - | Funds returned to payer | **Final** |
 
@@ -103,7 +103,7 @@ flowchart LR
 - **Refunded**: Payer has reclaimed the funds after the timeout expired without a successful claim.
 - **Final**: Terminal state, no UTXO remains at the script address.
 
-**Note**: The two paths are mutually exclusive at the validator level via the temporal check: claim requires `currentTime < timeout`, refund requires `currentTime > timeout`, and both use the **strict** comparison against the lower bound of the transaction's valid range.
+**Note**: The two paths are mutually exclusive at the validator level via the temporal check: claim requires the **upper bound** of the transaction's valid range to be finite and strictly less than `timeout`, while refund requires the **lower bound** to be finite and strictly greater than `timeout`. Both comparisons are strict.
 
 ## View 2: Transaction Sequence View
 
@@ -187,16 +187,16 @@ Both **Claim** and **Refund** sequences are measured for comprehensive performan
 
 - **Authorization**: Transaction signed by recipient's PubKeyHash
 - **Preimage Check**: `sha2_256(preimage) == hash` (the datum's stored digest)
-- **Time Check**: Current time (lower bound of valid range) must be strictly less than `timeout`
+- **Time Check**: Upper bound of valid range must be finite and strictly less than `timeout`
 - **Single Script Input**: Exactly one input from this script address (prevents double satisfaction)
 
 #### Refund Operation (Redeemer = 1())
 
 - **Authorization**: Transaction signed by payer's PubKeyHash
-- **Time Check**: Current time (lower bound of valid range) must be strictly greater than `timeout`
+- **Time Check**: Lower bound of valid range must be finite and strictly greater than `timeout`
 - **Single Script Input**: Exactly one input from this script address (prevents double satisfaction)
 
-**Note on time semantics**: The validator reads the **lower bound** of `txInfoValidRange` and treats it as "current time". For a finite inclusive lower bound `t`, `currentTime = t`; for a finite exclusive lower bound, `currentTime = t + 1`. An infinite lower bound is rejected. This mirrors the convention used by the Linear Vesting and Two-Party Escrow scenarios.
+**Note on time semantics**: For the claim path the validator reads the **upper bound** of `txInfoValidRange`; it must be finite (an infinite upper bound is rejected) and must satisfy `upperBound < timeout` (strict). For the refund path the validator reads the **lower bound**; it must be finite (an infinite lower bound is rejected) and must satisfy `lowerBound > timeout` (strict). For a finite inclusive upper bound `t`, `upperBound = t`; for a finite exclusive upper bound `t`, `upperBound = t − 1`. Symmetrically for the lower bound: inclusive `t` ⇒ `lowerBound = t`; exclusive `t` ⇒ `lowerBound = t + 1`. This is the production-safe convention — using the upper bound for the "before deadline" check guarantees the real block time cannot exceed the deadline even when the transaction specifies an unusually wide validity range. Linear Vesting and Two-Party Escrow currently use a different convention; unification is tracked in a follow-up issue.
 
 ## Test Constants and Fixed Values
 
@@ -245,11 +245,13 @@ The HTLC tests rely on a consistent set of fixed constants to ensure reproducibl
 
 **Temporal Boundaries:**
 
-- **Well Before Timeout**: time=50 — Valid for claim
-- **Just Before Timeout**: time=99 — Valid for claim
+Claim fixtures use a point interval `[t, t]` so the upper bound equals `t`; refund fixtures use `[t, +∞)` so the lower bound equals `t`.
+
+- **Well Before Timeout**: time=50 — Valid for claim (upperBound=50 < 100)
+- **Just Before Timeout**: time=99 — Valid for claim (upperBound=99 < 100)
 - **At Timeout**: time=100 — Should fail for both claim and refund (strict comparisons)
-- **Just After Timeout**: time=101 — Valid for refund
-- **Well After Timeout**: time=200 — Valid for refund
+- **Just After Timeout**: time=101 — Valid for refund (lowerBound=101 > 100)
+- **Well After Timeout**: time=200 — Valid for refund (lowerBound=200 > 100)
 
 ## Test Cases
 
@@ -299,6 +301,8 @@ The HTLC validator is tested through a comprehensive suite of test cases coverin
 
 - **`claim_after_timeout`** Verifies claim fails at time=150 (after timeout), even with correct preimage and recipient signature.
 
+- **`claim_infinite_upper_bound`** Verifies claim fails when the validity range has no upper bound (`[50, +∞)`). The validator rejects an infinite upper bound.
+
 ### Claim Double Satisfaction Test
 
 - **`claim_double_satisfaction`** Verifies claim fails when there are two inputs from the script address. The single-script-input check prevents double satisfaction attacks.
@@ -316,6 +320,8 @@ The HTLC validator is tested through a comprehensive suite of test cases coverin
 - **`refund_before_timeout`** Verifies refund fails at time=50, before the timeout. The payer must wait until after the deadline.
 
 - **`refund_at_timeout`** Verifies refund fails at time=100, exactly at the timeout boundary. The check is strictly greater than, so equal is not sufficient.
+
+- **`refund_infinite_lower_bound`** Verifies refund fails when the validity range has no lower bound (`(−∞, 200]`). The validator rejects an infinite lower bound.
 
 ### Refund Double Satisfaction Test
 
