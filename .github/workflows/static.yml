@@ -29,7 +29,7 @@ jobs:
         uses: wimpysworld/nothing-but-nix@main
 
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Install Nix
         uses: cachix/install-nix-action@v31
@@ -38,7 +38,7 @@ jobs:
             accept-flake-config = true
 
       - name: Use Cachix (pull/push if token provided)
-        uses: cachix/cachix-action@v15
+        uses: cachix/cachix-action@v17
         with:
           name: uplc-cape
           authToken: ${{ secrets.CACHIX_AUTH_TOKEN }}
@@ -47,7 +47,7 @@ jobs:
         run: nix build .#measure --accept-flake-config -o result
 
       - name: Upload measure executable
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: measure-executable
           path: result/bin/measure
@@ -59,7 +59,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           fetch-depth: 0 # Needed for PR number detection
 
@@ -70,13 +70,13 @@ jobs:
             accept-flake-config = true
 
       - name: Use Cachix (pull/push if token provided)
-        uses: cachix/cachix-action@v15
+        uses: cachix/cachix-action@v17
         with:
           name: uplc-cape
           authToken: ${{ secrets.CACHIX_AUTH_TOKEN }}
 
       - name: Download measure executable
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           name: measure-executable
           path: result/bin
