@@ -70,7 +70,11 @@ spec = do
                 ]
       expectFailure evaluateValidator ctx
 
-    it "succeeds with exclusive upper bound just before timeout+1 (effective upperBound=99)" do
+    -- Companion to the test above: same exclusive-upperBound branch,
+    -- but with raw value = timeout (not timeout+1), so the effective
+    -- upper is 99 and the claim must succeed. Pins the `t - 1` offset
+    -- inside upperBoundTime.
+    it "succeeds with exclusive upper bound at timeout (effective upperBound=99)" do
       let range =
             Interval
               (LowerBound NegInf True)
