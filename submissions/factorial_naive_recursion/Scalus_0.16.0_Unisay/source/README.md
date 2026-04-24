@@ -1,10 +1,10 @@
 # Scalus Factorial Naive Recursion Implementation
 
-**Source Code**: [FactorialNaiveRecursion.scala](https://github.com/Unisay/scalus-cape-submissions/blob/e02e7f74322a81622ff51bb41c6d671e09032379/src/factorial_naive_recursion/FactorialNaiveRecursion.scala)
+**Source Code**: [FactorialNaiveRecursion.scala](https://github.com/Unisay/scalus-cape-submissions/blob/2126a807bbe2a744e2b924bda3099881e09d969f/src/factorial_naive_recursion/FactorialNaiveRecursion.scala)
 
 **Repository**: <https://github.com/Unisay/scalus-cape-submissions>
 
-**Commit**: `e02e7f74322a81622ff51bb41c6d671e09032379`
+**Commit**: `2126a807bbe2a744e2b924bda3099881e09d969f`
 
 **Path**: `src/factorial_naive_recursion/FactorialNaiveRecursion.scala`
 
@@ -22,7 +22,7 @@ This submission uses Scalus compiler version 0.16.0 with a naive recursive imple
 2. Check out the specific commit:
 
    ```bash
-   git checkout e02e7f74322a81622ff51bb41c6d671e09032379
+   git checkout 2126a807bbe2a744e2b924bda3099881e09d969f
    ```
 
 3. Follow build instructions in the repository README

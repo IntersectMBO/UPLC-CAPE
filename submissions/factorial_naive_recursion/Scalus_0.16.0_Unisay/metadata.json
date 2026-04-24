@@ -19,7 +19,7 @@
     "date": "2026-04-21T12:00:00Z",
     "source_available": true,
     "source_repository": "https://github.com/Unisay/scalus-cape-submissions",
-    "source_commit_hash": "e02e7f74322a81622ff51bb41c6d671e09032379",
-    "implementation_notes": "Scalus with default options (naive recursive implementation, no optimization)"
+    "source_commit_hash": "2126a807bbe2a744e2b924bda3099881e09d969f",
+    "implementation_notes": "Scalus with default options (naive recursive implementation, no optimization). AST-level alpha-rename pass applied: all generated identifiers rewritten to short purely-alphabetic names before serialisation."
   }
 }
