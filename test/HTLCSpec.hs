@@ -50,14 +50,14 @@ spec = do
       let ctx = claimContext 150 Fixed.correctPreimage
       expectFailure evaluateValidator ctx
 
-    -- Exercises the exclusive-lowerBound branch of lowerBoundTime:
-    -- LowerBound Finite 99 Exclusive is equivalent to inclusive time=100,
+    -- Exercises the exclusive-upperBound branch of upperBoundTime:
+    -- UpperBound Finite 101 Exclusive is equivalent to inclusive upperBound=100,
     -- which equals the timeout and must be rejected.
-    it "fails with exclusive lower bound at timeout-1 (effective time=100)" do
+    it "fails with exclusive upper bound at timeout+1 (effective upperBound=100)" do
       let range =
             Interval
-              (LowerBound (Finite (POSIXTime 99)) False)
-              (UpperBound PosInf True)
+              (LowerBound NegInf True)
+              (UpperBound (Finite (POSIXTime 101)) False)
           ctx =
             buildContextData $
               ScriptContextBuilder
@@ -70,10 +70,10 @@ spec = do
                 ]
       expectFailure evaluateValidator ctx
 
-    it "fails with non-finite (NegInf) lower bound" do
+    it "fails with non-finite (PosInf) upper bound" do
       let range =
             Interval
-              (LowerBound NegInf True)
+              (LowerBound (Finite (POSIXTime 50)) True)
               (UpperBound PosInf True)
           ctx =
             buildContextData $
@@ -102,7 +102,7 @@ spec = do
                 SpendingBaseline
                 [ SetRedeemer Fixed.claimRedeemer
                 , SetScriptDatum Fixed.htlcDatum
-                , SetValidRange (Just (POSIXTime 50)) Nothing
+                , SetValidRange (Just (POSIXTime 50)) (Just (POSIXTime 50))
                 , AddInputUTXO Fixed.txOutRef Fixed.lockedValue True (OutputDatum Fixed.htlcDatum)
                 ]
       expectFailure evaluateValidator ctx
@@ -115,7 +115,7 @@ spec = do
                 [ SetRedeemer Fixed.claimRedeemer
                 , SetScriptDatum Fixed.htlcDatum
                 , AddSignature Fixed.payerKeyHash
-                , SetValidRange (Just (POSIXTime 50)) Nothing
+                , SetValidRange (Just (POSIXTime 50)) (Just (POSIXTime 50))
                 , AddInputUTXO Fixed.txOutRef Fixed.lockedValue True (OutputDatum Fixed.htlcDatum)
                 ]
       expectFailure evaluateValidator ctx
@@ -128,7 +128,7 @@ spec = do
                 [ SetRedeemer Fixed.claimRedeemer
                 , SetScriptDatum Fixed.htlcDatum
                 , AddSignature Fixed.impostorPubkey
-                , SetValidRange (Just (POSIXTime 50)) Nothing
+                , SetValidRange (Just (POSIXTime 50)) (Just (POSIXTime 50))
                 , AddInputUTXO Fixed.txOutRef Fixed.lockedValue True (OutputDatum Fixed.htlcDatum)
                 ]
       expectFailure evaluateValidator ctx
@@ -141,7 +141,7 @@ spec = do
                 [ SetRedeemer Fixed.claimRedeemer
                 , SetScriptDatum Fixed.htlcDatum
                 , AddSignature Fixed.recipientKeyHash
-                , SetValidRange (Just (POSIXTime 50)) Nothing
+                , SetValidRange (Just (POSIXTime 50)) (Just (POSIXTime 50))
                 , AddInputUTXO Fixed.txOutRef Fixed.lockedValue True (OutputDatum Fixed.htlcDatum)
                 , AddInputUTXO
                     Fixed.txOutRef2
@@ -178,7 +178,7 @@ spec = do
                 [ SetRedeemer Fixed.claimRedeemer
                 , SetScriptDatum Fixed.htlcDatum
                 , AddSignature Fixed.recipientKeyHash
-                , SetValidRange (Just (POSIXTime 50)) Nothing
+                , SetValidRange (Just (POSIXTime 50)) (Just (POSIXTime 50))
                 , AddInputUTXO Fixed.txOutRef Fixed.lockedValue True (OutputDatum Fixed.htlcDatum)
                 , AddInputUTXORaw otherScriptIn
                 ]
@@ -219,6 +219,23 @@ spec = do
 
     it "fails before timeout (time=50)" do
       let ctx = refundContext 50
+      expectFailure evaluateValidator ctx
+
+    it "fails with non-finite (NegInf) lower bound" do
+      let range =
+            Interval
+              (LowerBound NegInf True)
+              (UpperBound PosInf True)
+          ctx =
+            buildContextData $
+              ScriptContextBuilder
+                SpendingBaseline
+                [ SetRedeemer Fixed.refundRedeemer
+                , SetScriptDatum Fixed.htlcDatum
+                , AddSignature Fixed.payerKeyHash
+                , SetValidRangeRaw range
+                , AddInputUTXO Fixed.txOutRef Fixed.lockedValue True (OutputDatum Fixed.htlcDatum)
+                ]
       expectFailure evaluateValidator ctx
 
     it "fails without payer signature" do
@@ -307,7 +324,9 @@ spec = do
 --------------------------------------------------------------------------------
 -- Helpers ---------------------------------------------------------------------
 
--- | Build a Claim context with given time and preimage.
+-- | Build a Claim context with given time and preimage. The validity range
+--   is a point interval @[time, time]@ so the upper bound equals @time@
+--   (claim reads the upper bound of the valid range).
 claimContext :: Integer -> BuiltinByteString -> BuiltinData
 claimContext time preimage =
   buildContextData $
@@ -316,7 +335,7 @@ claimContext time preimage =
       [ SetRedeemer (Fixed.claimRedeemerWith preimage)
       , SetScriptDatum Fixed.htlcDatum
       , AddSignature Fixed.recipientKeyHash
-      , SetValidRange (Just (POSIXTime time)) Nothing
+      , SetValidRange (Just (POSIXTime time)) (Just (POSIXTime time))
       , AddInputUTXO Fixed.txOutRef Fixed.lockedValue True (OutputDatum Fixed.htlcDatum)
       ]
 

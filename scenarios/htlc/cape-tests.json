@@ -37,7 +37,8 @@
           },
           {
             "op": "set_valid_range",
-            "from_time": 50
+            "from_time": 50,
+            "to_time": 50
           },
           {
             "op": "add_input_utxo",
@@ -191,7 +192,8 @@
             "patches": [
               {
                 "op": "set_valid_range",
-                "from_time": 99
+                "from_time": 99,
+                "to_time": 99
               }
             ]
           }
@@ -364,7 +366,8 @@
             "patches": [
               {
                 "op": "set_valid_range",
-                "from_time": 100
+                "from_time": 100,
+                "to_time": 100
               }
             ]
           }
@@ -385,7 +388,29 @@
             "patches": [
               {
                 "op": "set_valid_range",
-                "from_time": 150
+                "from_time": 150,
+                "to_time": 150
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "claim_infinite_upper_bound",
+      "description": "Claim with from_time=50 and no upper bound (+inf) should fail; the upper bound must be finite",
+      "expected": {
+        "type": "error"
+      },
+      "inputs": [
+        {
+          "type": "script_context",
+          "script_context": {
+            "baseline": "@successful_claim",
+            "patches": [
+              {
+                "op": "set_valid_range",
+                "from_time": 50
               }
             ]
           }
@@ -525,6 +550,27 @@
               {
                 "op": "set_valid_range",
                 "from_time": 100
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "refund_infinite_lower_bound",
+      "description": "Refund with no lower bound (-inf) should fail; the lower bound must be finite",
+      "expected": {
+        "type": "error"
+      },
+      "inputs": [
+        {
+          "type": "script_context",
+          "script_context": {
+            "baseline": "@successful_refund",
+            "patches": [
+              {
+                "op": "set_valid_range",
+                "to_time": 200
               }
             ]
           }
