@@ -1,0 +1,25 @@
+{
+  "compiler": {
+    "name": "Scalus",
+    "version": "0.16.0",
+    "commit_hash": "bc4614a71ab491622da8c173920705348d516cf1"
+  },
+  "compilation_config": {
+    "optimization_level": "Scalus",
+    "target": "uplc",
+    "flags": ["Scalus"]
+  },
+  "contributors": [
+    {
+      "name": "Unisay",
+      "organization": "Intersect MBO"
+    }
+  ],
+  "submission": {
+    "date": "2026-04-24T12:48:44Z",
+    "source_available": true,
+    "source_repository": "https://github.com/Unisay/scalus-cape-submissions",
+    "source_commit_hash": "9cdace4a7369954f470d73a58f3c902e4427c439",
+    "implementation_notes": "Scalus 0.16.0 HTLC spending validator (`@Compile object HTLCValidator`, `Data -> Unit`). Derives FromData/ToData for HTLCDatum and HTLCRedeemer. Claim reads the upper bound of `txInfoValidRange` (finite, strictly `< timeout`); refund reads the lower bound (finite, strictly `> timeout`). Matches the production-safe convention introduced in IntersectMBO/UPLC-CAPE#170. Uses `toUplc()` instead of `toUplcOptimized()` to avoid CaseConstrApply syntax rejected by plutus-core 1.45.0.0 (upstream: IntersectMBO/plutus#7742). Post-processing renames NAME-NNNNrMMMM identifiers (Scalus refresh-counter suffix) to NAME_NNNNrMMMM so the plutus-core unique-suffix parser (Lex.decimal after hyphen) does not split the name incorrectly."
+  }
+}
