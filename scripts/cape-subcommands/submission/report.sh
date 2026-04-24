@@ -130,20 +130,36 @@ else
   cp -f "$PROJECT_ROOT/uplc-cape-logo.png" "$report_dir/uplc-cape-logo.png"
 fi
 
+# Cached aggregate CSV per target filter, populated on first fetch. Lives in the
+# outer shell — subshells (command substitution) can only read it, not mutate
+# it, so we fill it eagerly via `aggregate_csv_cache` before entering any loop.
+declare -A AGGREGATE_CSV=()
+
+# Populate AGGREGATE_CSV[<target_filter>] if not already set. Call from the outer
+# shell before using fetch_benchmark_csv in a $(...) context.
+aggregate_csv_cache() {
+  local target_filter="${1:-}"
+  if [ -n "${AGGREGATE_CSV[$target_filter]+set}" ]; then
+    return 0
+  fi
+  local aggregate_args=()
+  if [ -n "$target_filter" ]; then
+    aggregate_args+=("--target=$target_filter")
+  fi
+  AGGREGATE_CSV[$target_filter]=$($CAPE_CMD submission aggregate "${aggregate_args[@]}")
+}
+
 # Fetch CSV rows for one benchmark, dropping template placeholders and rows with empty core metrics.
 fetch_benchmark_csv() {
   local benchmark="$1"
   local target_filter="${2:-}"
-  local aggregate_args=() csv_data
-  if [ -n "$target_filter" ]; then
-    aggregate_args+=("--target=$target_filter")
-  fi
-  csv_data=$($CAPE_CMD submission aggregate "${aggregate_args[@]}" | grep "^$benchmark," || true)
+  local csv_data
+  csv_data=$(printf '%s' "${AGGREGATE_CSV[$target_filter]:-}" | grep "^$benchmark," || true)
   if [ -z "$csv_data" ]; then
     return 0
   fi
-  echo "$csv_data" | grep -v '<.*>' |
-    awk -F, \
+  echo "$csv_data" | grep -v '<.*>' \
+    | awk -F, \
       -v cpu="${CSV_COL[cpu_units]}" \
       -v mem="${CSV_COL[memory_units]}" \
       -v size="${CSV_COL[script_size_bytes]}" \
@@ -620,8 +636,8 @@ EOF
 # computes delta percentages. Outputs JSON to stdout.
 build_compiler_comparison_stats() {
   local current_csv preview_csv
-  current_csv=$($CAPE_CMD submission aggregate --target=current 2>/dev/null | tail -n +2)
-  preview_csv=$($CAPE_CMD submission aggregate --target=preview 2>/dev/null | tail -n +2)
+  current_csv=$($CAPE_CMD submission aggregate --target=current 2> /dev/null | tail -n +2)
+  preview_csv=$($CAPE_CMD submission aggregate --target=preview 2> /dev/null | tail -n +2)
 
   if [ -z "$preview_csv" ]; then
     echo '{"generated_at":"'"$(date -u +"%Y-%m-%dT%H:%M:%SZ")"'","compilers":[]}'
@@ -738,6 +754,9 @@ if [ "$1" = "--all" ]; then
 
   benchmarks_with_submissions=""
 
+  # Compute aggregate CSV once up front; each benchmark iteration filters it.
+  aggregate_csv_cache "current"
+
   for benchmark in $all_benchmarks; do
     if [ -d "$PROJECT_ROOT/submissions/$benchmark" ] && [ "$(find "$PROJECT_ROOT/submissions/$benchmark" -mindepth 1 -maxdepth 1 -type d ! -name "TEMPLATE" 2> /dev/null | wc -l)" -gt 0 ]; then
       echo "Processing $benchmark..."
@@ -838,6 +857,9 @@ else
 
   echo "🚀 Generating HTML Performance Report - $benchmark"
   echo "================================================="
+
+  # Compute aggregate CSV once; fetch_benchmark_csv filters it from the cache.
+  aggregate_csv_cache ""
 
   if [ -d "$PROJECT_ROOT/submissions/$benchmark" ] && [ "$(find "$PROJECT_ROOT/submissions/$benchmark" -mindepth 1 -maxdepth 1 -type d ! -name "TEMPLATE" 2> /dev/null | wc -l)" -gt 0 ]; then
     if ! generate_benchmark_data_json "$benchmark" "$report_dir"; then

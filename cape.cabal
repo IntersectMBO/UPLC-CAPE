@@ -14,7 +14,9 @@ category:      Blockchain
 license:       Apache-2.0
 
 flag preview
-  description: Enable preview modules (requires plutus-tx-plugin with BuiltinCasing support)
+  description:
+    Enable preview modules (requires plutus-tx-plugin with BuiltinCasing support)
+
   default:     False
   manual:      True
 
@@ -86,14 +88,17 @@ library
     Cape.ScriptContextBuilder
     Cape.Tests
     Cape.Verify
+    Cape.WritePlc
     Ecd
     Factorial
     Fibonacci
     FibonacciIterative
-    PlutusCore.Data.Compact.Parser
-    PlutusCore.Data.Compact.Printer
+    HTLC
+    HTLC.Fixture
     LinearVesting
     LinearVesting.Fixture
+    PlutusCore.Data.Compact.Parser
+    PlutusCore.Data.Compact.Printer
     TwoPartyEscrow
     TwoPartyEscrow.Fixture
 
@@ -163,6 +168,7 @@ library cape-preview
     Preview.Factorial
     Preview.Fibonacci
     Preview.FibonacciIterative
+    Preview.HTLC
     Preview.LinearVesting
     Preview.TwoPartyEscrow
 
@@ -171,6 +177,7 @@ library cape-preview
     Factorial
     Fibonacci
     FibonacciIterative
+    HTLC
     LinearVesting
     TwoPartyEscrow
     TwoPartyEscrow.Fixture
@@ -183,28 +190,42 @@ library cape-preview
 
   hs-source-dirs:  lib
 
--- UPLC-CAPE Plinth submissions generator
+-- UPLC-CAPE Plinth submissions generator (production, Plinth 1.45).
+-- Writes only 1.45 submission paths. Run with the default cabal project:
+--   cabal run plinth-submissions
 executable plinth-submissions
   import:         common-language
   main-is:        Main.hs
   build-depends:
     , base
-    , bytestring
     , cape
     , mtl
     , plutus-core
-    , plutus-core:plutus-core-testlib
-    , plutus-ledger-api
     , plutus-tx
     , plutus-tx-plugin
-    , plutus-tx:plutus-tx-testlib
-    , text
-
-  if flag(preview)
-    build-depends: cape:cape-preview
-    cpp-options:   -DPREVIEW
 
   hs-source-dirs: plinth-submissions-app
+
+-- UPLC-CAPE Plinth submissions generator (preview, Plinth 1.61 + BuiltinCasing).
+-- Writes only 1.61 submission paths. Run with:
+--   cabal run --project-file=cabal.project.preview -f preview plinth-submissions-preview
+executable plinth-submissions-preview
+  import:         common-language
+  main-is:        Main.hs
+
+  if !flag(preview)
+    buildable: False
+
+  build-depends:
+    , base
+    , cape
+    , cape:cape-preview
+    , mtl
+    , plutus-core
+    , plutus-tx
+    , plutus-tx-plugin
+
+  hs-source-dirs: plinth-submissions-preview-app
 
 -- Test suite
 test-suite cape-tests
@@ -218,10 +239,12 @@ test-suite cape-tests
     EcdSpec
     FactorialSpec
     FibonacciSpec
-    PlutusCore.Data.Compact.ParserSpec
-    PlutusCore.Data.Compact.PrinterSpec
+    HTLCSpec
+    HTLCSpec.Fixture
     LinearVestingSpec
     LinearVestingSpec.Fixture
+    PlutusCore.Data.Compact.ParserSpec
+    PlutusCore.Data.Compact.PrinterSpec
     TwoPartyEscrowSpec
     TwoPartyEscrowSpec.Fixture
     ValidatorHelpers
