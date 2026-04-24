@@ -70,6 +70,23 @@ spec = do
                 ]
       expectFailure evaluateValidator ctx
 
+    it "succeeds with exclusive upper bound just before timeout+1 (effective upperBound=99)" do
+      let range =
+            Interval
+              (LowerBound NegInf True)
+              (UpperBound (Finite (POSIXTime 100)) False)
+          ctx =
+            buildContextData $
+              ScriptContextBuilder
+                SpendingBaseline
+                [ SetRedeemer Fixed.claimRedeemer
+                , SetScriptDatum Fixed.htlcDatum
+                , AddSignature Fixed.recipientKeyHash
+                , SetValidRangeRaw range
+                , AddInputUTXO Fixed.txOutRef Fixed.lockedValue True (OutputDatum Fixed.htlcDatum)
+                ]
+      expectSuccess evaluateValidator ctx
+
     it "fails with non-finite (PosInf) upper bound" do
       let range =
             Interval
@@ -181,6 +198,36 @@ spec = do
                 , SetValidRange (Just (POSIXTime 50)) (Just (POSIXTime 50))
                 , AddInputUTXO Fixed.txOutRef Fixed.lockedValue True (OutputDatum Fixed.htlcDatum)
                 , AddInputUTXORaw otherScriptIn
+                ]
+      expectSuccess evaluateValidator ctx
+
+    -- Mirror of the unrelated-script-input test for pubkey co-spends.
+    -- A pubkey input must not trip the double-satisfaction guard; the
+    -- counter only considers ScriptCredential addresses. If the
+    -- credential type-check were dropped, a pubkey input would be
+    -- counted against our script hash and the validator would wrongly
+    -- reject a legitimate multi-input tx.
+    it "succeeds when tx co-spends a pubkey input (non-script)" do
+      let pubkeyAddr =
+            Address (PubKeyCredential Fixed.recipientKeyHash) Nothing
+          pubkeyIn =
+            TxInInfo
+              ( TxOutRef
+                  (TxId "6666666666666666666666666666666666666666666666666666666666666666")
+                  0
+              )
+              ( TxOut pubkeyAddr (lovelaceValue (Lovelace 1_000_000)) NoOutputDatum Nothing
+              )
+          ctx =
+            buildContextData $
+              ScriptContextBuilder
+                SpendingBaseline
+                [ SetRedeemer Fixed.claimRedeemer
+                , SetScriptDatum Fixed.htlcDatum
+                , AddSignature Fixed.recipientKeyHash
+                , SetValidRange (Just (POSIXTime 50)) (Just (POSIXTime 50))
+                , AddInputUTXO Fixed.txOutRef Fixed.lockedValue True (OutputDatum Fixed.htlcDatum)
+                , AddInputUTXORaw pubkeyIn
                 ]
       expectSuccess evaluateValidator ctx
 
