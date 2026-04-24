@@ -1,10 +1,10 @@
 # Scalus Fibonacci Prepacked Implementation
 
-**Source Code**: [FibonacciPrepacked.scala](https://github.com/Unisay/scalus-cape-submissions/blob/e02e7f74322a81622ff51bb41c6d671e09032379/src/fibonacci_prepacked/FibonacciPrepacked.scala)
+**Source Code**: [FibonacciPrepacked.scala](https://github.com/Unisay/scalus-cape-submissions/blob/2126a807bbe2a744e2b924bda3099881e09d969f/src/fibonacci_prepacked/FibonacciPrepacked.scala)
 
 **Repository**: <https://github.com/Unisay/scalus-cape-submissions>
 
-**Commit**: `e02e7f74322a81622ff51bb41c6d671e09032379`
+**Commit**: `2126a807bbe2a744e2b924bda3099881e09d969f`
 
 **Path**: `src/fibonacci_prepacked/FibonacciPrepacked.scala`
 
@@ -29,7 +29,7 @@ This submission uses Scalus compiler version 0.16.0 with a prepacked optimizatio
 2. Check out the specific commit:
 
    ```bash
-   git checkout e02e7f74322a81622ff51bb41c6d671e09032379
+   git checkout 2126a807bbe2a744e2b924bda3099881e09d969f
    ```
 
 3. Run the compilation:
