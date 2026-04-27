@@ -41,7 +41,8 @@
           },
           {
             "op": "set_valid_range",
-            "from_time": 1000
+            "from_time": 1000,
+            "to_time": 1000
           },
           {
             "op": "add_input_utxo",
@@ -1721,6 +1722,48 @@
                 "value": {
                   "lovelace": 75000000
                 }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "deposit_infinite_upper_bound",
+      "description": "Deposit with no upper bound (+inf) should fail; the upper bound must be finite to record the deposit time safely",
+      "expected": {
+        "type": "error"
+      },
+      "inputs": [
+        {
+          "type": "script_context",
+          "script_context": {
+            "baseline": "@successful_deposit",
+            "patches": [
+              {
+                "op": "set_valid_range",
+                "from_time": 1000
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "refund_infinite_lower_bound",
+      "description": "Refund with no lower bound (-inf) should fail; the lower bound must be finite to check the refund deadline",
+      "expected": {
+        "type": "error"
+      },
+      "inputs": [
+        {
+          "type": "script_context",
+          "script_context": {
+            "baseline": "@successful_refund",
+            "patches": [
+              {
+                "op": "set_valid_range",
+                "to_time": 3000
               }
             ]
           }

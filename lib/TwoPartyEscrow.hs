@@ -32,14 +32,13 @@ import PlutusLedgerApi.Data.V3
 import PlutusTx
 import PlutusTx.Prelude
 
-import PlutusLedgerApi.V1.Data.Interval
 import PlutusLedgerApi.V1.Data.Value (lovelaceValueOf)
 import PlutusLedgerApi.V3.Data.Contexts (
   getContinuingOutputs,
   txSignedBy,
   valuePaidTo,
  )
-import PlutusTx.Builtins (equalsInteger, greaterThanInteger)
+import PlutusTx.Builtins (equalsInteger, greaterThanInteger, lessThanEqualsInteger)
 import PlutusTx.Builtins.Internal (unitval)
 import PlutusTx.Data.List (List)
 import PlutusTx.Data.List qualified as List
@@ -134,7 +133,7 @@ validateRefund ctx =
       if
         | missingSignature txInfo Fixed.buyerKeyHash ->
             traceError "Buyer signature missing"
-        | not (from refundDeadline `contains` nowRange) ->
+        | lessThanEqualsInteger lowerTime deadlineTime ->
             traceError "Refund time not reached"
         | missingEscrowInput (txInfoInputs txInfo) ->
             traceError "No valid escrow deposit found in inputs"
@@ -147,8 +146,8 @@ validateRefund ctx =
     currentState = escrowState currentDatum
     currentDatum = spendingScriptDatum (scriptContextScriptInfo ctx)
     txInfo = scriptContextTxInfo ctx
-    nowRange = txInfoValidRange txInfo
-    refundDeadline = succ (Fixed.depositTime currentDatum + Fixed.refundTime)
+    POSIXTime lowerTime = lowerBoundTime (txInfoValidRange txInfo)
+    POSIXTime deadlineTime = Fixed.depositTime currentDatum + Fixed.refundTime
 
 --------------------------------------------------------------------------------
 -- Helper Functions ------------------------------------------------------------
@@ -177,9 +176,7 @@ invalidDepositDatum onlyOut validRange =
   case txOutDatum onlyOut of
     OutputDatum datum ->
       let escrowDatum = unsafeFromBuiltinData (getDatum datum)
-          currentTime = case validRange of
-            Interval (LowerBound (Finite t) _) _ -> t
-            _ -> traceError "No valid time range provided"
+          currentTime = upperBoundTime validRange
        in case escrowState escrowDatum of
             Deposited ->
               not
@@ -218,6 +215,25 @@ escrowValueNotPaidTo txInfo keyHash =
         (getLovelace (lovelaceValueOf (valuePaidTo txInfo keyHash)))
         (getLovelace Fixed.escrowPrice)
     )
+
+{- | Extract the normalised inclusive lower bound from a POSIXTimeRange,
+failing if it is not finite.
+-}
+{-# INLINEABLE lowerBoundTime #-}
+lowerBoundTime :: POSIXTimeRange -> POSIXTime
+lowerBoundTime (Interval (LowerBound (Finite t) True) _) = t
+lowerBoundTime (Interval (LowerBound (Finite (POSIXTime t)) False) _) = POSIXTime (t + 1)
+lowerBoundTime _ = traceError "Lower bound of valid range must be finite"
+
+{- | Extract the normalised inclusive upper bound from a POSIXTimeRange,
+failing if it is not finite. Used by 'invalidDepositDatum' to record the
+deposit time conservatively as the latest possible slot in the validity window.
+-}
+{-# INLINEABLE upperBoundTime #-}
+upperBoundTime :: POSIXTimeRange -> POSIXTime
+upperBoundTime (Interval _ (UpperBound (Finite t) True)) = t
+upperBoundTime (Interval _ (UpperBound (Finite (POSIXTime t)) False)) = POSIXTime (t - 1)
+upperBoundTime _ = traceError "Upper bound of valid range must be finite"
 
 -- | Extracts escrow datum from spending script context.
 {-# INLINEABLE spendingScriptDatum #-}

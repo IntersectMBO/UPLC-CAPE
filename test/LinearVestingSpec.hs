@@ -137,6 +137,20 @@ spec = do
                 ]
       expectFailure evaluateValidator ctx
 
+    it "fails with infinite lower bound (no from_time)" do
+      let ctx =
+            buildContextData $
+              ScriptContextBuilder
+                SpendingBaseline
+                [ SetRedeemer Fixed.partialUnlockRedeemer
+                , SetScriptDatum Fixed.vestingDatum
+                , AddSignature Fixed.beneficiaryKeyHash
+                , SetValidRange Nothing (Just (POSIXTime 90))
+                , AddInputUTXO Fixed.txOutRef (Fixed.vestingValue 1000) True (OutputDatum Fixed.vestingDatum)
+                , AddOutputUTXOWithDatum Fixed.scriptAddr (Fixed.vestingValue 900) Fixed.vestingDatum
+                ]
+      expectFailure evaluateValidator ctx
+
   describe "FullUnlock" do
     it "succeeds after vesting period (time=101)" do
       let ctx =
@@ -198,6 +212,19 @@ spec = do
                 , SetScriptDatum Fixed.vestingDatum
                 , AddSignature Fixed.beneficiaryKeyHash
                 , SetValidRange (Just (POSIXTime 100)) Nothing
+                , AddInputUTXO Fixed.txOutRef (Fixed.vestingValue 1000) True (OutputDatum Fixed.vestingDatum)
+                ]
+      expectFailure evaluateValidator ctx
+
+    it "fails with infinite lower bound (no from_time)" do
+      let ctx =
+            buildContextData $
+              ScriptContextBuilder
+                SpendingBaseline
+                [ SetRedeemer Fixed.fullUnlockRedeemer
+                , SetScriptDatum Fixed.vestingDatum
+                , AddSignature Fixed.beneficiaryKeyHash
+                , SetValidRange Nothing (Just (POSIXTime 200))
                 , AddInputUTXO Fixed.txOutRef (Fixed.vestingValue 1000) True (OutputDatum Fixed.vestingDatum)
                 ]
       expectFailure evaluateValidator ctx

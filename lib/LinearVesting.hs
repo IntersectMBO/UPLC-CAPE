@@ -126,7 +126,7 @@ validatePartialUnlock ctx VestingDatum {beneficiary, vestingAsset, totalVestingQ
     signed = txSignedBy txInfo (PubKeyHash beneficiaryHash)
 
     -- Time extraction from valid range lower bound
-    currentTime = lowerBoundTime (txInfoValidRange txInfo)
+    POSIXTime currentTime = lowerBoundTime (txInfoValidRange txInfo)
 
     -- Find own input and continuing output
     !ownInput = case findOwnInput ctx of
@@ -171,7 +171,7 @@ validateFullUnlock ctx VestingDatum {beneficiary, vestingPeriodEnd} =
   where
     txInfo = scriptContextTxInfo ctx
     beneficiaryHash = extractPubKeyHash beneficiary
-    currentTime = lowerBoundTime (txInfoValidRange txInfo)
+    POSIXTime currentTime = lowerBoundTime (txInfoValidRange txInfo)
 
 --------------------------------------------------------------------------------
 -- Helper Functions ------------------------------------------------------------
@@ -181,12 +181,23 @@ validateFullUnlock ctx VestingDatum {beneficiary, vestingPeriodEnd} =
 divCeil :: Integer -> Integer -> Integer
 divCeil x y = 1 + divide (x - 1) y
 
--- | Extract lower inclusive time from a POSIXTimeRange.
+{- | Extract the normalised inclusive lower bound from a POSIXTimeRange,
+failing if it is not finite.
+-}
 {-# INLINEABLE lowerBoundTime #-}
-lowerBoundTime :: POSIXTimeRange -> Integer
-lowerBoundTime (Interval (LowerBound (Finite (POSIXTime t)) True) _) = t
-lowerBoundTime (Interval (LowerBound (Finite (POSIXTime t)) False) _) = t + 1
-lowerBoundTime _ = traceError "Time range not Finite"
+lowerBoundTime :: POSIXTimeRange -> POSIXTime
+lowerBoundTime (Interval (LowerBound (Finite t) True) _) = t
+lowerBoundTime (Interval (LowerBound (Finite (POSIXTime t)) False) _) = POSIXTime (t + 1)
+lowerBoundTime _ = traceError "Lower bound of valid range must be finite"
+
+{- | Extract the normalised inclusive upper bound from a POSIXTimeRange,
+failing if it is not finite.
+-}
+{-# INLINEABLE upperBoundTime #-}
+upperBoundTime :: POSIXTimeRange -> POSIXTime
+upperBoundTime (Interval _ (UpperBound (Finite t) True)) = t
+upperBoundTime (Interval _ (UpperBound (Finite (POSIXTime t)) False)) = POSIXTime (t - 1)
+upperBoundTime _ = traceError "Upper bound of valid range must be finite"
 
 -- | Extract PubKeyHash bytes from an Address.
 {-# INLINEABLE extractPubKeyHash #-}

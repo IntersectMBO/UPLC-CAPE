@@ -84,7 +84,7 @@
                                                                                                           nt-27
                                                                                                           [
                                                                                                             (lam
-                                                                                                              currentTime-28
+                                                                                                              nt-28
                                                                                                               (force
                                                                                                                 (case
                                                                                                                   [
@@ -110,7 +110,7 @@
                                                                                                                                   (builtin
                                                                                                                                     lessThanEqualsInteger
                                                                                                                                   )
-                                                                                                                                  currentTime-28
+                                                                                                                                  nt-28
                                                                                                                                 ]
                                                                                                                                 ds-23
                                                                                                                               ]
@@ -474,7 +474,7 @@
                                                                                                                                                                                                               cse-73
                                                                                                                                                                                                               [
                                                                                                                                                                                                                 (lam
-                                                                                                                                                                                                                  currentTime-74
+                                                                                                                                                                                                                  nt-74
                                                                                                                                                                                                                   [
                                                                                                                                                                                                                     (lam
                                                                                                                                                                                                                       expectedRemainingQty-75
@@ -497,7 +497,7 @@
                                                                                                                                                                                                                                           (builtin
                                                                                                                                                                                                                                             lessThanEqualsInteger
                                                                                                                                                                                                                                           )
-                                                                                                                                                                                                                                          currentTime-74
+                                                                                                                                                                                                                                          nt-74
                                                                                                                                                                                                                                         ]
                                                                                                                                                                                                                                         ds-36
                                                                                                                                                                                                                                       ]
@@ -1069,7 +1069,7 @@
                                                                                                                                                                                                                                                 )
                                                                                                                                                                                                                                                 ds-35
                                                                                                                                                                                                                                               ]
-                                                                                                                                                                                                                                              currentTime-74
+                                                                                                                                                                                                                                              nt-74
                                                                                                                                                                                                                                             ]
                                                                                                                                                                                                                                           ]
                                                                                                                                                                                                                                           (con
@@ -4436,7 +4436,7 @@
                                                                                                   )
                                                                                                   (con
                                                                                                     string
-                                                                                                    "Time range not Finite"
+                                                                                                    "Lower bound of valid range must be finite"
                                                                                                   )
                                                                                                 ]
                                                                                                 (constr

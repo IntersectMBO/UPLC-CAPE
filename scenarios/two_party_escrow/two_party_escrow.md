@@ -192,6 +192,7 @@ Both **Accept** and **Refund** sequences are measured for comprehensive performa
 - **Value Check**: Exactly 75 ADA deposited to script address
 - **Authorization**: Transaction signed by buyer
 - **State Check**: No existing deposit (initial state)
+- **Deposit Time Recording**: Upper bound of valid range must be finite and is recorded as `depositTime` in the datum
 
 #### Accept Operation (Redeemer = 1)
 
@@ -205,7 +206,9 @@ Both **Accept** and **Refund** sequences are measured for comprehensive performa
 - **Value Check**: 75 ADA returned to buyer address
 - **Authorization**: Transaction signed by buyer
 - **State Check**: Valid deposit exists
-- **Timing**: Current time > deposit time + 1800 seconds
+- **Timing**: Lower bound of valid range must be finite and strictly greater than `depositTime + 1800`
+
+**Note on time semantics**: The deposit path records `depositTime` as the **upper bound** of the deposit transaction's `txInfoValidRange`; it must be finite (an infinite upper bound is rejected). This is the production-safe convention — recording the latest possible slot for the deposit ensures the refund deadline is computed conservatively: the seller has at least `refundTime` from the deposit's upper bound before the buyer can reclaim funds. The refund path reads the **lower bound** of `txInfoValidRange`; it must be finite (an infinite lower bound is rejected) and must satisfy `lowerBound > depositTime + refundTime` (strict). For a finite inclusive upper bound `t`, `upperBound = t`; for a finite exclusive upper bound `t`, `upperBound = t − 1`. Symmetrically for the lower bound: inclusive `t` ⇒ `lowerBound = t`; exclusive `t` ⇒ `lowerBound = t + 1`. Deposit fixtures use a point interval `[t, t]` so the upper bound equals `t`; refund fixtures use `[t, +∞)` so the lower bound equals `t`.
 
 ## Test Constants and Fixed Values
 
@@ -224,8 +227,8 @@ The two-party escrow tests (both Haskell specs and `cape-tests.json`) rely on a 
   - Time limit for seller to accept before buyer can refund
 - **Test Deposit Time**: 1000 seconds
   - Fixed timestamp used as baseline in all test scenarios
-- **Refund Valid Time**: 1801+ seconds
-  - Any time after deposit time (1000) + deadline (1800) + 1
+- **Refund Valid Time**: 2801+ seconds
+  - Any time strictly after deposit time (1000) + deadline (1800) = 2800
 
 ### Address Constants
 
@@ -399,6 +402,12 @@ The two-party escrow validator is tested through a comprehensive suite of test c
 
 - **`refund_without_prior_deposit`**  
   Verifies refund fails without valid deposit UTXO (invalid escrow state)
+
+- **`deposit_infinite_upper_bound`**  
+  Verifies deposit fails when the validity range has no upper bound (`[1000, +∞)`). The validator rejects an infinite upper bound when recording the deposit time.
+
+- **`refund_infinite_lower_bound`**  
+  Verifies refund fails when the validity range has no lower bound (`(−∞, 3000]`). The validator rejects an infinite lower bound.
 
 - **`refund_after_accept_should_fail`**  
   Verifies refund fails after seller has already accepted (state validation)

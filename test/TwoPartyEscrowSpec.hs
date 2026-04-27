@@ -66,7 +66,7 @@ spec = do
                 SpendingBaseline
                 [ SetRedeemer Fixed.depositRedeemer
                 , AddSignature Fixed.buyerKeyHash
-                , SetValidRange (Just 1000) Nothing -- Match depositedEscrowDatum.depositTime
+                , SetValidRange (Just 1000) (Just 1000) -- Point interval: upper bound records depositTime
                 , AddInputUTXO Fixed.txOutRef value False NoOutputDatum -- Input from buyer wallet (not script)
                 , AddOutputUTXOWithDatum Fixed.scriptAddr value Fixed.depositedEscrowDatum
                 ]
@@ -125,11 +125,29 @@ spec = do
                 SpendingBaseline
                 [ SetRedeemer Fixed.depositRedeemer
                 , AddSignature Fixed.buyerKeyHash
-                , SetValidRange (Just 1000) Nothing -- Deposit time
+                , SetValidRange (Just 1000) (Just 1000) -- Point interval: upper bound records depositTime
                 , AddInputUTXO Fixed.txOutRef value False NoOutputDatum -- Input from buyer wallet (not script)
                 , AddOutputUTXOWithDatum Fixed.scriptAddr value Fixed.depositedEscrowDatum
                 ]
       expectSuccess evaluateValidator contextData
+
+    it "deposit_infinite_upper_bound should fail" do
+      -- Deposit with no upper bound (+inf) should fail; the validator requires a finite upper bound
+      -- to record the deposit time. This prevents a buyer from submitting validRange=[t, +∞)
+      -- which would record depositTime=t (possibly far in the past), making the refund deadline
+      -- already expired at submission time.
+      let value = Fixed.lovelaceValue Fixed.escrowPrice
+          contextData =
+            buildContextData $
+              ScriptContextBuilder
+                SpendingBaseline
+                [ SetRedeemer Fixed.depositRedeemer
+                , AddSignature Fixed.buyerKeyHash
+                , SetValidRange (Just 1000) Nothing -- infinite upper bound
+                , AddInputUTXO Fixed.txOutRef value False NoOutputDatum
+                , AddOutputUTXOWithDatum Fixed.scriptAddr value Fixed.depositedEscrowDatum
+                ]
+      expectFailure evaluateValidator contextData
 
     it "deposit_with_invalid_datum_state should fail" do
       -- Deposit with datum that's not in Deposited state
@@ -521,6 +539,23 @@ spec = do
                 , AddSignature Fixed.buyerKeyHash
                 , -- Note: No SetValidRange (using default always-valid range)
                   AddInputUTXO Fixed.txOutRef2 inputValue True NoOutputDatum
+                , AddOutputUTXO Fixed.buyerAddr inputValue
+                ]
+      expectFailure evaluateValidator contextData
+
+    it "refund_infinite_lower_bound should fail (no finite lower bound)" do
+      -- Refund with no lower bound (-inf) should fail; the lower bound must be finite to check
+      -- the refund deadline.
+      let inputValue = Fixed.lovelaceValue Fixed.escrowPrice
+          contextData =
+            buildContextData $
+              ScriptContextBuilder
+                SpendingBaseline
+                [ SetRedeemer Fixed.refundRedeemer
+                , AddSignature Fixed.buyerKeyHash
+                , SetScriptDatum Fixed.depositedEscrowDatum
+                , SetValidRange Nothing (Just 3000) -- no lower bound (-inf)
+                , AddInputUTXO Fixed.txOutRef2 inputValue True NoOutputDatum
                 , AddOutputUTXO Fixed.buyerAddr inputValue
                 ]
       expectFailure evaluateValidator contextData
