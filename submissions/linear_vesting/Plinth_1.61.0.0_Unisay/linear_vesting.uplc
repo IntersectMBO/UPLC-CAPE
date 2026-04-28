@@ -78,7 +78,7 @@
                                                                                                   nt-25
                                                                                                   [
                                                                                                     (lam
-                                                                                                      currentTime-26
+                                                                                                      nt-26
                                                                                                       (case
                                                                                                         [
                                                                                                           [
@@ -96,7 +96,7 @@
                                                                                                               (builtin
                                                                                                                 lessThanEqualsInteger
                                                                                                               )
-                                                                                                              currentTime-26
+                                                                                                              nt-26
                                                                                                             ]
                                                                                                             ds-21
                                                                                                           ]
@@ -578,7 +578,7 @@
                                                                                                                                                                                               cse-103
                                                                                                                                                                                               [
                                                                                                                                                                                                 (lam
-                                                                                                                                                                                                  currentTime-104
+                                                                                                                                                                                                  nt-104
                                                                                                                                                                                                   [
                                                                                                                                                                                                     (lam
                                                                                                                                                                                                       expectedRemainingQty-105
@@ -593,7 +593,7 @@
                                                                                                                                                                                                               (builtin
                                                                                                                                                                                                                 lessThanEqualsInteger
                                                                                                                                                                                                               )
-                                                                                                                                                                                                              currentTime-104
+                                                                                                                                                                                                              nt-104
                                                                                                                                                                                                             ]
                                                                                                                                                                                                             ds-32
                                                                                                                                                                                                           ]
@@ -803,7 +803,7 @@
                                                                                                                                                                                                                                 )
                                                                                                                                                                                                                                 ds-31
                                                                                                                                                                                                                               ]
-                                                                                                                                                                                                                              currentTime-104
+                                                                                                                                                                                                                              nt-104
                                                                                                                                                                                                                             ]
                                                                                                                                                                                                                           ]
                                                                                                                                                                                                                           (con

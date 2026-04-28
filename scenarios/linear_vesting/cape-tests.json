@@ -805,6 +805,48 @@
           }
         }
       ]
+    },
+    {
+      "name": "partial_unlock_infinite_lower_bound",
+      "description": "PartialUnlock with no lower bound (-inf) should fail; the lower bound must be finite",
+      "expected": {
+        "type": "error"
+      },
+      "inputs": [
+        {
+          "type": "script_context",
+          "script_context": {
+            "baseline": "@successful_partial_unlock",
+            "patches": [
+              {
+                "op": "set_valid_range",
+                "to_time": 90
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "full_unlock_infinite_lower_bound",
+      "description": "FullUnlock with no lower bound (-inf) should fail; the lower bound must be finite",
+      "expected": {
+        "type": "error"
+      },
+      "inputs": [
+        {
+          "type": "script_context",
+          "script_context": {
+            "baseline": "@successful_full_unlock",
+            "patches": [
+              {
+                "op": "set_valid_range",
+                "to_time": 200
+              }
+            ]
+          }
+        }
+      ]
     }
   ]
 }

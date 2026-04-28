@@ -137,6 +137,39 @@ spec = do
                 ]
       expectFailure evaluateValidator ctx
 
+    it "fails with infinite lower bound (no from_time)" do
+      let ctx =
+            buildContextData $
+              ScriptContextBuilder
+                SpendingBaseline
+                [ SetRedeemer Fixed.partialUnlockRedeemer
+                , SetScriptDatum Fixed.vestingDatum
+                , AddSignature Fixed.beneficiaryKeyHash
+                , SetValidRange Nothing (Just (POSIXTime 90))
+                , AddInputUTXO Fixed.txOutRef (Fixed.vestingValue 1000) True (OutputDatum Fixed.vestingDatum)
+                , AddOutputUTXOWithDatum Fixed.scriptAddr (Fixed.vestingValue 900) Fixed.vestingDatum
+                ]
+      expectFailure evaluateValidator ctx
+
+    it "succeeds with exclusive lower bound at firstUnlockPossibleAfter" do
+      let timeRange = Interval (LowerBound (Finite (POSIXTime 10)) False) (UpperBound (Finite (POSIXTime 90)) True)
+          ctx =
+            buildContextData $
+              ScriptContextBuilder
+                SpendingBaseline
+                [ SetRedeemer Fixed.partialUnlockRedeemer
+                , SetScriptDatum Fixed.vestingDatum
+                , AddSignature Fixed.beneficiaryKeyHash
+                , SetValidRangeRaw timeRange
+                , AddInputUTXO Fixed.txOutRef (Fixed.vestingValue 1000) True (OutputDatum Fixed.vestingDatum)
+                , AddOutputUTXOWithDatum Fixed.scriptAddr (Fixed.vestingValue 900) Fixed.vestingDatum
+                ]
+      expectSuccess evaluateValidator ctx
+
+    it "fails with wrong amount at second installment boundary" do
+      let ctx = partialUnlockContext' 20 1000 500 -- At t=20 (2 installments passed), should be 800 not 500
+      expectFailure evaluateValidator ctx
+
   describe "FullUnlock" do
     it "succeeds after vesting period (time=101)" do
       let ctx =
@@ -198,6 +231,19 @@ spec = do
                 , SetScriptDatum Fixed.vestingDatum
                 , AddSignature Fixed.beneficiaryKeyHash
                 , SetValidRange (Just (POSIXTime 100)) Nothing
+                , AddInputUTXO Fixed.txOutRef (Fixed.vestingValue 1000) True (OutputDatum Fixed.vestingDatum)
+                ]
+      expectFailure evaluateValidator ctx
+
+    it "fails with infinite lower bound (no from_time)" do
+      let ctx =
+            buildContextData $
+              ScriptContextBuilder
+                SpendingBaseline
+                [ SetRedeemer Fixed.fullUnlockRedeemer
+                , SetScriptDatum Fixed.vestingDatum
+                , AddSignature Fixed.beneficiaryKeyHash
+                , SetValidRange Nothing (Just (POSIXTime 200))
                 , AddInputUTXO Fixed.txOutRef (Fixed.vestingValue 1000) True (OutputDatum Fixed.vestingDatum)
                 ]
       expectFailure evaluateValidator ctx

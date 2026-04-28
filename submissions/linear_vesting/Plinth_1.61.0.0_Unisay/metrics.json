@@ -188,6 +188,20 @@
       "execution_result": "success",
       "memory_units": 105225,
       "name": "full_unlock_at_period_end"
+    },
+    {
+      "cpu_units": 83715620,
+      "description": "PartialUnlock with no lower bound (-inf) should fail; the lower bound must be finite",
+      "execution_result": "success",
+      "memory_units": 313561,
+      "name": "partial_unlock_infinite_lower_bound"
+    },
+    {
+      "cpu_units": 16411629,
+      "description": "FullUnlock with no lower bound (-inf) should fail; the lower bound must be finite",
+      "execution_result": "success",
+      "memory_units": 63527,
+      "name": "full_unlock_infinite_lower_bound"
     }
   ],
   "execution_environment": {
@@ -198,31 +212,31 @@
     "block_memory_budget_pct": 0.6106096774193549,
     "cpu_units": {
       "maximum": 104382675,
-      "median": 84869768,
+      "median": 84819976,
       "minimum": 24688,
-      "sum": 1646130082,
+      "sum": 1746257331,
       "sum_negative": 0,
-      "sum_positive": 1646130082
+      "sum_positive": 1746257331
     },
-    "execution_fee_lovelace": 470339,
+    "execution_fee_lovelace": 499316,
     "memory_units": {
       "maximum": 378578,
-      "median": 313735,
+      "median": 313702,
       "minimum": 132,
-      "sum": 6094501,
+      "sum": 6471589,
       "sum_negative": 0,
-      "sum_positive": 6094501
+      "sum_positive": 6471589
     },
     "reference_script_fee_lovelace": 20055,
     "script_size_bytes": 1337,
     "scripts_per_block": 163,
     "scripts_per_tx": 36,
     "term_size": 1501,
-    "total_fee_lovelace": 490394,
+    "total_fee_lovelace": 519371,
     "tx_cpu_budget_pct": 1.04382675,
     "tx_memory_budget_pct": 2.7041285714285714
   },
   "scenario": "linear_vesting",
-  "timestamp": "2026-04-23T12:32:45Z",
+  "timestamp": "2026-04-27T11:33:39Z",
   "version": "1.0.0"
 }
