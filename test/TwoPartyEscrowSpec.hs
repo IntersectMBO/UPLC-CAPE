@@ -398,6 +398,23 @@ spec = do
                 ]
       expectSuccess evaluateValidator contextData
 
+    it "refund_succeeds with exclusive lower bound at deadline boundary" do
+      -- lowerBoundTime(exclusive 2800) = 2801 > 2800 = deadline; catches t+1 → t-1 mutation
+      let inputValue = Fixed.lovelaceValue Fixed.escrowPrice
+          timeRange = Interval (LowerBound (Finite (POSIXTime 2800)) False) (UpperBound PosInf False)
+          contextData =
+            buildContextData $
+              ScriptContextBuilder
+                SpendingBaseline
+                [ SetRedeemer Fixed.refundRedeemer
+                , AddSignature Fixed.buyerKeyHash
+                , SetScriptDatum Fixed.depositedEscrowDatum
+                , SetValidRangeRaw timeRange
+                , AddInputUTXO Fixed.txOutRef2 inputValue True NoOutputDatum
+                , AddOutputUTXO Fixed.buyerAddr inputValue
+                ]
+      expectSuccess evaluateValidator contextData
+
     it "refund_with_multiple_inputs should pass (no single input validation)" do
       -- Refund with multiple script inputs (should work if validator doesn't enforce single input)
       let inputValue = Fixed.lovelaceValue Fixed.escrowPrice
