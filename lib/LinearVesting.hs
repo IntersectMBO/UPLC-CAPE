@@ -190,15 +190,6 @@ lowerBoundTime (Interval (LowerBound (Finite t) True) _) = t
 lowerBoundTime (Interval (LowerBound (Finite (POSIXTime t)) False) _) = POSIXTime (t + 1)
 lowerBoundTime _ = traceError "Lower bound of valid range must be finite"
 
-{- | Extract the normalised inclusive upper bound from a POSIXTimeRange,
-failing if it is not finite.
--}
-{-# INLINEABLE upperBoundTime #-}
-upperBoundTime :: POSIXTimeRange -> POSIXTime
-upperBoundTime (Interval _ (UpperBound (Finite t) True)) = t
-upperBoundTime (Interval _ (UpperBound (Finite (POSIXTime t)) False)) = POSIXTime (t - 1)
-upperBoundTime _ = traceError "Upper bound of valid range must be finite"
-
 -- | Extract PubKeyHash bytes from an Address.
 {-# INLINEABLE extractPubKeyHash #-}
 extractPubKeyHash :: Address -> BuiltinByteString
