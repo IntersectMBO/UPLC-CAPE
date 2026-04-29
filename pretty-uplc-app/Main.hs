@@ -8,6 +8,7 @@ running this tool over a freshly generated submission is a no-op.
 module Main (main) where
 
 import Control.Monad.Except (runExceptT)
+import Data.List (dropWhileEnd)
 import qualified Data.Text.IO as T
 import qualified PlutusCore as PLC
 import qualified PlutusCore.Pretty as PP
@@ -65,5 +66,11 @@ formatFile path = do
       hPutStrLn stderr (path <> ": " <> show err)
       pure False
     Right prog -> do
-      writeFile path (show (PP.prettyPlcClassic prog))
+      -- Show on prettyPlcClassic produces no trailing newline; normalise to a
+      -- single trailing '\n' so GitHub stops flagging "no newline at end of
+      -- file" and the formatter is idempotent across editors that auto-add
+      -- one.
+      let rendered = show (PP.prettyPlcClassic prog)
+          normalised = dropWhileEnd (== '\n') rendered <> "\n"
+      writeFile path normalised
       pure True
