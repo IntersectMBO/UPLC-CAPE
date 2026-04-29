@@ -450,7 +450,7 @@ pretty-uplc submissions/fibonacci/MyCompiler_1.0.0_handle/fibonacci.uplc
 treefmt
 ```
 
-The `treefmt` command automatically formats all file types including UPLC files (`.uplc`). The pretty-printing uses the `plutus` executable from the Plutus repository and is available in the nix development shell.
+The `treefmt` command automatically formats all file types including UPLC files (`.uplc`). The `pretty-uplc` executable is built from the in-repo `cape` cabal project (see `pretty-uplc-app/Main.hs`); it parses each file with `UntypedPlutusCore.Parser` and re-renders it with `PlutusCore.Pretty.prettyPlcClassic`, matching the canonical format produced by `Cape.WritePlc`. It is shipped on `PATH` by the nix development shell.
 
 ---
 

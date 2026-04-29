@@ -95,6 +95,7 @@
         capeLib = project.hsPkgs.cape.components.library;
         measureExe = project.hsPkgs.cape.components.exes.measure;
         plinthSubmissionsExe = project.hsPkgs.cape.components.exes.plinth-submissions;
+        prettyUplcExe = project.hsPkgs.cape.components.exes.pretty-uplc;
         capeTests = project.hsPkgs.cape.components.tests.cape-tests;
 
         # Development shell using haskell.nix shellFor with UPLC-CAPE specific tools
@@ -216,13 +217,18 @@
             libsodium
             secp256k1
             libblst
+
+            # UPLC textual pretty-printer used by treefmt as the *.uplc formatter.
+            # Light to build (only plutus-core, no plutus-tx-plugin), so unlike
+            # measure/plinth-submissions we do ship it in the dev shell.
+            prettyUplcExe
           ];
           # Note: uplcMusl/plcMusl/pirMusl/plutusMusl not included in dev shell
           # as they require building Agda. Use nix build .#packages.* for those.
 
-          # Note: Built executables (measure, plinth-submissions) are NOT added to buildInputs
-          # to avoid triggering their build (which includes heavy deps like Agda).
-          # Use 'cabal build' and 'cabal run' in the dev shell instead.
+          # Note: heavyweight executables (measure, plinth-submissions) are NOT
+          # added to buildInputs to avoid triggering their build (which pulls in
+          # plutus-tx-plugin). Use 'cabal build' and 'cabal run' for those.
 
           shellHook = ''
             # Install log4brains via npx when needed
@@ -255,6 +261,7 @@
         packages = {
           measure = measureExe;
           plinth-submissions = plinthSubmissionsExe;
+          pretty-uplc = prettyUplcExe;
           default = measureExe;
         };
 

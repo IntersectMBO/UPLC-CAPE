@@ -227,6 +227,25 @@ executable plinth-submissions-preview
 
   hs-source-dirs: plinth-submissions-preview-app
 
+-- UPLC textual pretty-printer used by treefmt as the *.uplc formatter.
+-- Deliberately depends only on plutus-core (no plutus-tx-plugin / no Plinth
+-- compilation) so the dev shell can ship the binary without paying the heavy
+-- plugin build cost.
+executable pretty-uplc
+  main-is:          Main.hs
+  hs-source-dirs:   pretty-uplc-app
+  default-language: Haskell2010
+  ghc-options:
+    -Wall -Wcompat -Wincomplete-uni-patterns -Wredundant-constraints
+    -Wmissing-export-lists -Wmissing-deriving-strategies
+    -Wpartial-fields
+
+  build-depends:
+    , base         >=4.16
+    , mtl
+    , plutus-core  ^>=1.45
+    , text
+
 -- Test suite
 test-suite cape-tests
   import:             common-language
