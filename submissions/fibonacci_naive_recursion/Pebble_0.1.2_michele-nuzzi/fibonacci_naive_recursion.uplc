@@ -3,43 +3,50 @@
   (case
     (constr
       0
-    [ (builtin addInteger) (con integer -1) ]
-    [ (builtin addInteger) (con integer -2) ]
-    [ (builtin lessThanInteger) (con integer 1) ]
-    (force (builtin ifThenElse)))
-  (lam
-    i_0
+      [ (builtin addInteger) (con integer -1) ]
+      [ (builtin addInteger) (con integer -2) ]
+      [ (builtin lessThanInteger) (con integer 1) ]
+      (force (builtin ifThenElse))
+    )
     (lam
-      i_1
+      i_0-0
       (lam
-        i_2
+        i_1-1
         (lam
-          i_3
-          [
-            (lam i_4 [ i_4 i_4 ])
-            (lam
-              i_5
+          i_2-2
+          (lam
+            i_3-3
+            [
+              (lam i_4-4 [ i_4-4 i_4-4 ])
               (lam
-                i_6
-                (force
-                  (case
-                    (constr
-                      0
-                    [ i_2 i_6 ]
-                    (delay
-                      [
-                        [ (builtin addInteger) [ [ i_5 i_5 ] [ i_1 i_6 ] ] ]
-                        [ [ i_5 i_5 ] [ i_0 i_6 ] ]
-                      ]
+                i_5-5
+                (lam
+                  i_6-6
+                  (force
+                    (case
+                      (constr
+                        0
+                        [ i_2-2 i_6-6 ]
+                        (delay
+                          [
+                            [
+                              (builtin addInteger)
+                              [ [ i_5-5 i_5-5 ] [ i_1-1 i_6-6 ] ]
+                            ]
+                            [ [ i_5-5 i_5-5 ] [ i_0-0 i_6-6 ] ]
+                          ]
+                        )
+                        (delay i_6-6)
+                      )
+                      i_3-3
                     )
-                    (delay i_6))
-                  i_3)
+                  )
                 )
               )
-            )
-          ]
+            ]
+          )
         )
       )
     )
-  ))
+  )
 )

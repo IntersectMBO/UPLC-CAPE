@@ -1,8 +1,22 @@
 # UPLC Pretty-Printing Integration
 
-- Status: accepted
+- Status: superseded by in-repo exe (see "Update 2026-04-29" below)
 - Date: 2025-10-17
 - Tags: tooling, formatting, uplc, developer-experience
+
+## Update 2026-04-29 — `pretty-uplc` is now an in-repo Haskell exe
+
+The original implementation (a `scripts/pretty-uplc.sh` wrapper around the `plutus` CLI shipped via the dev shell) was reverted in commit `1d5b059` because the current Plutus pin (`ba16ec68d3`, release 1.45.0.0) only exports `musl64-uplc`/`musl64-plc`/etc., and building the non-musl variants pulls Agda/MAlonzo into the dev shell — unacceptable for everyday work. Issue [#145](https://github.com/IntersectMBO/UPLC-CAPE/issues/145) tracked the regression with the assumption that we had to wait for a newer Plutus release.
+
+That assumption turned out to be wrong. The UPLC parser and pretty-printer in the `plutus-core` Haskell library have **no dependency on `plutus-metatheory`/Agda**; only the `uplc` CLI optionally pulls in the certifier. Since `cape.cabal` already lists `plutus-core ^>=1.45` as a direct dependency, we can ship our own minimal pretty-printer:
+
+- **`pretty-uplc-app/Main.hs`** — single-file exe; reads each path from argv, runs `UntypedPlutusCore.Parser.parseProgram` + `PlutusCore.Pretty.prettyPlcClassic`, writes back in place. Deliberately depends only on `plutus-core` (no `plutus-tx-plugin`), keeping the build path light.
+- **`cape.cabal`** — adds `executable pretty-uplc`.
+- **`flake.nix`** — exposes `prettyUplcExe` as a package and ships it via the dev shell `buildInputs`. Unlike `measure`/`plinth-submissions` (which we keep out of `buildInputs` because they pull `plutus-tx-plugin`), this exe is small enough to ship.
+- **`treefmt.toml`** — registers `pretty-uplc` as the formatter for `*.uplc`.
+- **`scripts/pretty-uplc.sh` is NOT restored.** The exe replaces it.
+
+The output format matches what `Cape.WritePlc.writeCodeToFile` produces, so re-running the formatter over a freshly generated Plinth submission is a no-op.
 
 ## Context and Problem Statement
 

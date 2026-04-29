@@ -36,6 +36,14 @@ command = "nixfmt"
 options = []
 includes = ["*.nix"]
 
+# UPLC textual pretty-printer — in-repo cabal exe (see pretty-uplc-app/Main.hs).
+# Rewrites .uplc files in place using PlutusCore.Pretty.prettyPlcClassic, which
+# matches the format produced by Cape.WritePlc.
+[formatter.pretty-uplc]
+command = "pretty-uplc"
+options = []
+includes = ["*.uplc"]
+
 # Global settings
 [global]
 excludes = [

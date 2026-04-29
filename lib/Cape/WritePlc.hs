@@ -5,6 +5,7 @@ module Cape.WritePlc (writeCodeToFile) where
 
 import Prelude
 
+import Data.List qualified as L
 import PlutusCore.Pretty qualified as PP
 import PlutusCore.Quote (runQuoteT)
 import PlutusTx.Code (CompiledCode, getPlcNoAnn)
@@ -27,5 +28,9 @@ writeCodeToFile filePath code = do
     Left (err :: UPLC.FreeVariableError) ->
       putTextLn $ "Error converting DeBruijn names: " <> show err
     Right prettyUplc -> do
-      writeFile filePath (show prettyUplc)
+      -- Match the trailing-newline contract enforced by the pretty-uplc
+      -- formatter so freshly generated submissions don't show a diff under
+      -- treefmt.
+      let normalised = L.dropWhileEnd (== '\n') (show prettyUplc) <> "\n"
+      writeFile filePath normalised
       putStrLn $ filePath <> " written."
