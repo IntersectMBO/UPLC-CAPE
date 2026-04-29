@@ -47,7 +47,7 @@ cliInfo =
 
 main :: IO ()
 main = do
-  Cli{cliFiles} <- Opts.execParser cliInfo
+  Cli {cliFiles} <- Opts.execParser cliInfo
   results <- traverse formatFile cliFiles
   if and results then exitSuccess else exitFailure
 
@@ -55,9 +55,9 @@ formatFile :: FilePath -> IO Bool
 formatFile path = do
   src <- Text.IO.readFile path
   case PLC.runQuote (runExceptT (UPLCParser.parseProgram src)) ::
-    Either
-      (PLC.Error PLC.DefaultUni PLC.DefaultFun PLC.SrcSpan)
-      (UPLC.Program UPLC.Name PLC.DefaultUni PLC.DefaultFun PLC.SrcSpan) of
+        Either
+          (PLC.Error PLC.DefaultUni PLC.DefaultFun PLC.SrcSpan)
+          (UPLC.Program UPLC.Name PLC.DefaultUni PLC.DefaultFun PLC.SrcSpan) of
     Left err -> do
       hPutStrLn stderr (path <> ": " <> show err)
       pure False
