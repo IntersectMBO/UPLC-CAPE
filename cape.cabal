@@ -36,8 +36,10 @@ common common-deps
     , text
     , time
 
-common common-language
-  import:             common-deps
+-- Shared language settings (warnings, mixins, default extensions). Carries
+-- no build-depends so a stanza can opt in to the project's house style
+-- without pulling the heavy plutus-tx-plugin dep that lives in common-deps.
+common common-language-base
   ghc-options:
     -Wall -Wcompat -Wincomplete-uni-patterns -Wredundant-constraints
     -Wmissing-export-lists -Wmissing-deriving-strategies
@@ -75,6 +77,10 @@ common common-language
     TypeFamilies
     UndecidableInstances
     ViewPatterns
+
+common common-language
+  import: common-language-base
+  import: common-deps
 
 -- Core measurement and benchmark library
 library
@@ -228,22 +234,19 @@ executable plinth-submissions-preview
   hs-source-dirs: plinth-submissions-preview-app
 
 -- UPLC textual pretty-printer used by treefmt as the *.uplc formatter.
--- Deliberately depends only on plutus-core (no plutus-tx-plugin / no Plinth
--- compilation) so the dev shell can ship the binary without paying the heavy
--- plugin build cost.
+-- Imports common-language-base (warnings, mixins, extensions) but not
+-- common-deps, so the build path stays free of plutus-tx-plugin / Plinth
+-- and the dev shell can ship the binary cheaply.
 executable pretty-uplc
-  main-is:          Main.hs
-  hs-source-dirs:   pretty-uplc-app
-  default-language: Haskell2010
-  ghc-options:
-    -Wall -Wcompat -Wincomplete-uni-patterns -Wredundant-constraints
-    -Wmissing-export-lists -Wmissing-deriving-strategies
-    -Wpartial-fields
-
+  import:         common-language-base
+  main-is:        Main.hs
+  hs-source-dirs: pretty-uplc-app
   build-depends:
-    , base         >=4.16
+    , base                  >=4.16
     , mtl
-    , plutus-core  ^>=1.45
+    , optparse-applicative
+    , plutus-core           ^>=1.45
+    , relude                ^>=1.2.2
     , text
 
 -- Test suite

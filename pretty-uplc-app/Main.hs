@@ -7,57 +7,53 @@ running this tool over a freshly generated submission is a no-op.
 -}
 module Main (main) where
 
-import Control.Monad.Except (runExceptT)
-import Data.List (dropWhileEnd)
-import qualified Data.Text.IO as T
-import qualified PlutusCore as PLC
-import qualified PlutusCore.Pretty as PP
-import System.Environment (getArgs, getProgName)
-import System.Exit (exitFailure, exitSuccess)
-import System.IO (Handle, hPutStrLn, stderr, stdout)
-import qualified UntypedPlutusCore as UPLC
-import qualified UntypedPlutusCore.Parser as UPLCParser
+import Prelude
+
+import Data.List qualified as L
+import Data.Text.IO qualified as Text.IO
+import Options.Applicative qualified as Opts
+import PlutusCore qualified as PLC
+import PlutusCore.Pretty qualified as PP
+import System.IO (hPutStrLn)
+import UntypedPlutusCore qualified as UPLC
+import UntypedPlutusCore.Parser qualified as UPLCParser
+
+newtype Cli = Cli {cliFiles :: [FilePath]}
+
+cliParser :: Opts.Parser Cli
+cliParser =
+  Cli
+    <$> Opts.some
+      ( Opts.strArgument $
+          Opts.metavar "FILE..."
+            <> Opts.help "UPLC file to pretty-print in place"
+      )
+
+cliInfo :: Opts.ParserInfo Cli
+cliInfo =
+  Opts.info (cliParser Opts.<**> Opts.helper) $
+    Opts.fullDesc
+      <> Opts.header "pretty-uplc — canonical UPLC textual formatter"
+      <> Opts.progDesc
+        ( "Pretty-print one or more UPLC files in place using "
+            <> "PlutusCore.Pretty.prettyPlcClassic. Idempotent on freshly "
+            <> "generated Plinth submissions because Cape.WritePlc uses the "
+            <> "same printer."
+        )
+      <> Opts.footer
+        ( "Exit status is non-zero if any file fails to parse; the parse "
+            <> "error is written to stderr in the form '<path>: <error>'."
+        )
 
 main :: IO ()
 main = do
-  args <- getArgs
-  case args of
-    [] -> usage stdout >> exitSuccess
-    a : _ | a `elem` ["-h", "--help"] -> usage stdout >> exitSuccess
-    _ -> case filter ("-" `isPrefix`) args of
-      bad@(_ : _) -> do
-        progName <- getProgName
-        hPutStrLn stderr $ progName <> ": unknown option(s): " <> unwords bad
-        usage stderr
-        exitFailure
-      [] -> do
-        results <- traverse formatFile args
-        if and results then exitSuccess else exitFailure
-  where
-    isPrefix p s = take (length p) s == p
-
-usage :: Handle -> IO ()
-usage h = do
-  progName <- getProgName
-  hPutStrLn h $
-    unlines
-      [ "Usage: " <> progName <> " FILE..."
-      , ""
-      , "Pretty-print one or more UPLC files in place using the canonical"
-      , "PlutusCore.Pretty.prettyPlcClassic renderer (the same format produced"
-      , "by Cape.WritePlc, so the tool is idempotent on freshly generated"
-      , "Plinth submissions)."
-      , ""
-      , "Options:"
-      , "  -h, --help    Show this help message and exit."
-      , ""
-      , "Exit status is non-zero if any file fails to parse; the parse error is"
-      , "written to stderr in the form '<path>: <error>'."
-      ]
+  Cli{cliFiles} <- Opts.execParser cliInfo
+  results <- traverse formatFile cliFiles
+  if and results then exitSuccess else exitFailure
 
 formatFile :: FilePath -> IO Bool
 formatFile path = do
-  src <- T.readFile path
+  src <- Text.IO.readFile path
   case PLC.runQuote (runExceptT (UPLCParser.parseProgram src)) ::
     Either
       (PLC.Error PLC.DefaultUni PLC.DefaultFun PLC.SrcSpan)
@@ -66,11 +62,11 @@ formatFile path = do
       hPutStrLn stderr (path <> ": " <> show err)
       pure False
     Right prog -> do
-      -- Show on prettyPlcClassic produces no trailing newline; normalise to a
-      -- single trailing '\n' so GitHub stops flagging "no newline at end of
-      -- file" and the formatter is idempotent across editors that auto-add
-      -- one.
+      -- Show on prettyPlcClassic produces no trailing newline; normalise to
+      -- a single trailing '\n' so GitHub stops flagging "no newline at end
+      -- of file" and the formatter is idempotent across editors that
+      -- auto-add one.
       let rendered = show (PP.prettyPlcClassic prog)
-          normalised = dropWhileEnd (== '\n') rendered <> "\n"
+          normalised = L.dropWhileEnd (== '\n') rendered <> "\n"
       writeFile path normalised
       pure True
