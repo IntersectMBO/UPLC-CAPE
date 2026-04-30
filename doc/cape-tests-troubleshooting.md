@@ -26,16 +26,15 @@ Add temporary debug output to your Haskell spec file:
 
 ```haskell
 -- Add these imports at the top
-import PlutusCore.Data qualified as PLC
-import PlutusCore.Data.Compact.Printer (dataToCompactText)
+import Cape.Data.UplcText (renderUplcDataText)
 import PlutusTx.Builtins qualified as Builtins
 
 -- Add this helper function
 debugScriptContext :: String -> BuiltinData -> IO ()
 debugScriptContext testName contextData = do
   let plcData = Builtins.builtinDataToData contextData
-      compactText = dataToCompactText plcData
-  putStrLn $ "DEBUG[" <> testName <> "]: " <> show compactText
+      uplcText = renderUplcDataText plcData
+  putStrLn $ "DEBUG[" <> testName <> "]: " <> toString uplcText
 ```
 
 **Usage in test cases:**

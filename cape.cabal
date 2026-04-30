@@ -87,6 +87,9 @@ library
   import:          common-language
   exposed-modules:
     Cape.Compile
+    Cape.Data.Decode
+    Cape.Data.PlutusJson
+    Cape.Data.UplcText
     Cape.Error
     Cape.Fixture
     Cape.PrettyResult
@@ -103,8 +106,6 @@ library
     HTLC.Fixture
     LinearVesting
     LinearVesting.Fixture
-    PlutusCore.Data.Compact.Parser
-    PlutusCore.Data.Compact.Printer
     TwoPartyEscrow
     TwoPartyEscrow.Fixture
 
@@ -255,6 +256,8 @@ test-suite cape-tests
   type:               exitcode-stdio-1.0
   main-is:            Spec.hs
   other-modules:
+    Cape.Data.PlutusJsonSpec
+    Cape.Data.UplcTextSpec
     Cape.Protocol.ParametersSpec
     Cape.ScriptContextBuilderSpec
     Cape.TestsSpec
@@ -265,8 +268,6 @@ test-suite cape-tests
     HTLCSpec.Fixture
     LinearVestingSpec
     LinearVestingSpec.Fixture
-    PlutusCore.Data.Compact.ParserSpec
-    PlutusCore.Data.Compact.PrinterSpec
     TwoPartyEscrowSpec
     TwoPartyEscrowSpec.Fixture
     ValidatorHelpers

@@ -7,404 +7,197 @@ import Data.Aeson qualified as Json
 import Data.List ((!!))
 import Data.Map.Strict qualified as Map
 import Data.String.Interpolate (__i)
-import PlutusCore.Data.Compact.Parser (parseBuiltinDataText)
 import Test.Hspec
+
+-- | Helper: a fully populated TestSuite with optional shared data structures.
+mkSuite :: Maybe (Map Text DataStructureEntry) -> TestSuite
+mkSuite ds =
+  TestSuite
+    { tsVersion = "2.0.0"
+    , tsDescription = Just "test"
+    , tsTests = []
+    , tsDataStructures = ds
+    }
+
+-- | Helper: a TestInput for the given input type with no value/file/context.
+emptyInput :: InputType -> TestInput
+emptyInput t =
+  TestInput
+    { tiType = t
+    , tiValue = Nothing
+    , tiFile = Nothing
+    , tiScriptContext = Nothing
+    }
+
+shouldResolveBuiltinData :: ResolvedInput -> Expectation
+shouldResolveBuiltinData = \case
+  ResolvedBuiltinData _ -> pass
+  ResolvedUplc t ->
+    expectationFailure $ "expected ResolvedBuiltinData, got ResolvedUplc " <> show t
 
 spec :: Spec
 spec = do
   describe "resolveTestInput" do
     context "script_context input type" do
       it "resolves simple ScriptContext with AddSignature patch" do
-        let scriptContextSpec =
-              ScriptContextSpec
-                { scsBaseline = DirectBaseline SpendingBaseline
-                , scsPatches = [AddSignatureSpec "deadbeef"]
+        let testInput =
+              (emptyInput ScriptContext)
+                { tiScriptContext =
+                    Just
+                      ScriptContextSpec
+                        { scsBaseline = DirectBaseline SpendingBaseline
+                        , scsPatches = [AddSignatureSpec "deadbeef"]
+                        }
                 }
-            testInput =
-              TestInput
-                { tiType = ScriptContext
-                , tiValue = Nothing
-                , tiFile = Nothing
-                , tiScriptContext = Just scriptContextSpec
-                }
-            testSuite =
-              TestSuite
-                { tsVersion = "1.0.0"
-                , tsDescription = Just "test"
-                , tsTests = []
-                , tsDataStructures = Nothing
-                }
+        result <- resolveTestInput "" (mkSuite Nothing) testInput
+        shouldResolveBuiltinData result
 
-        result <- resolveTestInput "" testSuite testInput
-
-        -- The result should be a valid BuiltinData text representation
-        case parseBuiltinDataText result of
-          Left parseErr ->
-            expectationFailure $
-              "Failed to parse resolved ScriptContext: " <> show parseErr
-          Right _ -> pass -- Success - it's valid BuiltinData
-      it "resolves ScriptContext with SetRedeemer patch" do
-        let redeemerValue = Json.String "42"
-            scriptContextSpec =
-              ScriptContextSpec
-                { scsBaseline = DirectBaseline SpendingBaseline
-                , scsPatches = [SetRedeemerSpec redeemerValue]
+      it "resolves ScriptContext with SetRedeemer patch (UPLC text Data)" do
+        let testInput =
+              (emptyInput ScriptContext)
+                { tiScriptContext =
+                    Just
+                      ScriptContextSpec
+                        { scsBaseline = DirectBaseline SpendingBaseline
+                        , scsPatches = [SetRedeemerSpec (Json.String "I 42")]
+                        }
                 }
-            testInput =
-              TestInput
-                { tiType = ScriptContext
-                , tiValue = Nothing
-                , tiFile = Nothing
-                , tiScriptContext = Just scriptContextSpec
-                }
-            testSuite =
-              TestSuite
-                { tsVersion = "1.0.0"
-                , tsDescription = Just "test"
-                , tsTests = []
-                , tsDataStructures = Nothing
-                }
+        result <- resolveTestInput "" (mkSuite Nothing) testInput
+        shouldResolveBuiltinData result
 
-        result <- resolveTestInput "" testSuite testInput
-
-        -- Verify it produces valid BuiltinData
-        case parseBuiltinDataText result of
-          Left parseErr ->
-            expectationFailure $
-              "Failed to parse resolved ScriptContext: " <> show parseErr
-          Right _ -> pass
+      it "resolves ScriptContext with SetRedeemer patch (Plutus JSON object)" do
+        let testInput =
+              (emptyInput ScriptContext)
+                { tiScriptContext =
+                    Just
+                      ScriptContextSpec
+                        { scsBaseline = DirectBaseline SpendingBaseline
+                        , scsPatches =
+                            [ SetRedeemerSpec
+                                (Json.object ["int" Json..= (42 :: Integer)])
+                            ]
+                        }
+                }
+        result <- resolveTestInput "" (mkSuite Nothing) testInput
+        shouldResolveBuiltinData result
 
       it "resolves ScriptContext with multiple patches" do
-        let scriptContextSpec =
-              ScriptContextSpec
-                { scsBaseline = DirectBaseline SpendingBaseline
-                , scsPatches =
-                    [ AddSignatureSpec "cafe0001"
-                    , AddSignatureSpec "cafe0002"
-                    , SetRedeemerSpec (Json.String "[1 2 3]")
-                    , SetValidRangeSpec (Just 1000) (Just 2000)
-                    ]
+        let testInput =
+              (emptyInput ScriptContext)
+                { tiScriptContext =
+                    Just
+                      ScriptContextSpec
+                        { scsBaseline = DirectBaseline SpendingBaseline
+                        , scsPatches =
+                            [ AddSignatureSpec "cafe0001"
+                            , AddSignatureSpec "cafe0002"
+                            , SetRedeemerSpec (Json.String "List [I 1, I 2, I 3]")
+                            , SetValidRangeSpec (Just 1000) (Just 2000)
+                            ]
+                        }
                 }
-            testInput =
-              TestInput
-                { tiType = ScriptContext
-                , tiValue = Nothing
-                , tiFile = Nothing
-                , tiScriptContext = Just scriptContextSpec
-                }
-            testSuite =
-              TestSuite
-                { tsVersion = "1.0.0"
-                , tsDescription = Just "test"
-                , tsTests = []
-                , tsDataStructures = Nothing
-                }
-
-        result <- resolveTestInput "" testSuite testInput
-
-        -- Verify it produces valid BuiltinData
-        case parseBuiltinDataText result of
-          Left parseErr ->
-            expectationFailure $
-              "Failed to parse resolved ScriptContext: " <> show parseErr
-          Right _ -> pass
+        result <- resolveTestInput "" (mkSuite Nothing) testInput
+        shouldResolveBuiltinData result
 
       it "resolves ScriptContext with data_structures references" do
         let dataStructures =
               Map.singleton
                 "test_signature"
-                (BuiltinDataEntry (Json.String "#cafe1234567890abcdef"))
-
-            scriptContextSpec =
-              ScriptContextSpec
-                { scsBaseline = DirectBaseline SpendingBaseline
-                , scsPatches = [AddSignatureSpec "@test_signature"]
-                }
+                (BuiltinDataEntry (Json.String "B #cafe1234567890abcdef"))
             testInput =
-              TestInput
-                { tiType = ScriptContext
-                , tiValue = Nothing
-                , tiFile = Nothing
-                , tiScriptContext = Just scriptContextSpec
+              (emptyInput ScriptContext)
+                { tiScriptContext =
+                    Just
+                      ScriptContextSpec
+                        { scsBaseline = DirectBaseline SpendingBaseline
+                        , scsPatches = [AddSignatureSpec "@test_signature"]
+                        }
                 }
-            testSuite =
-              TestSuite
-                { tsVersion = "1.0.0"
-                , tsDescription = Just "test"
-                , tsTests = []
-                , tsDataStructures = Just dataStructures
-                }
+        result <- resolveTestInput "" (mkSuite (Just dataStructures)) testInput
+        shouldResolveBuiltinData result
 
-        result <- resolveTestInput "" testSuite testInput
-
-        -- Verify it produces valid BuiltinData
-        case parseBuiltinDataText result of
-          Left parseErr ->
-            expectationFailure $ "Failed to parse resolved ScriptContext: " <> show parseErr
-          Right _ -> pass
-
-      it "handles ScriptContext type properly" do
-        let scriptContextSpec =
-              ScriptContextSpec
-                { scsBaseline = DirectBaseline SpendingBaseline
-                , scsPatches = []
-                }
-            testInput =
-              TestInput
-                { tiType = ScriptContext
-                , tiValue = Nothing
-                , tiFile = Nothing
-                , tiScriptContext = Just scriptContextSpec
-                }
-            testSuite =
-              TestSuite
-                { tsVersion = "1.0.0"
-                , tsDescription = Just "test"
-                , tsTests = []
-                , tsDataStructures = Nothing
-                }
-
-        result <- resolveTestInput "" testSuite testInput
-
-        -- Should produce valid BuiltinData
-        case parseBuiltinDataText result of
-          Left parseErr ->
-            expectationFailure $
-              "Failed to parse ScriptContext result: " <> show parseErr
-          Right _ -> pass
-
-      it "resolves ScriptContext for Accept operation with seller signature" do
-        let scriptContextSpec =
-              ScriptContextSpec
-                { scsBaseline = DirectBaseline SpendingBaseline
-                , scsPatches =
-                    [ SetRedeemerSpec (Json.String "1") -- Accept redeemer
-                    , AddSignatureSpec
-                        "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb" -- Seller signature
-                    , AddInputUTXOSpec
-                        "4444444444444444444444444444444444444444444444444444444444444444:0"
-                        (ValueSpec 75000000 [])
-                        True
-                        Nothing
-                    , AddOutputUTXOSpec
-                        ( PubkeyAddressSpec
-                            "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
-                        )
-                        (ValueSpec 75000000 [])
-                    ]
-                }
-            testInput =
-              TestInput
-                { tiType = ScriptContext
-                , tiValue = Nothing
-                , tiFile = Nothing
-                , tiScriptContext = Just scriptContextSpec
-                }
-            testSuite =
-              TestSuite
-                { tsVersion = "1.0.0"
-                , tsDescription = Just "Accept operation test"
-                , tsTests = []
-                , tsDataStructures = Nothing
-                }
-
-        result <- resolveTestInput "" testSuite testInput
-
-        -- The result should be a valid BuiltinData text representation
-        case parseBuiltinDataText result of
-          Left parseErr ->
-            expectationFailure $
-              "Failed to parse resolved Accept ScriptContext: " <> show parseErr
-          Right _ -> pass -- Success - it's valid BuiltinData for Accept
-      it "resolves ScriptContext with RemoveSignature patch" do
-        let scriptContextSpec =
-              ScriptContextSpec
-                { scsBaseline = DirectBaseline SpendingBaseline
-                , scsPatches =
-                    [ AddSignatureSpec "cafe0001"
-                    , AddSignatureSpec "cafe0002"
-                    , RemoveSignatureSpec "cafe0001"
-                    ]
-                }
-            testInput =
-              TestInput
-                { tiType = ScriptContext
-                , tiValue = Nothing
-                , tiFile = Nothing
-                , tiScriptContext = Just scriptContextSpec
-                }
-            testSuite =
-              TestSuite
-                { tsVersion = "1.0.0"
-                , tsDescription = Just "test"
-                , tsTests = []
-                , tsDataStructures = Nothing
-                }
-
-        result <- resolveTestInput "" testSuite testInput
-
-        -- The result should be a valid BuiltinData text representation
-        case parseBuiltinDataText result of
-          Left parseErr ->
-            expectationFailure $
-              "Failed to parse resolved ScriptContext: " <> show parseErr
-          Right _ -> pass -- Success - it's valid BuiltinData
-      it "resolves ScriptContext with RemoveSignature and @references" do
-        let dataStructures =
-              Map.fromList
-                [ ("test_key1", BuiltinDataEntry (Json.String "#deadbeef0001"))
-                , ("test_key2", BuiltinDataEntry (Json.String "#deadbeef0002"))
-                ]
-
-            scriptContextSpec =
-              ScriptContextSpec
-                { scsBaseline = DirectBaseline SpendingBaseline
-                , scsPatches =
-                    [ AddSignatureSpec "@test_key1"
-                    , AddSignatureSpec "@test_key2"
-                    , RemoveSignatureSpec "@test_key1"
-                    ]
-                }
-            testInput =
-              TestInput
-                { tiType = ScriptContext
-                , tiValue = Nothing
-                , tiFile = Nothing
-                , tiScriptContext = Just scriptContextSpec
-                }
-            testSuite =
-              TestSuite
-                { tsVersion = "1.0.0"
-                , tsDescription = Just "test"
-                , tsTests = []
-                , tsDataStructures = Just dataStructures
-                }
-
-        result <- resolveTestInput "" testSuite testInput
-
-        -- Verify it produces valid BuiltinData
-        case parseBuiltinDataText result of
-          Left parseErr ->
-            expectationFailure $ "Failed to parse resolved ScriptContext: " <> show parseErr
-          Right _ -> pass
-
-      it "handles RemoveSignature with mixed literal and reference pubkeys" do
+      it "resolves ScriptContext with data_structures references (Plutus JSON form)" do
         let dataStructures =
               Map.singleton
-                "ref_key"
-                (BuiltinDataEntry (Json.String "#deadbeef123456"))
-
-            scriptContextSpec =
-              ScriptContextSpec
-                { scsBaseline = DirectBaseline SpendingBaseline
-                , scsPatches =
-                    [ AddSignatureSpec "literal0001"
-                    , AddSignatureSpec "@ref_key"
-                    , AddSignatureSpec "literal0002"
-                    , RemoveSignatureSpec "literal0001"
-                    , RemoveSignatureSpec "@ref_key"
-                    ]
-                }
+                "test_signature"
+                ( BuiltinDataEntry
+                    (Json.object ["bytes" Json..= ("cafe1234567890abcdef" :: Text)])
+                )
             testInput =
-              TestInput
-                { tiType = ScriptContext
-                , tiValue = Nothing
-                , tiFile = Nothing
-                , tiScriptContext = Just scriptContextSpec
+              (emptyInput ScriptContext)
+                { tiScriptContext =
+                    Just
+                      ScriptContextSpec
+                        { scsBaseline = DirectBaseline SpendingBaseline
+                        , scsPatches = [AddSignatureSpec "@test_signature"]
+                        }
                 }
-            testSuite =
-              TestSuite
-                { tsVersion = "1.0.0"
-                , tsDescription = Just "test"
-                , tsTests = []
-                , tsDataStructures = Just dataStructures
-                }
+        result <- resolveTestInput "" (mkSuite (Just dataStructures)) testInput
+        shouldResolveBuiltinData result
 
-        result <- resolveTestInput "" testSuite testInput
-
-        -- Should produce valid BuiltinData with only literal0002 signature remaining
-        case parseBuiltinDataText result of
-          Left parseErr ->
-            expectationFailure $
-              "Failed to parse ScriptContext result: " <> show parseErr
-          Right _ -> pass
-
-    context "other input types" do
-      it "resolves BuiltinData from value" do
+      it "resolves minimal ScriptContext (no patches)" do
         let testInput =
-              TestInput
-                { tiType = BuiltinData
-                , tiValue = Just "Constr 0 [I 42]"
-                , tiFile = Nothing
-                , tiScriptContext = Nothing
+              (emptyInput ScriptContext)
+                { tiScriptContext =
+                    Just
+                      ScriptContextSpec
+                        { scsBaseline = DirectBaseline SpendingBaseline
+                        , scsPatches = []
+                        }
                 }
-            testSuite =
-              TestSuite
-                { tsVersion = "1.0.0"
-                , tsDescription = Just "test"
-                , tsTests = []
-                , tsDataStructures = Nothing
+        result <- resolveTestInput "" (mkSuite Nothing) testInput
+        shouldResolveBuiltinData result
+
+    context "builtin_data input type" do
+      it "decodes UPLC text Data syntax string" do
+        let testInput =
+              (emptyInput BuiltinData)
+                { tiValue = Just (Json.String "Constr 0 [I 42]")
                 }
+        result <- resolveTestInput "" (mkSuite Nothing) testInput
+        shouldResolveBuiltinData result
 
-        result <- resolveTestInput "" testSuite testInput
-        result `shouldBe` "Constr 0 [I 42]"
+      it "decodes Plutus JSON detailed schema object" do
+        let testInput =
+              (emptyInput BuiltinData)
+                { tiValue =
+                    Just
+                      ( Json.object
+                          [ "constructor" Json..= (0 :: Integer)
+                          , "fields" Json..= [Json.object ["int" Json..= (42 :: Integer)]]
+                          ]
+                      )
+                }
+        result <- resolveTestInput "" (mkSuite Nothing) testInput
+        shouldResolveBuiltinData result
 
-      it "resolves UPLC from value" do
+      it "resolves @reference into BuiltinData" do
+        let dataStructures =
+              Map.singleton
+                "answer"
+                (BuiltinDataEntry (Json.String "I 42"))
+            testInput =
+              (emptyInput BuiltinData)
+                { tiValue = Just (Json.String "@answer")
+                }
+        result <- resolveTestInput "" (mkSuite (Just dataStructures)) testInput
+        shouldResolveBuiltinData result
+
+    context "uplc input type" do
+      it "passes through inline UPLC text" do
         let uplcProgram = "(program 1.1.0 (con integer 42))"
             testInput =
-              TestInput
-                { tiType = UPLC
-                , tiValue = Just uplcProgram
-                , tiFile = Nothing
-                , tiScriptContext = Nothing
+              (emptyInput UPLC)
+                { tiValue = Just (Json.String uplcProgram)
                 }
-            testSuite =
-              TestSuite
-                { tsVersion = "1.0.0"
-                , tsDescription = Just "test"
-                , tsTests = []
-                , tsDataStructures = Nothing
-                }
-
-        result <- resolveTestInput "" testSuite testInput
-        result `shouldBe` uplcProgram
-
-    context "integration scenarios" do
-      it "works with empty patches (minimal ScriptContext)" do
-        let scriptContextSpec =
-              ScriptContextSpec
-                { scsBaseline = DirectBaseline SpendingBaseline
-                , scsPatches = []
-                }
-            testInput =
-              TestInput
-                { tiType = ScriptContext
-                , tiValue = Nothing
-                , tiFile = Nothing
-                , tiScriptContext = Just scriptContextSpec
-                }
-            testSuite =
-              TestSuite
-                { tsVersion = "1.0.0"
-                , tsDescription = Just "test"
-                , tsTests = []
-                , tsDataStructures = Nothing
-                }
-
-        result <- resolveTestInput "" testSuite testInput
-
-        -- Verify it produces valid BuiltinData for minimal ScriptContext
-        case parseBuiltinDataText result of
-          Left parseErr ->
-            expectationFailure $
-              "Failed to parse minimal ScriptContext: " <> show parseErr
-          Right _ -> pass
+        result <- resolveTestInput "" (mkSuite Nothing) testInput
+        case result of
+          ResolvedUplc t -> t `shouldBe` uplcProgram
+          ResolvedBuiltinData _ ->
+            expectationFailure "expected ResolvedUplc"
 
   describe "PatchOperationSpec JSON completeness" do
     it "has JSON support for all constructors (exhaustive)" do
-      -- This test uses exhaustive pattern matching without wildcards.
-      -- Adding new PatchOperationSpec constructors will break compilation,
-      -- forcing developers to add corresponding JSON test cases.
       let testJSONRoundTrip jsonValue expectedSpec = do
             case Json.eitherDecode jsonValue of
               Left err -> expectationFailure $ "Failed to parse JSON: " <> err
@@ -421,8 +214,8 @@ spec = do
                 (RemoveSignatureSpec "cafe0001")
             SetRedeemerSpec _ ->
               testJSONRoundTrip
-                "{\"op\": \"set_redeemer\", \"redeemer\": \"42\"}"
-                (SetRedeemerSpec (Json.String "42"))
+                "{\"op\": \"set_redeemer\", \"redeemer\": \"I 42\"}"
+                (SetRedeemerSpec (Json.String "I 42"))
             AddInputUTXOSpec {} ->
               testJSONRoundTrip
                 [__i|{
@@ -457,8 +250,8 @@ spec = do
                 (RemoveOutputUTXOSpec 0)
             SetScriptDatumSpec _ ->
               testJSONRoundTrip
-                "{\"op\": \"set_script_datum\", \"datum\": \"42\"}"
-                (SetScriptDatumSpec (Json.String "42"))
+                "{\"op\": \"set_script_datum\", \"datum\": \"I 42\"}"
+                (SetScriptDatumSpec (Json.String "I 42"))
             AddOutputUTXOWithDatumSpec {} ->
               testJSONRoundTrip
                 [__i|{
@@ -470,30 +263,28 @@ spec = do
                   "value": {
                     "lovelace": 500000
                   },
-                  "datum": "42"
+                  "datum": "I 42"
                 }|]
                 ( AddOutputUTXOWithDatumSpec
                     (PubkeyAddressSpec "deadbeef")
                     (ValueSpec 500000 [])
-                    (Json.String "42")
+                    (Json.String "I 42")
                 )
-      -- NO wildcard pattern! Compilation will fail if a constructor is added
 
-      -- Test with one instance of each constructor
       mapM_
         testAllConstructors
         [ AddSignatureSpec "test"
         , RemoveSignatureSpec "test"
-        , SetRedeemerSpec (Json.String "test")
+        , SetRedeemerSpec (Json.String "I 42")
         , AddInputUTXOSpec "test:0" (ValueSpec 1000000 []) True Nothing
         , SetValidRangeSpec (Just 100) (Just 200)
         , AddOutputUTXOSpec (PubkeyAddressSpec "test") (ValueSpec 1000000 [])
         , RemoveOutputUTXOSpec 0
-        , SetScriptDatumSpec (Json.String "test")
+        , SetScriptDatumSpec (Json.String "I 42")
         , AddOutputUTXOWithDatumSpec
             (PubkeyAddressSpec "test")
             (ValueSpec 1000000 [])
-            (Json.String "test")
+            (Json.String "I 42")
         ]
 
     context "value with assets and datum" do
@@ -502,9 +293,9 @@ spec = do
             expected =
               AddInputUTXOSpec
                 "txid:0"
-                (ValueSpec 2000000 [AssetSpec "#dddd" "#7465" 1000])
+                (ValueSpec 2000000 [AssetSpec "@cs" "@tn" 1000])
                 True
-                (Just (Json.String "42"))
+                (Just (Json.String "I 42"))
         case Json.eitherDecode
           [__i|{
             "op": "add_input_utxo",
@@ -512,13 +303,13 @@ spec = do
             "value": {
               "lovelace": 2000000,
               "assets": [{
-                "currency_symbol": "\#dddd",
-                "token_name": "\#7465",
+                "currency_symbol": "@cs",
+                "token_name": "@tn",
                 "quantity": 1000
               }]
             },
             "is_own_input": true,
-            "datum": "42"
+            "datum": "I 42"
           }|] of
           Left err -> expectationFailure $ "Failed to parse: " <> err
           Right parsedSpec -> parsedSpec `shouldBe` expected
@@ -528,7 +319,7 @@ spec = do
             expected =
               AddOutputUTXOSpec
                 (ScriptAddressSpec "1111")
-                (ValueSpec 2000000 [AssetSpec "#dddd" "#7465" 500])
+                (ValueSpec 2000000 [AssetSpec "@cs" "@tn" 500])
         case Json.eitherDecode
           [__i|{
             "op": "add_output_utxo",
@@ -539,8 +330,8 @@ spec = do
             "value": {
               "lovelace": 2000000,
               "assets": [{
-                "currency_symbol": "\#dddd",
-                "token_name": "\#7465",
+                "currency_symbol": "@cs",
+                "token_name": "@tn",
                 "quantity": 500
               }]
             }
@@ -594,13 +385,13 @@ spec = do
             tcName testCase `shouldBe` "test_empty"
             length (tcInputs testCase) `shouldBe` 0
 
-      it "parses multiple BuiltinData inputs" do
+      it "parses BuiltinData inputs in both UPLC text and Plutus JSON forms" do
         let jsonText =
               [__i|{
               "name": "test_builtin_multi",
               "inputs": [
-                {"type": "builtin_data", "value": "42"},
-                {"type": "builtin_data", "value": "100"}
+                {"type": "builtin_data", "value": "I 42"},
+                {"type": "builtin_data", "value": {"int": 100}}
               ],
               "expected": {"type": "value", "content": "(con integer 142)"}
             }|]

@@ -33,6 +33,7 @@ module Cape.Tests (
   BaselineSpec (..),
   AddressSpec (..),
   DataStructureEntry (..),
+  ResolvedInput (..),
   loadTestSuite,
   resolveTestInput,
   resolveExpectedResult,
@@ -42,8 +43,9 @@ module Cape.Tests (
 
 import Prelude
 
+import Cape.Data.Decode (decodeBuiltinData)
 import Cape.ScriptContextBuilder
-import Data.Aeson (FromJSON (..), withObject, (.:), (.:?), (.!=))
+import Data.Aeson (FromJSON (..), withObject, (.!=), (.:), (.:?))
 import Data.Aeson qualified as Json
 import Data.Aeson.Types qualified as AesonTypes
 import Data.ByteString.Lazy qualified as LBS
@@ -51,8 +53,6 @@ import Data.Map qualified as HaskellMap
 import Data.Text qualified as Text
 import Data.Text.Encoding qualified as TE
 import PlutusCore.Data qualified as PLC
-import PlutusCore.Data.Compact.Parser (parseBuiltinDataText, renderParseError)
-import PlutusCore.Data.Compact.Printer (dataToCompactText)
 import PlutusLedgerApi.Data.V3 qualified as V3
 import PlutusTx.Builtins qualified as Builtins
 import PlutusTx.Builtins.Internal qualified as BI
@@ -60,19 +60,35 @@ import System.Directory (doesFileExist)
 import System.FilePath (takeDirectory, (</>))
 import Text.Read qualified as Read
 
+-- * Resolved Input
+
+{- | Result of 'resolveTestInput': either a textual UPLC fragment that the
+caller will splice into a program, or a pre-decoded BuiltinData value that the
+caller will lift into a constant.
+-}
+data ResolvedInput
+  = ResolvedUplc Text
+  | ResolvedBuiltinData V3.BuiltinData
+  deriving stock (Show)
+
 -- * Data Structure Definitions
 
 {- | Entry in the data_structures section of test configuration.
 Represents either BuiltinData or ScriptContext with their JSON values.
 -}
 data DataStructureEntry
-  = -- | BuiltinData encoded as compact text
+  = -- | BuiltinData entry (string in UPLC text Data syntax, or object in
+    --   Plutus JSON detailed schema).
     --
-    --     JSON example:
+    --     JSON examples:
     --     @
     --     "buyer_pubkey": {
     --       "type": "builtin_data",
-    --       "value": "#aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    --       "value": "B #aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    --     }
+    --     "datum_complex": {
+    --       "type": "builtin_data",
+    --       "value": {"constructor": 0, "fields": [{"int": 42}]}
     --     }
     --     @
     BuiltinDataEntry AesonTypes.Value
@@ -178,13 +194,23 @@ data TestInput = TestInput
   -- ^ Type of input data
   --
   --     JSON: @"type": "builtin_data"@
-  , tiValue :: Maybe Text
-  -- ^ Inline value (mutually exclusive with tiFile)
+  , tiValue :: Maybe AesonTypes.Value
+  -- ^ Inline value (mutually exclusive with tiFile).
+  --
+  --     The shape of @value@ depends on the input @type@:
+  --
+  --     * For @builtin_data@ inputs the value can be either a string in
+  --       UPLC text Data syntax (@"Constr 0 [I 42]"@), an object in the
+  --       Plutus JSON detailed schema (@{"constructor": 0, "fields": [...]}@),
+  --       or a @\"\@reference\"@ string pointing into @data_structures@.
+  --     * For @uplc@ inputs the value must be a string with UPLC term text.
   --
   --     JSON examples:
   --     @
-  --     "value": "42"
-  --     "value": "(program 1.1.0 (con integer 42))"
+  --     "value": "Constr 0 [I 42]"
+  --     "value": {"int": 42}
+  --     "value": "@buyer_pubkey"
+  --     "value": "(con integer 42)"
   --     @
   , tiFile :: Maybe FilePath
   -- ^ File path for input data
@@ -607,17 +633,33 @@ Example:
 input <- resolveTestInput baseDir suite testInput
 @
 -}
-resolveTestInput :: FilePath -> TestSuite -> TestInput -> IO Text
+resolveTestInput :: FilePath -> TestSuite -> TestInput -> IO ResolvedInput
 resolveTestInput baseDir testSuite testInput =
   case testInput of
     TestInput {tiType = ScriptContext, tiScriptContext = Just spec} -> do
       let dataStructures = fromMaybe HaskellMap.empty (tsDataStructures testSuite)
-      resolveScriptContextInput dataStructures spec
+      ResolvedBuiltinData <$> resolveScriptContextInput dataStructures spec
     TestInput {tiType = ScriptContext, tiScriptContext = Nothing} ->
       die "ScriptContext input type requires script_context specification"
-    TestInput {tiValue = Just val} -> pure val
-    TestInput {tiFile = Just file} -> do
-      let fullPath = baseDir </> file
+    TestInput {tiType = BuiltinData, tiValue = Just val} -> do
+      let dataStructures = fromMaybe HaskellMap.empty (tsDataStructures testSuite)
+      ResolvedBuiltinData <$> decodeBuiltinDataValue dataStructures "builtin_data" val
+    TestInput {tiType = BuiltinData, tiFile = Just file} -> do
+      text <- readInputFile baseDir file
+      let dataStructures = fromMaybe HaskellMap.empty (tsDataStructures testSuite)
+      ResolvedBuiltinData
+        <$> decodeBuiltinDataValue dataStructures "builtin_data file" (Json.String text)
+    TestInput {tiType = UPLC, tiValue = Just (Json.String text)} ->
+      pure (ResolvedUplc text)
+    TestInput {tiType = UPLC, tiValue = Just other} ->
+      die $ "uplc input value must be a string, got: " <> show other
+    TestInput {tiType = UPLC, tiFile = Just file} ->
+      ResolvedUplc <$> readInputFile baseDir file
+    _ ->
+      die "Test input must have either 'value', 'file', or 'script_context'"
+  where
+    readInputFile dir file = do
+      let fullPath = dir </> file
       exists <- doesFileExist fullPath
       if not exists
         then die ("Input file not found: " <> fullPath)
@@ -626,8 +668,6 @@ resolveTestInput baseDir testSuite testInput =
           case decodeUtf8' bs of
             Left _ -> die ("Invalid UTF-8 in file: " <> fullPath)
             Right t -> pure t
-    _ ->
-      die "Test input must have either 'value', 'file', or 'script_context'"
 
 {- | Resolve file references in expected result.
 
@@ -692,49 +732,62 @@ builtinData <- resolveBuiltinDataReference dataStructures "@buyer_pubkey"
 -}
 resolveBuiltinDataReference ::
   HaskellMap.Map Text DataStructureEntry -> Text -> IO V3.BuiltinData
-resolveBuiltinDataReference dataStructures text
-  | Text.isPrefixOf "@" text && Text.length text > 1 =
-      let refName = Text.drop 1 text
-       in case HaskellMap.lookup refName dataStructures of
-            Just (BuiltinDataEntry (Json.String val)) ->
-              case parseBuiltinDataText val of
-                Left parseErr ->
-                  die
-                    ( "Failed to parse BuiltinData for @"
-                        <> toString refName
-                        <> ": "
-                        <> show (renderParseError parseErr)
-                    )
-                Right builtinData ->
-                  pure $ BI.BuiltinData builtinData
-            Just (BuiltinDataEntry _) ->
-              die
-                ( "Reference @"
-                    <> toString refName
-                    <> " is builtin_data but not a string value"
-                )
-            Just (ScriptContextEntry _) ->
-              die
-                ( "Reference @"
-                    <> toString refName
-                    <> " is script_context, cannot be used as BuiltinData"
-                )
-            Nothing ->
-              die
-                ( "Reference @"
-                    <> toString refName
-                    <> " not found in data_structures"
-                )
-  | otherwise =
-      -- Not a reference, try to parse as literal BuiltinData
-      case parseBuiltinDataText text of
-        Left parseErr ->
-          die
-            ( "Failed to parse BuiltinData: "
-                <> show (renderParseError parseErr)
-            )
-        Right builtinData ->
-          pure $ BI.BuiltinData builtinData
+resolveBuiltinDataReference dataStructures text =
+  decodeBuiltinDataValue dataStructures "BuiltinData" (Json.String text)
+
+{- | Decode an arbitrary JSON value into a 'V3.BuiltinData'.
+
+Handles three cases:
+
+* String starting with @\@@ → resolves the reference into @data_structures@
+  and re-decodes the underlying value.
+* String → parses it as UPLC text Data syntax.
+* Object → parses it as Plutus JSON detailed schema.
+
+Any other JSON shape produces a fatal error in 'IO'.
+-}
+decodeBuiltinDataValue ::
+  HaskellMap.Map Text DataStructureEntry ->
+  Text ->
+  AesonTypes.Value ->
+  IO V3.BuiltinData
+decodeBuiltinDataValue dataStructures context = \case
+  Json.String text
+    | Text.isPrefixOf "@" text && Text.length text > 1 -> do
+        let refName = Text.drop 1 text
+        case HaskellMap.lookup refName dataStructures of
+          Just (BuiltinDataEntry inner) ->
+            decodeBuiltinDataValue
+              dataStructures
+              (context <> " (via @" <> refName <> ")")
+              inner
+          Just (ScriptContextEntry _) ->
+            die $
+              "Reference @"
+                <> toString refName
+                <> " is script_context, cannot be used as BuiltinData"
+          Nothing ->
+            die $
+              "Reference @"
+                <> toString refName
+                <> " not found in data_structures"
+    | otherwise -> decode (Json.String text)
+  obj@(Json.Object _) -> decode obj
+  other ->
+    die $
+      toString context
+        <> ": expected string (UPLC text Data syntax / @reference)"
+        <> " or object (Plutus JSON detailed schema), got: "
+        <> show other
+  where
+    decode v = case decodeBuiltinData v of
+      Left err ->
+        die $
+          "Failed to decode "
+            <> toString context
+            <> ": "
+            <> toString err
+      Right d -> pure (BI.BuiltinData d)
 
 {- | Resolve @name references in text using typed data structures map.
 
@@ -840,17 +893,15 @@ resolveAsBytes dataStructures text
         PLC.B bytestring -> pure $ Builtins.toBuiltin bytestring
         _ -> die $ "Expected bytestring data for asset component: " <> toString text
   | otherwise = do
-      -- Resolve as text (handles non-reference cases)
+      -- Resolve as text (handles non-reference cases) and parse via the
+      -- BuiltinData decoder (string → UPLC text Data syntax).
       let resolved = resolveTextReference dataStructures text
-      case parseBuiltinDataText resolved of
-        Left parseErr ->
-          die $
-            "Failed to parse asset component: "
-              <> toString (renderParseError parseErr)
-        Right parsedData ->
-          case parsedData of
-            PLC.B bytestring -> pure $ Builtins.toBuiltin bytestring
-            _ -> die $ "Expected bytestring for asset component: " <> toString text
+      resolvedBuiltinData <-
+        decodeBuiltinDataValue dataStructures "asset component" (Json.String resolved)
+      let coreData = Builtins.builtinDataToData resolvedBuiltinData
+      case coreData of
+        PLC.B bytestring -> pure $ Builtins.toBuiltin bytestring
+        _ -> die $ "Expected bytestring for asset component: " <> toString text
 
 -- * Datum Resolution
 
@@ -860,21 +911,9 @@ Supports @references (resolving from data_structures)
 and inline BuiltinData text literals.
 -}
 resolveDatumValue ::
-  HaskellMap.Map Text DataStructureEntry -> Text -> Text -> IO V3.Datum
-resolveDatumValue dataStructures context dataText
-  | Text.isPrefixOf "@" dataText && Text.length dataText > 1 = do
-      resolvedBuiltinData <- resolveBuiltinDataReference dataStructures dataText
-      pure $ V3.Datum resolvedBuiltinData
-  | otherwise =
-      case parseBuiltinDataText dataText of
-        Left parseErr ->
-          die $
-            "Failed to parse "
-              <> toString context
-              <> ": "
-              <> toString (renderParseError parseErr)
-        Right parsedData ->
-          pure $ V3.Datum (BI.BuiltinData parsedData)
+  HaskellMap.Map Text DataStructureEntry -> Text -> AesonTypes.Value -> IO V3.Datum
+resolveDatumValue dataStructures context value =
+  V3.Datum <$> decodeBuiltinDataValue dataStructures context value
 
 {- | Resolve an optional JSON value to OutputDatum.
 
@@ -886,10 +925,8 @@ resolveOutputDatum ::
   Maybe AesonTypes.Value ->
   IO V3.OutputDatum
 resolveOutputDatum _dataStructures _context Nothing = pure V3.NoOutputDatum
-resolveOutputDatum dataStructures context (Just (Json.String dataText)) =
-  V3.OutputDatum <$> resolveDatumValue dataStructures context dataText
-resolveOutputDatum _dataStructures context (Just other) =
-  die $ toString context <> " must be a string, got: " <> show other
+resolveOutputDatum dataStructures context (Just value) =
+  V3.OutputDatum <$> resolveDatumValue dataStructures context value
 
 -- * Patch Operation Conversion
 
@@ -972,20 +1009,8 @@ convertPatchOperation dataStructures spec =
               pubKeyHashBytes = Builtins.toBuiltin (TE.encodeUtf8 resolvedText)
           pure $ RemoveSignature (V3.PubKeyHash pubKeyHashBytes)
     SetRedeemerSpec redeemerValue -> do
-      -- Convert JSON Value to BuiltinData (expects string with builtin data encoding)
-      case redeemerValue of
-        Json.String dataText ->
-          case parseBuiltinDataText dataText of
-            Left parseErr ->
-              die $
-                "Failed to parse redeemer BuiltinData: "
-                  <> show (renderParseError parseErr)
-            Right builtinData ->
-              pure $ SetRedeemer (V3.Redeemer (BI.BuiltinData builtinData))
-        other ->
-          die $
-            "Redeemer must be a string with BuiltinData encoding, got: "
-              <> show other
+      builtinData <- decodeBuiltinDataValue dataStructures "redeemer" redeemerValue
+      pure $ SetRedeemer (V3.Redeemer builtinData)
     AddInputUTXOSpec utxoRefText valueSpec isOwnInput mDatumValue -> do
       let resolvedUtxoRef = resolveTextReference dataStructures utxoRefText
       case parseTxOutRef resolvedUtxoRef of
@@ -1006,22 +1031,12 @@ convertPatchOperation dataStructures spec =
     AddOutputUTXOWithDatumSpec addressSpec valueSpec datumValue -> do
       value <- buildValue dataStructures valueSpec
       address <- parseAddressSpec dataStructures addressSpec
-      datum <- resolveDatumValue dataStructures "output datum" =<< case datumValue of
-        Json.String dataText -> pure dataText
-        other ->
-          die $
-            "Datum must be a string with BuiltinData encoding, got: "
-              <> show other
+      datum <- resolveDatumValue dataStructures "output datum" datumValue
       pure $ AddOutputUTXOWithDatum address value datum
     RemoveOutputUTXOSpec index -> do
       pure $ RemoveOutputUTXO index
     SetScriptDatumSpec datumValue -> do
-      datum <- resolveDatumValue dataStructures "script datum" =<< case datumValue of
-        Json.String dataText -> pure dataText
-        other ->
-          die $
-            "Script datum must be a string with BuiltinData encoding, got: "
-              <> show other
+      datum <- resolveDatumValue dataStructures "script datum" datumValue
       pure $ SetScriptDatum datum
 
 {- | Parse AddressSpec into Address with reference resolution.
@@ -1124,13 +1139,9 @@ contextText <- resolveScriptContextInput dataStructures contextSpec
 @
 -}
 resolveScriptContextInput ::
-  HaskellMap.Map Text DataStructureEntry -> ScriptContextSpec -> IO Text
+  HaskellMap.Map Text DataStructureEntry -> ScriptContextSpec -> IO V3.BuiltinData
 resolveScriptContextInput dataStructures spec = do
   builder <- convertScriptContextSpec dataStructures spec
   case buildScriptContext builder of
     Left err -> die ("Failed to build ScriptContext: " <> show err)
-    Right scriptContext ->
-      pure $
-        dataToCompactText $
-          Builtins.builtinDataToData $
-            V3.toBuiltinData scriptContext
+    Right scriptContext -> pure $ V3.toBuiltinData scriptContext

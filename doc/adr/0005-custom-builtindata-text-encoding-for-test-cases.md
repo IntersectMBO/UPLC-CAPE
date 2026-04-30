@@ -1,8 +1,15 @@
 # Custom BuiltinData Text Encoding for Test Cases
 
-- Status: accepted
+- Status: superseded by [0006](0006-standard-builtindata-formats-with-json-type-dispatch.md)
 - Date: 2025-08-20
 - Tags: testing, builtin-data, parsing, unified-test-system
+
+> **Superseded.** Issue #148 (April 2026) pointed out that the bespoke compact
+> notation forces every compiler submission to ship its own parser. ADR-0006
+> replaces this format with two standard formats — UPLC text Data syntax and
+> Plutus JSON detailed schema — dispatched by the JSON type of the `value`
+> field. The custom parser at `lib/PlutusCore/Data/Compact/Parser.hs` has been
+> removed; the `cape-tests.json` schema is bumped to 2.0.0.
 
 Technical Story: Support custom BuiltinData text encoding in cape-tests.json files for comprehensive test case specifications.
 
