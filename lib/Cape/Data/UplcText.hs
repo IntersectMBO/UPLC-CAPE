@@ -28,13 +28,13 @@ module Cape.Data.UplcText (
 
 import Prelude
 
-import Data.ByteString qualified as BS
+import Data.ByteString.Base16 qualified as Base16
 import Data.Text qualified as Text
+import Data.Text.Encoding qualified as TE
 import PlutusCore.Data (Data (..))
 import PlutusCore.Error (ParserErrorBundle)
 import PlutusCore.Parser (ExpectParens (..), conData, parseGen)
 import PlutusCore.Quote (runQuote)
-import Text.Printf (printf)
 
 {- | Parse a 'Data' value from the UPLC text Data syntax. The input is the bare
 data expression (no surrounding @(con data ...)@ wrapper).
@@ -52,7 +52,7 @@ The output is round-trippable through 'parseUplcDataText'.
 renderUplcDataText :: Data -> Text
 renderUplcDataText = \case
   I n -> "I " <> Text.pack (show n)
-  B bs -> "B #" <> hexEncode bs
+  B bs -> "B #" <> TE.decodeLatin1 (Base16.encode bs)
   Constr ix args ->
     "Constr "
       <> Text.pack (show ix)
@@ -71,6 +71,3 @@ renderUplcDataText = \case
         | (k, v) <- kvs
         ]
       <> "]"
-
-hexEncode :: BS.ByteString -> Text
-hexEncode = Text.concat . map (Text.pack . printf "%02x") . BS.unpack

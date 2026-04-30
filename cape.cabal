@@ -112,6 +112,7 @@ library
   build-depends:
     , aeson
     , aeson-pretty
+    , base16-bytestring
     , bytestring
     , containers
     , directory

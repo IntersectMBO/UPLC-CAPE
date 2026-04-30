@@ -25,8 +25,9 @@ import Data.Aeson (Value)
 import Data.Aeson qualified as Json
 import Data.Aeson.KeyMap qualified as KeyMap
 import Data.Aeson.Types qualified as AesonTypes
-import Data.ByteString qualified as BS
+import Data.ByteString.Base16 qualified as Base16
 import Data.Text qualified as Text
+import Data.Text.Encoding qualified as TE
 import PlutusCore.Data (Data (..))
 
 -- | Parse a 'Data' value from the Plutus JSON detailed schema.
@@ -43,8 +44,8 @@ parsePlutusJsonData input = case AesonTypes.parseEither parseData input of
             pure (I n)
         | KeyMap.member "bytes" o -> do
             hex :: Text <- o Json..: "bytes"
-            case decodeHex hex of
-              Left err -> fail $ Text.unpack ("invalid hex in 'bytes': " <> err)
+            case Base16.decode (TE.encodeUtf8 hex) of
+              Left err -> fail $ "invalid hex in 'bytes': " <> err
               Right bs -> pure (B bs)
         | KeyMap.member "list" o -> do
             xs <- o Json..: "list"
@@ -73,7 +74,7 @@ parsePlutusJsonData input = case AesonTypes.parseEither parseData input of
 encodePlutusJsonData :: Data -> Value
 encodePlutusJsonData = \case
   I n -> Json.object ["int" Json..= n]
-  B bs -> Json.object ["bytes" Json..= encodeHex bs]
+  B bs -> Json.object ["bytes" Json..= TE.decodeLatin1 (Base16.encode bs)]
   List ds -> Json.object ["list" Json..= map encodePlutusJsonData ds]
   Map kvs ->
     Json.object
@@ -91,32 +92,3 @@ encodePlutusJsonData = \case
       , "fields" Json..= map encodePlutusJsonData args
       ]
 
--- | Hex decoder. Returns 'Left' with a human-readable error on bad input.
-decodeHex :: Text -> Either Text BS.ByteString
-decodeHex t
-  | Text.null t = Right BS.empty
-  | odd (Text.length t) = Left "odd-length hex string"
-  | otherwise = BS.pack <$> traverse pairToByte (chunks (Text.unpack t))
-  where
-    chunks (a : b : rest) = (a, b) : chunks rest
-    chunks _ = []
-
-    pairToByte (h, l) = do
-      hi <- nibble h
-      lo <- nibble l
-      pure (fromIntegral (hi * 16 + lo))
-
-    nibble c
-      | c >= '0' && c <= '9' = Right (ord c - ord '0')
-      | c >= 'a' && c <= 'f' = Right (ord c - ord 'a' + 10)
-      | c >= 'A' && c <= 'F' = Right (ord c - ord 'A' + 10)
-      | otherwise = Left ("invalid hex character: " <> Text.singleton c)
-
--- | Hex encoder.
-encodeHex :: BS.ByteString -> Text
-encodeHex = Text.pack . concatMap byteToHex . BS.unpack
-  where
-    byteToHex b = [hexDigit (b `div` 16), hexDigit (b `mod` 16)]
-    hexDigit n
-      | n < 10 = chr (ord '0' + fromIntegral n)
-      | otherwise = chr (ord 'a' + fromIntegral n - 10)
