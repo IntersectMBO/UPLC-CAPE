@@ -2,9 +2,8 @@ module Cape.ScriptContextBuilderSpec (spec) where
 
 import Prelude
 
+import Cape.Data.UplcText (parseUplcDataText, renderUplcDataText)
 import Cape.ScriptContextBuilder
-import PlutusCore.Data.Compact.Parser (parseBuiltinDataText)
-import PlutusCore.Data.Compact.Printer (dataToCompactText)
 import PlutusLedgerApi.Data.V3
 import PlutusTx.Builtins qualified as Builtins
 import PlutusTx.Data.AssocMap qualified as Map
@@ -539,10 +538,10 @@ spec = do
             -- Convert to BuiltinData and back through compact text
             let builtinData = toBuiltinData originalContext
                 coreData = Builtins.builtinDataToData builtinData
-                compactText = dataToCompactText coreData
+                uplcText = renderUplcDataText coreData
 
             -- Parse back from text
-            case parseBuiltinDataText compactText of
+            case parseUplcDataText uplcText of
               Right parsedData -> do
                 case fromBuiltinData (BuiltinData parsedData) of
                   Just (parsedContext :: ScriptContext) -> do
@@ -565,9 +564,9 @@ spec = do
           Right originalContext -> do
             let builtinData = toBuiltinData originalContext
                 coreData = Builtins.builtinDataToData builtinData
-                compactText = dataToCompactText coreData
+                uplcText = renderUplcDataText coreData
 
-            case parseBuiltinDataText compactText of
+            case parseUplcDataText uplcText of
               Right parsedData -> do
                 case fromBuiltinData (BuiltinData parsedData) of
                   Just (parsedContext :: ScriptContext) -> do
@@ -589,9 +588,9 @@ spec = do
           Right originalContext -> do
             let builtinData = toBuiltinData originalContext
                 coreData = Builtins.builtinDataToData builtinData
-                compactText = dataToCompactText coreData
+                uplcText = renderUplcDataText coreData
 
-            case parseBuiltinDataText compactText of
+            case parseUplcDataText uplcText of
               Right parsedData -> do
                 case fromBuiltinData (BuiltinData parsedData) of
                   Just (parsedContext :: ScriptContext) -> do
@@ -619,9 +618,9 @@ spec = do
           Right originalContext -> do
             let builtinData = toBuiltinData originalContext
                 coreData = Builtins.builtinDataToData builtinData
-                compactText = dataToCompactText coreData
+                uplcText = renderUplcDataText coreData
 
-            case parseBuiltinDataText compactText of
+            case parseUplcDataText uplcText of
               Right parsedData -> do
                 case fromBuiltinData (BuiltinData parsedData) of
                   Just (parsedContext :: ScriptContext) -> do
@@ -665,10 +664,10 @@ spec = do
           Right originalContext -> do
             let Redeemer (BuiltinData redeemerData) = scriptContextRedeemer originalContext
                 coreData = Builtins.builtinDataToData (BuiltinData redeemerData)
-                compactText = dataToCompactText coreData
+                uplcText = renderUplcDataText coreData
 
             -- This should show us exactly what the redeemer looks like
-            putStrLn $ "DEBUG: Redeemer data structure: " <> toString compactText
+            putStrLn $ "DEBUG: Redeemer data structure: " <> toString uplcText
             putStrLn $ "DEBUG: Raw redeemer BuiltinData: " <> show redeemerData
 
             -- Verify it matches expected value
@@ -693,12 +692,12 @@ spec = do
             -- Follow the exact steps from resolveScriptContextInput
             let builtinData = toBuiltinData originalContext
                 coreData = Builtins.builtinDataToData builtinData
-                compactText = dataToCompactText coreData
+                uplcText = renderUplcDataText coreData
 
-            putStrLn $ "DEBUG: Complete ScriptContext compact: " <> toString compactText
+            putStrLn $ "DEBUG: Complete ScriptContext compact: " <> toString uplcText
 
             -- Parse back exactly like parseBuiltinDataFromText does
-            case parseBuiltinDataText compactText of
+            case parseUplcDataText uplcText of
               Right parsedData -> do
                 let finalBuiltinData = BuiltinData parsedData
 

@@ -1,22 +1,72 @@
 {
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "Test cases for hashed time-locked contract (HTLC) validator",
   "data_structures": {
     "payer_pubkey": {
       "type": "builtin_data",
-      "value": "#bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+      "value": {
+        "bytes": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+      }
     },
     "recipient_pubkey": {
       "type": "builtin_data",
-      "value": "#aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      "value": {
+        "bytes": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      }
     },
     "impostor_pubkey": {
       "type": "builtin_data",
-      "value": "#cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+      "value": {
+        "bytes": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+      }
     },
     "htlc_datum": {
       "type": "builtin_data",
-      "value": "0(0(0(#bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb) 1()) 0(0(#aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa) 1()) #5f78c33274e43fa9de5659265c1d917e25c03722dcb0b8d27db8d5feaa813953 100)"
+      "value": {
+        "constructor": 0,
+        "fields": [
+          {
+            "constructor": 0,
+            "fields": [
+              {
+                "constructor": 0,
+                "fields": [
+                  {
+                    "bytes": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+                  }
+                ]
+              },
+              {
+                "constructor": 1,
+                "fields": []
+              }
+            ]
+          },
+          {
+            "constructor": 0,
+            "fields": [
+              {
+                "constructor": 0,
+                "fields": [
+                  {
+                    "bytes": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+                  }
+                ]
+              },
+              {
+                "constructor": 1,
+                "fields": []
+              }
+            ]
+          },
+          {
+            "bytes": "5f78c33274e43fa9de5659265c1d917e25c03722dcb0b8d27db8d5feaa813953"
+          },
+          {
+            "int": 100
+          }
+        ]
+      }
     },
     "successful_claim": {
       "type": "script_context",
@@ -25,7 +75,14 @@
         "patches": [
           {
             "op": "set_redeemer",
-            "redeemer": "0(#deadbeef)"
+            "redeemer": {
+              "constructor": 0,
+              "fields": [
+                {
+                  "bytes": "deadbeef"
+                }
+              ]
+            }
           },
           {
             "op": "set_script_datum",
@@ -59,7 +116,10 @@
         "patches": [
           {
             "op": "set_redeemer",
-            "redeemer": "1()"
+            "redeemer": {
+              "constructor": 1,
+              "fields": []
+            }
           },
           {
             "op": "set_script_datum",
@@ -96,7 +156,9 @@
       "inputs": [
         {
           "type": "builtin_data",
-          "value": "0"
+          "value": {
+            "int": 0
+          }
         }
       ]
     },
@@ -109,7 +171,9 @@
       "inputs": [
         {
           "type": "builtin_data",
-          "value": "1"
+          "value": {
+            "int": 1
+          }
         }
       ]
     },
@@ -122,7 +186,9 @@
       "inputs": [
         {
           "type": "builtin_data",
-          "value": "#deadbeef"
+          "value": {
+            "bytes": "deadbeef"
+          }
         }
       ]
     },
@@ -135,7 +201,19 @@
       "inputs": [
         {
           "type": "builtin_data",
-          "value": "[1 2 3]"
+          "value": {
+            "list": [
+              {
+                "int": 1
+              },
+              {
+                "int": 2
+              },
+              {
+                "int": 3
+              }
+            ]
+          }
         }
       ]
     },
@@ -153,7 +231,10 @@
             "patches": [
               {
                 "op": "set_redeemer",
-                "redeemer": "0()"
+                "redeemer": {
+                  "constructor": 0,
+                  "fields": []
+                }
               }
             ]
           }
@@ -324,7 +405,14 @@
             "patches": [
               {
                 "op": "set_redeemer",
-                "redeemer": "0(#cafebabe)"
+                "redeemer": {
+                  "constructor": 0,
+                  "fields": [
+                    {
+                      "bytes": "cafebabe"
+                    }
+                  ]
+                }
               }
             ]
           }
@@ -345,7 +433,14 @@
             "patches": [
               {
                 "op": "set_redeemer",
-                "redeemer": "0(#)"
+                "redeemer": {
+                  "constructor": 0,
+                  "fields": [
+                    {
+                      "bytes": ""
+                    }
+                  ]
+                }
               }
             ]
           }

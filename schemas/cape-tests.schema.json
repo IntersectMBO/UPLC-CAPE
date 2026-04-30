@@ -8,7 +8,7 @@
     "version": {
       "type": "string",
       "description": "Schema version",
-      "enum": ["1.0.0"]
+      "enum": ["2.0.0"]
     },
     "description": {
       "type": "string",
@@ -36,6 +36,68 @@
   "required": ["version", "tests"],
   "additionalProperties": false,
   "$defs": {
+    "builtin_data_value": {
+      "description": "BuiltinData value. Encoded either as a string in UPLC text Data syntax (e.g. \"Constr 0 [I 42, B #cafe]\", \"I 42\", \"B #deadbeef\", \"List [I 1, I 2]\", \"Map [(I 1, B #ab)]\") or as an object in the Plutus JSON detailed schema (e.g. {\"int\": 42}, {\"bytes\": \"deadbeef\"}, {\"constructor\": 0, \"fields\": [...]}, {\"list\": [...]}, {\"map\": [{\"k\": ..., \"v\": ...}]}). A string value of the form \"@name\" is a reference into data_structures.",
+      "oneOf": [
+        { "type": "string" },
+        { "$ref": "#/$defs/plutus_json_data" }
+      ]
+    },
+    "plutus_json_data": {
+      "description": "Plutus Data in the cardano-cli ScriptDataJsonDetailedSchema format.",
+      "type": "object",
+      "oneOf": [
+        {
+          "properties": { "int": { "type": "integer" } },
+          "required": ["int"],
+          "additionalProperties": false
+        },
+        {
+          "properties": { "bytes": { "type": "string", "pattern": "^[0-9a-fA-F]*$" } },
+          "required": ["bytes"],
+          "additionalProperties": false
+        },
+        {
+          "properties": {
+            "list": {
+              "type": "array",
+              "items": { "$ref": "#/$defs/plutus_json_data" }
+            }
+          },
+          "required": ["list"],
+          "additionalProperties": false
+        },
+        {
+          "properties": {
+            "map": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "k": { "$ref": "#/$defs/plutus_json_data" },
+                  "v": { "$ref": "#/$defs/plutus_json_data" }
+                },
+                "required": ["k", "v"],
+                "additionalProperties": false
+              }
+            }
+          },
+          "required": ["map"],
+          "additionalProperties": false
+        },
+        {
+          "properties": {
+            "constructor": { "type": "integer", "minimum": 0 },
+            "fields": {
+              "type": "array",
+              "items": { "$ref": "#/$defs/plutus_json_data" }
+            }
+          },
+          "required": ["constructor", "fields"],
+          "additionalProperties": false
+        }
+      ]
+    },
     "data_structure_entry": {
       "type": "object",
       "description": "Shared data structure definition",
@@ -51,8 +113,7 @@
               "const": "builtin_data"
             },
             "value": {
-              "type": "string",
-              "description": "BuiltinData in compact format: integers (42), bytestrings (#deadbeef), constructors (0(42)), lists ([1 2]), maps ({1:2})"
+              "$ref": "#/$defs/builtin_data_value"
             }
           },
           "required": ["type", "value"],
@@ -124,12 +185,11 @@
               "const": "builtin_data"
             },
             "value": {
-              "type": "string",
-              "description": "Inline BuiltinData value in compact format or @reference"
+              "$ref": "#/$defs/builtin_data_value"
             },
             "file": {
               "type": "string",
-              "description": "Path to file containing BuiltinData (relative to cape-tests.json)"
+              "description": "Path to file containing a BuiltinData value as UPLC text Data syntax (relative to cape-tests.json)"
             }
           },
           "required": ["type"],
@@ -241,8 +301,7 @@
           "properties": {
             "op": { "const": "set_redeemer" },
             "redeemer": {
-              "type": "string",
-              "description": "Redeemer as BuiltinData in compact format"
+              "$ref": "#/$defs/builtin_data_value"
             }
           },
           "required": ["op", "redeemer"],

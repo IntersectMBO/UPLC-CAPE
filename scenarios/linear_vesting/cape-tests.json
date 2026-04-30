@@ -1,30 +1,30 @@
 {
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "Test cases for linear vesting smart contract validator",
   "data_structures": {
     "beneficiary_pubkey": {
       "type": "builtin_data",
-      "value": "#aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      "value": "B #aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
     },
     "impostor_pubkey": {
       "type": "builtin_data",
-      "value": "#cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+      "value": "B #cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
     },
     "currency_symbol_raw": {
       "type": "builtin_data",
-      "value": "#dddddddddddddddddddddddddddddddddddddddddddddddddddddddd"
+      "value": "B #dddddddddddddddddddddddddddddddddddddddddddddddddddddddd"
     },
     "token_name_raw": {
       "type": "builtin_data",
-      "value": "#76657374"
+      "value": "B #76657374"
     },
     "vesting_datum": {
       "type": "builtin_data",
-      "value": "0(0(0(#aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa) 1()) 0(#dddddddddddddddddddddddddddddddddddddddddddddddddddddddd #76657374) 1000 0 100 10 10)"
+      "value": "Constr 0 [Constr 0 [Constr 0 [B #aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa], Constr 1 []], Constr 0 [B #dddddddddddddddddddddddddddddddddddddddddddddddddddddddd, B #76657374], I 1000, I 0, I 100, I 10, I 10]"
     },
     "modified_vesting_datum": {
       "type": "builtin_data",
-      "value": "0(0(0(#aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa) 1()) 0(#dddddddddddddddddddddddddddddddddddddddddddddddddddddddd #76657374) 2000 0 100 10 10)"
+      "value": "Constr 0 [Constr 0 [Constr 0 [B #aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa], Constr 1 []], Constr 0 [B #dddddddddddddddddddddddddddddddddddddddddddddddddddddddd, B #76657374], I 2000, I 0, I 100, I 10, I 10]"
     },
     "successful_partial_unlock": {
       "type": "script_context",
@@ -33,7 +33,7 @@
         "patches": [
           {
             "op": "set_redeemer",
-            "redeemer": "0()"
+            "redeemer": "Constr 0 []"
           },
           {
             "op": "set_script_datum",
@@ -91,7 +91,7 @@
         "patches": [
           {
             "op": "set_redeemer",
-            "redeemer": "1()"
+            "redeemer": "Constr 1 []"
           },
           {
             "op": "set_script_datum",
@@ -135,7 +135,7 @@
       "inputs": [
         {
           "type": "builtin_data",
-          "value": "0"
+          "value": "I 0"
         }
       ]
     },
@@ -148,7 +148,7 @@
       "inputs": [
         {
           "type": "builtin_data",
-          "value": "1"
+          "value": "I 1"
         }
       ]
     },
@@ -161,7 +161,7 @@
       "inputs": [
         {
           "type": "builtin_data",
-          "value": "99"
+          "value": "I 99"
         }
       ]
     },
@@ -174,7 +174,7 @@
       "inputs": [
         {
           "type": "builtin_data",
-          "value": "#deadbeef"
+          "value": "B #deadbeef"
         }
       ]
     },
@@ -187,7 +187,7 @@
       "inputs": [
         {
           "type": "builtin_data",
-          "value": "[1 2 3]"
+          "value": "List [I 1, I 2, I 3]"
         }
       ]
     },

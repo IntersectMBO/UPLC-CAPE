@@ -24,11 +24,12 @@ import Cape.Protocol.Parameters (
   txCpuBudget,
   txMemoryBudget,
  )
+import Cape.Data.UplcText (renderUplcDataText)
 import Cape.Tests (
   ExpectedResult (..),
-  InputType (..),
+  ResolvedInput (..),
   TestCase (..),
-  TestInput (..),
+  TestInput,
   TestSuite (..),
   getTestBaseDir,
   isPendingTest,
@@ -49,8 +50,6 @@ import Data.SatInt (unSatInt)
 import Data.Text.Encoding qualified as TE
 import Data.Time (defaultTimeLocale, formatTime, getCurrentTime)
 import PlutusCore qualified as PLC
-import PlutusCore.Data.Compact.Parser (parseBuiltinDataText, renderParseError)
-import PlutusCore.Data.Compact.Printer (dataToCompactText)
 import PlutusCore.Evaluation.Machine.ExBudget (ExBudget (..))
 import PlutusCore.Evaluation.Machine.ExMemory (ExCPU (..), ExMemory (..))
 import PlutusCore.MkPlc qualified as MkPlc
@@ -60,7 +59,6 @@ import PlutusCore.AstSize (unAstSize)
 import PlutusCore.Size (unSize)
 #endif
 import PlutusLedgerApi.Common (serialiseCompiledCode)
-import PlutusLedgerApi.V3 qualified as V3
 import PlutusTx.Builtins qualified as Builtins
 import PlutusTx.Code (getPlc)
 import System.Console.ANSI (
@@ -246,11 +244,10 @@ applyInputsToProgram program baseDir testSuite testCase inputs debugContext =
   foldM applyOneInput program inputs
   where
     applyOneInput currentProgram testInput = do
-      inputText <- resolveTestInput baseDir testSuite testInput
+      resolved <- resolveTestInput baseDir testSuite testInput
 
-      case tiType testInput of
-        UPLC -> do
-          -- Parse input as UPLC term and apply to current program
+      case resolved of
+        ResolvedUplc inputText -> do
           let wrappedInput = "(program 1.1.0 " <> inputText <> ")"
           inputTerm <- case parseUplcProgram wrappedInput of
             Left err -> E.throwIO (UPLCParseError "uplc_input" err)
@@ -258,7 +255,6 @@ applyInputsToProgram program baseDir testSuite testCase inputs debugContext =
               let UPLC.Program _ _ term = inputProgram
               pure term
 
-          -- Output debug information if requested
           when debugContext $ do
             putStrLn $
               "DEBUG_CAPE["
@@ -266,23 +262,18 @@ applyInputsToProgram program baseDir testSuite testCase inputs debugContext =
                 <> "]: raw_uplc input: "
                 <> show inputText
 
-          -- Apply the input term to the current program's term
           let UPLC.Program ann ver currentTerm = currentProgram
               appliedTerm = UPLC.Apply ann currentTerm inputTerm
           pure $ UPLC.Program ann ver appliedTerm
-        _ -> do
-          -- Handle BuiltinData and ScriptContext inputs
-          -- Parse and apply using MkPlc.mkConstant (same as compileProgram does)
-          builtinData <- parseBuiltinDataFromText inputText
-
-          -- Output debug information if requested
+        ResolvedBuiltinData builtinData -> do
           when debugContext $ do
             let plcData = Builtins.builtinDataToData builtinData
-                compactText = dataToCompactText plcData
             putStrLn $
-              "DEBUG_CAPE[" <> toString (tcName testCase) <> "]: " <> show compactText
+              "DEBUG_CAPE["
+                <> toString (tcName testCase)
+                <> "]: "
+                <> toString (renderUplcDataText plcData)
 
-          -- Apply BuiltinData using mkConstant (same approach as compileProgram)
           let UPLC.Program ann ver currentTerm = currentProgram
               coreData = Builtins.builtinDataToData builtinData
               dataConstant = MkPlc.mkConstant ann coreData
@@ -324,16 +315,6 @@ runSingleTest program baseDir testSuite testCase debugContext = do
           }
 
   pure (testResult, evaluationMetrics)
-
--- | Parse BuiltinData from text representation
-parseBuiltinDataFromText :: Text -> IO V3.BuiltinData
-parseBuiltinDataFromText inputText = do
-  case parseBuiltinDataText inputText of
-    Left parseErr ->
-      E.throwIO
-        (UPLCParseError "builtin_data_input" (show (renderParseError parseErr)))
-    Right builtinData ->
-      pure $ V3.BuiltinData builtinData
 
 -- | Check test result against expected outcome with pending support
 checkTestResult :: EvalResult -> TestCase -> FilePath -> IO TestResult

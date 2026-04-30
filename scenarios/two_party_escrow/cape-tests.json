@@ -1,30 +1,30 @@
 {
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "Test cases for two-party escrow smart contract validator",
   "data_structures": {
     "buyer_pubkey": {
       "type": "builtin_data",
-      "value": "#aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      "value": "B #aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
     },
     "seller_pubkey": {
       "type": "builtin_data",
-      "value": "#bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+      "value": "B #bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
     },
     "impostor_pubkey": {
       "type": "builtin_data",
-      "value": "#cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+      "value": "B #cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
     },
     "deposited_escrow_datum": {
       "type": "builtin_data",
-      "value": "0(0() 1000)"
+      "value": "Constr 0 [Constr 0 [], I 1000]"
     },
     "accepted_escrow_datum": {
       "type": "builtin_data",
-      "value": "0(1() 1000)"
+      "value": "Constr 0 [Constr 1 [], I 1000]"
     },
     "refunded_escrow_datum": {
       "type": "builtin_data",
-      "value": "0(2() 1000)"
+      "value": "Constr 0 [Constr 2 [], I 1000]"
     },
     "successful_deposit": {
       "type": "script_context",
@@ -33,7 +33,7 @@
         "patches": [
           {
             "op": "set_redeemer",
-            "redeemer": "0"
+            "redeemer": "I 0"
           },
           {
             "op": "add_signature",
@@ -73,7 +73,7 @@
         "patches": [
           {
             "op": "set_redeemer",
-            "redeemer": "1"
+            "redeemer": "I 1"
           },
           {
             "op": "set_script_datum",
@@ -112,7 +112,7 @@
         "patches": [
           {
             "op": "set_redeemer",
-            "redeemer": "2"
+            "redeemer": "I 2"
           },
           {
             "op": "set_script_datum",
@@ -159,7 +159,7 @@
       "inputs": [
         {
           "type": "builtin_data",
-          "value": "3"
+          "value": "I 3"
         }
       ]
     },
@@ -172,7 +172,7 @@
       "inputs": [
         {
           "type": "builtin_data",
-          "value": "4"
+          "value": "I 4"
         }
       ]
     },
@@ -185,7 +185,7 @@
       "inputs": [
         {
           "type": "builtin_data",
-          "value": "99"
+          "value": "I 99"
         }
       ]
     },
@@ -198,7 +198,7 @@
       "inputs": [
         {
           "type": "builtin_data",
-          "value": "-1"
+          "value": "I -1"
         }
       ]
     },
@@ -211,7 +211,7 @@
       "inputs": [
         {
           "type": "builtin_data",
-          "value": "0()"
+          "value": "Constr 0 []"
         }
       ]
     },
@@ -224,7 +224,7 @@
       "inputs": [
         {
           "type": "builtin_data",
-          "value": "#deadbeef"
+          "value": "B #deadbeef"
         }
       ]
     },
@@ -237,7 +237,7 @@
       "inputs": [
         {
           "type": "builtin_data",
-          "value": "[1 2 3]"
+          "value": "List [I 1, I 2, I 3]"
         }
       ]
     },
@@ -250,7 +250,7 @@
       "inputs": [
         {
           "type": "builtin_data",
-          "value": "{1:42}"
+          "value": "Map [(I 1, I 42)]"
         }
       ]
     },
@@ -263,7 +263,7 @@
       "inputs": [
         {
           "type": "builtin_data",
-          "value": "0"
+          "value": "I 0"
         }
       ]
     },
@@ -346,7 +346,7 @@
             "patches": [
               {
                 "op": "set_redeemer",
-                "redeemer": "0"
+                "redeemer": "I 0"
               },
               {
                 "op": "add_signature",
@@ -454,7 +454,7 @@
             "patches": [
               {
                 "op": "set_redeemer",
-                "redeemer": "1"
+                "redeemer": "I 1"
               },
               {
                 "op": "add_signature",
@@ -497,7 +497,7 @@
             "patches": [
               {
                 "op": "set_redeemer",
-                "redeemer": "1"
+                "redeemer": "I 1"
               },
               {
                 "op": "add_signature",
@@ -533,7 +533,7 @@
             "patches": [
               {
                 "op": "set_redeemer",
-                "redeemer": "1"
+                "redeemer": "I 1"
               },
               {
                 "op": "add_signature",
@@ -588,7 +588,7 @@
             "patches": [
               {
                 "op": "set_redeemer",
-                "redeemer": "1"
+                "redeemer": "I 1"
               },
               {
                 "op": "add_signature",
@@ -631,7 +631,7 @@
             "patches": [
               {
                 "op": "set_redeemer",
-                "redeemer": "1"
+                "redeemer": "I 1"
               },
               {
                 "op": "add_signature",
@@ -692,7 +692,7 @@
             "patches": [
               {
                 "op": "set_redeemer",
-                "redeemer": "1"
+                "redeemer": "I 1"
               },
               {
                 "op": "add_signature",
@@ -749,7 +749,7 @@
             "patches": [
               {
                 "op": "set_redeemer",
-                "redeemer": "1"
+                "redeemer": "I 1"
               },
               {
                 "op": "add_signature",
@@ -837,7 +837,7 @@
             "patches": [
               {
                 "op": "set_redeemer",
-                "redeemer": "2"
+                "redeemer": "I 2"
               },
               {
                 "op": "add_signature",
@@ -897,7 +897,7 @@
             "patches": [
               {
                 "op": "set_redeemer",
-                "redeemer": "2"
+                "redeemer": "I 2"
               },
               {
                 "op": "add_signature",
@@ -949,7 +949,7 @@
             "patches": [
               {
                 "op": "set_redeemer",
-                "redeemer": "2"
+                "redeemer": "I 2"
               },
               {
                 "op": "add_signature",
@@ -1031,7 +1031,7 @@
             "patches": [
               {
                 "op": "set_redeemer",
-                "redeemer": "2"
+                "redeemer": "I 2"
               },
               {
                 "op": "add_signature",
@@ -1078,7 +1078,7 @@
             "patches": [
               {
                 "op": "set_redeemer",
-                "redeemer": "2"
+                "redeemer": "I 2"
               },
               {
                 "op": "add_signature",
@@ -1125,7 +1125,7 @@
             "patches": [
               {
                 "op": "set_redeemer",
-                "redeemer": "2"
+                "redeemer": "I 2"
               },
               {
                 "op": "add_signature",
@@ -1172,7 +1172,7 @@
             "patches": [
               {
                 "op": "set_redeemer",
-                "redeemer": "2"
+                "redeemer": "I 2"
               },
               {
                 "op": "add_signature",
@@ -1219,7 +1219,7 @@
             "patches": [
               {
                 "op": "set_redeemer",
-                "redeemer": "2"
+                "redeemer": "I 2"
               },
               {
                 "op": "add_signature",
@@ -1262,7 +1262,7 @@
             "patches": [
               {
                 "op": "set_redeemer",
-                "redeemer": "2"
+                "redeemer": "I 2"
               },
               {
                 "op": "add_signature",
@@ -1309,7 +1309,7 @@
             "patches": [
               {
                 "op": "set_redeemer",
-                "redeemer": "2"
+                "redeemer": "I 2"
               },
               {
                 "op": "add_signature",
@@ -1356,7 +1356,7 @@
             "patches": [
               {
                 "op": "set_redeemer",
-                "redeemer": "2"
+                "redeemer": "I 2"
               },
               {
                 "op": "add_signature",
@@ -1403,7 +1403,7 @@
             "patches": [
               {
                 "op": "set_redeemer",
-                "redeemer": "2"
+                "redeemer": "I 2"
               },
               {
                 "op": "add_signature",
@@ -1450,7 +1450,7 @@
             "patches": [
               {
                 "op": "set_redeemer",
-                "redeemer": "2"
+                "redeemer": "I 2"
               },
               {
                 "op": "add_signature",
@@ -1507,7 +1507,7 @@
             "patches": [
               {
                 "op": "set_redeemer",
-                "redeemer": "2"
+                "redeemer": "I 2"
               },
               {
                 "op": "add_signature",
@@ -1546,7 +1546,7 @@
             "patches": [
               {
                 "op": "set_redeemer",
-                "redeemer": "2"
+                "redeemer": "I 2"
               },
               {
                 "op": "add_signature",
@@ -1597,7 +1597,7 @@
             "patches": [
               {
                 "op": "set_redeemer",
-                "redeemer": "1"
+                "redeemer": "I 1"
               },
               {
                 "op": "add_signature",
@@ -1644,7 +1644,7 @@
             "patches": [
               {
                 "op": "set_redeemer",
-                "redeemer": "2"
+                "redeemer": "I 2"
               },
               {
                 "op": "add_signature",
@@ -1695,7 +1695,7 @@
             "patches": [
               {
                 "op": "set_redeemer",
-                "redeemer": "1"
+                "redeemer": "I 1"
               },
               {
                 "op": "add_signature",
