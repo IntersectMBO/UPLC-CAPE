@@ -184,15 +184,18 @@ spec = do
         shouldResolveBuiltinData result
 
     context "uplc input type" do
-      it "passes through inline UPLC text" do
-        let uplcProgram = "(program 1.1.0 (con integer 42))"
+      -- UPLC inputs are *terms*: applyInputsToProgram wraps them as
+      -- "(program 1.1.0 <term>)" before parsing, so the value here must not
+      -- itself include a (program ...) header.
+      it "passes through inline UPLC term" do
+        let uplcTerm = "(con integer 42)"
             testInput =
               (emptyInput UPLC)
-                { tiValue = Just (Json.String uplcProgram)
+                { tiValue = Just (Json.String uplcTerm)
                 }
         result <- resolveTestInput "" (mkSuite Nothing) testInput
         case result of
-          ResolvedUplc t -> t `shouldBe` uplcProgram
+          ResolvedUplc t -> t `shouldBe` uplcTerm
           ResolvedBuiltinData _ ->
             expectationFailure "expected ResolvedUplc"
 

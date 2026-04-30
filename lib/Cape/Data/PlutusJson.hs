@@ -23,9 +23,13 @@ import Prelude
 
 import Data.Aeson (Value)
 import Data.Aeson qualified as Json
+import Data.Aeson.Key qualified as Key
 import Data.Aeson.KeyMap qualified as KeyMap
 import Data.Aeson.Types qualified as AesonTypes
 import Data.ByteString.Base16 qualified as Base16
+import Data.List qualified as List
+import Data.List (sort)
+import Data.Set qualified as Set
 import Data.Text qualified as Text
 import Data.Text.Encoding qualified as TE
 import PlutusCore.Data (Data (..))
@@ -38,31 +42,37 @@ parsePlutusJsonData input = case AesonTypes.parseEither parseData input of
   where
     parseData :: Value -> AesonTypes.Parser Data
     parseData val = case val of
-      Json.Object o
-        | KeyMap.member "int" o -> do
-            n <- o Json..: "int"
-            pure (I n)
-        | KeyMap.member "bytes" o -> do
-            hex :: Text <- o Json..: "bytes"
-            case Base16.decode (TE.encodeUtf8 hex) of
-              Left err -> fail $ "invalid hex in 'bytes': " <> err
-              Right bs -> pure (B bs)
-        | KeyMap.member "list" o -> do
-            xs <- o Json..: "list"
-            List <$> traverse parseData xs
-        | KeyMap.member "map" o -> do
-            entries <- o Json..: "map"
-            Map <$> traverse parseEntry entries
-        | KeyMap.member "constructor" o -> do
-            ix <- o Json..: "constructor"
-            fields <- o Json..: "fields"
-            Constr ix <$> traverse parseData fields
-        | otherwise ->
-            fail $
-              "Plutus JSON Data object must contain one of "
-                <> "'int', 'bytes', 'list', 'map', 'constructor'; got keys: "
-                <> show (KeyMap.keys o)
+      Json.Object o -> case sort (KeyMap.keys o) of
+        ["int"] -> I <$> o Json..: "int"
+        ["bytes"] -> do
+          hex :: Text <- o Json..: "bytes"
+          case Base16.decode (TE.encodeUtf8 hex) of
+            Left err -> fail $ "invalid hex in 'bytes': " <> err
+            Right bs -> pure (B bs)
+        ["list"] -> List <$> (traverse parseData =<< o Json..: "list")
+        ["map"] -> Map <$> (traverse parseEntry =<< o Json..: "map")
+        ["constructor", "fields"] -> do
+          ix <- o Json..: "constructor"
+          fields <- o Json..: "fields"
+          Constr ix <$> traverse parseData fields
+        keys -> fail (badKeys keys)
       other -> AesonTypes.typeMismatch "Plutus JSON Data object" other
+
+    badKeys :: [Key.Key] -> String
+    badKeys keys =
+      let known = Set.fromList ["int", "bytes", "list", "map", "constructor", "fields"]
+          present = Set.fromList keys
+          unknown = Set.toList (Set.difference present known)
+          shape = List.unwords (map (show . Key.toText) keys)
+       in case unknown of
+            [] ->
+              "Plutus JSON Data object has invalid key combination "
+                <> shape
+                <> " (expected exactly one of: {int}, {bytes}, {list}, {map}, "
+                <> "or {constructor, fields})"
+            extras ->
+              "Plutus JSON Data object has unknown key(s): "
+                <> List.unwords (map (show . Key.toText) extras)
 
     parseEntry :: Value -> AesonTypes.Parser (Data, Data)
     parseEntry = Json.withObject "Plutus JSON map entry" \o -> do

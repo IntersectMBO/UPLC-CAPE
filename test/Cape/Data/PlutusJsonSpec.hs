@@ -49,6 +49,22 @@ spec = do
     it "rejects objects with no recognised key" do
       parseString "{\"foo\": 42}" `shouldSatisfy` isLeft
 
+    it "rejects objects with multiple discriminator keys" do
+      parseString "{\"int\": 42, \"bytes\": \"ab\"}" `shouldSatisfy` isLeft
+      parseString "{\"list\": [], \"map\": []}" `shouldSatisfy` isLeft
+
+    it "rejects valid discriminator alongside an unknown key" do
+      parseString "{\"int\": 42, \"extra\": true}" `shouldSatisfy` isLeft
+      parseString "{\"bytes\": \"ab\", \"junk\": null}" `shouldSatisfy` isLeft
+
+    it "rejects constructor without fields and vice versa" do
+      parseString "{\"constructor\": 0}" `shouldSatisfy` isLeft
+      parseString "{\"fields\": []}" `shouldSatisfy` isLeft
+
+    it "rejects constructor + fields with extra keys" do
+      parseString "{\"constructor\": 0, \"fields\": [], \"extra\": null}"
+        `shouldSatisfy` isLeft
+
     it "rejects non-object inputs" do
       parseString "42" `shouldSatisfy` isLeft
       parseString "\"hello\"" `shouldSatisfy` isLeft
