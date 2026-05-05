@@ -18,9 +18,6 @@ hooks:
       from: CLAUDE.md
       to: CLAUDE.md
     - type: symlink
-      from: .envrc
-      to: .envrc
-    - type: symlink
       from: .envrc.local
       to: .envrc.local
     - type: symlink
