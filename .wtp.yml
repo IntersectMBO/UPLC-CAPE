@@ -1,6 +1,6 @@
 version: "1.0"
 defaults:
-  base_dir: ../worktrees
+  base_dir: worktrees
 
 hooks:
   post_create:
