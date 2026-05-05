@@ -6,9 +6,6 @@ hooks:
   post_create:
     # Symlink all shared resources
     - type: symlink
-      from: dist-newstyle
-      to: dist-newstyle
-    - type: symlink
       from: .direnv
       to: .direnv
     - type: symlink
