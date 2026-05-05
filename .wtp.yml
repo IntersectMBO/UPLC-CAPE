@@ -1,0 +1,32 @@
+version: "1.0"
+defaults:
+  base_dir: ../worktrees
+
+hooks:
+  post_create:
+    # Symlink all shared resources
+    - type: symlink
+      from: dist-newstyle
+      to: dist-newstyle
+    - type: symlink
+      from: .direnv
+      to: .direnv
+    - type: symlink
+      from: .local
+      to: .local
+    - type: symlink
+      from: CLAUDE.md
+      to: CLAUDE.md
+    - type: symlink
+      from: .envrc
+      to: .envrc
+    - type: symlink
+      from: .envrc.local
+      to: .envrc.local
+    - type: symlink
+      from: .claude
+      to: .claude
+
+    # Auto-approve direnv after symlinks are created
+    - type: command
+      command: direnv allow
