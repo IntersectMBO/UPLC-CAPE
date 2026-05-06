@@ -9,3 +9,5 @@ build-and-deploy.sh
 result
 result-*
 *.code-workspace
+.direnv
+.local

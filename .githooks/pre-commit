@@ -1,0 +1,51 @@
+#!/usr/bin/env bash
+# pre-commit: enforce canonical pretty-uplc formatting on staged .uplc files.
+#
+# Runs the in-repo `pretty-uplc` formatter (treefmt's *.uplc formatter) on a
+# temporary copy of each staged .uplc file and compares against the staged
+# content. If any file would change, the commit is aborted with a hint to run
+# `treefmt <file>` (or `treefmt`) and re-stage. Bypass with `--no-verify`.
+
+set -Eeuo pipefail
+
+mapfile -t staged < <(git diff --cached --name-only --diff-filter=ACMR -- '*.uplc')
+
+if [ ${#staged[@]} -eq 0 ]; then
+  exit 0
+fi
+
+if ! command -v pretty-uplc > /dev/null 2>&1; then
+  echo "pre-commit: pretty-uplc not found on PATH; entering devshell expected (run 'direnv allow' or 'nix develop')." >&2
+  echo "pre-commit: skipping .uplc format check on $(printf '%s ' "${staged[@]}")" >&2
+  exit 0
+fi
+
+bad=()
+for f in "${staged[@]}"; do
+  [ -f "$f" ] || continue
+  tmp="$(mktemp --suffix=.uplc)"
+  trap 'rm -f "$tmp"' EXIT
+  git show ":$f" > "$tmp"
+  if ! pretty-uplc "$tmp" 2> /dev/null; then
+    echo "pre-commit: pretty-uplc failed to parse $f" >&2
+    bad+=("$f")
+    rm -f "$tmp"
+    trap - EXIT
+    continue
+  fi
+  if ! git diff --no-index --quiet -- <(git show ":$f") "$tmp" > /dev/null 2>&1; then
+    bad+=("$f")
+  fi
+  rm -f "$tmp"
+  trap - EXIT
+done
+
+if [ ${#bad[@]} -gt 0 ]; then
+  echo >&2
+  echo "pre-commit: the following .uplc files are not formatted with pretty-uplc:" >&2
+  printf '  - %s\n' "${bad[@]}" >&2
+  echo >&2
+  echo "Fix with:  treefmt ${bad[*]}" >&2
+  echo "Then re-stage and commit again. Bypass (not recommended): git commit --no-verify" >&2
+  exit 1
+fi
