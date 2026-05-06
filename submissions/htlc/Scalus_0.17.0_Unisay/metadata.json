@@ -1,0 +1,25 @@
+{
+  "compiler": {
+    "name": "Scalus",
+    "version": "0.17.0",
+    "commit_hash": "553d4d420166d87efad7220ce288e0961cfe17c0"
+  },
+  "compilation_config": {
+    "optimization_level": "Scalus",
+    "target": "uplc",
+    "flags": ["Scalus"]
+  },
+  "contributors": [
+    {
+      "name": "Unisay",
+      "organization": "Intersect MBO"
+    }
+  ],
+  "submission": {
+    "date": "2026-05-05T17:30:00Z",
+    "source_available": true,
+    "source_repository": "https://github.com/Unisay/scalus-cape-submissions",
+    "source_commit_hash": "0c8cfdb82fff4e10cd0fdf41e69738886edd7491",
+    "implementation_notes": "Scalus 0.17.0 HTLC spending validator (`@Compile object HTLCValidator`, `Data -> Unit`). Derives FromData/ToData for HTLCDatum and HTLCRedeemer. Claim reads the upper bound of `txInfoValidRange` (finite, strictly `< timeout`); refund reads the lower bound (finite, strictly `> timeout`). Matches the production-safe convention introduced in IntersectMBO/UPLC-CAPE#170. Uses `toUplcOptimized()` with CaseConstrApply and builtin-packing; an AST-level alpha-rename pass rewrites all generated names to short purely-alphabetic identifiers (a, b, ..., z, aa, ...) before serialisation, ensuring compatibility with the plutus-core 1.45.0.0 textual parser."
+  }
+}

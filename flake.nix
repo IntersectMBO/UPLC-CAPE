@@ -253,6 +253,14 @@
             # Prevents build failures when index-state is updated (see issue #104)
             echo "📦 Synchronizing Cabal package index..."
             cabal update > /dev/null 2>&1 || true
+
+            # Wire repo-tracked git hooks (.githooks/) once per worktree.
+            if [ -n "$REPO_ROOT" ] && [ -d "$REPO_ROOT/.githooks" ]; then
+              current_path="$(git -C "$REPO_ROOT" config --local --get core.hooksPath 2>/dev/null || true)"
+              if [ "$current_path" != ".githooks" ]; then
+                git -C "$REPO_ROOT" config --local core.hooksPath .githooks
+              fi
+            fi
           '';
         };
       in

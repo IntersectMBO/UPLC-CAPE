@@ -1,0 +1,23 @@
+# Benchmark Implementation Notes
+
+**Scenario**: `factorial_naive_recursion`
+
+**Submission ID**: `Scalus_0.17.0_Unisay`
+
+## Implementation Details
+
+- **Compiler**: `Scalus 0.17.0`
+- **Implementation Approach**: `naive recursive`
+- **Compilation Flags**: `default`
+
+## Performance Results
+
+- See [metrics.json](metrics.json) for detailed performance measurements
+
+## Source Code
+
+- See [source/README.md](source/README.md) for source code and reproducibility instructions
+
+## Notes
+
+This submission implements the factorial_naive_recursion scenario using the prescribed naive recursive approach. The source code is maintained in a separate repository to avoid duplication.

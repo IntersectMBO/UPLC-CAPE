@@ -14,6 +14,47 @@ permissions:
   pull-requests: write
 
 jobs:
+  format-check:
+    name: Check pretty-uplc formatting
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Install Nix
+        uses: cachix/install-nix-action@v31
+        with:
+          extra_nix_config: |
+            accept-flake-config = true
+
+      - name: Use Cachix (pull/push if token provided)
+        uses: cachix/cachix-action@v17
+        with:
+          name: uplc-cape
+          authToken: ${{ secrets.CACHIX_AUTH_TOKEN }}
+
+      - name: List .uplc files changed vs main
+        id: changed
+        run: |
+          git fetch origin main --depth=1
+          mapfile -t files < <(git diff --name-only --diff-filter=ACMR origin/main...HEAD -- '*.uplc')
+          if [ ${#files[@]} -eq 0 ]; then
+            echo "No .uplc changes vs origin/main; skipping format check."
+            echo "files=" >> "$GITHUB_OUTPUT"
+          else
+            printf 'Will check %d file(s):\n' "${#files[@]}"
+            printf '  - %s\n' "${files[@]}"
+            printf 'files=%s\n' "${files[*]}" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Run treefmt --ci on changed .uplc files
+        if: steps.changed.outputs.files != ''
+        run: |
+          # shellcheck disable=SC2086
+          nix develop --accept-flake-config --command treefmt --ci ${{ steps.changed.outputs.files }}
+
   build-measure:
     name: Build Measure Executable
     runs-on: ubuntu-latest
