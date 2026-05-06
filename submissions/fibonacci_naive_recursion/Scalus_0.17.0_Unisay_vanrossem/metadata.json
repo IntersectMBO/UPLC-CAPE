@@ -1,0 +1,26 @@
+{
+  "compiler": {
+    "name": "Scalus",
+    "version": "0.17.0",
+    "commit_hash": "553d4d420166d87efad7220ce288e0961cfe17c0"
+  },
+  "compilation_config": {
+    "optimization_level": "Scalus",
+    "target": "uplc",
+    "flags": ["Scalus", "vanRossem"],
+    "min_plutus_version": "1.60.0.0"
+  },
+  "contributors": [
+    {
+      "name": "Unisay",
+      "organization": "Intersect MBO"
+    }
+  ],
+  "submission": {
+    "date": "2026-05-06T12:00:00Z",
+    "source_available": true,
+    "source_repository": "https://github.com/Unisay/scalus-cape-submissions",
+    "source_commit_hash": "becb41d62cb2832001de1541ff2dcde0d3ac92c6",
+    "implementation_notes": "Preview submission targeting the van Rossem hard fork (Cardano protocol version 11, projected late-June 2026). Same naive-recursive Scalus 0.17.0 source as the corresponding current-track Scalus_0.17.0_Unisay/ submission, recompiled with `Options.release.copy(targetProtocolVersion = MajorProtocolVersion.vanRossemPV)`, which enables `case-on-builtins` and batch-6 builtins (e.g. `dropList`). Evaluated on `PlutusVM.makePlutusV3VM(MajorProtocolVersion.vanRossemPV)` against the same input as `cape-tests.json`. Invalid on mainnet until the hard fork activates; routed to the preview report via `min_plutus_version = 1.60.0.0`."
+  }
+}
