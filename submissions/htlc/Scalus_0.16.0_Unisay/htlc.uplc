@@ -10,7 +10,6 @@
       (force (builtin mkCons))
       (force (force (builtin sndPair)))
       (force (builtin tailList))
-      (force (builtin trace))
     )
     (lam
       a-0
@@ -26,200 +25,141 @@
                 f-5
                 (lam
                   g-6
-                  (lam
-                    h-7
-                    [
-                      (lam
-                        i-8
-                        [
-                          (lam
-                            j-9
-                            [
-                              (lam
-                                k-10
-                                [
-                                  (lam
-                                    l-11
-                                    [
-                                      (lam
-                                        m-12
-                                        [
-                                          (lam
-                                            n-13
-                                            [
+                  [
+                    (lam
+                      h-7
+                      [
+                        (lam
+                          i-8
+                          [
+                            (lam
+                              j-9
+                              [
+                                (lam
+                                  k-10
+                                  [
+                                    (lam
+                                      l-11
+                                      [
+                                        (lam
+                                          m-12
+                                          [
+                                            (lam
+                                              n-13
                                               (lam
                                                 o-14
-                                                (lam
-                                                  p-15
-                                                  [
-                                                    (lam
-                                                      q-16
-                                                      (force
-                                                        (case
-                                                          (constr
-                                                            0
+                                                [
+                                                  (lam
+                                                    p-15
+                                                    (force
+                                                      (case
+                                                        (constr
+                                                          0
+                                                          [
                                                             [
-                                                              [
-                                                                (builtin
-                                                                  equalsInteger
-                                                                )
-                                                                [ b-1 q-16 ]
-                                                              ]
-                                                              (con integer 1)
+                                                              (builtin
+                                                                equalsInteger
+                                                              )
+                                                              [ b-1 p-15 ]
                                                             ]
-                                                            (delay
-                                                              [
-                                                                (lam
-                                                                  r-17
-                                                                  [
-                                                                    (lam
-                                                                      s-18
-                                                                      [
-                                                                        (lam
-                                                                          t-19
-                                                                          (force
-                                                                            (case
-                                                                              (constr
-                                                                                0
+                                                            (con integer 1)
+                                                          ]
+                                                          (delay
+                                                            [
+                                                              (lam
+                                                                q-16
+                                                                [
+                                                                  (lam
+                                                                    r-17
+                                                                    [
+                                                                      (lam
+                                                                        s-18
+                                                                        (force
+                                                                          (case
+                                                                            (constr
+                                                                              0
+                                                                              [
                                                                                 [
-                                                                                  [
-                                                                                    (builtin
-                                                                                      equalsInteger
-                                                                                    )
-                                                                                    [
-                                                                                      b-1
-                                                                                      t-19
-                                                                                    ]
-                                                                                  ]
-                                                                                  (con
-                                                                                    integer
-                                                                                    0
+                                                                                  (builtin
+                                                                                    equalsInteger
                                                                                   )
+                                                                                  [
+                                                                                    b-1
+                                                                                    s-18
+                                                                                  ]
                                                                                 ]
-                                                                                (delay
-                                                                                  (case
-                                                                                    (constr
-                                                                                      0
-                                                                                      [
-                                                                                        f-5
-                                                                                        [
-                                                                                          (builtin
-                                                                                            unConstrData
-                                                                                          )
-                                                                                          [
-                                                                                            c-2
-                                                                                            [
-                                                                                              f-5
-                                                                                              [
-                                                                                                (builtin
-                                                                                                  unConstrData
-                                                                                                )
-                                                                                                p-15
-                                                                                              ]
-                                                                                            ]
-                                                                                          ]
-                                                                                        ]
-                                                                                      ]
-                                                                                      [
-                                                                                        f-5
-                                                                                        [
-                                                                                          (builtin
-                                                                                            unConstrData
-                                                                                          )
-                                                                                          [
-                                                                                            c-2
-                                                                                            r-17
-                                                                                          ]
-                                                                                        ]
-                                                                                      ]
-                                                                                      s-18
+                                                                                (con
+                                                                                  integer
+                                                                                  0
+                                                                                )
+                                                                              ]
+                                                                              (delay
+                                                                                (case
+                                                                                  (constr
+                                                                                    0
+                                                                                    [
+                                                                                      f-5
                                                                                       [
                                                                                         (builtin
-                                                                                          unBData
+                                                                                          unConstrData
                                                                                         )
                                                                                         [
                                                                                           c-2
                                                                                           [
                                                                                             f-5
-                                                                                            t-19
+                                                                                            [
+                                                                                              (builtin
+                                                                                                unConstrData
+                                                                                              )
+                                                                                              o-14
+                                                                                            ]
                                                                                           ]
                                                                                         ]
                                                                                       ]
-                                                                                    )
+                                                                                    ]
+                                                                                    [
+                                                                                      f-5
+                                                                                      [
+                                                                                        (builtin
+                                                                                          unConstrData
+                                                                                        )
+                                                                                        [
+                                                                                          c-2
+                                                                                          q-16
+                                                                                        ]
+                                                                                      ]
+                                                                                    ]
+                                                                                    r-17
+                                                                                    [
+                                                                                      (builtin
+                                                                                        unBData
+                                                                                      )
+                                                                                      [
+                                                                                        c-2
+                                                                                        [
+                                                                                          f-5
+                                                                                          s-18
+                                                                                        ]
+                                                                                      ]
+                                                                                    ]
+                                                                                  )
+                                                                                  (lam
+                                                                                    t-19
                                                                                     (lam
                                                                                       u-20
                                                                                       (lam
                                                                                         v-21
                                                                                         (lam
                                                                                           w-22
-                                                                                          (lam
-                                                                                            x-23
-                                                                                            [
-                                                                                              (lam
-                                                                                                y-24
-                                                                                                [
-                                                                                                  (lam
-                                                                                                    z-25
-                                                                                                    [
-                                                                                                      (lam
-                                                                                                        aa-26
-                                                                                                        (force
-                                                                                                          (case
-                                                                                                            (constr
-                                                                                                              0
-                                                                                                              [
-                                                                                                                [
-                                                                                                                  (builtin
-                                                                                                                    equalsInteger
-                                                                                                                  )
-                                                                                                                  [
-                                                                                                                    [
-                                                                                                                      n-13
-                                                                                                                      u-20
-                                                                                                                    ]
-                                                                                                                    [
-                                                                                                                      [
-                                                                                                                        o-14
-                                                                                                                        u-20
-                                                                                                                      ]
-                                                                                                                      v-21
-                                                                                                                    ]
-                                                                                                                  ]
-                                                                                                                ]
-                                                                                                                (con
-                                                                                                                  integer
-                                                                                                                  1
-                                                                                                                )
-                                                                                                              ]
-                                                                                                              (delay
-                                                                                                                (con
-                                                                                                                  unit
-                                                                                                                  ()
-                                                                                                                )
-                                                                                                              )
-                                                                                                              (delay
-                                                                                                                (force
-                                                                                                                  [
-                                                                                                                    [
-                                                                                                                      h-7
-                                                                                                                      (con
-                                                                                                                        string
-                                                                                                                        "Double satisfaction"
-                                                                                                                      )
-                                                                                                                    ]
-                                                                                                                    (delay
-                                                                                                                      (error
-
-                                                                                                                      )
-                                                                                                                    )
-                                                                                                                  ]
-                                                                                                                )
-                                                                                                              )
-                                                                                                            )
-                                                                                                            d-3
-                                                                                                          )
-                                                                                                        )
-                                                                                                      )
+                                                                                          [
+                                                                                            (lam
+                                                                                              x-23
+                                                                                              [
+                                                                                                (lam
+                                                                                                  y-24
+                                                                                                  [
+                                                                                                    (lam
+                                                                                                      z-25
                                                                                                       (force
                                                                                                         (case
                                                                                                           (constr
@@ -227,71 +167,114 @@
                                                                                                             [
                                                                                                               [
                                                                                                                 (builtin
-                                                                                                                  lessThanInteger
+                                                                                                                  equalsInteger
                                                                                                                 )
                                                                                                                 [
-                                                                                                                  (lam
-                                                                                                                    ab-27
+                                                                                                                  [
+                                                                                                                    m-12
+                                                                                                                    t-19
+                                                                                                                  ]
+                                                                                                                  [
                                                                                                                     [
-                                                                                                                      (lam
-                                                                                                                        ac-28
-                                                                                                                        (force
-                                                                                                                          (case
-                                                                                                                            (constr
-                                                                                                                              0
+                                                                                                                      n-13
+                                                                                                                      t-19
+                                                                                                                    ]
+                                                                                                                    u-20
+                                                                                                                  ]
+                                                                                                                ]
+                                                                                                              ]
+                                                                                                              (con
+                                                                                                                integer
+                                                                                                                1
+                                                                                                              )
+                                                                                                            ]
+                                                                                                            (delay
+                                                                                                              (con
+                                                                                                                unit
+                                                                                                                ()
+                                                                                                              )
+                                                                                                            )
+                                                                                                            (delay
+                                                                                                              (error
+
+                                                                                                              )
+                                                                                                            )
+                                                                                                          )
+                                                                                                          d-3
+                                                                                                        )
+                                                                                                      )
+                                                                                                    )
+                                                                                                    (force
+                                                                                                      (case
+                                                                                                        (constr
+                                                                                                          0
+                                                                                                          [
+                                                                                                            [
+                                                                                                              (builtin
+                                                                                                                lessThanInteger
+                                                                                                              )
+                                                                                                              [
+                                                                                                                (lam
+                                                                                                                  aa-26
+                                                                                                                  [
+                                                                                                                    (lam
+                                                                                                                      ab-27
+                                                                                                                      (force
+                                                                                                                        (case
+                                                                                                                          (constr
+                                                                                                                            0
+                                                                                                                            [
                                                                                                                               [
-                                                                                                                                [
-                                                                                                                                  (builtin
-                                                                                                                                    equalsInteger
-                                                                                                                                  )
-                                                                                                                                  [
-                                                                                                                                    b-1
-                                                                                                                                    ac-28
-                                                                                                                                  ]
-                                                                                                                                ]
-                                                                                                                                (con
-                                                                                                                                  integer
-                                                                                                                                  1
+                                                                                                                                (builtin
+                                                                                                                                  equalsInteger
                                                                                                                                 )
-                                                                                                                              ]
-                                                                                                                              (delay
                                                                                                                                 [
-                                                                                                                                  (lam
-                                                                                                                                    ad-29
-                                                                                                                                    (force
-                                                                                                                                      (case
-                                                                                                                                        (constr
-                                                                                                                                          0
-                                                                                                                                          (case
-                                                                                                                                            (constr
-                                                                                                                                              0
+                                                                                                                                  b-1
+                                                                                                                                  ab-27
+                                                                                                                                ]
+                                                                                                                              ]
+                                                                                                                              (con
+                                                                                                                                integer
+                                                                                                                                1
+                                                                                                                              )
+                                                                                                                            ]
+                                                                                                                            (delay
+                                                                                                                              [
+                                                                                                                                (lam
+                                                                                                                                  ac-28
+                                                                                                                                  (force
+                                                                                                                                    (case
+                                                                                                                                      (constr
+                                                                                                                                        0
+                                                                                                                                        (case
+                                                                                                                                          (constr
+                                                                                                                                            0
+                                                                                                                                            [
                                                                                                                                               [
+                                                                                                                                                (builtin
+                                                                                                                                                  equalsInteger
+                                                                                                                                                )
                                                                                                                                                 [
-                                                                                                                                                  (builtin
-                                                                                                                                                    equalsInteger
-                                                                                                                                                  )
+                                                                                                                                                  b-1
                                                                                                                                                   [
-                                                                                                                                                    b-1
+                                                                                                                                                    (builtin
+                                                                                                                                                      unConstrData
+                                                                                                                                                    )
                                                                                                                                                     [
-                                                                                                                                                      (builtin
-                                                                                                                                                        unConstrData
-                                                                                                                                                      )
+                                                                                                                                                      c-2
                                                                                                                                                       [
-                                                                                                                                                        c-2
+                                                                                                                                                        g-6
                                                                                                                                                         [
-                                                                                                                                                          g-6
+                                                                                                                                                          f-5
                                                                                                                                                           [
-                                                                                                                                                            f-5
+                                                                                                                                                            (builtin
+                                                                                                                                                              unConstrData
+                                                                                                                                                            )
                                                                                                                                                             [
-                                                                                                                                                              (builtin
-                                                                                                                                                                unConstrData
-                                                                                                                                                              )
+                                                                                                                                                              c-2
                                                                                                                                                               [
-                                                                                                                                                                c-2
-                                                                                                                                                                [
-                                                                                                                                                                  g-6
-                                                                                                                                                                  ab-27
-                                                                                                                                                                ]
+                                                                                                                                                                g-6
+                                                                                                                                                                aa-26
                                                                                                                                                               ]
                                                                                                                                                             ]
                                                                                                                                                           ]
@@ -300,122 +283,112 @@
                                                                                                                                                     ]
                                                                                                                                                   ]
                                                                                                                                                 ]
-                                                                                                                                                (con
-                                                                                                                                                  integer
-                                                                                                                                                  0
-                                                                                                                                                )
-                                                                                                                                              ]
-                                                                                                                                              (con
-                                                                                                                                                bool
-                                                                                                                                                False
-                                                                                                                                              )
-                                                                                                                                              (con
-                                                                                                                                                bool
-                                                                                                                                                True
-                                                                                                                                              )
-                                                                                                                                            )
-                                                                                                                                            d-3
-                                                                                                                                          )
-                                                                                                                                          (delay
-                                                                                                                                            [
-                                                                                                                                              (builtin
-                                                                                                                                                unIData
-                                                                                                                                              )
-                                                                                                                                              [
-                                                                                                                                                c-2
-                                                                                                                                                ad-29
-                                                                                                                                              ]
-                                                                                                                                            ]
-                                                                                                                                          )
-                                                                                                                                          (delay
-                                                                                                                                            [
-                                                                                                                                              [
-                                                                                                                                                (builtin
-                                                                                                                                                  subtractInteger
-                                                                                                                                                )
-                                                                                                                                                [
-                                                                                                                                                  (builtin
-                                                                                                                                                    unIData
-                                                                                                                                                  )
-                                                                                                                                                  [
-                                                                                                                                                    c-2
-                                                                                                                                                    ad-29
-                                                                                                                                                  ]
-                                                                                                                                                ]
                                                                                                                                               ]
                                                                                                                                               (con
                                                                                                                                                 integer
-                                                                                                                                                1
+                                                                                                                                                0
                                                                                                                                               )
                                                                                                                                             ]
+                                                                                                                                            (con
+                                                                                                                                              bool
+                                                                                                                                              False
+                                                                                                                                            )
+                                                                                                                                            (con
+                                                                                                                                              bool
+                                                                                                                                              True
+                                                                                                                                            )
                                                                                                                                           )
+                                                                                                                                          d-3
                                                                                                                                         )
-                                                                                                                                        d-3
+                                                                                                                                        (delay
+                                                                                                                                          [
+                                                                                                                                            (builtin
+                                                                                                                                              unIData
+                                                                                                                                            )
+                                                                                                                                            [
+                                                                                                                                              c-2
+                                                                                                                                              ac-28
+                                                                                                                                            ]
+                                                                                                                                          ]
+                                                                                                                                        )
+                                                                                                                                        (delay
+                                                                                                                                          [
+                                                                                                                                            [
+                                                                                                                                              (builtin
+                                                                                                                                                subtractInteger
+                                                                                                                                              )
+                                                                                                                                              [
+                                                                                                                                                (builtin
+                                                                                                                                                  unIData
+                                                                                                                                                )
+                                                                                                                                                [
+                                                                                                                                                  c-2
+                                                                                                                                                  ac-28
+                                                                                                                                                ]
+                                                                                                                                              ]
+                                                                                                                                            ]
+                                                                                                                                            (con
+                                                                                                                                              integer
+                                                                                                                                              1
+                                                                                                                                            )
+                                                                                                                                          ]
+                                                                                                                                        )
                                                                                                                                       )
+                                                                                                                                      d-3
                                                                                                                                     )
                                                                                                                                   )
-                                                                                                                                  [
-                                                                                                                                    f-5
-                                                                                                                                    ac-28
-                                                                                                                                  ]
-                                                                                                                                ]
-                                                                                                                              )
-                                                                                                                              (delay
-                                                                                                                                (force
-                                                                                                                                  [
-                                                                                                                                    [
-                                                                                                                                      h-7
-                                                                                                                                      (con
-                                                                                                                                        string
-                                                                                                                                        "Claim requires a finite upper bound"
-                                                                                                                                      )
-                                                                                                                                    ]
-                                                                                                                                    (delay
-                                                                                                                                      (error
-
-                                                                                                                                      )
-                                                                                                                                    )
-                                                                                                                                  ]
                                                                                                                                 )
-                                                                                                                              )
-                                                                                                                            )
-                                                                                                                            d-3
-                                                                                                                          )
-                                                                                                                        )
-                                                                                                                      )
-                                                                                                                      [
-                                                                                                                        (builtin
-                                                                                                                          unConstrData
-                                                                                                                        )
-                                                                                                                        [
-                                                                                                                          c-2
-                                                                                                                          [
-                                                                                                                            f-5
-                                                                                                                            [
-                                                                                                                              (builtin
-                                                                                                                                unConstrData
-                                                                                                                              )
-                                                                                                                              [
-                                                                                                                                c-2
                                                                                                                                 [
-                                                                                                                                  g-6
+                                                                                                                                  f-5
                                                                                                                                   ab-27
                                                                                                                                 ]
                                                                                                                               ]
-                                                                                                                            ]
-                                                                                                                          ]
-                                                                                                                        ]
-                                                                                                                      ]
-                                                                                                                    ]
-                                                                                                                  )
-                                                                                                                  [
-                                                                                                                    f-5
+                                                                                                                            )
+                                                                                                                            (delay
+                                                                                                                              (error
+
+                                                                                                                              )
+                                                                                                                            )
+                                                                                                                          )
+                                                                                                                          d-3
+                                                                                                                        )
+                                                                                                                      )
+                                                                                                                    )
                                                                                                                     [
                                                                                                                       (builtin
                                                                                                                         unConstrData
                                                                                                                       )
                                                                                                                       [
                                                                                                                         c-2
+                                                                                                                        [
+                                                                                                                          f-5
+                                                                                                                          [
+                                                                                                                            (builtin
+                                                                                                                              unConstrData
+                                                                                                                            )
+                                                                                                                            [
+                                                                                                                              c-2
+                                                                                                                              [
+                                                                                                                                g-6
+                                                                                                                                aa-26
+                                                                                                                              ]
+                                                                                                                            ]
+                                                                                                                          ]
+                                                                                                                        ]
+                                                                                                                      ]
+                                                                                                                    ]
+                                                                                                                  ]
+                                                                                                                )
+                                                                                                                [
+                                                                                                                  f-5
+                                                                                                                  [
+                                                                                                                    (builtin
+                                                                                                                      unConstrData
+                                                                                                                    )
+                                                                                                                    [
+                                                                                                                      c-2
+                                                                                                                      [
+                                                                                                                        g-6
                                                                                                                         [
                                                                                                                           g-6
                                                                                                                           [
@@ -428,10 +401,7 @@
                                                                                                                                   g-6
                                                                                                                                   [
                                                                                                                                     g-6
-                                                                                                                                    [
-                                                                                                                                      g-6
-                                                                                                                                      u-20
-                                                                                                                                    ]
+                                                                                                                                    t-19
                                                                                                                                   ]
                                                                                                                                 ]
                                                                                                                               ]
@@ -443,286 +413,42 @@
                                                                                                                   ]
                                                                                                                 ]
                                                                                                               ]
+                                                                                                            ]
+                                                                                                            [
+                                                                                                              (builtin
+                                                                                                                unIData
+                                                                                                              )
                                                                                                               [
-                                                                                                                (builtin
-                                                                                                                  unIData
-                                                                                                                )
+                                                                                                                c-2
                                                                                                                 [
-                                                                                                                  c-2
+                                                                                                                  g-6
                                                                                                                   [
                                                                                                                     g-6
                                                                                                                     [
                                                                                                                       g-6
-                                                                                                                      [
-                                                                                                                        g-6
-                                                                                                                        w-22
-                                                                                                                      ]
+                                                                                                                      v-21
                                                                                                                     ]
                                                                                                                   ]
                                                                                                                 ]
                                                                                                               ]
                                                                                                             ]
-                                                                                                            (delay
-                                                                                                              (con
-                                                                                                                unit
-                                                                                                                ()
-                                                                                                              )
-                                                                                                            )
-                                                                                                            (delay
-                                                                                                              (force
-                                                                                                                [
-                                                                                                                  [
-                                                                                                                    h-7
-                                                                                                                    (con
-                                                                                                                      string
-                                                                                                                      "Claim not permitted at or after timeout"
-                                                                                                                    )
-                                                                                                                  ]
-                                                                                                                  (delay
-                                                                                                                    (error
-
-                                                                                                                    )
-                                                                                                                  )
-                                                                                                                ]
-                                                                                                              )
-                                                                                                            )
-                                                                                                          )
-                                                                                                          d-3
-                                                                                                        )
-                                                                                                      )
-                                                                                                    ]
-                                                                                                  )
-                                                                                                  (force
-                                                                                                    (case
-                                                                                                      (constr
-                                                                                                        0
-                                                                                                        [
-                                                                                                          [
-                                                                                                            k-10
-                                                                                                            u-20
                                                                                                           ]
-                                                                                                          [
-                                                                                                            l-11
-                                                                                                            [
-                                                                                                              f-5
-                                                                                                              [
-                                                                                                                (builtin
-                                                                                                                  unConstrData
-                                                                                                                )
-                                                                                                                [
-                                                                                                                  c-2
-                                                                                                                  [
-                                                                                                                    g-6
-                                                                                                                    w-22
-                                                                                                                  ]
-                                                                                                                ]
-                                                                                                              ]
-                                                                                                            ]
-                                                                                                          ]
-                                                                                                        ]
-                                                                                                        (delay
-                                                                                                          (con
-                                                                                                            unit
-                                                                                                            ()
-                                                                                                          )
-                                                                                                        )
-                                                                                                        (delay
-                                                                                                          (force
-                                                                                                            [
-                                                                                                              [
-                                                                                                                h-7
-                                                                                                                (con
-                                                                                                                  string
-                                                                                                                  "Missing recipient signature"
-                                                                                                                )
-                                                                                                              ]
-                                                                                                              (delay
-                                                                                                                (error
-
-                                                                                                                )
-                                                                                                              )
-                                                                                                            ]
-                                                                                                          )
-                                                                                                        )
-                                                                                                      )
-                                                                                                      d-3
-                                                                                                    )
-                                                                                                  )
-                                                                                                ]
-                                                                                              )
-                                                                                              (force
-                                                                                                (case
-                                                                                                  (constr
-                                                                                                    0
-                                                                                                    [
-                                                                                                      [
-                                                                                                        (builtin
-                                                                                                          equalsByteString
-                                                                                                        )
-                                                                                                        [
-                                                                                                          (builtin
-                                                                                                            sha2_256
-                                                                                                          )
-                                                                                                          x-23
-                                                                                                        ]
-                                                                                                      ]
-                                                                                                      [
-                                                                                                        (builtin
-                                                                                                          unBData
-                                                                                                        )
-                                                                                                        [
-                                                                                                          c-2
-                                                                                                          [
-                                                                                                            g-6
-                                                                                                            [
-                                                                                                              g-6
-                                                                                                              w-22
-                                                                                                            ]
-                                                                                                          ]
-                                                                                                        ]
-                                                                                                      ]
-                                                                                                    ]
-                                                                                                    (delay
-                                                                                                      (con
-                                                                                                        unit
-                                                                                                        ()
-                                                                                                      )
-                                                                                                    )
-                                                                                                    (delay
-                                                                                                      (force
-                                                                                                        [
-                                                                                                          [
-                                                                                                            h-7
+                                                                                                          (delay
                                                                                                             (con
-                                                                                                              string
-                                                                                                              "Preimage does not match stored hash"
+                                                                                                              unit
+                                                                                                              ()
                                                                                                             )
-                                                                                                          ]
+                                                                                                          )
                                                                                                           (delay
                                                                                                             (error
 
                                                                                                             )
                                                                                                           )
-                                                                                                        ]
+                                                                                                        )
+                                                                                                        d-3
                                                                                                       )
                                                                                                     )
-                                                                                                  )
-                                                                                                  d-3
-                                                                                                )
-                                                                                              )
-                                                                                            ]
-                                                                                          )
-                                                                                        )
-                                                                                      )
-                                                                                    )
-                                                                                  )
-                                                                                )
-                                                                                (delay
-                                                                                  (case
-                                                                                    (constr
-                                                                                      0
-                                                                                      [
-                                                                                        f-5
-                                                                                        [
-                                                                                          (builtin
-                                                                                            unConstrData
-                                                                                          )
-                                                                                          [
-                                                                                            c-2
-                                                                                            [
-                                                                                              f-5
-                                                                                              [
-                                                                                                (builtin
-                                                                                                  unConstrData
-                                                                                                )
-                                                                                                p-15
-                                                                                              ]
-                                                                                            ]
-                                                                                          ]
-                                                                                        ]
-                                                                                      ]
-                                                                                      [
-                                                                                        f-5
-                                                                                        [
-                                                                                          (builtin
-                                                                                            unConstrData
-                                                                                          )
-                                                                                          [
-                                                                                            c-2
-                                                                                            r-17
-                                                                                          ]
-                                                                                        ]
-                                                                                      ]
-                                                                                      s-18
-                                                                                    )
-                                                                                    (lam
-                                                                                      ae-30
-                                                                                      (lam
-                                                                                        af-31
-                                                                                        (lam
-                                                                                          ag-32
-                                                                                          [
-                                                                                            (lam
-                                                                                              ah-33
-                                                                                              [
-                                                                                                (lam
-                                                                                                  ai-34
-                                                                                                  (force
-                                                                                                    (case
-                                                                                                      (constr
-                                                                                                        0
-                                                                                                        [
-                                                                                                          [
-                                                                                                            (builtin
-                                                                                                              equalsInteger
-                                                                                                            )
-                                                                                                            [
-                                                                                                              [
-                                                                                                                n-13
-                                                                                                                ae-30
-                                                                                                              ]
-                                                                                                              [
-                                                                                                                [
-                                                                                                                  o-14
-                                                                                                                  ae-30
-                                                                                                                ]
-                                                                                                                af-31
-                                                                                                              ]
-                                                                                                            ]
-                                                                                                          ]
-                                                                                                          (con
-                                                                                                            integer
-                                                                                                            1
-                                                                                                          )
-                                                                                                        ]
-                                                                                                        (delay
-                                                                                                          (con
-                                                                                                            unit
-                                                                                                            ()
-                                                                                                          )
-                                                                                                        )
-                                                                                                        (delay
-                                                                                                          (force
-                                                                                                            [
-                                                                                                              [
-                                                                                                                h-7
-                                                                                                                (con
-                                                                                                                  string
-                                                                                                                  "Double satisfaction"
-                                                                                                                )
-                                                                                                              ]
-                                                                                                              (delay
-                                                                                                                (error
-
-                                                                                                                )
-                                                                                                              )
-                                                                                                            ]
-                                                                                                          )
-                                                                                                        )
-                                                                                                      )
-                                                                                                      d-3
-                                                                                                    )
-                                                                                                  )
+                                                                                                  ]
                                                                                                 )
                                                                                                 (force
                                                                                                   (case
@@ -730,201 +456,11 @@
                                                                                                       0
                                                                                                       [
                                                                                                         [
-                                                                                                          (builtin
-                                                                                                            lessThanInteger
-                                                                                                          )
-                                                                                                          [
-                                                                                                            (builtin
-                                                                                                              unIData
-                                                                                                            )
-                                                                                                            [
-                                                                                                              c-2
-                                                                                                              [
-                                                                                                                g-6
-                                                                                                                [
-                                                                                                                  g-6
-                                                                                                                  [
-                                                                                                                    g-6
-                                                                                                                    ag-32
-                                                                                                                  ]
-                                                                                                                ]
-                                                                                                              ]
-                                                                                                            ]
-                                                                                                          ]
+                                                                                                          j-9
+                                                                                                          t-19
                                                                                                         ]
                                                                                                         [
-                                                                                                          (lam
-                                                                                                            aj-35
-                                                                                                            [
-                                                                                                              (lam
-                                                                                                                ak-36
-                                                                                                                (force
-                                                                                                                  (case
-                                                                                                                    (constr
-                                                                                                                      0
-                                                                                                                      [
-                                                                                                                        [
-                                                                                                                          (builtin
-                                                                                                                            equalsInteger
-                                                                                                                          )
-                                                                                                                          [
-                                                                                                                            b-1
-                                                                                                                            ak-36
-                                                                                                                          ]
-                                                                                                                        ]
-                                                                                                                        (con
-                                                                                                                          integer
-                                                                                                                          1
-                                                                                                                        )
-                                                                                                                      ]
-                                                                                                                      (delay
-                                                                                                                        [
-                                                                                                                          (lam
-                                                                                                                            al-37
-                                                                                                                            (force
-                                                                                                                              (case
-                                                                                                                                (constr
-                                                                                                                                  0
-                                                                                                                                  (case
-                                                                                                                                    (constr
-                                                                                                                                      0
-                                                                                                                                      [
-                                                                                                                                        [
-                                                                                                                                          (builtin
-                                                                                                                                            equalsInteger
-                                                                                                                                          )
-                                                                                                                                          [
-                                                                                                                                            b-1
-                                                                                                                                            [
-                                                                                                                                              (builtin
-                                                                                                                                                unConstrData
-                                                                                                                                              )
-                                                                                                                                              [
-                                                                                                                                                c-2
-                                                                                                                                                [
-                                                                                                                                                  g-6
-                                                                                                                                                  [
-                                                                                                                                                    f-5
-                                                                                                                                                    [
-                                                                                                                                                      (builtin
-                                                                                                                                                        unConstrData
-                                                                                                                                                      )
-                                                                                                                                                      [
-                                                                                                                                                        c-2
-                                                                                                                                                        aj-35
-                                                                                                                                                      ]
-                                                                                                                                                    ]
-                                                                                                                                                  ]
-                                                                                                                                                ]
-                                                                                                                                              ]
-                                                                                                                                            ]
-                                                                                                                                          ]
-                                                                                                                                        ]
-                                                                                                                                        (con
-                                                                                                                                          integer
-                                                                                                                                          0
-                                                                                                                                        )
-                                                                                                                                      ]
-                                                                                                                                      (con
-                                                                                                                                        bool
-                                                                                                                                        False
-                                                                                                                                      )
-                                                                                                                                      (con
-                                                                                                                                        bool
-                                                                                                                                        True
-                                                                                                                                      )
-                                                                                                                                    )
-                                                                                                                                    d-3
-                                                                                                                                  )
-                                                                                                                                  (delay
-                                                                                                                                    [
-                                                                                                                                      (builtin
-                                                                                                                                        unIData
-                                                                                                                                      )
-                                                                                                                                      [
-                                                                                                                                        c-2
-                                                                                                                                        al-37
-                                                                                                                                      ]
-                                                                                                                                    ]
-                                                                                                                                  )
-                                                                                                                                  (delay
-                                                                                                                                    [
-                                                                                                                                      [
-                                                                                                                                        (builtin
-                                                                                                                                          addInteger
-                                                                                                                                        )
-                                                                                                                                        [
-                                                                                                                                          (builtin
-                                                                                                                                            unIData
-                                                                                                                                          )
-                                                                                                                                          [
-                                                                                                                                            c-2
-                                                                                                                                            al-37
-                                                                                                                                          ]
-                                                                                                                                        ]
-                                                                                                                                      ]
-                                                                                                                                      (con
-                                                                                                                                        integer
-                                                                                                                                        1
-                                                                                                                                      )
-                                                                                                                                    ]
-                                                                                                                                  )
-                                                                                                                                )
-                                                                                                                                d-3
-                                                                                                                              )
-                                                                                                                            )
-                                                                                                                          )
-                                                                                                                          [
-                                                                                                                            f-5
-                                                                                                                            ak-36
-                                                                                                                          ]
-                                                                                                                        ]
-                                                                                                                      )
-                                                                                                                      (delay
-                                                                                                                        (force
-                                                                                                                          [
-                                                                                                                            [
-                                                                                                                              h-7
-                                                                                                                              (con
-                                                                                                                                string
-                                                                                                                                "Refund requires a finite lower bound"
-                                                                                                                              )
-                                                                                                                            ]
-                                                                                                                            (delay
-                                                                                                                              (error
-
-                                                                                                                              )
-                                                                                                                            )
-                                                                                                                          ]
-                                                                                                                        )
-                                                                                                                      )
-                                                                                                                    )
-                                                                                                                    d-3
-                                                                                                                  )
-                                                                                                                )
-                                                                                                              )
-                                                                                                              [
-                                                                                                                (builtin
-                                                                                                                  unConstrData
-                                                                                                                )
-                                                                                                                [
-                                                                                                                  c-2
-                                                                                                                  [
-                                                                                                                    f-5
-                                                                                                                    [
-                                                                                                                      (builtin
-                                                                                                                        unConstrData
-                                                                                                                      )
-                                                                                                                      [
-                                                                                                                        c-2
-                                                                                                                        aj-35
-                                                                                                                      ]
-                                                                                                                    ]
-                                                                                                                  ]
-                                                                                                                ]
-                                                                                                              ]
-                                                                                                            ]
-                                                                                                          )
+                                                                                                          k-10
                                                                                                           [
                                                                                                             f-5
                                                                                                             [
@@ -935,25 +471,7 @@
                                                                                                                 c-2
                                                                                                                 [
                                                                                                                   g-6
-                                                                                                                  [
-                                                                                                                    g-6
-                                                                                                                    [
-                                                                                                                      g-6
-                                                                                                                      [
-                                                                                                                        g-6
-                                                                                                                        [
-                                                                                                                          g-6
-                                                                                                                          [
-                                                                                                                            g-6
-                                                                                                                            [
-                                                                                                                              g-6
-                                                                                                                              ae-30
-                                                                                                                            ]
-                                                                                                                          ]
-                                                                                                                        ]
-                                                                                                                      ]
-                                                                                                                    ]
-                                                                                                                  ]
+                                                                                                                  v-21
                                                                                                                 ]
                                                                                                               ]
                                                                                                             ]
@@ -967,21 +485,8 @@
                                                                                                         )
                                                                                                       )
                                                                                                       (delay
-                                                                                                        (force
-                                                                                                          [
-                                                                                                            [
-                                                                                                              h-7
-                                                                                                              (con
-                                                                                                                string
-                                                                                                                "Refund not permitted at or before timeout"
-                                                                                                              )
-                                                                                                            ]
-                                                                                                            (delay
-                                                                                                              (error
+                                                                                                        (error
 
-                                                                                                              )
-                                                                                                            )
-                                                                                                          ]
                                                                                                         )
                                                                                                       )
                                                                                                     )
@@ -996,20 +501,27 @@
                                                                                                   0
                                                                                                   [
                                                                                                     [
-                                                                                                      k-10
-                                                                                                      ae-30
+                                                                                                      (builtin
+                                                                                                        equalsByteString
+                                                                                                      )
+                                                                                                      [
+                                                                                                        (builtin
+                                                                                                          sha2_256
+                                                                                                        )
+                                                                                                        w-22
+                                                                                                      ]
                                                                                                     ]
                                                                                                     [
-                                                                                                      l-11
+                                                                                                      (builtin
+                                                                                                        unBData
+                                                                                                      )
                                                                                                       [
-                                                                                                        f-5
+                                                                                                        c-2
                                                                                                         [
-                                                                                                          (builtin
-                                                                                                            unConstrData
-                                                                                                          )
+                                                                                                          g-6
                                                                                                           [
-                                                                                                            c-2
-                                                                                                            ag-32
+                                                                                                            g-6
+                                                                                                            v-21
                                                                                                           ]
                                                                                                         ]
                                                                                                       ]
@@ -1022,21 +534,8 @@
                                                                                                     )
                                                                                                   )
                                                                                                   (delay
-                                                                                                    (force
-                                                                                                      [
-                                                                                                        [
-                                                                                                          h-7
-                                                                                                          (con
-                                                                                                            string
-                                                                                                            "Missing payer signature"
-                                                                                                          )
-                                                                                                        ]
-                                                                                                        (delay
-                                                                                                          (error
+                                                                                                    (error
 
-                                                                                                          )
-                                                                                                        )
-                                                                                                      ]
                                                                                                     )
                                                                                                   )
                                                                                                 )
@@ -1050,58 +549,10 @@
                                                                                   )
                                                                                 )
                                                                               )
-                                                                              d-3
-                                                                            )
-                                                                          )
-                                                                        )
-                                                                        [
-                                                                          (builtin
-                                                                            unConstrData
-                                                                          )
-                                                                          [
-                                                                            c-2
-                                                                            [
-                                                                              g-6
-                                                                              [
-                                                                                f-5
-                                                                                [
-                                                                                  (builtin
-                                                                                    unConstrData
-                                                                                  )
-                                                                                  p-15
-                                                                                ]
-                                                                              ]
-                                                                            ]
-                                                                          ]
-                                                                        ]
-                                                                      ]
-                                                                    )
-                                                                    [
-                                                                      (lam
-                                                                        am-38
-                                                                        [
-                                                                          (lam
-                                                                            an-39
-                                                                            (force
-                                                                              (case
-                                                                                (constr
-                                                                                  0
-                                                                                  [
-                                                                                    [
-                                                                                      (builtin
-                                                                                        equalsInteger
-                                                                                      )
-                                                                                      [
-                                                                                        b-1
-                                                                                        am-38
-                                                                                      ]
-                                                                                    ]
-                                                                                    (con
-                                                                                      integer
-                                                                                      0
-                                                                                    )
-                                                                                  ]
-                                                                                  (delay
+                                                                              (delay
+                                                                                (case
+                                                                                  (constr
+                                                                                    0
                                                                                     [
                                                                                       f-5
                                                                                       [
@@ -1112,40 +563,376 @@
                                                                                           c-2
                                                                                           [
                                                                                             f-5
-                                                                                            am-38
+                                                                                            [
+                                                                                              (builtin
+                                                                                                unConstrData
+                                                                                              )
+                                                                                              o-14
+                                                                                            ]
                                                                                           ]
                                                                                         ]
                                                                                       ]
                                                                                     ]
-                                                                                  )
-                                                                                  (delay
-                                                                                    (force
+                                                                                    [
+                                                                                      f-5
                                                                                       [
+                                                                                        (builtin
+                                                                                          unConstrData
+                                                                                        )
                                                                                         [
-                                                                                          h-7
-                                                                                          (con
-                                                                                            string
-                                                                                            "Missing HTLC datum"
+                                                                                          c-2
+                                                                                          q-16
+                                                                                        ]
+                                                                                      ]
+                                                                                    ]
+                                                                                    r-17
+                                                                                  )
+                                                                                  (lam
+                                                                                    ad-29
+                                                                                    (lam
+                                                                                      ae-30
+                                                                                      (lam
+                                                                                        af-31
+                                                                                        [
+                                                                                          (lam
+                                                                                            ag-32
+                                                                                            [
+                                                                                              (lam
+                                                                                                ah-33
+                                                                                                (force
+                                                                                                  (case
+                                                                                                    (constr
+                                                                                                      0
+                                                                                                      [
+                                                                                                        [
+                                                                                                          (builtin
+                                                                                                            equalsInteger
+                                                                                                          )
+                                                                                                          [
+                                                                                                            [
+                                                                                                              m-12
+                                                                                                              ad-29
+                                                                                                            ]
+                                                                                                            [
+                                                                                                              [
+                                                                                                                n-13
+                                                                                                                ad-29
+                                                                                                              ]
+                                                                                                              ae-30
+                                                                                                            ]
+                                                                                                          ]
+                                                                                                        ]
+                                                                                                        (con
+                                                                                                          integer
+                                                                                                          1
+                                                                                                        )
+                                                                                                      ]
+                                                                                                      (delay
+                                                                                                        (con
+                                                                                                          unit
+                                                                                                          ()
+                                                                                                        )
+                                                                                                      )
+                                                                                                      (delay
+                                                                                                        (error
+
+                                                                                                        )
+                                                                                                      )
+                                                                                                    )
+                                                                                                    d-3
+                                                                                                  )
+                                                                                                )
+                                                                                              )
+                                                                                              (force
+                                                                                                (case
+                                                                                                  (constr
+                                                                                                    0
+                                                                                                    [
+                                                                                                      [
+                                                                                                        (builtin
+                                                                                                          lessThanInteger
+                                                                                                        )
+                                                                                                        [
+                                                                                                          (builtin
+                                                                                                            unIData
+                                                                                                          )
+                                                                                                          [
+                                                                                                            c-2
+                                                                                                            [
+                                                                                                              g-6
+                                                                                                              [
+                                                                                                                g-6
+                                                                                                                [
+                                                                                                                  g-6
+                                                                                                                  af-31
+                                                                                                                ]
+                                                                                                              ]
+                                                                                                            ]
+                                                                                                          ]
+                                                                                                        ]
+                                                                                                      ]
+                                                                                                      [
+                                                                                                        (lam
+                                                                                                          ai-34
+                                                                                                          [
+                                                                                                            (lam
+                                                                                                              aj-35
+                                                                                                              (force
+                                                                                                                (case
+                                                                                                                  (constr
+                                                                                                                    0
+                                                                                                                    [
+                                                                                                                      [
+                                                                                                                        (builtin
+                                                                                                                          equalsInteger
+                                                                                                                        )
+                                                                                                                        [
+                                                                                                                          b-1
+                                                                                                                          aj-35
+                                                                                                                        ]
+                                                                                                                      ]
+                                                                                                                      (con
+                                                                                                                        integer
+                                                                                                                        1
+                                                                                                                      )
+                                                                                                                    ]
+                                                                                                                    (delay
+                                                                                                                      [
+                                                                                                                        (lam
+                                                                                                                          ak-36
+                                                                                                                          (force
+                                                                                                                            (case
+                                                                                                                              (constr
+                                                                                                                                0
+                                                                                                                                (case
+                                                                                                                                  (constr
+                                                                                                                                    0
+                                                                                                                                    [
+                                                                                                                                      [
+                                                                                                                                        (builtin
+                                                                                                                                          equalsInteger
+                                                                                                                                        )
+                                                                                                                                        [
+                                                                                                                                          b-1
+                                                                                                                                          [
+                                                                                                                                            (builtin
+                                                                                                                                              unConstrData
+                                                                                                                                            )
+                                                                                                                                            [
+                                                                                                                                              c-2
+                                                                                                                                              [
+                                                                                                                                                g-6
+                                                                                                                                                [
+                                                                                                                                                  f-5
+                                                                                                                                                  [
+                                                                                                                                                    (builtin
+                                                                                                                                                      unConstrData
+                                                                                                                                                    )
+                                                                                                                                                    [
+                                                                                                                                                      c-2
+                                                                                                                                                      ai-34
+                                                                                                                                                    ]
+                                                                                                                                                  ]
+                                                                                                                                                ]
+                                                                                                                                              ]
+                                                                                                                                            ]
+                                                                                                                                          ]
+                                                                                                                                        ]
+                                                                                                                                      ]
+                                                                                                                                      (con
+                                                                                                                                        integer
+                                                                                                                                        0
+                                                                                                                                      )
+                                                                                                                                    ]
+                                                                                                                                    (con
+                                                                                                                                      bool
+                                                                                                                                      False
+                                                                                                                                    )
+                                                                                                                                    (con
+                                                                                                                                      bool
+                                                                                                                                      True
+                                                                                                                                    )
+                                                                                                                                  )
+                                                                                                                                  d-3
+                                                                                                                                )
+                                                                                                                                (delay
+                                                                                                                                  [
+                                                                                                                                    (builtin
+                                                                                                                                      unIData
+                                                                                                                                    )
+                                                                                                                                    [
+                                                                                                                                      c-2
+                                                                                                                                      ak-36
+                                                                                                                                    ]
+                                                                                                                                  ]
+                                                                                                                                )
+                                                                                                                                (delay
+                                                                                                                                  [
+                                                                                                                                    [
+                                                                                                                                      (builtin
+                                                                                                                                        addInteger
+                                                                                                                                      )
+                                                                                                                                      [
+                                                                                                                                        (builtin
+                                                                                                                                          unIData
+                                                                                                                                        )
+                                                                                                                                        [
+                                                                                                                                          c-2
+                                                                                                                                          ak-36
+                                                                                                                                        ]
+                                                                                                                                      ]
+                                                                                                                                    ]
+                                                                                                                                    (con
+                                                                                                                                      integer
+                                                                                                                                      1
+                                                                                                                                    )
+                                                                                                                                  ]
+                                                                                                                                )
+                                                                                                                              )
+                                                                                                                              d-3
+                                                                                                                            )
+                                                                                                                          )
+                                                                                                                        )
+                                                                                                                        [
+                                                                                                                          f-5
+                                                                                                                          aj-35
+                                                                                                                        ]
+                                                                                                                      ]
+                                                                                                                    )
+                                                                                                                    (delay
+                                                                                                                      (error
+
+                                                                                                                      )
+                                                                                                                    )
+                                                                                                                  )
+                                                                                                                  d-3
+                                                                                                                )
+                                                                                                              )
+                                                                                                            )
+                                                                                                            [
+                                                                                                              (builtin
+                                                                                                                unConstrData
+                                                                                                              )
+                                                                                                              [
+                                                                                                                c-2
+                                                                                                                [
+                                                                                                                  f-5
+                                                                                                                  [
+                                                                                                                    (builtin
+                                                                                                                      unConstrData
+                                                                                                                    )
+                                                                                                                    [
+                                                                                                                      c-2
+                                                                                                                      ai-34
+                                                                                                                    ]
+                                                                                                                  ]
+                                                                                                                ]
+                                                                                                              ]
+                                                                                                            ]
+                                                                                                          ]
+                                                                                                        )
+                                                                                                        [
+                                                                                                          f-5
+                                                                                                          [
+                                                                                                            (builtin
+                                                                                                              unConstrData
+                                                                                                            )
+                                                                                                            [
+                                                                                                              c-2
+                                                                                                              [
+                                                                                                                g-6
+                                                                                                                [
+                                                                                                                  g-6
+                                                                                                                  [
+                                                                                                                    g-6
+                                                                                                                    [
+                                                                                                                      g-6
+                                                                                                                      [
+                                                                                                                        g-6
+                                                                                                                        [
+                                                                                                                          g-6
+                                                                                                                          [
+                                                                                                                            g-6
+                                                                                                                            ad-29
+                                                                                                                          ]
+                                                                                                                        ]
+                                                                                                                      ]
+                                                                                                                    ]
+                                                                                                                  ]
+                                                                                                                ]
+                                                                                                              ]
+                                                                                                            ]
+                                                                                                          ]
+                                                                                                        ]
+                                                                                                      ]
+                                                                                                    ]
+                                                                                                    (delay
+                                                                                                      (con
+                                                                                                        unit
+                                                                                                        ()
+                                                                                                      )
+                                                                                                    )
+                                                                                                    (delay
+                                                                                                      (error
+
+                                                                                                      )
+                                                                                                    )
+                                                                                                  )
+                                                                                                  d-3
+                                                                                                )
+                                                                                              )
+                                                                                            ]
+                                                                                          )
+                                                                                          (force
+                                                                                            (case
+                                                                                              (constr
+                                                                                                0
+                                                                                                [
+                                                                                                  [
+                                                                                                    j-9
+                                                                                                    ad-29
+                                                                                                  ]
+                                                                                                  [
+                                                                                                    k-10
+                                                                                                    [
+                                                                                                      f-5
+                                                                                                      [
+                                                                                                        (builtin
+                                                                                                          unConstrData
+                                                                                                        )
+                                                                                                        [
+                                                                                                          c-2
+                                                                                                          af-31
+                                                                                                        ]
+                                                                                                      ]
+                                                                                                    ]
+                                                                                                  ]
+                                                                                                ]
+                                                                                                (delay
+                                                                                                  (con
+                                                                                                    unit
+                                                                                                    ()
+                                                                                                  )
+                                                                                                )
+                                                                                                (delay
+                                                                                                  (error
+
+                                                                                                  )
+                                                                                                )
+                                                                                              )
+                                                                                              d-3
+                                                                                            )
                                                                                           )
                                                                                         ]
-                                                                                        (delay
-                                                                                          (error
-
-                                                                                          )
-                                                                                        )
-                                                                                      ]
+                                                                                      )
                                                                                     )
                                                                                   )
                                                                                 )
-                                                                                d-3
                                                                               )
                                                                             )
+                                                                            d-3
                                                                           )
-                                                                          [
-                                                                            g-6
-                                                                            r-17
-                                                                          ]
-                                                                        ]
+                                                                        )
                                                                       )
                                                                       [
                                                                         (builtin
@@ -1155,147 +942,339 @@
                                                                           c-2
                                                                           [
                                                                             g-6
-                                                                            r-17
+                                                                            [
+                                                                              f-5
+                                                                              [
+                                                                                (builtin
+                                                                                  unConstrData
+                                                                                )
+                                                                                o-14
+                                                                              ]
+                                                                            ]
                                                                           ]
                                                                         ]
                                                                       ]
                                                                     ]
-                                                                  ]
-                                                                )
-                                                                [ f-5 q-16 ]
-                                                              ]
-                                                            )
-                                                            (delay
-                                                              (force
-                                                                [
-                                                                  [
-                                                                    h-7
-                                                                    (con
-                                                                      string
-                                                                      "Expected SpendingScript"
-                                                                    )
-                                                                  ]
-                                                                  (delay
-                                                                    (error)
                                                                   )
+                                                                  [
+                                                                    (lam
+                                                                      al-37
+                                                                      [
+                                                                        (lam
+                                                                          am-38
+                                                                          (force
+                                                                            (case
+                                                                              (constr
+                                                                                0
+                                                                                [
+                                                                                  [
+                                                                                    (builtin
+                                                                                      equalsInteger
+                                                                                    )
+                                                                                    [
+                                                                                      b-1
+                                                                                      al-37
+                                                                                    ]
+                                                                                  ]
+                                                                                  (con
+                                                                                    integer
+                                                                                    0
+                                                                                  )
+                                                                                ]
+                                                                                (delay
+                                                                                  [
+                                                                                    f-5
+                                                                                    [
+                                                                                      (builtin
+                                                                                        unConstrData
+                                                                                      )
+                                                                                      [
+                                                                                        c-2
+                                                                                        [
+                                                                                          f-5
+                                                                                          al-37
+                                                                                        ]
+                                                                                      ]
+                                                                                    ]
+                                                                                  ]
+                                                                                )
+                                                                                (delay
+                                                                                  (error
+
+                                                                                  )
+                                                                                )
+                                                                              )
+                                                                              d-3
+                                                                            )
+                                                                          )
+                                                                        )
+                                                                        [
+                                                                          g-6
+                                                                          q-16
+                                                                        ]
+                                                                      ]
+                                                                    )
+                                                                    [
+                                                                      (builtin
+                                                                        unConstrData
+                                                                      )
+                                                                      [
+                                                                        c-2
+                                                                        [
+                                                                          g-6
+                                                                          q-16
+                                                                        ]
+                                                                      ]
+                                                                    ]
+                                                                  ]
                                                                 ]
                                                               )
-                                                            )
+                                                              [ f-5 p-15 ]
+                                                            ]
                                                           )
-                                                          d-3
+                                                          (delay (error))
                                                         )
+                                                        d-3
                                                       )
                                                     )
+                                                  )
+                                                  [
+                                                    (builtin unConstrData)
                                                     [
-                                                      (builtin unConstrData)
+                                                      c-2
                                                       [
-                                                        c-2
+                                                        g-6
                                                         [
                                                           g-6
                                                           [
-                                                            g-6
+                                                            f-5
                                                             [
-                                                              f-5
-                                                              [
-                                                                (builtin
-                                                                  unConstrData
-                                                                )
-                                                                p-15
-                                                              ]
+                                                              (builtin
+                                                                unConstrData
+                                                              )
+                                                              o-14
                                                             ]
                                                           ]
                                                         ]
                                                       ]
                                                     ]
                                                   ]
-                                                )
+                                                ]
                                               )
+                                            )
+                                            (lam
+                                              an-39
                                               (lam
                                                 ao-40
-                                                (lam
-                                                  ap-41
-                                                  [
-                                                    (lam
-                                                      aq-42
-                                                      (force
-                                                        (case
-                                                          (constr
-                                                            0
+                                                [
+                                                  (lam
+                                                    ap-41
+                                                    (force
+                                                      (case
+                                                        (constr
+                                                          0
+                                                          [
                                                             [
-                                                              [
-                                                                (builtin
-                                                                  equalsInteger
-                                                                )
-                                                                [ b-1 aq-42 ]
-                                                              ]
-                                                              (con integer 0)
+                                                              (builtin
+                                                                equalsInteger
+                                                              )
+                                                              [ b-1 ap-41 ]
                                                             ]
-                                                            (delay
-                                                              [
-                                                                (lam
-                                                                  ar-43
-                                                                  (force
-                                                                    (case
-                                                                      (constr
-                                                                        0
+                                                            (con integer 0)
+                                                          ]
+                                                          (delay
+                                                            [
+                                                              (lam
+                                                                aq-42
+                                                                (force
+                                                                  (case
+                                                                    (constr
+                                                                      0
+                                                                      [
                                                                         [
+                                                                          (builtin
+                                                                            equalsInteger
+                                                                          )
                                                                           [
-                                                                            (builtin
-                                                                              equalsInteger
-                                                                            )
+                                                                            b-1
+                                                                            aq-42
+                                                                          ]
+                                                                        ]
+                                                                        (con
+                                                                          integer
+                                                                          1
+                                                                        )
+                                                                      ]
+                                                                      (delay
+                                                                        [
+                                                                          (builtin
+                                                                            unBData
+                                                                          )
+                                                                          [
+                                                                            c-2
                                                                             [
-                                                                              b-1
-                                                                              ar-43
+                                                                              f-5
+                                                                              aq-42
                                                                             ]
                                                                           ]
-                                                                          (con
-                                                                            integer
-                                                                            1
-                                                                          )
                                                                         ]
-                                                                        (delay
+                                                                      )
+                                                                      (delay
+                                                                        (error)
+                                                                      )
+                                                                    )
+                                                                    d-3
+                                                                  )
+                                                                )
+                                                              )
+                                                              [
+                                                                (builtin
+                                                                  unConstrData
+                                                                )
+                                                                [
+                                                                  c-2
+                                                                  [
+                                                                    f-5
+                                                                    [
+                                                                      (builtin
+                                                                        unConstrData
+                                                                      )
+                                                                      [
+                                                                        c-2
+                                                                        [
+                                                                          f-5
                                                                           [
                                                                             (builtin
-                                                                              unBData
+                                                                              unConstrData
                                                                             )
                                                                             [
                                                                               c-2
                                                                               [
-                                                                                f-5
-                                                                                ar-43
+                                                                                g-6
+                                                                                [
+                                                                                  f-5
+                                                                                  [
+                                                                                    (builtin
+                                                                                      unConstrData
+                                                                                    )
+                                                                                    [
+                                                                                      c-2
+                                                                                      [
+                                                                                        f-5
+                                                                                        ap-41
+                                                                                      ]
+                                                                                    ]
+                                                                                  ]
+                                                                                ]
                                                                               ]
                                                                             ]
                                                                           ]
-                                                                        )
-                                                                        (delay
-                                                                          (force
-                                                                            [
+                                                                        ]
+                                                                      ]
+                                                                    ]
+                                                                  ]
+                                                                ]
+                                                              ]
+                                                            ]
+                                                          )
+                                                          (delay (error))
+                                                        )
+                                                        d-3
+                                                      )
+                                                    )
+                                                  )
+                                                  [
+                                                    (builtin unConstrData)
+                                                    [
+                                                      [
+                                                        (lam
+                                                          ar-43
+                                                          (lam
+                                                            as-44
+                                                            [
+                                                              [ i-8 ar-43 ]
+                                                              (lam
+                                                                at-45
+                                                                [
+                                                                  [
+                                                                    (lam
+                                                                      au-46
+                                                                      (lam
+                                                                        av-47
+                                                                        (force
+                                                                          (case
+                                                                            (constr
+                                                                              0
                                                                               [
-                                                                                h-7
-                                                                                (con
-                                                                                  string
-                                                                                  "Expected ScriptCredential"
-                                                                                )
+                                                                                [
+                                                                                  (builtin
+                                                                                    equalsByteString
+                                                                                  )
+                                                                                  [
+                                                                                    (builtin
+                                                                                      unBData
+                                                                                    )
+                                                                                    [
+                                                                                      c-2
+                                                                                      au-46
+                                                                                    ]
+                                                                                  ]
+                                                                                ]
+                                                                                [
+                                                                                  (builtin
+                                                                                    unBData
+                                                                                  )
+                                                                                  [
+                                                                                    c-2
+                                                                                    av-47
+                                                                                  ]
+                                                                                ]
                                                                               ]
                                                                               (delay
-                                                                                (error
-
+                                                                                [
+                                                                                  [
+                                                                                    (builtin
+                                                                                      equalsInteger
+                                                                                    )
+                                                                                    [
+                                                                                      (builtin
+                                                                                        unIData
+                                                                                      )
+                                                                                      [
+                                                                                        c-2
+                                                                                        [
+                                                                                          g-6
+                                                                                          au-46
+                                                                                        ]
+                                                                                      ]
+                                                                                    ]
+                                                                                  ]
+                                                                                  [
+                                                                                    (builtin
+                                                                                      unIData
+                                                                                    )
+                                                                                    [
+                                                                                      c-2
+                                                                                      [
+                                                                                        g-6
+                                                                                        av-47
+                                                                                      ]
+                                                                                    ]
+                                                                                  ]
+                                                                                ]
+                                                                              )
+                                                                              (delay
+                                                                                (con
+                                                                                  bool
+                                                                                  False
                                                                                 )
                                                                               )
-                                                                            ]
+                                                                            )
+                                                                            d-3
                                                                           )
                                                                         )
                                                                       )
-                                                                      d-3
                                                                     )
-                                                                  )
-                                                                )
-                                                                [
-                                                                  (builtin
-                                                                    unConstrData
-                                                                  )
-                                                                  [
-                                                                    c-2
                                                                     [
                                                                       f-5
                                                                       [
@@ -1310,352 +1289,191 @@
                                                                               (builtin
                                                                                 unConstrData
                                                                               )
-                                                                              [
-                                                                                c-2
-                                                                                [
-                                                                                  g-6
-                                                                                  [
-                                                                                    f-5
-                                                                                    [
-                                                                                      (builtin
-                                                                                        unConstrData
-                                                                                      )
-                                                                                      [
-                                                                                        c-2
-                                                                                        [
-                                                                                          f-5
-                                                                                          aq-42
-                                                                                        ]
-                                                                                      ]
-                                                                                    ]
-                                                                                  ]
-                                                                                ]
-                                                                              ]
+                                                                              at-45
                                                                             ]
                                                                           ]
                                                                         ]
                                                                       ]
                                                                     ]
                                                                   ]
-                                                                ]
-                                                              ]
-                                                            )
-                                                            (delay
-                                                              (force
-                                                                [
-                                                                  [
-                                                                    h-7
-                                                                    (con
-                                                                      string
-                                                                      "Own input not found"
-                                                                    )
-                                                                  ]
-                                                                  (delay
-                                                                    (error)
-                                                                  )
+                                                                  as-44
                                                                 ]
                                                               )
-                                                            )
+                                                            ]
                                                           )
-                                                          d-3
                                                         )
-                                                      )
-                                                    )
-                                                    [
-                                                      (builtin unConstrData)
-                                                      [
                                                         [
-                                                          (lam
-                                                            as-44
-                                                            (lam
-                                                              at-45
-                                                              [
-                                                                [ j-9 as-44 ]
-                                                                (lam
-                                                                  au-46
-                                                                  [
-                                                                    [
-                                                                      (lam
-                                                                        av-47
-                                                                        (lam
-                                                                          aw-48
-                                                                          (force
-                                                                            (case
-                                                                              (constr
-                                                                                0
-                                                                                [
-                                                                                  [
-                                                                                    (builtin
-                                                                                      equalsByteString
-                                                                                    )
-                                                                                    [
-                                                                                      (builtin
-                                                                                        unBData
-                                                                                      )
-                                                                                      [
-                                                                                        c-2
-                                                                                        av-47
-                                                                                      ]
-                                                                                    ]
-                                                                                  ]
-                                                                                  [
-                                                                                    (builtin
-                                                                                      unBData
-                                                                                    )
-                                                                                    [
-                                                                                      c-2
-                                                                                      aw-48
-                                                                                    ]
-                                                                                  ]
-                                                                                ]
-                                                                                (delay
-                                                                                  [
-                                                                                    [
-                                                                                      (builtin
-                                                                                        equalsInteger
-                                                                                      )
-                                                                                      [
-                                                                                        (builtin
-                                                                                          unIData
-                                                                                        )
-                                                                                        [
-                                                                                          c-2
-                                                                                          [
-                                                                                            g-6
-                                                                                            av-47
-                                                                                          ]
-                                                                                        ]
-                                                                                      ]
-                                                                                    ]
-                                                                                    [
-                                                                                      (builtin
-                                                                                        unIData
-                                                                                      )
-                                                                                      [
-                                                                                        c-2
-                                                                                        [
-                                                                                          g-6
-                                                                                          aw-48
-                                                                                        ]
-                                                                                      ]
-                                                                                    ]
-                                                                                  ]
-                                                                                )
-                                                                                (delay
-                                                                                  (con
-                                                                                    bool
-                                                                                    False
-                                                                                  )
-                                                                                )
-                                                                              )
-                                                                              d-3
-                                                                            )
-                                                                          )
-                                                                        )
-                                                                      )
-                                                                      [
-                                                                        f-5
-                                                                        [
-                                                                          (builtin
-                                                                            unConstrData
-                                                                          )
-                                                                          [
-                                                                            c-2
-                                                                            [
-                                                                              f-5
-                                                                              [
-                                                                                (builtin
-                                                                                  unConstrData
-                                                                                )
-                                                                                au-46
-                                                                              ]
-                                                                            ]
-                                                                          ]
-                                                                        ]
-                                                                      ]
-                                                                    ]
-                                                                    at-45
-                                                                  ]
-                                                                )
-                                                              ]
-                                                            )
-                                                          )
-                                                          [
-                                                            (builtin unListData)
-                                                            [ c-2 ao-40 ]
-                                                          ]
+                                                          (builtin unListData)
+                                                          [ c-2 an-39 ]
                                                         ]
-                                                        ap-41
                                                       ]
+                                                      ao-40
                                                     ]
                                                   ]
-                                                )
+                                                ]
                                               )
-                                            ]
-                                          )
+                                            )
+                                          ]
+                                        )
+                                        (lam
+                                          aw-48
                                           (lam
                                             ax-49
-                                            (lam
-                                              ay-50
+                                            [
                                               [
-                                                [
+                                                (lam
+                                                  ay-50
                                                   (lam
                                                     az-51
-                                                    (lam
-                                                      ba-52
-                                                      [
-                                                        (builtin unIData)
-                                                        (case
-                                                          (constr
-                                                            0
-                                                            az-51
-                                                            (con data (I 0))
+                                                    [
+                                                      (builtin unIData)
+                                                      (case
+                                                        (constr
+                                                          0
+                                                          ay-50
+                                                          (con data (I 0))
+                                                          (lam
+                                                            ba-52
                                                             (lam
                                                               bb-53
-                                                              (lam
-                                                                bc-54
+                                                              [
                                                                 [
-                                                                  [
+                                                                  (lam
+                                                                    bc-54
                                                                     (lam
                                                                       bd-55
-                                                                      (lam
-                                                                        be-56
-                                                                        [
-                                                                          (builtin
-                                                                            iData
-                                                                          )
-                                                                          (force
-                                                                            (case
-                                                                              (constr
-                                                                                0
+                                                                      [
+                                                                        (builtin
+                                                                          iData
+                                                                        )
+                                                                        (force
+                                                                          (case
+                                                                            (constr
+                                                                              0
+                                                                              [
+                                                                                az-51
+                                                                                bd-55
+                                                                              ]
+                                                                              (delay
                                                                                 [
-                                                                                  ba-52
-                                                                                  be-56
-                                                                                ]
-                                                                                (delay
                                                                                   [
-                                                                                    [
-                                                                                      (builtin
-                                                                                        addInteger
-                                                                                      )
-                                                                                      bd-55
-                                                                                    ]
-                                                                                    (con
-                                                                                      integer
-                                                                                      1
+                                                                                    (builtin
+                                                                                      addInteger
                                                                                     )
+                                                                                    bc-54
                                                                                   ]
-                                                                                )
-                                                                                (delay
-                                                                                  bd-55
-                                                                                )
+                                                                                  (con
+                                                                                    integer
+                                                                                    1
+                                                                                  )
+                                                                                ]
                                                                               )
-                                                                              d-3
+                                                                              (delay
+                                                                                bc-54
+                                                                              )
                                                                             )
+                                                                            d-3
                                                                           )
-                                                                        ]
-                                                                      )
+                                                                        )
+                                                                      ]
                                                                     )
-                                                                    [
-                                                                      (builtin
-                                                                        unIData
-                                                                      )
-                                                                      bb-53
-                                                                    ]
-                                                                  ]
-                                                                  bc-54
-                                                                ]
-                                                              )
-                                                            )
-                                                          )
-                                                          m-12
-                                                        )
-                                                      ]
-                                                    )
-                                                  )
-                                                  [
-                                                    (builtin unListData)
-                                                    [ c-2 ax-49 ]
-                                                  ]
-                                                ]
-                                                (lam
-                                                  bf-57
-                                                  [
-                                                    (lam
-                                                      bg-58
-                                                      (force
-                                                        (case
-                                                          (constr
-                                                            0
-                                                            [
-                                                              [
-                                                                (builtin
-                                                                  equalsInteger
-                                                                )
-                                                                [ b-1 bg-58 ]
-                                                              ]
-                                                              (con integer 1)
-                                                            ]
-                                                            (delay
-                                                              [
-                                                                [
-                                                                  (builtin
-                                                                    equalsByteString
                                                                   )
                                                                   [
                                                                     (builtin
-                                                                      unBData
+                                                                      unIData
                                                                     )
-                                                                    [
-                                                                      c-2
-                                                                      [
-                                                                        f-5
-                                                                        bg-58
-                                                                      ]
-                                                                    ]
+                                                                    ba-52
                                                                   ]
                                                                 ]
-                                                                ay-50
+                                                                bb-53
                                                               ]
                                                             )
-                                                            (delay
-                                                              (con bool False)
-                                                            )
                                                           )
-                                                          d-3
                                                         )
+                                                        l-11
                                                       )
-                                                    )
-                                                    [
-                                                      (builtin unConstrData)
-                                                      [
-                                                        c-2
-                                                        [
-                                                          f-5
+                                                    ]
+                                                  )
+                                                )
+                                                [
+                                                  (builtin unListData)
+                                                  [ c-2 aw-48 ]
+                                                ]
+                                              ]
+                                              (lam
+                                                be-56
+                                                [
+                                                  (lam
+                                                    bf-57
+                                                    (force
+                                                      (case
+                                                        (constr
+                                                          0
                                                           [
-                                                            (builtin
-                                                              unConstrData
-                                                            )
                                                             [
-                                                              c-2
+                                                              (builtin
+                                                                equalsInteger
+                                                              )
+                                                              [ b-1 bf-57 ]
+                                                            ]
+                                                            (con integer 1)
+                                                          ]
+                                                          (delay
+                                                            [
                                                               [
-                                                                f-5
+                                                                (builtin
+                                                                  equalsByteString
+                                                                )
                                                                 [
                                                                   (builtin
-                                                                    unConstrData
+                                                                    unBData
                                                                   )
                                                                   [
                                                                     c-2
                                                                     [
-                                                                      g-6
+                                                                      f-5 bf-57
+                                                                    ]
+                                                                  ]
+                                                                ]
+                                                              ]
+                                                              ax-49
+                                                            ]
+                                                          )
+                                                          (delay
+                                                            (con bool False)
+                                                          )
+                                                        )
+                                                        d-3
+                                                      )
+                                                    )
+                                                  )
+                                                  [
+                                                    (builtin unConstrData)
+                                                    [
+                                                      c-2
+                                                      [
+                                                        f-5
+                                                        [
+                                                          (builtin unConstrData)
+                                                          [
+                                                            c-2
+                                                            [
+                                                              f-5
+                                                              [
+                                                                (builtin
+                                                                  unConstrData
+                                                                )
+                                                                [
+                                                                  c-2
+                                                                  [
+                                                                    g-6
+                                                                    [
+                                                                      f-5
                                                                       [
-                                                                        f-5
-                                                                        [
-                                                                          (builtin
-                                                                            unConstrData
-                                                                          )
-                                                                          bf-57
-                                                                        ]
+                                                                        (builtin
+                                                                          unConstrData
+                                                                        )
+                                                                        be-56
                                                                       ]
                                                                     ]
                                                                   ]
@@ -1667,149 +1485,139 @@
                                                       ]
                                                     ]
                                                   ]
-                                                )
-                                              ]
-                                            )
+                                                ]
+                                              )
+                                            ]
                                           )
-                                        ]
-                                      )
-                                      [
-                                        i-8
+                                        )
+                                      ]
+                                    )
+                                    [
+                                      h-7
+                                      (lam
+                                        l-11
                                         (lam
-                                          m-12
+                                          bg-58
                                           (lam
                                             bh-59
                                             (lam
                                               bi-60
-                                              (lam
-                                                bj-61
-                                                (force
-                                                  (case
-                                                    (constr
-                                                      0
-                                                      bh-59
-                                                      (delay bi-60)
-                                                      (delay
+                                              (force
+                                                (case
+                                                  (constr
+                                                    0
+                                                    bg-58
+                                                    (delay bh-59)
+                                                    (delay
+                                                      [
                                                         [
-                                                          [
-                                                            (lam
-                                                              bk-62
-                                                              [
+                                                          (lam
+                                                            bj-61
+                                                            [
+                                                              (lam
+                                                                bk-62
                                                                 (lam
                                                                   bl-63
-                                                                  (lam
-                                                                    bm-64
+                                                                  [
                                                                     [
-                                                                      [
+                                                                      (lam
+                                                                        bm-64
                                                                         (lam
                                                                           bn-65
-                                                                          (lam
-                                                                            bo-66
-                                                                            (case
-                                                                              (constr
-                                                                                0
-                                                                                bk-62
-                                                                                bn-65
-                                                                                bo-66
-                                                                              )
-                                                                              m-12
+                                                                          (case
+                                                                            (constr
+                                                                              0
+                                                                              bj-61
+                                                                              bm-64
+                                                                              bn-65
                                                                             )
+                                                                            l-11
                                                                           )
                                                                         )
+                                                                      )
+                                                                      [
                                                                         [
-                                                                          [
-                                                                            bj-61
-                                                                            bi-60
-                                                                          ]
-                                                                          bl-63
+                                                                          bi-60
+                                                                          bh-59
                                                                         ]
+                                                                        bk-62
                                                                       ]
-                                                                      bm-64
                                                                     ]
-                                                                  )
+                                                                    bl-63
+                                                                  ]
                                                                 )
-                                                                [ c-2 bh-59 ]
-                                                              ]
-                                                            )
-                                                            [ g-6 bh-59 ]
-                                                          ]
-                                                          bj-61
+                                                              )
+                                                              [ c-2 bg-58 ]
+                                                            ]
+                                                          )
+                                                          [ g-6 bg-58 ]
                                                         ]
-                                                      )
+                                                        bi-60
+                                                      ]
                                                     )
-                                                    a-0
                                                   )
+                                                  a-0
                                                 )
                                               )
                                             )
-                                          )
-                                        )
-                                      ]
-                                    ]
-                                  )
-                                  (lam
-                                    bp-67
-                                    [
-                                      (lam
-                                        bq-68
-                                        (force
-                                          (case
-                                            (constr
-                                              0
-                                              [
-                                                [
-                                                  (builtin equalsInteger)
-                                                  [ b-1 bq-68 ]
-                                                ]
-                                                (con integer 0)
-                                              ]
-                                              (delay
-                                                [
-                                                  (builtin unBData)
-                                                  [ c-2 [ f-5 bq-68 ] ]
-                                                ]
-                                              )
-                                              (delay
-                                                (force
-                                                  [
-                                                    [
-                                                      h-7
-                                                      (con
-                                                        string
-                                                        "Expected PubKeyCredential"
-                                                      )
-                                                    ]
-                                                    (delay (error))
-                                                  ]
-                                                )
-                                              )
-                                            )
-                                            d-3
                                           )
                                         )
                                       )
-                                      [ (builtin unConstrData) [ c-2 bp-67 ] ]
                                     ]
-                                  )
-                                ]
-                              )
+                                  ]
+                                )
+                                (lam
+                                  bo-66
+                                  [
+                                    (lam
+                                      bp-67
+                                      (force
+                                        (case
+                                          (constr
+                                            0
+                                            [
+                                              [
+                                                (builtin equalsInteger)
+                                                [ b-1 bp-67 ]
+                                              ]
+                                              (con integer 0)
+                                            ]
+                                            (delay
+                                              [
+                                                (builtin unBData)
+                                                [ c-2 [ f-5 bp-67 ] ]
+                                              ]
+                                            )
+                                            (delay (error))
+                                          )
+                                          d-3
+                                        )
+                                      )
+                                    )
+                                    [ (builtin unConstrData) [ c-2 bo-66 ] ]
+                                  ]
+                                )
+                              ]
+                            )
+                            (lam
+                              bq-68
                               (lam
                                 br-69
-                                (lam
-                                  bs-70
+                                [
                                   [
-                                    [
+                                    (lam
+                                      bs-70
                                       (lam
                                         bt-71
-                                        (lam
-                                          bu-72
-                                          (case
-                                            (constr
-                                              0
+                                        (case
+                                          (constr
+                                            0
+                                            [
+                                              (builtin unListData)
                                               [
-                                                (builtin unListData)
+                                                c-2
                                                 [
-                                                  c-2
+                                                  g-6
                                                   [
                                                     g-6
                                                     [
@@ -1821,11 +1629,7 @@
                                                           [
                                                             g-6
                                                             [
-                                                              g-6
-                                                              [
-                                                                g-6
-                                                                [ g-6 br-69 ]
-                                                              ]
+                                                              g-6 [ g-6 bq-68 ]
                                                             ]
                                                           ]
                                                         ]
@@ -1834,173 +1638,166 @@
                                                   ]
                                                 ]
                                               ]
-                                              bt-71
-                                              (lam
-                                                bv-73
-                                                [
+                                            ]
+                                            bs-70
+                                            (lam
+                                              bu-72
+                                              [
+                                                (lam
+                                                  bv-73
                                                   (lam
                                                     bw-74
-                                                    (lam
-                                                      bx-75
+                                                    [
+                                                      [ bt-71 bv-73 ]
                                                       [
-                                                        [ bu-72 bw-74 ]
-                                                        [
-                                                          (builtin unBData)
-                                                          bx-75
-                                                        ]
+                                                        (builtin unBData) bw-74
                                                       ]
-                                                    )
+                                                    ]
                                                   )
-                                                  [ (builtin unBData) bv-73 ]
-                                                ]
-                                              )
+                                                )
+                                                [ (builtin unBData) bu-72 ]
+                                              ]
                                             )
+                                          )
+                                          (lam
+                                            bx-75
                                             (lam
                                               by-76
                                               (lam
                                                 bz-77
-                                                (lam
-                                                  ca-78
-                                                  (case
-                                                    (constr
-                                                      0
-                                                      (case
-                                                        (constr
-                                                          0
+                                                (case
+                                                  (constr
+                                                    0
+                                                    (case
+                                                      (constr
+                                                        0
+                                                        [
                                                           [
+                                                            (builtin
+                                                              equalsInteger
+                                                            )
                                                             [
-                                                              (builtin
-                                                                equalsInteger
-                                                              )
+                                                              b-1
                                                               [
-                                                                b-1
+                                                                (builtin
+                                                                  unConstrData
+                                                                )
                                                                 [
-                                                                  (builtin
-                                                                    unConstrData
-                                                                  )
-                                                                  [
+                                                                  [ i-8 bx-75 ]
+                                                                  (lam
+                                                                    ca-78
                                                                     [
-                                                                      j-9 by-76
-                                                                    ]
-                                                                    (lam
-                                                                      cb-79
                                                                       [
-                                                                        [
-                                                                          ca-78
-                                                                          cb-79
-                                                                        ]
                                                                         bz-77
+                                                                        ca-78
                                                                       ]
-                                                                    )
-                                                                  ]
+                                                                      by-76
+                                                                    ]
+                                                                  )
                                                                 ]
                                                               ]
                                                             ]
-                                                            (con integer 0)
                                                           ]
-                                                          (con bool False)
-                                                          (con bool True)
-                                                        )
-                                                        d-3
+                                                          (con integer 0)
+                                                        ]
+                                                        (con bool False)
+                                                        (con bool True)
                                                       )
-                                                      (con bool False)
-                                                      (con bool True)
+                                                      d-3
                                                     )
-                                                    d-3
+                                                    (con bool False)
+                                                    (con bool True)
                                                   )
+                                                  d-3
                                                 )
                                               )
                                             )
                                           )
                                         )
                                       )
-                                      [ (builtin bData) bs-70 ]
-                                    ]
-                                    (builtin equalsByteString)
+                                    )
+                                    [ (builtin bData) br-69 ]
                                   ]
-                                )
+                                  (builtin equalsByteString)
+                                ]
                               )
-                            ]
-                          )
-                          [
+                            )
+                          ]
+                        )
+                        [
+                          h-7
+                          (lam
                             i-8
                             (lam
-                              j-9
+                              cb-79
                               (lam
                                 cc-80
-                                (lam
-                                  cd-81
-                                  (force
-                                    (case
-                                      (constr
-                                        0
-                                        cc-80
-                                        (delay (con data (Constr 1 [])))
-                                        (delay
-                                          (force
-                                            (case
-                                              (constr
-                                                0
-                                                [ cd-81 [ c-2 cc-80 ] ]
-                                                (delay
+                                (force
+                                  (case
+                                    (constr
+                                      0
+                                      cb-79
+                                      (delay (con data (Constr 1 [])))
+                                      (delay
+                                        (force
+                                          (case
+                                            (constr
+                                              0
+                                              [ cc-80 [ c-2 cb-79 ] ]
+                                              (delay
+                                                [
                                                   [
-                                                    [
-                                                      (builtin constrData)
-                                                      (con integer 0)
-                                                    ]
-                                                    [
-                                                      [ e-4 [ c-2 cc-80 ] ]
-                                                      (con (list data) [])
-                                                    ]
+                                                    (builtin constrData)
+                                                    (con integer 0)
                                                   ]
-                                                )
-                                                (delay
                                                   [
-                                                    [
+                                                    [ e-4 [ c-2 cb-79 ] ]
+                                                    (con (list data) [])
+                                                  ]
+                                                ]
+                                              )
+                                              (delay
+                                                [
+                                                  [
+                                                    (lam
+                                                      cd-81
                                                       (lam
                                                         ce-82
-                                                        (lam
-                                                          cf-83
-                                                          [
-                                                            [ j-9 ce-82 ] cf-83
-                                                          ]
-                                                        )
+                                                        [ [ i-8 cd-81 ] ce-82 ]
                                                       )
-                                                      [ g-6 cc-80 ]
-                                                    ]
-                                                    cd-81
+                                                    )
+                                                    [ g-6 cb-79 ]
                                                   ]
-                                                )
+                                                  cc-80
+                                                ]
                                               )
-                                              d-3
                                             )
+                                            d-3
                                           )
                                         )
                                       )
-                                      a-0
                                     )
+                                    a-0
                                   )
                                 )
                               )
                             )
-                          ]
-                        ]
-                      )
-                      (lam
-                        cg-84
-                        [
-                          (lam
-                            ch-85
-                            [ cg-84 (lam ci-86 [ [ ch-85 ch-85 ] ci-86 ]) ]
-                          )
-                          (lam
-                            ch-85
-                            [ cg-84 (lam ci-86 [ [ ch-85 ch-85 ] ci-86 ]) ]
                           )
                         ]
-                      )
-                    ]
-                  )
+                      ]
+                    )
+                    (lam
+                      cf-83
+                      [
+                        (lam
+                          cg-84 [ cf-83 (lam ch-85 [ [ cg-84 cg-84 ] ch-85 ]) ]
+                        )
+                        (lam
+                          cg-84 [ cf-83 (lam ch-85 [ [ cg-84 cg-84 ] ch-85 ]) ]
+                        )
+                      ]
+                    )
+                  ]
                 )
               )
             )
