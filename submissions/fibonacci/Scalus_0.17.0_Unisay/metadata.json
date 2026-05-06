@@ -1,0 +1,25 @@
+{
+  "compiler": {
+    "name": "Scalus",
+    "version": "0.17.0",
+    "commit_hash": "553d4d420166d87efad7220ce288e0961cfe17c0"
+  },
+  "compilation_config": {
+    "optimization_level": "Scalus",
+    "target": "uplc",
+    "flags": ["Scalus"]
+  },
+  "contributors": [
+    {
+      "name": "Unisay",
+      "organization": "Intersect MBO"
+    }
+  ],
+  "submission": {
+    "date": "2026-05-05T17:30:00Z",
+    "source_available": true,
+    "source_repository": "https://github.com/Unisay/scalus-cape-submissions",
+    "source_commit_hash": "0c8cfdb82fff4e10cd0fdf41e69738886edd7491",
+    "implementation_notes": "Naive recursive Fibonacci via explicit pfix (Y-combinator); surface: `pfix: r => λ x. if x ≤ 1 then x else r(x-1) + r(x-2)`"
+  }
+}
