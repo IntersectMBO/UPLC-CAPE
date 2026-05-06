@@ -9,7 +9,9 @@ module Main (main) where
 
 import Prelude
 
+import Control.Monad qualified
 import Data.List qualified as L
+import Data.Text qualified as T
 import Data.Text.IO qualified as Text.IO
 import Options.Applicative qualified as Opts
 import PlutusCore qualified as PLC
@@ -67,6 +69,8 @@ formatFile path = do
       -- of file" and the formatter is idempotent across editors that
       -- auto-add one.
       let rendered = show (PP.prettyPlcClassic prog)
-          normalised = L.dropWhileEnd (== '\n') rendered <> "\n"
-      writeFile path normalised
+          normalised = T.pack (L.dropWhileEnd (== '\n') rendered) <> "\n"
+      -- Only rewrite when content actually changed; otherwise treefmt --ci
+      -- treats a no-op rewrite (mtime change) as a formatting failure.
+      Control.Monad.when (src /= normalised) (Text.IO.writeFile path normalised)
       pure True
