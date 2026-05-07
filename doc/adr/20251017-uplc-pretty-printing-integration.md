@@ -1,6 +1,6 @@
 # UPLC Pretty-Printing Integration
 
-- Status: superseded by in-repo exe (see "Update 2026-04-29" below)
+- Status: Accepted
 - Date: 2025-10-17
 - Tags: tooling, formatting, uplc, developer-experience
 
