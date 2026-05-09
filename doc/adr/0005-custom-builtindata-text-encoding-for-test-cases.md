@@ -1,6 +1,6 @@
 # Custom BuiltinData Text Encoding for Test Cases
 
-- Status: superseded by [0006](0006-standard-builtindata-formats-with-json-type-dispatch.md)
+- Status: superseded by [0006-standard-builtindata-formats-with-json-type-dispatch](0006-standard-builtindata-formats-with-json-type-dispatch.md)
 - Date: 2025-08-20
 - Tags: testing, builtin-data, parsing, unified-test-system
 
