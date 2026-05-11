@@ -252,9 +252,10 @@ ownInputScriptHash inputs ownTxOutRef =
       let TxOutRef (TxId t') i' = ownTxOutRef
        in equalsByteString t t' && equalsInteger i i'
 
-{- | Count how many of @inputs@ are spending from a script address whose hash
-equals @scriptHash@. Operates on the already-extracted inputs list (no
-'TxInfo' accessor calls).
+{- | Count how many of @inputs@ are spending from a script address with the
+same script hash as the input identified by @ownTxOutRef@ (the hash is
+resolved via 'ownInputScriptHash'). Operates on the already-extracted
+inputs list — no 'TxInfo' accessor calls.
 -}
 {-# INLINEABLE countOwnScriptInputs #-}
 countOwnScriptInputs :: List.List TxInInfo -> TxOutRef -> Integer
