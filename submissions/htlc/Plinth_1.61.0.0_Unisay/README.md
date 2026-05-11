@@ -33,4 +33,5 @@ HTLC parameters (payer, recipient, stored hash, timeout) are carried on-chain as
 
 - Source code: `lib/HTLC.hs`, `lib/HTLC/Fixture.hs`, `lib/Preview/HTLC.hs`
 - Recompiled from the same source as the 1.45 submission with `BuiltinCasing` enabled
-- Uses `PlutusLedgerApi.V3.Data.Contexts` for `txSignedBy`, SHA-256 preimage check via `sha2_256` builtin
+- Datum and redeemer are encoded with [`PlutusTx.AsData.asData`](https://plutus.cardano.intersectmbo.org/docs/working-with-scripts/optimizing-scripts-with-asData) so field extraction is lazy; the validator pattern-matches on `ScriptContext` / `TxInfo` / `TxOut` / `Address` exactly once each (no field accessors on `asData` types) to avoid re-decoding the underlying `Data`
+- SHA-256 preimage check via `sha2_256` builtin
