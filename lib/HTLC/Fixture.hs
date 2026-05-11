@@ -31,7 +31,17 @@ module HTLC.Fixture (
   scriptHash,
 ) where
 
-import HTLC (HTLCDatum (..), HTLCRedeemer (..))
+import HTLC (
+  HTLCDatum,
+  HTLCRedeemer,
+  payer,
+  recipient,
+  secretHash,
+  timeout,
+  pattern Claim,
+  pattern HTLCDatum,
+  pattern Refund,
+ )
 import PlutusLedgerApi.Data.V3
 import PlutusTx.Builtins.HasOpaque (stringToBuiltinByteStringHex)
 import Prelude
