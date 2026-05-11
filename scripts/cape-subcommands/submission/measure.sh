@@ -95,32 +95,32 @@ measure_uplc_file() {
   local scenario
   scenario="$(infer_scenario_from_path "$uplc_file")"
 
-  local tests_flag=()
-  # Prefer a submission-local cape-tests.json when available
+  # Tests are part of the scenario contract. A submission must not ship its
+  # own cape-tests.json: measurements must run against the trusted scenario
+  # tests, not rules supplied by the evaluatee.
   local submission_dir
   submission_dir="$(dirname "$uplc_file")"
-  local submission_tests="$submission_dir/cape-tests.json"
-  if [[ -f "$submission_tests" ]]; then
-    cape_debug "Using submission tests: $(cape_relpath "$submission_tests")"
-    tests_flag+=("-t" "$submission_tests")
-  else
-    if [[ -n "$scenario" ]]; then
-      local tests_file
-      tests_file="$(resolve_tests_for_scenario "$scenario")"
-      if [[ -n "$tests_file" ]]; then
-        cape_debug "Using scenario tests: $(cape_relpath "$tests_file")"
-        tests_flag+=("-t" "$tests_file")
-      else
-        cape_error "No cape-tests.json found for scenario '$scenario'. Test specification is required."
-        cape_error "Create scenarios/$scenario/cape-tests.json with test cases."
-        exit 1
-      fi
-    else
-      cape_error "Unable to infer scenario for $rel_uplc. Test specification is required."
-      cape_error "Ensure the UPLC file is in a proper submission directory structure."
-      exit 1
-    fi
+  if [[ -f "$submission_dir/cape-tests.json" ]]; then
+    cape_error "Submission-local cape-tests.json is not allowed in $(cape_relpath "$submission_dir")."
+    cape_error "Tests belong to the scenario; remove $(cape_relpath "$submission_dir/cape-tests.json") and rely on scenarios/$scenario/cape-tests.json."
+    exit 1
   fi
+
+  if [[ -z "$scenario" ]]; then
+    cape_error "Unable to infer scenario for $rel_uplc. Test specification is required."
+    cape_error "Ensure the UPLC file is in a proper submission directory structure."
+    exit 1
+  fi
+
+  local tests_file
+  tests_file="$(resolve_tests_for_scenario "$scenario")"
+  if [[ -z "$tests_file" ]]; then
+    cape_error "No cape-tests.json found for scenario '$scenario'. Test specification is required."
+    cape_error "Create scenarios/$scenario/cape-tests.json with test cases."
+    exit 1
+  fi
+  cape_debug "Using scenario tests: $(cape_relpath "$tests_file")"
+  local tests_flag=("-t" "$tests_file")
 
   local tmp_raw stdout_tmp
   tmp_raw="$(cape_mktemp)"
@@ -210,7 +210,7 @@ measure_all_submissions() {
     local metadata_file="$submission_dir/metadata.json"
     if [[ -f "$metadata_file" ]]; then
       local min_ver
-      min_ver=$(jq -r '.compilation_config.min_plutus_version // ""' "$metadata_file" 2>/dev/null || true)
+      min_ver=$(jq -r '.compilation_config.min_plutus_version // ""' "$metadata_file" 2> /dev/null || true)
       if cape_is_preview_submission "$min_ver"; then
         cape_info "Skipping preview submission: submissions/${submission_dir#$SUBMISSIONS_ROOT/} (requires plutus-core >= $min_ver)"
         continue
@@ -248,7 +248,7 @@ measure_preview_submissions() {
     local metadata_file="$submission_dir/metadata.json"
     if [[ -f "$metadata_file" ]]; then
       local min_ver
-      min_ver=$(jq -r '.compilation_config.min_plutus_version // ""' "$metadata_file" 2>/dev/null || true)
+      min_ver=$(jq -r '.compilation_config.min_plutus_version // ""' "$metadata_file" 2> /dev/null || true)
       if ! cape_is_preview_submission "$min_ver"; then
         continue
       fi
@@ -285,7 +285,7 @@ measure_preview_submissions() {
     local tmp_raw stdout_tmp
     tmp_raw="$(cape_mktemp)"
     stdout_tmp="$(cape_mktemp)"
-    if (cd "$PROJECT_ROOT" && $preview_measure_cmd -i "$uplc_file" -t "$tests_file" -o "$tmp_raw" 2>/dev/null) > "$stdout_tmp" 2>&1; then
+    if (cd "$PROJECT_ROOT" && $preview_measure_cmd -i "$uplc_file" -t "$tests_file" -o "$tmp_raw" 2> /dev/null) > "$stdout_tmp" 2>&1; then
       # Patch scenario field and write final metrics
       jq --arg s "$scenario" '.scenario = $s' "$tmp_raw" > "$submission_dir/metrics.json"
       cape_success "  ✓ Measured: $rel_path"
@@ -377,7 +377,7 @@ main() {
     local meta="$dir_to_measure/metadata.json"
     if [[ -f "$meta" ]]; then
       local min_ver
-      min_ver=$(jq -r '.compilation_config.min_plutus_version // ""' "$meta" 2>/dev/null || true)
+      min_ver=$(jq -r '.compilation_config.min_plutus_version // ""' "$meta" 2> /dev/null || true)
       if cape_is_preview_submission "$min_ver"; then
         cape_error "Submission requires plutus-core >= $min_ver but the evaluator only supports $CAPE_CURRENT_PLUTUS_VERSION."
         cape_error "Use 'cape submission measure --preview' to evaluate with a compatible version."
