@@ -81,15 +81,15 @@ verify_submission_dir() {
   local scenario
   scenario="$(infer_scenario_from_path "$submission_dir")"
 
-  if [[ -f "$submission_dir/cape-tests.json" ]]; then
-    cape_error "Submission-local cape-tests.json is not allowed in $rel_dir."
-    cape_error "Tests belong to the scenario; remove $(cape_relpath "$submission_dir/cape-tests.json") and rely on scenarios/$scenario/cape-tests.json."
-    return 1
-  fi
-
   if [[ -z "$scenario" ]]; then
     cape_error "Unable to infer scenario for $rel_dir. Test specification is required."
     cape_error "Ensure submission follows the correct directory structure."
+    return 1
+  fi
+
+  if [[ -f "$submission_dir/cape-tests.json" ]]; then
+    cape_error "Submission-local cape-tests.json is not allowed in $rel_dir."
+    cape_error "Tests belong to the scenario; remove $(cape_relpath "$submission_dir/cape-tests.json") and rely on scenarios/$scenario/cape-tests.json."
     return 1
   fi
 
