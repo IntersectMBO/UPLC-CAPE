@@ -95,9 +95,6 @@ measure_uplc_file() {
   local scenario
   scenario="$(infer_scenario_from_path "$uplc_file")"
 
-  # Tests are part of the scenario contract. A submission must not ship its
-  # own cape-tests.json: measurements must run against the trusted scenario
-  # tests, not rules supplied by the evaluatee.
   local submission_dir
   submission_dir="$(dirname "$uplc_file")"
   if [[ -f "$submission_dir/cape-tests.json" ]]; then

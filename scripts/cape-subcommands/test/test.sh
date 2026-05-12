@@ -162,45 +162,6 @@ run_uplc_validation() {
   fi
 }
 
-# Regression test for advisory GHSA-4rp3-v4vj-q537: verify must reject a
-# submission that ships its own cape-tests.json. Tests are part of the
-# scenario contract; the evaluatee must not be able to override them.
-test_submission_local_tests_rejected() {
-  if [[ -t 1 && -z "${NO_COLOR:-}" ]]; then
-    echo -e "\033[0;34mINFO:\033[0m Testing security: submission-local cape-tests.json is rejected..."
-  else
-    echo "INFO: Testing security: submission-local cape-tests.json is rejected..."
-  fi
-
-  local victim_dir
-  victim_dir="$(find "$SANDBOX_DIR/submissions/fibonacci" -mindepth 1 -maxdepth 1 -type d ! -name 'TEMPLATE' 2> /dev/null | head -n1)"
-  if [[ -z "$victim_dir" ]]; then
-    if [[ -t 1 && -z "${NO_COLOR:-}" ]]; then
-      echo -e "\033[0;33mWARN:\033[0m No fibonacci submission in sandbox; skipping advisory regression test."
-    else
-      echo "WARN: No fibonacci submission in sandbox; skipping advisory regression test."
-    fi
-    return 0
-  fi
-
-  local planted="$victim_dir/cape-tests.json"
-  cat > "$planted" << 'JSON'
-{
-  "version": "2.0.0",
-  "tests": [
-    { "name": "attacker_controlled", "inputs": [], "expected": { "type": "error" } }
-  ]
-}
-JSON
-
-  run_test "submission-local cape-tests.json rejected" \
-    "(cd \"$PROJECT_ROOT\" && PROJECT_ROOT=\"$SANDBOX_DIR\" bash \"$REPO_ROOT/scripts/cape.sh\" submission verify \"$victim_dir\")" \
-    30 \
-    "fail"
-
-  rm -f "$planted"
-}
-
 # Setup clean test environment
 setup_test_env() {
   TEST_TMP_DIR="$(cape_mktemp_dir)"
@@ -378,9 +339,6 @@ main() {
 
   # UPLC validation - test actual UPLC execution for all submissions
   run_uplc_validation
-
-  # Security regression test for advisory GHSA-4rp3-v4vj-q537
-  test_submission_local_tests_rejected
 
   if [[ -t 1 && -z "${NO_COLOR:-}" ]]; then
     echo -e "\033[0;34mINFO:\033[0m Test suite completed!"

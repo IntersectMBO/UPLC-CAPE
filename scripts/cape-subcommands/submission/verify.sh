@@ -81,9 +81,6 @@ verify_submission_dir() {
   local scenario
   scenario="$(infer_scenario_from_path "$submission_dir")"
 
-  # Tests are part of the scenario contract. A submission must not ship its
-  # own cape-tests.json: a green CI signal must reflect the trusted scenario
-  # tests, not rules supplied by the evaluatee.
   if [[ -f "$submission_dir/cape-tests.json" ]]; then
     cape_error "Submission-local cape-tests.json is not allowed in $rel_dir."
     cape_error "Tests belong to the scenario; remove $(cape_relpath "$submission_dir/cape-tests.json") and rely on scenarios/$scenario/cape-tests.json."
