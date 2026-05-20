@@ -100,7 +100,7 @@
     }
   ],
   "execution_environment": {
-    "evaluator": "PlutusTx.Eval-1.52.0.0"
+    "evaluator": "PlutusTx.Eval-1.64.0.0"
   },
   "measurements": {
     "block_cpu_budget_pct": 0.0059710475,
@@ -132,6 +132,6 @@
     "tx_memory_budget_pct": 0.07007142857142858
   },
   "scenario": "ecd",
-  "timestamp": "2026-05-20T16:59:56Z",
+  "timestamp": "2026-05-20T17:58:06Z",
   "version": "1.0.0"
 }

@@ -205,7 +205,7 @@
     }
   ],
   "execution_environment": {
-    "evaluator": "PlutusTx.Eval-1.52.0.0"
+    "evaluator": "PlutusTx.Eval-1.64.0.0"
   },
   "measurements": {
     "block_cpu_budget_pct": 0.3432890575,
@@ -237,6 +237,6 @@
     "tx_memory_budget_pct": 3.3299785714285712
   },
   "scenario": "linear_vesting",
-  "timestamp": "2026-05-20T16:59:58Z",
+  "timestamp": "2026-05-20T17:58:07Z",
   "version": "1.0.0"
 }

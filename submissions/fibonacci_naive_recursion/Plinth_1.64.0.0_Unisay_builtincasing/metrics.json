@@ -79,7 +79,7 @@
     }
   ],
   "execution_environment": {
-    "evaluator": "PlutusTx.Eval-1.52.0.0"
+    "evaluator": "PlutusTx.Eval-1.64.0.0"
   },
   "measurements": {
     "block_cpu_budget_pct": 293.5563468825,
@@ -111,6 +111,6 @@
     "tx_memory_budget_pct": 3128.4574071428574
   },
   "scenario": "fibonacci_naive_recursion",
-  "timestamp": "2026-05-20T16:59:57Z",
+  "timestamp": "2026-05-20T17:58:07Z",
   "version": "1.0.0"
 }

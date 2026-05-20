@@ -177,7 +177,7 @@
     }
   ],
   "execution_environment": {
-    "evaluator": "PlutusTx.Eval-1.52.0.0"
+    "evaluator": "PlutusTx.Eval-1.64.0.0"
   },
   "measurements": {
     "block_cpu_budget_pct": 0.0965801025,
@@ -209,6 +209,6 @@
     "tx_memory_budget_pct": 0.8994142857142857
   },
   "scenario": "htlc",
-  "timestamp": "2026-05-20T16:59:58Z",
+  "timestamp": "2026-05-20T17:58:07Z",
   "version": "1.0.0"
 }
