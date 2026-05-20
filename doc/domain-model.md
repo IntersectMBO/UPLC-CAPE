@@ -212,7 +212,12 @@ This design encourages experimentation and allows the community to discover opti
 
 1. A new **Benchmark** is defined using the template: `cape benchmark new <benchmark-name>`
 2. The benchmark specification is completed with requirements, constraints, and test cases
-3. The Plutus Core team creates a reference **Submission** using Plinth
+3. A reference **Submission** is created using one of the available
+   compilers; for Plinth, the source lives in
+   [`Unisay/plinth-cape-submissions`](https://github.com/Unisay/plinth-cape-submissions)
+   and the standard submission directory (`<scenario>.uplc`,
+   `metadata.json`, `metrics.json`, `source/README.md`) is committed
+   here with `source/README.md` pinning the upstream source commit
 4. The benchmark is published to invite community participation
 
 ### 2. Implementation Phase

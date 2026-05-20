@@ -51,17 +51,33 @@ direnv allow # Or use direnv (recommended)
 
 **Package Versions (CHaP):**
 
-- plutus-core >= 1.49.0.0
-- plutus-tx >= 1.49.0.0
-- plutus-ledger-api >= 1.49.0.0
-- plutus-tx-plugin >= 1.49.0.0
+- plutus-core >= 1.45.0.0
+- plutus-tx >= 1.45.0.0
+- plutus-ledger-api >= 1.45.0.0
 - relude ^>= 1.2.2 (replaces Prelude for consistency)
+
+> Plinth (PlutusTx) source for benchmark submissions lives in the
+> sibling repo <https://github.com/Unisay/plinth-cape-submissions>;
+> this repository is plugin-free. See the ADR
+> [Move Plinth source tree to a separate repository][adr-plinth-move].
+
+[adr-plinth-move]: ../doc/adr/20260520-move-plinth-source-to-separate-repository.md
 - aeson, aeson-pretty (for JSON generation)
 - flat, serialise (for UPLC serialization)
 
 **GHC:** 9.6.6 (provided in Nix shell) **Cabal:** 3.4+ (for modern project structure)
 
 ## Plutus V3 Development (Recommended)
+
+> **Scope.** The sections below ("Plutus V3 Development", "PlutusTx Coding
+> Best Practices", "Performance Optimization", "Debugging and Testing")
+> describe how to author Plinth (PlutusTx) source. They apply when working
+> on Plinth submissions inside the sibling repo
+> [`Unisay/plinth-cape-submissions`][plinth-source-repo], **not** to code
+> in this repository — UPLC-CAPE itself is plugin-free and only consumes
+> the produced `.uplc` plus its metadata.
+>
+> [plinth-source-repo]: https://github.com/Unisay/plinth-cape-submissions
 
 **Script Interface:** All V3 scripts use unified interface:
 
@@ -236,9 +252,9 @@ UPLC-CAPE/
 ├── scripts/              # Management tools
 │   ├── cape.sh          # Main CLI
 │   └── cape-subcommands/ # Command implementations
-├── lib/                  # Haskell library modules
-├── measure-app/          # UPLC performance measurement tool source
-└── plinth-submissions-app/ # Plinth submission generator source
+├── lib/Cape/             # Evaluator and measurement library
+├── measure-app/          # `measure` / `measure-preview` source
+└── pretty-uplc-app/      # UPLC text pretty-printer source
 ```
 
 **Core Entities:**

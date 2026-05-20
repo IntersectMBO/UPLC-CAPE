@@ -15,7 +15,9 @@ license:       Apache-2.0
 
 flag preview
   description:
-    Enable preview modules (requires plutus-tx-plugin with BuiltinCasing support)
+    Build the @measure-preview@ executable for evaluating UPLC programs
+    (e.g. submissions compiled with BuiltinCasing) against a newer
+    @plutus-core@ baseline pinned in @cabal.project.preview@.
 
   default:     False
   manual:      True
