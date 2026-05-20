@@ -1,9 +1,9 @@
 {
   "benchmark": "fibonacci",
-  "generated_at": "2026-05-20T17:55:27Z",
+  "generated_at": "2026-05-20T18:10:51Z",
   "submissions": [
     {
-      "timestamp": "2025-10-23T14:41:54Z",
+      "timestamp": "2026-05-20T17:35:15Z",
       "compiler": "Aiken",
       "version": "v1.1.19",
       "user": "Matthias Benkort",
@@ -26,7 +26,7 @@
       }
     },
     {
-      "timestamp": "2025-10-23T14:41:54Z",
+      "timestamp": "2026-05-20T17:35:15Z",
       "compiler": "Aiken",
       "version": "v1.1.19",
       "user": "Matthias Benkort",
@@ -49,7 +49,7 @@
       }
     },
     {
-      "timestamp": "2025-10-23T14:41:55Z",
+      "timestamp": "2026-05-20T17:35:15Z",
       "compiler": "OpShin",
       "version": "0.26.1",
       "user": "Niels Mündler",
@@ -72,7 +72,7 @@
       }
     },
     {
-      "timestamp": "2025-11-07T14:35:08Z",
+      "timestamp": "2026-05-20T17:35:16Z",
       "compiler": "Plinth",
       "version": "1.45.0.0",
       "user": "Unisay",
@@ -95,7 +95,7 @@
       }
     },
     {
-      "timestamp": "2026-05-20T15:32:14Z",
+      "timestamp": "2026-05-20T17:35:16Z",
       "compiler": "Plinth",
       "version": "1.64.0.0",
       "user": "Unisay",
@@ -118,7 +118,7 @@
       }
     },
     {
-      "timestamp": "2025-10-23T14:41:55Z",
+      "timestamp": "2026-05-20T17:35:16Z",
       "compiler": "Plutarch",
       "version": "1.11.0",
       "user": "SeungheonOh",
@@ -141,7 +141,7 @@
       }
     },
     {
-      "timestamp": "2025-10-23T14:41:55Z",
+      "timestamp": "2026-05-20T17:35:16Z",
       "compiler": "Plutarch",
       "version": "1.11.0",
       "user": "SeungheonOh",
@@ -164,7 +164,7 @@
       }
     },
     {
-      "timestamp": "2025-10-23T14:41:56Z",
+      "timestamp": "2026-05-20T17:35:17Z",
       "compiler": "Plutarch",
       "version": "1.11.0",
       "user": "SeungheonOh",
@@ -187,7 +187,7 @@
       }
     },
     {
-      "timestamp": "2025-10-23T14:41:57Z",
+      "timestamp": "2026-05-20T17:35:17Z",
       "compiler": "Scalus",
       "version": "0.12.1",
       "user": "Unisay",
@@ -210,7 +210,7 @@
       }
     },
     {
-      "timestamp": "2025-10-23T14:41:56Z",
+      "timestamp": "2026-05-20T17:35:17Z",
       "compiler": "Scalus",
       "version": "0.12.1",
       "user": "Alexander Nemish",
@@ -233,7 +233,7 @@
       }
     },
     {
-      "timestamp": "2026-04-21T12:32:34Z",
+      "timestamp": "2026-05-20T17:35:18Z",
       "compiler": "Scalus",
       "version": "0.16.0",
       "user": "Unisay",
@@ -256,7 +256,7 @@
       }
     },
     {
-      "timestamp": "2026-04-21T12:32:35Z",
+      "timestamp": "2026-05-20T17:35:18Z",
       "compiler": "Scalus",
       "version": "0.16.0",
       "user": "Unisay",
@@ -279,7 +279,7 @@
       }
     },
     {
-      "timestamp": "2026-05-05T17:31:11Z",
+      "timestamp": "2026-05-20T17:35:18Z",
       "compiler": "Scalus",
       "version": "0.17.0",
       "user": "Unisay",

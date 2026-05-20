@@ -1,9 +1,9 @@
 {
   "benchmark": "htlc",
-  "generated_at": "2026-05-20T17:55:28Z",
+  "generated_at": "2026-05-20T18:10:52Z",
   "submissions": [
     {
-      "timestamp": "2026-05-11T15:17:00Z",
+      "timestamp": "2026-05-20T17:35:22Z",
       "compiler": "Plinth",
       "version": "1.45.0.0",
       "user": "Unisay",
@@ -26,7 +26,7 @@
       }
     },
     {
-      "timestamp": "2026-05-20T15:32:18Z",
+      "timestamp": "2026-05-20T17:35:22Z",
       "compiler": "Plinth",
       "version": "1.64.0.0",
       "user": "Unisay",
@@ -49,7 +49,7 @@
       }
     },
     {
-      "timestamp": "2026-05-05T10:17:55Z",
+      "timestamp": "2026-05-20T17:35:22Z",
       "compiler": "Scalus",
       "version": "0.16.0",
       "user": "Unisay",
@@ -72,7 +72,7 @@
       }
     },
     {
-      "timestamp": "2026-05-05T17:33:01Z",
+      "timestamp": "2026-05-20T17:35:22Z",
       "compiler": "Scalus",
       "version": "0.17.0",
       "user": "Unisay",
