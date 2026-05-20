@@ -94,7 +94,6 @@
         # Extract components from the project
         capeLib = project.hsPkgs.cape.components.library;
         measureExe = project.hsPkgs.cape.components.exes.measure;
-        plinthSubmissionsExe = project.hsPkgs.cape.components.exes.plinth-submissions;
         prettyUplcExe = project.hsPkgs.cape.components.exes.pretty-uplc;
         capeTests = project.hsPkgs.cape.components.tests.cape-tests;
 
@@ -220,15 +219,14 @@
 
             # UPLC textual pretty-printer used by treefmt as the *.uplc formatter.
             # Light to build (only plutus-core, no plutus-tx-plugin), so unlike
-            # measure/plinth-submissions we do ship it in the dev shell.
+            # measure we do ship it in the dev shell.
             prettyUplcExe
           ];
           # Note: uplcMusl/plcMusl/pirMusl/plutusMusl not included in dev shell
           # as they require building Agda. Use nix build .#packages.* for those.
 
-          # Note: heavyweight executables (measure, plinth-submissions) are NOT
-          # added to buildInputs to avoid triggering their build (which pulls in
-          # plutus-tx-plugin). Use 'cabal build' and 'cabal run' for those.
+          # Note: measure / measure-preview are NOT added to buildInputs to
+          # avoid triggering their build. Use 'cabal build' / 'cabal run'.
 
           shellHook = ''
             # Install log4brains via npx when needed
@@ -268,7 +266,6 @@
         # Expose packages for building
         packages = {
           measure = measureExe;
-          plinth-submissions = plinthSubmissionsExe;
           pretty-uplc = prettyUplcExe;
           default = measureExe;
         };
