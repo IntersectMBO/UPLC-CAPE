@@ -8,7 +8,10 @@
 
 **Path**: `lib/FibonacciIterative.hs`
 
-This submission compiles `lib/FibonacciIterative.hs` from the Plinth source repository with the Plinth (plutus-tx-plugin) 1.45.0.0 line.
+This submission compiles `lib/FibonacciIterative.hs` from the Plinth source
+repository with the Plinth (plutus-tx-plugin) 1.45.0.0 line.
+
+Production line; mainnet plutus-core baseline.
 
 ## Reproducing the compilation
 
@@ -16,8 +19,23 @@ This submission compiles `lib/FibonacciIterative.hs` from the Plinth source repo
 git clone https://github.com/Unisay/plinth-cape-submissions
 cd plinth-cape-submissions
 git checkout b09485c75e3ab6b596b9613320abc2b325087612
-nix develop
-CAPE_REPO=../UPLC-CAPE cabal run plinth-submissions
 ```
 
-The produced UPLC writes to `$CAPE_REPO/submissions/fibonacci/Plinth_1.45.0.0_Unisay/fibonacci.uplc` and matches the `fibonacci.uplc` in this submission.
+`CAPE_REPO` must point at the sibling UPLC-CAPE checkout; the
+build aborts if the variable is unset. The recommended place is
+`.envrc.local` (gitignored), e.g.:
+
+```sh
+export CAPE_REPO="$HOME/src/UPLC-CAPE"
+```
+
+Then enter the dev shell and run the generator:
+
+```bash
+nix develop
+cabal run plinth-submissions
+```
+
+The produced UPLC writes to
+`$CAPE_REPO/submissions/fibonacci/Plinth_1.45.0.0_Unisay/fibonacci.uplc`
+and matches the `fibonacci.uplc` in this submission.
