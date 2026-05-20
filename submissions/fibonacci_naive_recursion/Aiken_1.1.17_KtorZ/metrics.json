@@ -79,7 +79,7 @@
     }
   ],
   "execution_environment": {
-    "evaluator": "PlutusTx.Eval-1.52.0.0"
+    "evaluator": "PlutusTx.Eval-1.45.0.0"
   },
   "measurements": {
     "block_cpu_budget_pct": 388.272398045,
@@ -111,7 +111,7 @@
     "tx_memory_budget_pct": 3997.2837285714286
   },
   "scenario": "fibonacci_naive_recursion",
-  "timestamp": "2025-10-23T14:41:57Z",
+  "timestamp": "2026-05-20T17:35:19Z",
   "version": "1.0.0",
   "notes": "Generated using UPLC-CAPE measure tool"
 }

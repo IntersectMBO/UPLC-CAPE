@@ -72,7 +72,7 @@
     }
   ],
   "execution_environment": {
-    "evaluator": "<evaluator-version>"
+    "evaluator": "PlutusTx.Eval-1.45.0.0"
   },
   "measurements": {
     "block_cpu_budget_pct": 0.026021375,
@@ -104,7 +104,7 @@
     "tx_memory_budget_pct": 0.2933857142857143
   },
   "scenario": "factorial_naive_recursion",
-  "timestamp": "2026-05-05T17:30:20Z",
+  "timestamp": "2026-05-20T17:35:15Z",
   "version": "1.0.0",
   "notes": "<optional notes>"
 }
