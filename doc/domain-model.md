@@ -215,7 +215,9 @@ This design encourages experimentation and allows the community to discover opti
 3. A reference **Submission** is created using one of the available
    compilers; for Plinth, the source lives in
    [`Unisay/plinth-cape-submissions`](https://github.com/Unisay/plinth-cape-submissions)
-   and only the produced `.uplc` plus `metrics.json` are committed here
+   and the standard submission directory (`<scenario>.uplc`,
+   `metadata.json`, `metrics.json`, `source/README.md`) is committed
+   here with `source/README.md` pinning the upstream source commit
 4. The benchmark is published to invite community participation
 
 ### 2. Implementation Phase

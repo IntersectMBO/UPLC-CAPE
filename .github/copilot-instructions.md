@@ -69,6 +69,16 @@ direnv allow # Or use direnv (recommended)
 
 ## Plutus V3 Development (Recommended)
 
+> **Scope.** The sections below ("Plutus V3 Development", "PlutusTx Coding
+> Best Practices", "Performance Optimization", "Debugging and Testing")
+> describe how to author Plinth (PlutusTx) source. They apply when working
+> on Plinth submissions inside the sibling repo
+> [`Unisay/plinth-cape-submissions`][plinth-source-repo], **not** to code
+> in this repository — UPLC-CAPE itself is plugin-free and only consumes
+> the produced `.uplc` plus its metadata.
+>
+> [plinth-source-repo]: https://github.com/Unisay/plinth-cape-submissions
+
 **Script Interface:** All V3 scripts use unified interface:
 
 ```haskell

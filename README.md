@@ -417,7 +417,9 @@ UPLC-CAPE/
 Plinth (PlutusTx) source for every benchmark scenario lives in a
 separate repository, [Unisay/plinth-cape-submissions][plinth-repo]; see
 [ADR 20260520][adr-plinth-move]. This repository is plugin-free and
-only consumes the produced `.uplc` artefacts.
+consumes the produced `.uplc` artefacts together with the accompanying
+`metadata.json`, `metrics.json`, and `source/README.md` per
+submission.
 
 [plinth-repo]: https://github.com/Unisay/plinth-cape-submissions
 [adr-plinth-move]: ./doc/adr/20260520-move-plinth-source-to-separate-repository.md
