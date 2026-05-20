@@ -1,38 +1,23 @@
-# Plinth Fibonacci Naive Recursion Implementation
+# fibonacci_naive_recursion Plinth 1.45.0.0 source
 
-**Source Code**: [Fibonacci.hs](https://github.com/IntersectMBO/UPLC-CAPE/blob/3dcbdbcd9752dba4e01207d52dedfdab6fe8dfc2/submissions/fibonacci_naive_recursion/Plinth_1.45.0.0_Unisay/source/Fibonacci.hs)
+**Repository**: <https://github.com/Unisay/plinth-cape-submissions>
 
-**Repository**: <https://github.com/IntersectMBO/UPLC-CAPE>
+**Branch**: `plinth-1.45`
 
-**Commit**: `3dcbdbcd9752dba4e01207d52dedfdab6fe8dfc2`
+**Commit**: `b09485c75e3ab6b596b9613320abc2b325087612`
 
-**Path**: `submissions/fibonacci_naive_recursion/Plinth_1.45.0.0_Unisay/source/Fibonacci.hs`
+**Path**: `lib/Fibonacci.hs`
 
-This submission uses Plinth compiler version 1.45.0.0 with naive recursive implementation.
+This submission compiles `lib/Fibonacci.hs` from the Plinth source repository with the Plinth (plutus-tx-plugin) 1.45.0.0 line.
 
-## Reproducing the Compilation
+## Reproducing the compilation
 
-1. Clone the repository:
+```bash
+git clone https://github.com/Unisay/plinth-cape-submissions
+cd plinth-cape-submissions
+git checkout b09485c75e3ab6b596b9613320abc2b325087612
+nix develop
+CAPE_REPO=../UPLC-CAPE cabal run plinth-submissions
+```
 
-   ```bash
-   git clone https://github.com/IntersectMBO/UPLC-CAPE
-   cd UPLC-CAPE
-   ```
-
-2. Check out the specific commit:
-
-   ```bash
-   git checkout 3dcbdbcd9752dba4e01207d52dedfdab6fe8dfc2
-   ```
-
-3. Enter the Nix development environment:
-
-   ```bash
-   nix develop
-   ```
-
-4. Compile the source code using the build instructions in the submission directory
-
-5. The compiled UPLC output should match `fibonacci.uplc` in this submission
-
-For detailed build instructions and environment setup, see the project README.
+The produced UPLC writes to `$CAPE_REPO/submissions/fibonacci_naive_recursion/Plinth_1.45.0.0_Unisay/fibonacci.uplc` and matches the `fibonacci.uplc` in this submission.

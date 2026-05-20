@@ -1,16 +1,23 @@
-# HTLC Plinth Source
+# htlc Plinth 1.45.0.0 source
 
-- **Repository**: https://github.com/IntersectMBO/UPLC-CAPE
-- **Paths**:
-  - `lib/HTLC.hs` — spending validator
-  - `lib/HTLC/Fixture.hs` — datum/redeemer types and test constants
-  - `plinth-submissions-app/Main.hs` — compile splice that produces this submission's UPLC
+**Repository**: <https://github.com/Unisay/plinth-cape-submissions>
 
-## Reproducibility
+**Branch**: `plinth-1.45`
 
-```sh
-cabal run plinth-submissions
-# writes submissions/htlc/Plinth_1.45.0.0_Unisay/htlc.uplc
+**Commit**: `b09485c75e3ab6b596b9613320abc2b325087612`
+
+**Path**: `lib/HTLC.hs`
+
+This submission compiles `lib/HTLC.hs` from the Plinth source repository with the Plinth (plutus-tx-plugin) 1.45.0.0 line.
+
+## Reproducing the compilation
+
+```bash
+git clone https://github.com/Unisay/plinth-cape-submissions
+cd plinth-cape-submissions
+git checkout b09485c75e3ab6b596b9613320abc2b325087612
+nix develop
+CAPE_REPO=../UPLC-CAPE cabal run plinth-submissions
 ```
 
-Requires the default `cabal.project` (plutus-tx-plugin 1.45 stack).
+The produced UPLC writes to `$CAPE_REPO/submissions/htlc/Plinth_1.45.0.0_Unisay/htlc.uplc` and matches the `htlc.uplc` in this submission.
