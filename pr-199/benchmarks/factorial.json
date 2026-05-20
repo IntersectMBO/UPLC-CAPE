@@ -1,9 +1,9 @@
 {
   "benchmark": "factorial",
-  "generated_at": "2026-05-20T17:42:41Z",
+  "generated_at": "2026-05-20T18:14:36Z",
   "submissions": [
     {
-      "timestamp": "2025-10-23T14:41:52Z",
+      "timestamp": "2026-05-20T17:35:12Z",
       "compiler": "Plutarch",
       "version": "1.11.0",
       "user": "SeungheonOh",
@@ -26,7 +26,7 @@
       }
     },
     {
-      "timestamp": "2025-10-23T14:41:52Z",
+      "timestamp": "2026-05-20T17:35:12Z",
       "compiler": "Plutarch",
       "version": "1.11.0",
       "user": "SeungheonOh",
@@ -49,7 +49,7 @@
       }
     },
     {
-      "timestamp": "2025-10-23T14:41:52Z",
+      "timestamp": "2026-05-20T17:35:13Z",
       "compiler": "Scalus",
       "version": "0.12.1",
       "user": "Unisay",
@@ -72,7 +72,7 @@
       }
     },
     {
-      "timestamp": "2026-04-21T12:32:26Z",
+      "timestamp": "2026-05-20T17:35:13Z",
       "compiler": "Scalus",
       "version": "0.16.0",
       "user": "Unisay",
@@ -95,7 +95,7 @@
       }
     },
     {
-      "timestamp": "2026-05-05T17:29:18Z",
+      "timestamp": "2026-05-20T17:35:13Z",
       "compiler": "Scalus",
       "version": "0.17.0",
       "user": "Unisay",
