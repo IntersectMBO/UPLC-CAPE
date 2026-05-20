@@ -150,12 +150,10 @@ executable measure-preview
 
   hs-source-dirs: measure-app
 
--- Preview modules: re-compiled with BuiltinCasing (requires plutus-tx-plugin >= 1.46)
--- Build with: cabal --project-file=cabal.project.preview -f preview build plinth-submissions
 -- UPLC textual pretty-printer used by treefmt as the *.uplc formatter.
 -- Imports common-language-base (warnings, mixins, extensions) but not
--- common-deps, so the build path stays free of plutus-tx-plugin / Plinth
--- and the dev shell can ship the binary cheaply.
+-- common-deps, so the build path stays light and the dev shell can ship
+-- the binary cheaply.
 executable pretty-uplc
   import:         common-language-base
   main-is:        Main.hs

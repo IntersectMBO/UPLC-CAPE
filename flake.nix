@@ -217,16 +217,17 @@
             secp256k1
             libblst
 
-            # UPLC textual pretty-printer used by treefmt as the *.uplc formatter.
-            # Light to build (only plutus-core, no plutus-tx-plugin), so unlike
-            # measure we do ship it in the dev shell.
+            # UPLC textual pretty-printer used by treefmt as the *.uplc
+            # formatter. Cheap to build (only depends on plutus-core) so we
+            # ship it in the dev shell.
             prettyUplcExe
           ];
           # Note: uplcMusl/plcMusl/pirMusl/plutusMusl not included in dev shell
           # as they require building Agda. Use nix build .#packages.* for those.
 
           # Note: measure / measure-preview are NOT added to buildInputs to
-          # avoid triggering their build. Use 'cabal build' / 'cabal run'.
+          # avoid triggering their (slow) build at shell startup. Use
+          # 'cabal build' / 'cabal run' to produce them on demand.
 
           shellHook = ''
             # Install log4brains via npx when needed
