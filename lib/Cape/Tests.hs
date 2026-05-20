@@ -1,6 +1,3 @@
-{-# OPTIONS_GHC -fplugin PlutusTx.Plugin #-}
-{-# OPTIONS_GHC -fplugin-opt PlutusTx.Plugin:target-version=1.1.0 #-}
-
 {- | Cape test suite loading and resolution module
 
 This module provides data types and functions for loading and processing

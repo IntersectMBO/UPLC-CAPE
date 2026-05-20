@@ -116,9 +116,6 @@ jobs:
       - name: Make measure executable
         run: chmod +x result/bin/measure
 
-      - name: Build plinth-submissions executable
-        run: nix build .#plinth-submissions --accept-flake-config -o result-plinth
-
       - name: Run Haskell test suite
         run: nix flake check --accept-flake-config
 

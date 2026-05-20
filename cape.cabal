@@ -30,7 +30,6 @@ common common-deps
     , plutus-core        ^>=1.45
     , plutus-ledger-api  ^>=1.45
     , plutus-tx          ^>=1.45
-    , plutus-tx-plugin   ^>=1.45
     , relude             ^>=1.2.2
     , serialise
     , text
@@ -98,16 +97,6 @@ library
     Cape.Tests
     Cape.Verify
     Cape.WritePlc
-    Ecd
-    Factorial
-    Fibonacci
-    FibonacciIterative
-    HTLC
-    HTLC.Fixture
-    LinearVesting
-    LinearVesting.Fixture
-    TwoPartyEscrow
-    TwoPartyEscrow.Fixture
 
   build-depends:
     , aeson
@@ -123,7 +112,6 @@ library
     , plutus-core
     , plutus-ledger-api
     , plutus-tx
-    , plutus-tx-plugin
     , process
     , relude
     , serialise
@@ -162,83 +150,10 @@ executable measure-preview
 
   hs-source-dirs: measure-app
 
--- Preview modules: re-compiled with BuiltinCasing (requires plutus-tx-plugin >= 1.46)
--- Build with: cabal --project-file=cabal.project.preview -f preview build plinth-submissions
-library cape-preview
-  import:          common-language
-  visibility:      private
-
-  if !flag(preview)
-    buildable: False
-
-  exposed-modules:
-    Preview.Ecd
-    Preview.Factorial
-    Preview.Fibonacci
-    Preview.FibonacciIterative
-    Preview.HTLC
-    Preview.LinearVesting
-    Preview.TwoPartyEscrow
-
-  other-modules:
-    Ecd
-    Factorial
-    Fibonacci
-    FibonacciIterative
-    HTLC
-    LinearVesting
-    TwoPartyEscrow
-    TwoPartyEscrow.Fixture
-
-  build-depends:
-    , cape
-    , plutus-core
-    , plutus-tx
-    , plutus-tx-plugin
-
-  hs-source-dirs:  lib
-
--- UPLC-CAPE Plinth submissions generator (production, Plinth 1.45).
--- Writes only 1.45 submission paths. Run with the default cabal project:
---   cabal run plinth-submissions
-executable plinth-submissions
-  import:         common-language
-  main-is:        Main.hs
-  build-depends:
-    , base
-    , cape
-    , mtl
-    , plutus-core
-    , plutus-tx
-    , plutus-tx-plugin
-
-  hs-source-dirs: plinth-submissions-app
-
--- UPLC-CAPE Plinth submissions generator (preview, Plinth 1.61 + BuiltinCasing).
--- Writes only 1.61 submission paths. Run with:
---   cabal run --project-file=cabal.project.preview -f preview plinth-submissions-preview
-executable plinth-submissions-preview
-  import:         common-language
-  main-is:        Main.hs
-
-  if !flag(preview)
-    buildable: False
-
-  build-depends:
-    , base
-    , cape
-    , cape:cape-preview
-    , mtl
-    , plutus-core
-    , plutus-tx
-    , plutus-tx-plugin
-
-  hs-source-dirs: plinth-submissions-preview-app
-
 -- UPLC textual pretty-printer used by treefmt as the *.uplc formatter.
 -- Imports common-language-base (warnings, mixins, extensions) but not
--- common-deps, so the build path stays free of plutus-tx-plugin / Plinth
--- and the dev shell can ship the binary cheaply.
+-- common-deps, so the build path stays light and the dev shell can ship
+-- the binary cheaply.
 executable pretty-uplc
   import:         common-language-base
   main-is:        Main.hs
@@ -262,16 +177,6 @@ test-suite cape-tests
     Cape.Protocol.ParametersSpec
     Cape.ScriptContextBuilderSpec
     Cape.TestsSpec
-    EcdSpec
-    FactorialSpec
-    FibonacciSpec
-    HTLCSpec
-    HTLCSpec.Fixture
-    LinearVestingSpec
-    LinearVestingSpec.Fixture
-    TwoPartyEscrowSpec
-    TwoPartyEscrowSpec.Fixture
-    ValidatorHelpers
 
   build-depends:
     , aeson
