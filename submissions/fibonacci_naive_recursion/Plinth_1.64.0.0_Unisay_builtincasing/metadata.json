@@ -1,0 +1,26 @@
+{
+  "compiler": {
+    "name": "Plinth",
+    "version": "1.64.0.0",
+    "commit_hash": "61b1eedf082050d89cde8db89d73aae65bc95a65"
+  },
+  "compilation_config": {
+    "optimization_level": "Plinth",
+    "target": "uplc",
+    "flags": ["Plinth", "BuiltinCasing"],
+    "min_plutus_version": "1.64.0.0"
+  },
+  "contributors": [
+    {
+      "name": "Unisay",
+      "organization": "UPLC-CAPE Project"
+    }
+  ],
+  "submission": {
+    "date": "2026-05-20T16:59:24Z",
+    "source_available": true,
+    "source_repository": "https://github.com/Unisay/plinth-cape-submissions",
+    "source_commit_hash": "5c014861ac6a7a0e85234ab8a7369a0c8f2adf20",
+    "implementation_notes": "Compiled with Plinth 1.64.0.0 and BuiltinCasing enabled (preview line; requires plutus-core >= 1.64 — not yet on mainnet). Source: lib/Fibonacci.hs in plinth-cape-submissions @ 5c014861ac6a7a0e85234ab8a7369a0c8f2adf20."
+  }
+}
