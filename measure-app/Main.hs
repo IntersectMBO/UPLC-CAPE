@@ -410,8 +410,15 @@ writeDetailedMetrics program evaluations metricsFile = do
   currentTime <- getCurrentTime
   let timestamp = toText $ formatTime defaultTimeLocale "%Y-%m-%dT%H:%M:%SZ" currentTime
 
-  -- Create execution environment info
-  let execEnv = Json.object [("evaluator", Json.String "PlutusTx.Eval-1.52.0.0")]
+  -- Create execution environment info. Tag the evaluator with the
+  -- plutus-core version linked into this binary so production
+  -- (cabal.project) and preview (cabal.project.preview) reports
+  -- carry distinct, accurate labels.
+  let evaluatorLabel = "PlutusTx.Eval-" <> VERSION_plutus_core :: String
+  -- Also emit the label on stdout so the bash wrapper
+  -- (cape_write_metrics_json) can lift it into the production metrics.
+  putStrLn ("Evaluator: " <> evaluatorLabel)
+  let execEnv = Json.object [("evaluator", Json.String (toText evaluatorLabel))]
 
   -- Create complete metrics object
   let metrics =

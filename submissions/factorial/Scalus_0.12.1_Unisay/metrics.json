@@ -72,7 +72,7 @@
     }
   ],
   "execution_environment": {
-    "evaluator": "<evaluator-version>"
+    "evaluator": "PlutusTx.Eval-1.45.0.0"
   },
   "measurements": {
     "block_cpu_budget_pct": 0.023021375,
@@ -104,7 +104,7 @@
     "tx_memory_budget_pct": 0.2398142857142857
   },
   "scenario": "factorial",
-  "timestamp": "2025-10-23T14:41:52Z",
+  "timestamp": "2026-05-20T17:35:13Z",
   "version": "1.0.0",
   "notes": "Placeholder metrics - actual measurements to be performed by UPLC-CAPE benchmark framework"
 }

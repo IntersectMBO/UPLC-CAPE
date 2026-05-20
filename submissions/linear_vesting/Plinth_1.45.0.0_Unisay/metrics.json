@@ -205,7 +205,7 @@
     }
   ],
   "execution_environment": {
-    "evaluator": "unknown"
+    "evaluator": "PlutusTx.Eval-1.45.0.0"
   },
   "measurements": {
     "block_cpu_budget_pct": 0.42018583,
@@ -237,7 +237,7 @@
     "tx_memory_budget_pct": 4.296692857142857
   },
   "scenario": "linear_vesting",
-  "timestamp": "2026-04-27T11:32:38Z",
+  "timestamp": "2026-05-20T17:35:23Z",
   "version": "1.0.0",
   "notes": "Generated using UPLC-CAPE measure tool"
 }
