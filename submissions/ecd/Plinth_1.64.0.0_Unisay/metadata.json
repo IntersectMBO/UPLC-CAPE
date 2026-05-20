@@ -1,0 +1,25 @@
+{
+  "compiler": {
+    "name": "Plinth",
+    "version": "1.64.0.0",
+    "commit_hash": "61b1eedf082050d89cde8db89d73aae65bc95a65"
+  },
+  "compilation_config": {
+    "optimization_level": "Plinth",
+    "target": "uplc",
+    "flags": ["Plinth"]
+  },
+  "contributors": [
+    {
+      "name": "Unisay",
+      "organization": "UPLC-CAPE Project"
+    }
+  ],
+  "submission": {
+    "date": "2026-05-20T15:31:14Z",
+    "source_available": true,
+    "source_repository": "https://github.com/Unisay/plinth-cape-submissions",
+    "source_commit_hash": "5c014861ac6a7a0e85234ab8a7369a0c8f2adf20",
+    "implementation_notes": "ECD (Equality Check on Data) compiled with Plinth 1.64.0.0 (production line; no BuiltinCasing). Source: lib/Ecd.hs in plinth-cape-submissions @ 5c014861ac6a7a0e85234ab8a7369a0c8f2adf20."
+  }
+}
