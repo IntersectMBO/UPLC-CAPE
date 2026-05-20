@@ -1,24 +1,24 @@
-# factorial_naive_recursion Plinth 1.45.0.0 source
+# factorial_naive_recursion Plinth 1.64.0.0 source
 
 **Repository**: <https://github.com/Unisay/plinth-cape-submissions>
 
-**Branch**: `plinth-1.45`
+**Branch**: `main`
 
-**Commit**: `b09485c75e3ab6b596b9613320abc2b325087612`
+**Commit**: `5c014861ac6a7a0e85234ab8a7369a0c8f2adf20`
 
 **Path**: `lib/Factorial.hs`
 
 This submission compiles `lib/Factorial.hs` from the Plinth source
-repository with the Plinth (plutus-tx-plugin) 1.45.0.0 line.
+repository with the Plinth (plutus-tx-plugin) 1.64.0.0 line.
 
-Production line; mainnet plutus-core baseline.
+Production line with Plinth 1.64.0.0 (no BuiltinCasing). Plugin pragmas live in `plinth-cape-submissions.cabal`; validator modules carry no Plinth-specific options.
 
 ## Reproducing the compilation
 
 ```bash
 git clone https://github.com/Unisay/plinth-cape-submissions
 cd plinth-cape-submissions
-git checkout b09485c75e3ab6b596b9613320abc2b325087612
+git checkout 5c014861ac6a7a0e85234ab8a7369a0c8f2adf20
 ```
 
 `CAPE_REPO` must point at the sibling UPLC-CAPE checkout; the
@@ -37,5 +37,5 @@ cabal run plinth-submissions
 ```
 
 The produced UPLC writes to
-`$CAPE_REPO/submissions/factorial_naive_recursion/Plinth_1.45.0.0_Unisay/factorial.uplc`
+`$CAPE_REPO/submissions/factorial_naive_recursion/Plinth_1.64.0.0_Unisay/factorial.uplc`
 and matches the `factorial.uplc` in this submission.

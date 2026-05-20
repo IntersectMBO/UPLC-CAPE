@@ -1,24 +1,24 @@
-# fibonacci_naive_recursion Plinth 1.61.0.0 source
+# fibonacci_naive_recursion Plinth 1.64.0.0 source
 
 **Repository**: <https://github.com/Unisay/plinth-cape-submissions>
 
-**Branch**: `plinth-1.61`
+**Branch**: `main`
 
-**Commit**: `b09485c75e3ab6b596b9613320abc2b325087612`
+**Commit**: `5c014861ac6a7a0e85234ab8a7369a0c8f2adf20`
 
 **Path**: `lib/Fibonacci.hs`
 
 This submission compiles `lib/Fibonacci.hs` from the Plinth source
-repository with the Plinth (plutus-tx-plugin) 1.61.0.0 line.
+repository with the Plinth (plutus-tx-plugin) 1.64.0.0 line.
 
-The `plinth-1.61` branch builds against a newer plutus-core / plutus-tx-plugin line (BuiltinCasing-aware) than the mainnet baseline.
+Production line with Plinth 1.64.0.0 (no BuiltinCasing). Plugin pragmas live in `plinth-cape-submissions.cabal`; validator modules carry no Plinth-specific options.
 
 ## Reproducing the compilation
 
 ```bash
 git clone https://github.com/Unisay/plinth-cape-submissions
 cd plinth-cape-submissions
-git checkout b09485c75e3ab6b596b9613320abc2b325087612
+git checkout 5c014861ac6a7a0e85234ab8a7369a0c8f2adf20
 ```
 
 `CAPE_REPO` must point at the sibling UPLC-CAPE checkout; the
@@ -33,9 +33,9 @@ Then enter the dev shell and run the generator:
 
 ```bash
 nix develop
-cabal run --project-file=cabal.project.preview -f preview plinth-submissions-preview
+cabal run plinth-submissions
 ```
 
 The produced UPLC writes to
-`$CAPE_REPO/submissions/fibonacci_naive_recursion/Plinth_1.61.0.0_Unisay/fibonacci.uplc`
+`$CAPE_REPO/submissions/fibonacci_naive_recursion/Plinth_1.64.0.0_Unisay/fibonacci.uplc`
 and matches the `fibonacci.uplc` in this submission.
