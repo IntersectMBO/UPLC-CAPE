@@ -31,4 +31,4 @@ nix develop
 cabal run --flags=preview plinth-submissions
 ```
 
-The produced UPLC writes to `$CAPE_REPO/submissions/fibonacci_naive_recursion/Plinth_1.64.0.0_Unisay_builtincasing/fibonacci_naive_recursion.uplc` and matches the UPLC in this submission.
+The produced UPLC writes to `$CAPE_REPO/submissions/fibonacci_naive_recursion/Plinth_1.64.0.0_Unisay_builtincasing/fibonacci.uplc` and matches the UPLC in this submission.
