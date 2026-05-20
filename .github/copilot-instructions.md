@@ -51,11 +51,17 @@ direnv allow # Or use direnv (recommended)
 
 **Package Versions (CHaP):**
 
-- plutus-core >= 1.49.0.0
-- plutus-tx >= 1.49.0.0
-- plutus-ledger-api >= 1.49.0.0
-- plutus-tx-plugin >= 1.49.0.0
+- plutus-core >= 1.45.0.0
+- plutus-tx >= 1.45.0.0
+- plutus-ledger-api >= 1.45.0.0
 - relude ^>= 1.2.2 (replaces Prelude for consistency)
+
+> Plinth (PlutusTx) source for benchmark submissions lives in the
+> sibling repo <https://github.com/Unisay/plinth-cape-submissions>;
+> this repository is plugin-free. See the ADR
+> [Move Plinth source tree to a separate repository][adr-plinth-move].
+
+[adr-plinth-move]: ../doc/adr/20260520-move-plinth-source-to-separate-repository.md
 - aeson, aeson-pretty (for JSON generation)
 - flat, serialise (for UPLC serialization)
 
@@ -236,9 +242,9 @@ UPLC-CAPE/
 ├── scripts/              # Management tools
 │   ├── cape.sh          # Main CLI
 │   └── cape-subcommands/ # Command implementations
-├── lib/                  # Haskell library modules
-├── measure-app/          # UPLC performance measurement tool source
-└── plinth-submissions-app/ # Plinth submission generator source
+├── lib/Cape/             # Evaluator and measurement library
+├── measure-app/          # `measure` / `measure-preview` source
+└── pretty-uplc-app/      # UPLC text pretty-printer source
 ```
 
 **Core Entities:**
