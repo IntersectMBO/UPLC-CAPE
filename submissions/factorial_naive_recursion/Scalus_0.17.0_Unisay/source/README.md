@@ -27,6 +27,6 @@ This submission uses Scalus compiler version 0.17.0 with a naive recursive imple
 
 3. Follow build instructions in the repository README
 
-4. The compiled UPLC output should match `factorial.uplc` in this submission
+4. The compiled UPLC output should match `factorial_naive_recursion.uplc` in this submission
 
 For detailed build instructions and environment setup, see the repository README.

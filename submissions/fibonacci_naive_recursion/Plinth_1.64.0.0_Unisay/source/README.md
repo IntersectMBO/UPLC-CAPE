@@ -37,5 +37,5 @@ cabal run plinth-submissions
 ```
 
 The produced UPLC writes to
-`$CAPE_REPO/submissions/fibonacci_naive_recursion/Plinth_1.64.0.0_Unisay/fibonacci.uplc`
-and matches the `fibonacci.uplc` in this submission.
+`$CAPE_REPO/submissions/fibonacci_naive_recursion/Plinth_1.64.0.0_Unisay/fibonacci_naive_recursion.uplc`
+and matches the `fibonacci_naive_recursion.uplc` in this submission.

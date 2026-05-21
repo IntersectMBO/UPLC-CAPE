@@ -37,5 +37,5 @@ cabal run --project-file=cabal.project.preview -f preview plinth-submissions-pre
 ```
 
 The produced UPLC writes to
-`$CAPE_REPO/submissions/factorial_naive_recursion/Plinth_1.61.0.0_Unisay/factorial.uplc`
-and matches the `factorial.uplc` in this submission.
+`$CAPE_REPO/submissions/factorial_naive_recursion/Plinth_1.61.0.0_Unisay/factorial_naive_recursion.uplc`
+and matches the `factorial_naive_recursion.uplc` in this submission.
