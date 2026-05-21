@@ -654,7 +654,15 @@ build_compiler_comparison_stats() {
 
     local preview_rows prod_version preview_version scenarios_json='[]'
     preview_rows=$(echo "$preview_csv" | awk -F, -v c="$compiler" -v a="$author" '$3==c && $5==a')
-    preview_version=$(echo "$preview_rows" | head -1 | cut -d, -f4)
+    # Pick the highest preview version for this (compiler, author) and
+    # restrict to its rows. Without this, mixing two preview versions
+    # under one author (e.g. Plinth 1.61 and 1.64 for the same scenario)
+    # produces a title from the lexicographically-first row and
+    # duplicate benchmark entries in the scenario table.
+    # TODO(#204): replace this single-version view with a per-version
+    # evolution view that shows deltas across all versions.
+    preview_version=$(echo "$preview_rows" | cut -d, -f4 | sort -uV | tail -n1)
+    preview_rows=$(echo "$preview_rows" | awk -F, -v v="$preview_version" '$4==v')
 
     prod_version=$(echo "$current_csv" | awk -F, -v c="$compiler" -v a="$author" '$3==c && $5==a {print $4; exit}')
 
