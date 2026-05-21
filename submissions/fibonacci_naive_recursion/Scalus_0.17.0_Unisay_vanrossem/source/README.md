@@ -33,6 +33,6 @@ The output is invalid on mainnet until the van Rossem hard fork (Cardano protoco
    sbt 'runMain fibonacci_naive_recursion.compileFibonacciNaiveRecursion'
    ```
 
-4. The compiled UPLC output should match `fibonacci.uplc` in this submission (it is written to `src/fibonacci_naive_recursion/fibonacci-vanrossem.uplc` upstream).
+4. The compiled UPLC output should match `fibonacci_naive_recursion.uplc` in this submission (it is written to `src/fibonacci_naive_recursion/fibonacci-vanrossem.uplc` upstream).
 
 For detailed build instructions and environment setup, see the repository README.

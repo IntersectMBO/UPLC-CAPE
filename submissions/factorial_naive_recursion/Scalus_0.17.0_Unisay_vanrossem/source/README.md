@@ -33,6 +33,6 @@ The output is invalid on mainnet until the van Rossem hard fork (Cardano protoco
    sbt 'runMain factorial_naive_recursion.compileFactorialNaiveRecursion'
    ```
 
-4. The compiled UPLC output should match `factorial.uplc` in this submission (it is written to `src/factorial_naive_recursion/factorial-vanrossem.uplc` upstream).
+4. The compiled UPLC output should match `factorial_naive_recursion.uplc` in this submission (it is written to `src/factorial_naive_recursion/factorial-vanrossem.uplc` upstream).
 
 For detailed build instructions and environment setup, see the repository README.

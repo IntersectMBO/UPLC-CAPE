@@ -27,6 +27,6 @@ This submission uses Scalus compiler version 0.12.0 with naive recursive impleme
 
 3. Follow build instructions in the repository README
 
-4. The compiled UPLC output should match `fibonacci.uplc` in this submission
+4. The compiled UPLC output should match `fibonacci_naive_recursion.uplc` in this submission
 
 For detailed build instructions and environment setup, see the repository README.
