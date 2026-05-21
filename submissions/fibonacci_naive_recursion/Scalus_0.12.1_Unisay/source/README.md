@@ -8,7 +8,7 @@
 
 **Path**: `fibonacci_naive_recursion/FibonacciBase.scala`
 
-This submission uses Scalus compiler version 0.12.0 with naive recursive implementation.
+This submission uses Scalus compiler version 0.12.1 with naive recursive implementation.
 
 ## Reproducing the Compilation
 
