@@ -175,39 +175,44 @@ cape_each_submission_dir() {
   done
 }
 
-# Get the measure binary path or fallback to cabal run
-# Returns either a direct binary path or "cabal run measure --"
+# Print the measure command, one word per line. Callers must read into an
+# array (e.g. `mapfile -t measure_cmd < <(cape_measure_binary)`) and invoke
+# via `"${measure_cmd[@]}"`. One-word-per-line output is what makes the
+# multi-word `cabal run measure --` fallback safe under the scripts'
+# `IFS=$'\n\t'`, which strips space-splitting and would otherwise try to
+# exec the whole string as a single command name (exit 127).
 cape_measure_binary() {
   local binary_path
 
   # First, check if measure is available in PATH (e.g., from nix build)
   if binary_path=$(command -v measure 2> /dev/null) && [[ -x "$binary_path" ]]; then
-    echo "$binary_path"
+    printf '%s\n' "$binary_path"
     return
   fi
 
   # Try to get the binary path from cabal
   if binary_path=$(cd "$PROJECT_ROOT" && cabal list-bin measure 2> /dev/null) && [[ -x "$binary_path" ]]; then
-    echo "$binary_path"
+    printf '%s\n' "$binary_path"
   else
     # Fallback to cabal run if binary detection fails
-    echo "cabal run measure --"
+    printf '%s\n' cabal run measure --
   fi
 }
 
-# Locate measure-preview binary (built against preview plutus-core)
+# Locate measure-preview binary (built against preview plutus-core).
+# Same one-word-per-line contract as cape_measure_binary.
 cape_measure_preview_binary() {
   local binary_path
 
   if binary_path=$(command -v measure-preview 2> /dev/null) && [[ -x "$binary_path" ]]; then
-    echo "$binary_path"
+    printf '%s\n' "$binary_path"
     return
   fi
 
   if binary_path=$(cd "$PROJECT_ROOT" && cabal --project-file=cabal.project.preview list-bin measure-preview 2> /dev/null) && [[ -x "$binary_path" ]]; then
-    echo "$binary_path"
+    printf '%s\n' "$binary_path"
   else
-    echo "cabal --project-file=cabal.project.preview run measure-preview --"
+    printf '%s\n' cabal --project-file=cabal.project.preview run measure-preview --
   fi
 }
 

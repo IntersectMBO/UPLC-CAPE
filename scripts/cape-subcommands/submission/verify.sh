@@ -108,18 +108,18 @@ verify_submission_dir() {
   tmp_stdout="$(cape_mktemp)"
 
   local measure_cmd
-  measure_cmd="$(cape_measure_binary)"
-  cape_debug "Using measure command: $measure_cmd"
+  mapfile -t measure_cmd < <(cape_measure_binary)
+  cape_debug "Using measure command: ${measure_cmd[*]}"
 
   local measure_rc
   if [[ $VERBOSE -eq 1 ]]; then
-    if (cd "$PROJECT_ROOT" && $measure_cmd -i "$uplc_file" "${tests_flag[@]}" -o "$tmp_metrics" 2>&1) | tee "$tmp_stdout"; then
+    if (cd "$PROJECT_ROOT" && "${measure_cmd[@]}" -i "$uplc_file" "${tests_flag[@]}" -o "$tmp_metrics" 2>&1) | tee "$tmp_stdout"; then
       measure_rc=0
     else
       measure_rc=1
     fi
   else
-    if (cd "$PROJECT_ROOT" && $measure_cmd -i "$uplc_file" "${tests_flag[@]}" -o "$tmp_metrics" 2> /dev/null) > "$tmp_stdout"; then
+    if (cd "$PROJECT_ROOT" && "${measure_cmd[@]}" -i "$uplc_file" "${tests_flag[@]}" -o "$tmp_metrics" 2> /dev/null) > "$tmp_stdout"; then
       measure_rc=0
     else
       measure_rc=1
