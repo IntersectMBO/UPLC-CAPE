@@ -235,7 +235,7 @@ measure_preview_submissions() {
   local found_any=0
   local preview_measure_cmd
   mapfile -t preview_measure_cmd < <(cape_measure_preview_binary)
-  cape_info "Using preview measure: ${preview_measure_cmd[*]}"
+  cape_info "Using preview measure: $(printf '%s ' "${preview_measure_cmd[@]}")"
 
   local submission_dir
   while IFS= read -r submission_dir; do

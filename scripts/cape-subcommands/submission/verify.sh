@@ -109,7 +109,7 @@ verify_submission_dir() {
 
   local measure_cmd
   mapfile -t measure_cmd < <(cape_measure_binary)
-  cape_debug "Using measure command: ${measure_cmd[*]}"
+  cape_debug "Using measure command: $(printf '%s ' "${measure_cmd[@]}")"
 
   local measure_rc
   if [[ $VERBOSE -eq 1 ]]; then
