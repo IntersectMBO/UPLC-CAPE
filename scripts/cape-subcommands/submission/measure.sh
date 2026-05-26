@@ -124,10 +124,10 @@ measure_uplc_file() {
   stdout_tmp="$(cape_mktemp)"
 
   local measure_cmd
-  measure_cmd="$(cape_measure_binary)"
+  mapfile -t measure_cmd < <(cape_measure_binary)
 
   if [[ $VERBOSE -eq 1 ]]; then
-    if ! (cd "$PROJECT_ROOT" && $measure_cmd -i "$uplc_file" "${tests_flag[@]}" -o "$tmp_raw" 2> /dev/null) 2>&1 | tee "$stdout_tmp"; then
+    if ! (cd "$PROJECT_ROOT" && "${measure_cmd[@]}" -i "$uplc_file" "${tests_flag[@]}" -o "$tmp_raw" 2> /dev/null) 2>&1 | tee "$stdout_tmp"; then
       cape_error "✗ Failed to measure UPLC program ($rel_uplc)"
       echo ""
       cape_error "Test execution details:"
@@ -136,7 +136,7 @@ measure_uplc_file() {
       return 1
     fi
   else
-    if ! (cd "$PROJECT_ROOT" && $measure_cmd -i "$uplc_file" "${tests_flag[@]}" -o "$tmp_raw" 2> /dev/null) > "$stdout_tmp" 2>&1; then
+    if ! (cd "$PROJECT_ROOT" && "${measure_cmd[@]}" -i "$uplc_file" "${tests_flag[@]}" -o "$tmp_raw" 2> /dev/null) > "$stdout_tmp" 2>&1; then
       cape_error "✗ Failed to measure UPLC program ($rel_uplc)"
       echo ""
       cape_error "Test execution details:"
@@ -234,8 +234,8 @@ measure_preview_submissions() {
   local overall_errors=0
   local found_any=0
   local preview_measure_cmd
-  preview_measure_cmd="$(cape_measure_preview_binary)"
-  cape_info "Using preview measure: $preview_measure_cmd"
+  mapfile -t preview_measure_cmd < <(cape_measure_preview_binary)
+  cape_info "Using preview measure: $(printf '%s ' "${preview_measure_cmd[@]}")"
 
   local submission_dir
   while IFS= read -r submission_dir; do
@@ -282,7 +282,7 @@ measure_preview_submissions() {
     local tmp_raw stdout_tmp
     tmp_raw="$(cape_mktemp)"
     stdout_tmp="$(cape_mktemp)"
-    if (cd "$PROJECT_ROOT" && $preview_measure_cmd -i "$uplc_file" -t "$tests_file" -o "$tmp_raw" 2> /dev/null) > "$stdout_tmp" 2>&1; then
+    if (cd "$PROJECT_ROOT" && "${preview_measure_cmd[@]}" -i "$uplc_file" -t "$tests_file" -o "$tmp_raw" 2> /dev/null) > "$stdout_tmp" 2>&1; then
       # Patch scenario field and write final metrics
       jq --arg s "$scenario" '.scenario = $s' "$tmp_raw" > "$submission_dir/metrics.json"
       cape_success "  ✓ Measured: $rel_path"
