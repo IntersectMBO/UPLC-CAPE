@@ -4,7 +4,7 @@
 
 **Branch**: `main`
 
-**Commit**: `5c014861ac6a7a0e85234ab8a7369a0c8f2adf20`
+**Commit**: `fbb37ddd6ba6ea6fd29312494a32a3074ba332b0`
 
 **Path**: `lib/LinearVesting.hs`
 
@@ -15,7 +15,7 @@ This submission compiles `lib/LinearVesting.hs` from the Plinth source repositor
 ```bash
 git clone https://github.com/Unisay/plinth-cape-submissions
 cd plinth-cape-submissions
-git checkout 5c014861ac6a7a0e85234ab8a7369a0c8f2adf20
+git checkout fbb37ddd6ba6ea6fd29312494a32a3074ba332b0
 ```
 
 `CAPE_REPO` must point at the sibling UPLC-CAPE checkout; the build aborts if the variable is unset. The recommended place is `.envrc.local` (gitignored), e.g.:
