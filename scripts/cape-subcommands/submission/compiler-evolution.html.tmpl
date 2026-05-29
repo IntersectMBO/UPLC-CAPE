@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UPLC-CAPE Evolution — {{.compiler}} by {{.author}}</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #fdf6e3;
+        }
+        .evolution-banner {
+            background: linear-gradient(135deg, #0ea5e9, #0369a1);
+            color: white;
+            padding: 12px 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 0.9em;
+        }
+        .report-nav {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 24px;
+        }
+        .report-nav a {
+            display: inline-block;
+            padding: 8px 16px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9em;
+        }
+        .report-nav .active { background: #0ea5e9; color: white; }
+        .report-nav .inactive { background: #667eea; color: white; }
+        .report-nav .inactive:hover { background: #5a6fd6; }
+        .header {
+            margin-bottom: 30px;
+            padding: 20px 0;
+        }
+        .header h1 { color: #333; margin: 0 0 8px 0; }
+        .breadcrumb {
+            color: #6c757d;
+            font-size: 0.9em;
+            margin-bottom: 10px;
+        }
+        .breadcrumb a { color: #0369a1; text-decoration: none; }
+        .breadcrumb a:hover { text-decoration: underline; }
+        .baseline-toggle {
+            display: inline-flex;
+            align-items: center;
+            gap: 0;
+            background: #e2e8f0;
+            border-radius: 6px;
+            padding: 3px;
+            margin-bottom: 24px;
+        }
+        .baseline-toggle .label {
+            padding: 0 10px;
+            color: #475569;
+            font-size: 0.85em;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .baseline-toggle button {
+            background: transparent;
+            border: 0;
+            padding: 6px 12px;
+            border-radius: 4px;
+            font-weight: 600;
+            font-size: 0.85em;
+            color: #475569;
+            cursor: pointer;
+        }
+        .baseline-toggle button.active {
+            background: white;
+            color: #0369a1;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+        }
+        .variant-section {
+            background: white;
+            border-radius: 10px;
+            padding: 24px;
+            margin-bottom: 32px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        .variant-section h2 {
+            color: #0369a1;
+            margin: 0 0 8px 0;
+            font-size: 1.25em;
+        }
+        .version-chips {
+            color: #6c757d;
+            font-size: 0.9em;
+            margin-bottom: 20px;
+        }
+        .version-chip {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-family: 'Monaco', 'Menlo', monospace;
+            font-size: 0.85em;
+            background: #e2e8f0;
+            color: #334155;
+        }
+        .scenario {
+            margin-top: 20px;
+            padding-top: 16px;
+            border-top: 1px solid #f1f5f9;
+        }
+        .scenario:first-of-type { border-top: 0; padding-top: 0; }
+        .scenario h3 {
+            color: #333;
+            margin: 0 0 10px 0;
+            font-size: 1.05em;
+            font-family: 'Monaco', 'Menlo', monospace;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.92em;
+        }
+        th, td {
+            padding: 8px 12px;
+            text-align: right;
+            border-bottom: 1px solid #f1f5f9;
+        }
+        th { color: #6c757d; font-size: 0.8em; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600; }
+        th:first-child, td:first-child { text-align: left; }
+        td.metric-name { font-weight: 500; color: #333; }
+        .cell-value { display: block; font-variant-numeric: tabular-nums; }
+        .delta {
+            display: block;
+            font-size: 0.82em;
+            font-variant-numeric: tabular-nums;
+            margin-top: 2px;
+        }
+        body[data-baseline="prev"]  .delta-first { display: none; }
+        body[data-baseline="first"] .delta-prev  { display: none; }
+        .delta-positive { color: #dc2626; }
+        .delta-negative { color: #16a34a; }
+        .delta-zero { color: #94a3b8; }
+        .footer {
+            text-align: center;
+            margin-top: 50px;
+            padding: 20px;
+            color: #6c757d;
+            border-top: 1px solid #e9ecef;
+        }
+    </style>
+</head>
+<body data-baseline="prev">
+    <div class="report-nav">
+        <a class="inactive" href="../../index.html">Production</a>
+        <a class="active" href="../index.html">Evolution</a>
+    </div>
+
+    <div class="evolution-banner">
+        <strong>EVOLUTION</strong> &mdash; Full version timeline for this compiler/author across all submissions (production + preview). Deltas highlight the improvement signal between releases.
+    </div>
+
+    <div class="header">
+        <div class="breadcrumb">
+            <a href="../index.html">Evolution compilers</a> &rarr; {{.compiler}}
+        </div>
+        <h1>{{.compiler}} by {{.author}}</h1>
+    </div>
+
+    <div class="baseline-toggle">
+        <span class="label">Baseline</span>
+        <button type="button" data-baseline="prev"  class="active">vs Previous</button>
+        <button type="button" data-baseline="first">vs First</button>
+    </div>
+
+    {{range .variants}}
+    <section class="variant-section">
+        <h2>Variant: {{.variant}}</h2>
+        <div class="version-chips">
+            {{range $i, $v := .versions}}{{if $i}} &rarr; {{end}}<span class="version-chip">{{$v}}</span>{{end}}
+            &middot; {{len .scenarios}} scenarios with evolution
+        </div>
+
+        {{$versions := .versions}}
+        {{range .scenarios}}
+        <div class="scenario">
+            <h3>{{.name}}</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Metric</th>
+                        {{range $versions}}<th>{{.}}</th>{{end}}
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="metric-name">CPU Units</td>
+                        {{range .values}}
+                        <td>
+                            {{if .cpu_units}}<span class="cell-value" data-value="{{.cpu_units}}">{{.cpu_units}}</span>{{else}}<span class="cell-value">&mdash;</span>{{end}}
+                            {{with .delta_prev.cpu_units}}<span class="delta delta-prev {{.class}}">{{.text}}</span>{{end}}
+                            {{with .delta_first.cpu_units}}<span class="delta delta-first {{.class}}">{{.text}}</span>{{end}}
+                        </td>
+                        {{end}}
+                    </tr>
+                    <tr>
+                        <td class="metric-name">Memory Units</td>
+                        {{range .values}}
+                        <td>
+                            {{if .memory_units}}<span class="cell-value" data-value="{{.memory_units}}">{{.memory_units}}</span>{{else}}<span class="cell-value">&mdash;</span>{{end}}
+                            {{with .delta_prev.memory_units}}<span class="delta delta-prev {{.class}}">{{.text}}</span>{{end}}
+                            {{with .delta_first.memory_units}}<span class="delta delta-first {{.class}}">{{.text}}</span>{{end}}
+                        </td>
+                        {{end}}
+                    </tr>
+                    <tr>
+                        <td class="metric-name">Script Size (bytes)</td>
+                        {{range .values}}
+                        <td>
+                            {{if .script_size_bytes}}<span class="cell-value" data-value="{{.script_size_bytes}}">{{.script_size_bytes}}</span>{{else}}<span class="cell-value">&mdash;</span>{{end}}
+                            {{with .delta_prev.script_size_bytes}}<span class="delta delta-prev {{.class}}">{{.text}}</span>{{end}}
+                            {{with .delta_first.script_size_bytes}}<span class="delta delta-first {{.class}}">{{.text}}</span>{{end}}
+                        </td>
+                        {{end}}
+                    </tr>
+                    <tr>
+                        <td class="metric-name">Term Size (AST nodes)</td>
+                        {{range .values}}
+                        <td>
+                            {{if .term_size}}<span class="cell-value" data-value="{{.term_size}}">{{.term_size}}</span>{{else}}<span class="cell-value">&mdash;</span>{{end}}
+                            {{with .delta_prev.term_size}}<span class="delta delta-prev {{.class}}">{{.text}}</span>{{end}}
+                            {{with .delta_first.term_size}}<span class="delta delta-first {{.class}}">{{.text}}</span>{{end}}
+                        </td>
+                        {{end}}
+                    </tr>
+                    <tr>
+                        <td class="metric-name">Total Fee (lovelace)</td>
+                        {{range .values}}
+                        <td>
+                            {{if .total_fee_lovelace}}<span class="cell-value" data-value="{{.total_fee_lovelace}}">{{.total_fee_lovelace}}</span>{{else}}<span class="cell-value">&mdash;</span>{{end}}
+                            {{with .delta_prev.total_fee_lovelace}}<span class="delta delta-prev {{.class}}">{{.text}}</span>{{end}}
+                            {{with .delta_first.total_fee_lovelace}}<span class="delta delta-first {{.class}}">{{.text}}</span>{{end}}
+                        </td>
+                        {{end}}
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        {{end}}
+    </section>
+    {{end}}
+
+    <div class="footer">
+        <p>EVOLUTION &mdash; Generated by UPLC-CAPE on {{.timestamp}} &middot; <a href="https://github.com/IntersectMBO/UPLC-CAPE">View on GitHub</a> &middot; <a href="../../index.html">Production report</a></p>
+    </div>
+
+    <script>
+        // Format large numbers with thousand separators.
+        document.querySelectorAll('[data-value]').forEach(function (el) {
+            var v = Number(el.getAttribute('data-value'));
+            if (!Number.isNaN(v)) el.textContent = v.toLocaleString();
+        });
+
+        // Baseline toggle (delegates to body[data-baseline] CSS hooks).
+        document.querySelectorAll('.baseline-toggle button').forEach(function (btn) {
+            btn.addEventListener('click', function () {
+                document.body.setAttribute('data-baseline', btn.getAttribute('data-baseline'));
+                document.querySelectorAll('.baseline-toggle button').forEach(function (b) {
+                    b.classList.toggle('active', b === btn);
+                });
+            });
+        });
+    </script>
+</body>
+</html>
