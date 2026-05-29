@@ -1,6 +1,6 @@
 {
   "benchmark": "linear_vesting",
-  "generated_at": "2026-05-26T10:16:16Z",
+  "generated_at": "2026-05-29T14:35:21Z",
   "submissions": [
     {
       "timestamp": "2026-05-20T17:35:23Z",
@@ -26,7 +26,7 @@
       }
     },
     {
-      "timestamp": "2026-05-26T10:09:01Z",
+      "timestamp": "2026-05-29T14:28:15Z",
       "compiler": "Plinth",
       "version": "1.64.0.0",
       "user": "Unisay",
@@ -46,6 +46,29 @@
         "block_cpu_budget_pct": 0.34408907,
         "scripts_per_tx": 30,
         "scripts_per_block": 132
+      }
+    },
+    {
+      "timestamp": "2026-05-29T10:38:22Z",
+      "compiler": "Plinth",
+      "version": "1.65.0.0",
+      "user": "Unisay",
+      "variant": "default",
+      "submission_dir": "Plinth_1.65.0.0_Unisay",
+      "metrics": {
+        "cpu_units": 2133083790,
+        "memory_units": 6858342,
+        "script_size_bytes": 1522,
+        "term_size": 1610,
+        "execution_fee_lovelace": 549522,
+        "reference_script_fee_lovelace": 22830,
+        "total_fee_lovelace": 572352,
+        "tx_memory_budget_pct": 2.9214357142857144,
+        "tx_cpu_budget_pct": 1.28467628,
+        "block_memory_budget_pct": 0.6596790322580646,
+        "block_cpu_budget_pct": 0.32116907,
+        "scripts_per_tx": 34,
+        "scripts_per_block": 151
       }
     }
   ]

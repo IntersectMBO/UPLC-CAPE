@@ -1,6 +1,6 @@
 {
   "benchmark": "fibonacci_naive_recursion",
-  "generated_at": "2026-05-26T10:16:16Z",
+  "generated_at": "2026-05-29T14:35:20Z",
   "submissions": [
     {
       "timestamp": "2026-05-20T17:35:19Z",
@@ -90,6 +90,29 @@
         "tx_cpu_budget_pct": 1591.93455218,
         "block_memory_budget_pct": 941.7706806451612,
         "block_cpu_budget_pct": 397.983638045,
+        "scripts_per_tx": 0,
+        "scripts_per_block": 0
+      }
+    },
+    {
+      "timestamp": "2026-05-29T10:38:19Z",
+      "compiler": "Plinth",
+      "version": "1.65.0.0",
+      "user": "Unisay",
+      "variant": "default",
+      "submission_dir": "Plinth_1.65.0.0_Unisay",
+      "metrics": {
+        "cpu_units": 170746233630,
+        "memory_units": 615251562,
+        "script_size_bytes": 50,
+        "term_size": 45,
+        "execution_fee_lovelace": 47810819,
+        "reference_script_fee_lovelace": 750,
+        "total_fee_lovelace": 47811569,
+        "tx_memory_budget_pct": 3997.2837285714286,
+        "tx_cpu_budget_pct": 1553.08959218,
+        "block_memory_budget_pct": 902.6124548387097,
+        "block_cpu_budget_pct": 388.272398045,
         "scripts_per_tx": 0,
         "scripts_per_block": 0
       }
