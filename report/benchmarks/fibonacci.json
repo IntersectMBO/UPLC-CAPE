@@ -1,9 +1,9 @@
 {
   "benchmark": "fibonacci",
-  "generated_at": "2026-04-22T11:52:53Z",
+  "generated_at": "2026-05-26T13:07:07Z",
   "submissions": [
     {
-      "timestamp": "2025-10-23T14:41:54Z",
+      "timestamp": "2026-05-20T17:35:15Z",
       "compiler": "Aiken",
       "version": "v1.1.19",
       "user": "Matthias Benkort",
@@ -26,7 +26,7 @@
       }
     },
     {
-      "timestamp": "2025-10-23T14:41:54Z",
+      "timestamp": "2026-05-20T17:35:15Z",
       "compiler": "Aiken",
       "version": "v1.1.19",
       "user": "Matthias Benkort",
@@ -49,7 +49,7 @@
       }
     },
     {
-      "timestamp": "2025-10-23T14:41:55Z",
+      "timestamp": "2026-05-20T17:35:15Z",
       "compiler": "OpShin",
       "version": "0.26.1",
       "user": "Niels Mündler",
@@ -72,7 +72,7 @@
       }
     },
     {
-      "timestamp": "2025-11-07T14:35:08Z",
+      "timestamp": "2026-05-20T17:35:16Z",
       "compiler": "Plinth",
       "version": "1.45.0.0",
       "user": "Unisay",
@@ -95,7 +95,30 @@
       }
     },
     {
-      "timestamp": "2025-10-23T14:41:55Z",
+      "timestamp": "2026-05-20T17:35:16Z",
+      "compiler": "Plinth",
+      "version": "1.64.0.0",
+      "user": "Unisay",
+      "variant": "default",
+      "submission_dir": "Plinth_1.64.0.0_Unisay",
+      "metrics": {
+        "cpu_units": 91379406,
+        "memory_units": 355606,
+        "script_size_bytes": 81,
+        "term_size": 68,
+        "execution_fee_lovelace": 27107,
+        "reference_script_fee_lovelace": 1215,
+        "total_fee_lovelace": 28322,
+        "tx_memory_budget_pct": 0.6912357142857143,
+        "tx_cpu_budget_pct": 0.25316344999999996,
+        "block_memory_budget_pct": 0.15608548387096774,
+        "block_cpu_budget_pct": 0.06329086249999999,
+        "scripts_per_tx": 144,
+        "scripts_per_block": 640
+      }
+    },
+    {
+      "timestamp": "2026-05-20T17:35:16Z",
       "compiler": "Plutarch",
       "version": "1.11.0",
       "user": "SeungheonOh",
@@ -118,7 +141,7 @@
       }
     },
     {
-      "timestamp": "2025-10-23T14:41:55Z",
+      "timestamp": "2026-05-20T17:35:16Z",
       "compiler": "Plutarch",
       "version": "1.11.0",
       "user": "SeungheonOh",
@@ -141,7 +164,7 @@
       }
     },
     {
-      "timestamp": "2025-10-23T14:41:56Z",
+      "timestamp": "2026-05-20T17:35:17Z",
       "compiler": "Plutarch",
       "version": "1.11.0",
       "user": "SeungheonOh",
@@ -164,7 +187,7 @@
       }
     },
     {
-      "timestamp": "2025-10-23T14:41:56Z",
+      "timestamp": "2026-05-20T17:35:17Z",
       "compiler": "Scalus",
       "version": "0.12.1",
       "user": "Alexander Nemish",
@@ -187,7 +210,7 @@
       }
     },
     {
-      "timestamp": "2025-10-23T14:41:57Z",
+      "timestamp": "2026-05-20T17:35:17Z",
       "compiler": "Scalus",
       "version": "0.12.1",
       "user": "Unisay",
@@ -210,7 +233,7 @@
       }
     },
     {
-      "timestamp": "2026-04-21T12:32:34Z",
+      "timestamp": "2026-05-20T17:35:18Z",
       "compiler": "Scalus",
       "version": "0.16.0",
       "user": "Unisay",
@@ -233,7 +256,7 @@
       }
     },
     {
-      "timestamp": "2026-04-21T12:32:35Z",
+      "timestamp": "2026-05-20T17:35:18Z",
       "compiler": "Scalus",
       "version": "0.16.0",
       "user": "Unisay",
@@ -253,6 +276,29 @@
         "block_cpu_budget_pct": 0.0043633275,
         "scripts_per_tx": 4652,
         "scripts_per_block": 20604
+      }
+    },
+    {
+      "timestamp": "2026-05-20T17:35:18Z",
+      "compiler": "Scalus",
+      "version": "0.17.0",
+      "user": "Unisay",
+      "variant": "default",
+      "submission_dir": "Scalus_0.17.0_Unisay",
+      "metrics": {
+        "cpu_units": 175016233630,
+        "memory_units": 641939062,
+        "script_size_bytes": 47,
+        "term_size": 41,
+        "execution_fee_lovelace": 49658555,
+        "reference_script_fee_lovelace": 705,
+        "total_fee_lovelace": 49659260,
+        "tx_memory_budget_pct": 4170.698728571429,
+        "tx_cpu_budget_pct": 1591.93455218,
+        "block_memory_budget_pct": 941.7706806451612,
+        "block_cpu_budget_pct": 397.983638045,
+        "scripts_per_tx": 0,
+        "scripts_per_block": 0
       }
     }
   ]

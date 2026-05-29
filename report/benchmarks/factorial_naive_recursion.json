@@ -1,9 +1,9 @@
 {
   "benchmark": "factorial_naive_recursion",
-  "generated_at": "2026-04-22T11:52:45Z",
+  "generated_at": "2026-05-26T13:07:06Z",
   "submissions": [
     {
-      "timestamp": "2025-10-23T14:41:53Z",
+      "timestamp": "2026-05-20T17:35:13Z",
       "compiler": "OpShin",
       "version": "0.26.1",
       "user": "Niels Mündler",
@@ -26,7 +26,7 @@
       }
     },
     {
-      "timestamp": "2025-11-25T13:50:57Z",
+      "timestamp": "2026-05-20T17:35:13Z",
       "compiler": "Pebble",
       "version": "0.1.2",
       "user": "Michele Nuzzi",
@@ -49,7 +49,7 @@
       }
     },
     {
-      "timestamp": "2025-10-23T14:41:53Z",
+      "timestamp": "2026-05-20T17:35:14Z",
       "compiler": "Plinth",
       "version": "1.45.0.0",
       "user": "Unisay",
@@ -72,7 +72,30 @@
       }
     },
     {
-      "timestamp": "2025-10-23T14:41:53Z",
+      "timestamp": "2026-05-20T17:35:14Z",
+      "compiler": "Plinth",
+      "version": "1.64.0.0",
+      "user": "Unisay",
+      "variant": "default",
+      "submission_dir": "Plinth_1.64.0.0_Unisay",
+      "metrics": {
+        "cpu_units": 37481975,
+        "memory_units": 140290,
+        "script_size_bytes": 40,
+        "term_size": 33,
+        "execution_fee_lovelace": 10798,
+        "reference_script_fee_lovelace": 600,
+        "total_fee_lovelace": 11398,
+        "tx_memory_budget_pct": 0.2398142857142857,
+        "tx_cpu_budget_pct": 0.0920855,
+        "block_memory_budget_pct": 0.05415161290322581,
+        "block_cpu_budget_pct": 0.023021375,
+        "scripts_per_tx": 416,
+        "scripts_per_block": 1846
+      }
+    },
+    {
+      "timestamp": "2026-05-20T17:35:14Z",
       "compiler": "Plutarch",
       "version": "1.11.0",
       "user": "SeungheonOh",
@@ -95,7 +118,7 @@
       }
     },
     {
-      "timestamp": "2025-10-23T14:41:54Z",
+      "timestamp": "2026-05-20T17:35:14Z",
       "compiler": "Scalus",
       "version": "0.12.1",
       "user": "Unisay",
@@ -118,7 +141,7 @@
       }
     },
     {
-      "timestamp": "2026-04-21T12:32:34Z",
+      "timestamp": "2026-05-20T17:35:14Z",
       "compiler": "Scalus",
       "version": "0.16.0",
       "user": "Unisay",
@@ -138,6 +161,29 @@
         "block_cpu_budget_pct": 0.025661374999999997,
         "scripts_per_tx": 348,
         "scripts_per_block": 1543
+      }
+    },
+    {
+      "timestamp": "2026-05-20T17:35:15Z",
+      "compiler": "Scalus",
+      "version": "0.17.0",
+      "user": "Unisay",
+      "variant": "default",
+      "submission_dir": "Scalus_0.17.0_Unisay",
+      "metrics": {
+        "cpu_units": 42281975,
+        "memory_units": 170290,
+        "script_size_bytes": 52,
+        "term_size": 47,
+        "execution_fee_lovelace": 12875,
+        "reference_script_fee_lovelace": 780,
+        "total_fee_lovelace": 13655,
+        "tx_memory_budget_pct": 0.2933857142857143,
+        "tx_cpu_budget_pct": 0.1040855,
+        "block_memory_budget_pct": 0.06624838709677419,
+        "block_cpu_budget_pct": 0.026021375,
+        "scripts_per_tx": 340,
+        "scripts_per_block": 1509
       }
     }
   ]
