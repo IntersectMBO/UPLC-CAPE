@@ -1,0 +1,29 @@
+{
+  "compiler": {
+    "name": "Plinth",
+    "version": "1.65.0.0",
+    "commit_hash": "b2db512618df08bd696e8d9c4229effcede01169"
+  },
+  "compilation_config": {
+    "optimization_level": "Plinth",
+    "target": "uplc",
+    "flags": [
+      "Plinth",
+      "BuiltinCasing"
+    ],
+    "min_plutus_version": "1.65.0.0"
+  },
+  "contributors": [
+    {
+      "name": "Unisay",
+      "organization": "UPLC-CAPE Project"
+    }
+  ],
+  "submission": {
+    "date": "2026-06-22T14:29:56Z",
+    "source_available": true,
+    "source_repository": "https://github.com/Unisay/plinth-cape-submissions",
+    "source_commit_hash": "3efc19ad785a7dcb6aead5a936d18654f0649a2b",
+    "implementation_notes": "Compiled with Plinth 1.65.0.0 and BuiltinCasing enabled (preview line; requires plutus-core >= 1.65 — not yet on mainnet). Source: lib/LinearVesting.hs in plinth-cape-submissions @ 3efc19ad785a7dcb6aead5a936d18654f0649a2b."
+  }
+}
