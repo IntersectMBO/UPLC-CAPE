@@ -237,6 +237,7 @@
     "tx_memory_budget_pct": 3.3307214285714286
   },
   "scenario": "linear_vesting",
-  "timestamp": "2026-05-22T13:20:25Z",
-  "version": "1.0.0"
+  "timestamp": "2026-06-22T16:09:09Z",
+  "version": "1.0.0",
+  "notes": "Generated using UPLC-CAPE measure tool"
 }
