@@ -114,6 +114,44 @@ Option 2 in "Considered Options" treated production and preview as undifferentia
 - Promotion of preview submissions to mainnet when `CAPE_CURRENT_PLUTUS_VERSION` bumps. The classification re-derives on every render from current state — no migration is needed, the same submission simply shifts tracks the next time the report regenerates.
 - A "Variants" report. Variants stay in the per-scenario production report. A dedicated variant-evolution view becomes interesting only when ≥2 variants share a version timeline; today none do.
 
+## Refinement 2 (2026-06-22)
+
+The first refinement classified a submission's track from `compilation_config.min_plutus_version`: a submission was preview when its required runtime exceeded `CAPE_CURRENT_PLUTUS_VERSION`. In practice this turned out to be brittle:
+
+- Plinth_Unisay had four submissions on the `default` path (`Plinth_1.45.0.0_Unisay`, `Plinth_1.61.0.0_Unisay`, `Plinth_1.64.0.0_Unisay`, `Plinth_1.65.0.0_Unisay`) but only one of them — 1.61 — was authored with `min_plutus_version: "1.61.0.0"`. 1.64 and 1.65 default ship UPLC compatible with the mainnet cost model, so their metadata leaves `min_plutus_version` unset. The accidental result: the preview teaser column showed Plinth 1.61, not the most recent preview compilation.
+- The author's actual intent for a given submission is "is this an alternative mainnet artifact or a preview-only artifact?". Reading that intent off a runtime version number is indirect; reading it off the directory name is explicit.
+
+### New convention: explicit `_preview` variant suffix
+
+Per `(scenario, compiler, version, author)` the author may now ship two submissions:
+
+- `<Compiler>_<Version>_<Handle>/` — variant `default`, the mainnet artifact (no `min_plutus_version` required).
+- `<Compiler>_<Version>_<Handle>_preview/` — variant `preview`, the preview artifact (typically with `min_plutus_version` set, executed via `cape submission measure --preview`).
+
+Track classification in `build_evolution_stats` now reads directly from the variant suffix:
+
+- mainnet timeline ← `.variant == "default"`
+- preview teaser column ← `.variant == "preview"`
+
+`min_plutus_version` retains its operational role: `cape submission verify --all` still skips preview submissions via `cape_is_preview_submission`, and `cape submission measure --preview` still consumes them. But it no longer steers the report.
+
+### Rename actions taken in this refinement
+
+- `Plinth_1.61.0.0_Unisay/` → `Plinth_1.61.0.0_Unisay_preview/` (7 scenarios). The 1.61 default release was always a preview submission — moving it onto the `_preview` path matches author intent.
+- `Plinth_1.64.0.0_Unisay_builtincasing/` → `Plinth_1.64.0.0_Unisay_preview/` (7 scenarios). The `_builtincasing` label described the implementation strategy (BuiltinCasing extension) but failed to express the track-level intent that the submission targets preview runtime. The `_preview` suffix is the track-level statement; per-implementation experimentation belongs in additional variants (`_builtincasing`, `_vanrossem`, `_prepacked`, …) on either track.
+- Two pre-existing filename mismatches were corrected along with the renames: `factorial_naive_recursion/.../factorial.uplc` → `factorial_naive_recursion.uplc`, `fibonacci_naive_recursion/.../fibonacci.uplc` → `fibonacci_naive_recursion.uplc`. These date to the pre-#203 dual naming convention; the variant rename was the natural occasion to normalize them.
+
+### Why this is not the same as Option 3 ("variant in URL")
+
+Option 3 in the original "Considered Options" treated each variant as its own page in the URL space. The current convention does the opposite: variant naming changes only the data-model classification (which timeline a submission belongs to), not the routing key — the page is still `compilers/<Compiler>_<Author>.html`. Two submissions `default` and `_preview` for the same `(compiler, version, author)` render as two columns on a single page, not two URLs.
+
+### Consequences
+
+- The mainnet timeline now expresses "how has the author's mainnet-targeted Plinth artifact evolved across releases?" rather than "all Plinth versions sorted, regardless of compatibility."
+- The preview teaser shows the latest `_preview` submission for the author. After Plinth 1.65 preview submissions land (delegated separately), the teaser auto-promotes from 1.64 to 1.65.
+- The naming convention is enforceable by humans (review-time check of directory names) without needing to inspect `metadata.json`.
+- Backward break for anyone with `pr-*/evolution/.../Plinth_1.61.0.0_Unisay/...` bookmarks — the directory is gone. PR-preview deployments are short-lived; mainline pages refresh on the next CI run.
+
 ## Links
 
 - Issue: [#204 — Redesign preview report as a per-compiler version-evolution view](https://github.com/IntersectMBO/UPLC-CAPE/issues/204)
