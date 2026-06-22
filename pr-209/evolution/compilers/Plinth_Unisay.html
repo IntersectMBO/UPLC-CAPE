@@ -82,17 +82,12 @@
             color: #0369a1;
             box-shadow: 0 1px 2px rgba(0,0,0,0.1);
         }
-        .variant-section {
+        .timeline-section {
             background: white;
             border-radius: 10px;
             padding: 24px;
             margin-bottom: 32px;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        }
-        .variant-section h2 {
-            color: #0369a1;
-            margin: 0 0 8px 0;
-            font-size: 1.25em;
         }
         .version-chips {
             color: #6c757d;
@@ -107,6 +102,28 @@
             font-size: 0.85em;
             background: #e2e8f0;
             color: #334155;
+        }
+        .version-chip.preview {
+            background: #fef3c7;
+            color: #92400e;
+        }
+        .preview-divider {
+            display: inline-block;
+            margin: 0 6px;
+            color: #94a3b8;
+        }
+        .preview-badge {
+            display: inline-block;
+            padding: 1px 6px;
+            margin-left: 6px;
+            border-radius: 3px;
+            background: #f59e0b;
+            color: white;
+            font-size: 0.7em;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            vertical-align: middle;
         }
         .scenario {
             margin-top: 20px;
@@ -133,6 +150,8 @@
         th { color: #6c757d; font-size: 0.8em; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600; }
         th:first-child, td:first-child { text-align: left; }
         td.metric-name { font-weight: 500; color: #333; }
+        th.preview-col, td.preview-cell { background: #fffbeb; }
+        th.preview-col { color: #92400e; }
         .cell-value { display: block; font-variant-numeric: tabular-nums; }
         .delta {
             display: block;
@@ -161,7 +180,7 @@
     </div>
 
     <div class="evolution-banner">
-        <strong>EVOLUTION</strong> &mdash; Full version timeline for this compiler/author across all submissions (production + preview). Deltas highlight the improvement signal between releases.
+        <strong>EVOLUTION</strong> &mdash; Default-variant mainnet timeline for this compiler/author. Deltas highlight improvement between releases. The rightmost <span style="background:#f59e0b;color:white;padding:0 4px;border-radius:2px;font-size:0.85em;font-weight:700;">preview</span> column (if present) is a sneak peek at an upcoming Plutus version; its delta is computed against the latest mainnet column.
     </div>
 
     <div class="header">
@@ -172,19 +191,19 @@
     </div>
 
     <div class="baseline-toggle">
-        <span class="label">Baseline</span>
+        <span class="label">Mainnet baseline</span>
         <button type="button" data-baseline="prev"  class="active">vs Previous</button>
         <button type="button" data-baseline="first">vs First</button>
     </div>
 
-    
-    <section class="variant-section">
-        <h2>Variant: default</h2>
+    <section class="timeline-section">
         <div class="version-chips">
-            <span class="version-chip">1.45.0.0</span> &rarr; <span class="version-chip">1.61.0.0</span> &rarr; <span class="version-chip">1.64.0.0</span> &rarr; <span class="version-chip">1.65.0.0</span>
+            <span class="version-chip">1.45.0.0</span> &rarr; <span class="version-chip">1.64.0.0</span> &rarr; <span class="version-chip">1.65.0.0</span>
+            <span class="preview-divider">&middot;</span><span class="version-chip preview">1.61.0.0</span><span class="preview-badge">preview</span>
             &middot; 7 scenarios with evolution
         </div>
 
+        
         
         
         <div class="scenario">
@@ -193,7 +212,8 @@
                 <thead>
                     <tr>
                         <th>Metric</th>
-                        <th>1.45.0.0</th><th>1.61.0.0</th><th>1.64.0.0</th><th>1.65.0.0</th>
+                        <th>1.45.0.0</th><th>1.64.0.0</th><th>1.65.0.0</th>
+                        <th class="preview-col">1.61.0.0 <span class="preview-badge">preview</span></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -207,14 +227,8 @@
                         </td>
                         
                         <td>
-                            <span class="cell-value" data-value="22731572">22731572</span>
-                            <span class="delta delta-prev delta-negative">-38.0%</span>
-                            <span class="delta delta-first delta-negative">-38.0%</span>
-                        </td>
-                        
-                        <td>
                             <span class="cell-value" data-value="29228998">29228998</span>
-                            <span class="delta delta-prev delta-positive">+28.6%</span>
+                            <span class="delta delta-prev delta-negative">-20.3%</span>
                             <span class="delta delta-first delta-negative">-20.3%</span>
                         </td>
                         
@@ -222,6 +236,12 @@
                             <span class="cell-value" data-value="29148998">29148998</span>
                             <span class="delta delta-prev delta-negative">-0.3%</span>
                             <span class="delta delta-first delta-negative">-20.5%</span>
+                        </td>
+                        
+                        
+                        <td class="preview-cell">
+                            <span class="cell-value" data-value="22731572">22731572</span>
+                            <span class="delta delta-negative">-22.0%</span>
                         </td>
                         
                     </tr>
@@ -235,14 +255,8 @@
                         </td>
                         
                         <td>
-                            <span class="cell-value" data-value="96296">96296</span>
-                            <span class="delta delta-prev delta-negative">-37.7%</span>
-                            <span class="delta delta-first delta-negative">-37.7%</span>
-                        </td>
-                        
-                        <td>
                             <span class="cell-value" data-value="108057">108057</span>
-                            <span class="delta delta-prev delta-positive">+12.2%</span>
+                            <span class="delta delta-prev delta-negative">-30.1%</span>
                             <span class="delta delta-first delta-negative">-30.1%</span>
                         </td>
                         
@@ -250,6 +264,12 @@
                             <span class="cell-value" data-value="107557">107557</span>
                             <span class="delta delta-prev delta-negative">-0.5%</span>
                             <span class="delta delta-first delta-negative">-30.4%</span>
+                        </td>
+                        
+                        
+                        <td class="preview-cell">
+                            <span class="cell-value" data-value="96296">96296</span>
+                            <span class="delta delta-negative">-10.5%</span>
                         </td>
                         
                     </tr>
@@ -263,14 +283,8 @@
                         </td>
                         
                         <td>
-                            <span class="cell-value" data-value="46">46</span>
-                            <span class="delta delta-prev delta-negative">-17.9%</span>
-                            <span class="delta delta-first delta-negative">-17.9%</span>
-                        </td>
-                        
-                        <td>
                             <span class="cell-value" data-value="604">604</span>
-                            <span class="delta delta-prev delta-positive">+1213.0%</span>
+                            <span class="delta delta-prev delta-positive">+978.6%</span>
                             <span class="delta delta-first delta-positive">+978.6%</span>
                         </td>
                         
@@ -278,6 +292,12 @@
                             <span class="cell-value" data-value="595">595</span>
                             <span class="delta delta-prev delta-negative">-1.5%</span>
                             <span class="delta delta-first delta-positive">+962.5%</span>
+                        </td>
+                        
+                        
+                        <td class="preview-cell">
+                            <span class="cell-value" data-value="46">46</span>
+                            <span class="delta delta-negative">-92.3%</span>
                         </td>
                         
                     </tr>
@@ -291,14 +311,8 @@
                         </td>
                         
                         <td>
-                            <span class="cell-value" data-value="36">36</span>
-                            <span class="delta delta-prev delta-negative">-36.8%</span>
-                            <span class="delta delta-first delta-negative">-36.8%</span>
-                        </td>
-                        
-                        <td>
                             <span class="cell-value" data-value="570">570</span>
-                            <span class="delta delta-prev delta-positive">+1483.3%</span>
+                            <span class="delta delta-prev delta-positive">+900.0%</span>
                             <span class="delta delta-first delta-positive">+900.0%</span>
                         </td>
                         
@@ -306,6 +320,12 @@
                             <span class="cell-value" data-value="544">544</span>
                             <span class="delta delta-prev delta-negative">-4.6%</span>
                             <span class="delta delta-first delta-positive">+854.4%</span>
+                        </td>
+                        
+                        
+                        <td class="preview-cell">
+                            <span class="cell-value" data-value="36">36</span>
+                            <span class="delta delta-negative">-93.4%</span>
                         </td>
                         
                     </tr>
@@ -319,14 +339,8 @@
                         </td>
                         
                         <td>
-                            <span class="cell-value" data-value="7886">7886</span>
-                            <span class="delta delta-prev delta-negative">-36.4%</span>
-                            <span class="delta delta-first delta-negative">-36.4%</span>
-                        </td>
-                        
-                        <td>
                             <span class="cell-value" data-value="17403">17403</span>
-                            <span class="delta delta-prev delta-positive">+120.7%</span>
+                            <span class="delta delta-prev delta-positive">+40.3%</span>
                             <span class="delta delta-first delta-positive">+40.3%</span>
                         </td>
                         
@@ -334,6 +348,12 @@
                             <span class="cell-value" data-value="17233">17233</span>
                             <span class="delta delta-prev delta-negative">-1.0%</span>
                             <span class="delta delta-first delta-positive">+39.0%</span>
+                        </td>
+                        
+                        
+                        <td class="preview-cell">
+                            <span class="cell-value" data-value="7886">7886</span>
+                            <span class="delta delta-negative">-54.2%</span>
                         </td>
                         
                     </tr>
@@ -347,7 +367,8 @@
                 <thead>
                     <tr>
                         <th>Metric</th>
-                        <th>1.45.0.0</th><th>1.61.0.0</th><th>1.64.0.0</th><th>1.65.0.0</th>
+                        <th>1.45.0.0</th><th>1.64.0.0</th><th>1.65.0.0</th>
+                        <th class="preview-col">1.61.0.0 <span class="preview-badge">preview</span></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -361,14 +382,8 @@
                         </td>
                         
                         <td>
-                            <span class="cell-value" data-value="28019280">28019280</span>
-                            <span class="delta delta-prev delta-negative">-33.7%</span>
-                            <span class="delta delta-first delta-negative">-33.7%</span>
-                        </td>
-                        
-                        <td>
                             <span class="cell-value" data-value="37481975">37481975</span>
-                            <span class="delta delta-prev delta-positive">+33.8%</span>
+                            <span class="delta delta-prev delta-negative">-11.4%</span>
                             <span class="delta delta-first delta-negative">-11.4%</span>
                         </td>
                         
@@ -376,6 +391,12 @@
                             <span class="cell-value" data-value="37241975">37241975</span>
                             <span class="delta delta-prev delta-negative">-0.6%</span>
                             <span class="delta delta-first delta-negative">-11.9%</span>
+                        </td>
+                        
+                        
+                        <td class="preview-cell">
+                            <span class="cell-value" data-value="28019280">28019280</span>
+                            <span class="delta delta-negative">-24.8%</span>
                         </td>
                         
                     </tr>
@@ -389,14 +410,8 @@
                         </td>
                         
                         <td>
-                            <span class="cell-value" data-value="107235">107235</span>
-                            <span class="delta delta-prev delta-negative">-37.0%</span>
-                            <span class="delta delta-first delta-negative">-37.0%</span>
-                        </td>
-                        
-                        <td>
                             <span class="cell-value" data-value="140290">140290</span>
-                            <span class="delta delta-prev delta-positive">+30.8%</span>
+                            <span class="delta delta-prev delta-negative">-17.6%</span>
                             <span class="delta delta-first delta-negative">-17.6%</span>
                         </td>
                         
@@ -404,6 +419,12 @@
                             <span class="cell-value" data-value="138790">138790</span>
                             <span class="delta delta-prev delta-negative">-1.1%</span>
                             <span class="delta delta-first delta-negative">-18.5%</span>
+                        </td>
+                        
+                        
+                        <td class="preview-cell">
+                            <span class="cell-value" data-value="107235">107235</span>
+                            <span class="delta delta-negative">-22.7%</span>
                         </td>
                         
                     </tr>
@@ -417,14 +438,8 @@
                         </td>
                         
                         <td>
-                            <span class="cell-value" data-value="34">34</span>
-                            <span class="delta delta-prev delta-negative">-19.0%</span>
-                            <span class="delta delta-first delta-negative">-19.0%</span>
-                        </td>
-                        
-                        <td>
                             <span class="cell-value" data-value="40">40</span>
-                            <span class="delta delta-prev delta-positive">+17.6%</span>
+                            <span class="delta delta-prev delta-negative">-4.8%</span>
                             <span class="delta delta-first delta-negative">-4.8%</span>
                         </td>
                         
@@ -432,6 +447,12 @@
                             <span class="cell-value" data-value="42">42</span>
                             <span class="delta delta-prev delta-positive">+5.0%</span>
                             <span class="delta delta-first delta-zero">0.0%</span>
+                        </td>
+                        
+                        
+                        <td class="preview-cell">
+                            <span class="cell-value" data-value="34">34</span>
+                            <span class="delta delta-negative">-19.0%</span>
                         </td>
                         
                     </tr>
@@ -445,14 +466,8 @@
                         </td>
                         
                         <td>
-                            <span class="cell-value" data-value="27">27</span>
-                            <span class="delta delta-prev delta-negative">-32.5%</span>
-                            <span class="delta delta-first delta-negative">-32.5%</span>
-                        </td>
-                        
-                        <td>
                             <span class="cell-value" data-value="33">33</span>
-                            <span class="delta delta-prev delta-positive">+22.2%</span>
+                            <span class="delta delta-prev delta-negative">-17.5%</span>
                             <span class="delta delta-first delta-negative">-17.5%</span>
                         </td>
                         
@@ -460,6 +475,12 @@
                             <span class="cell-value" data-value="36">36</span>
                             <span class="delta delta-prev delta-positive">+9.1%</span>
                             <span class="delta delta-first delta-negative">-10.0%</span>
+                        </td>
+                        
+                        
+                        <td class="preview-cell">
+                            <span class="cell-value" data-value="27">27</span>
+                            <span class="delta delta-negative">-25.0%</span>
                         </td>
                         
                     </tr>
@@ -473,14 +494,8 @@
                         </td>
                         
                         <td>
-                            <span class="cell-value" data-value="8718">8718</span>
-                            <span class="delta delta-prev delta-negative">-35.4%</span>
-                            <span class="delta delta-first delta-negative">-35.4%</span>
-                        </td>
-                        
-                        <td>
                             <span class="cell-value" data-value="11398">11398</span>
-                            <span class="delta delta-prev delta-positive">+30.7%</span>
+                            <span class="delta delta-prev delta-negative">-15.6%</span>
                             <span class="delta delta-first delta-negative">-15.6%</span>
                         </td>
                         
@@ -488,6 +503,12 @@
                             <span class="cell-value" data-value="11324">11324</span>
                             <span class="delta delta-prev delta-negative">-0.6%</span>
                             <span class="delta delta-first delta-negative">-16.1%</span>
+                        </td>
+                        
+                        
+                        <td class="preview-cell">
+                            <span class="cell-value" data-value="8718">8718</span>
+                            <span class="delta delta-negative">-23.0%</span>
                         </td>
                         
                     </tr>
@@ -501,7 +522,8 @@
                 <thead>
                     <tr>
                         <th>Metric</th>
-                        <th>1.45.0.0</th><th>1.61.0.0</th><th>1.64.0.0</th><th>1.65.0.0</th>
+                        <th>1.45.0.0</th><th>1.64.0.0</th><th>1.65.0.0</th>
+                        <th class="preview-col">1.61.0.0 <span class="preview-badge">preview</span></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -515,14 +537,8 @@
                         </td>
                         
                         <td>
-                            <span class="cell-value" data-value="59206243">59206243</span>
-                            <span class="delta delta-prev delta-negative">-30.4%</span>
-                            <span class="delta delta-first delta-negative">-30.4%</span>
-                        </td>
-                        
-                        <td>
                             <span class="cell-value" data-value="91379406">91379406</span>
-                            <span class="delta delta-prev delta-positive">+54.3%</span>
+                            <span class="delta delta-prev delta-positive">+7.4%</span>
                             <span class="delta delta-first delta-positive">+7.4%</span>
                         </td>
                         
@@ -530,6 +546,12 @@
                             <span class="cell-value" data-value="75486958">75486958</span>
                             <span class="delta delta-prev delta-negative">-17.4%</span>
                             <span class="delta delta-first delta-negative">-11.3%</span>
+                        </td>
+                        
+                        
+                        <td class="preview-cell">
+                            <span class="cell-value" data-value="59206243">59206243</span>
+                            <span class="delta delta-negative">-21.6%</span>
                         </td>
                         
                     </tr>
@@ -543,14 +565,8 @@
                         </td>
                         
                         <td>
-                            <span class="cell-value" data-value="243219">243219</span>
-                            <span class="delta delta-prev delta-negative">-32.1%</span>
-                            <span class="delta delta-first delta-negative">-32.1%</span>
-                        </td>
-                        
-                        <td>
                             <span class="cell-value" data-value="355606">355606</span>
-                            <span class="delta delta-prev delta-positive">+46.2%</span>
+                            <span class="delta delta-prev delta-negative">-0.7%</span>
                             <span class="delta delta-first delta-negative">-0.7%</span>
                         </td>
                         
@@ -558,6 +574,12 @@
                             <span class="cell-value" data-value="297218">297218</span>
                             <span class="delta delta-prev delta-negative">-16.4%</span>
                             <span class="delta delta-first delta-negative">-17.0%</span>
+                        </td>
+                        
+                        
+                        <td class="preview-cell">
+                            <span class="cell-value" data-value="243219">243219</span>
+                            <span class="delta delta-negative">-18.2%</span>
                         </td>
                         
                     </tr>
@@ -571,14 +593,8 @@
                         </td>
                         
                         <td>
-                            <span class="cell-value" data-value="63">63</span>
-                            <span class="delta delta-prev delta-negative">-13.7%</span>
-                            <span class="delta delta-first delta-negative">-13.7%</span>
-                        </td>
-                        
-                        <td>
                             <span class="cell-value" data-value="81">81</span>
-                            <span class="delta delta-prev delta-positive">+28.6%</span>
+                            <span class="delta delta-prev delta-positive">+11.0%</span>
                             <span class="delta delta-first delta-positive">+11.0%</span>
                         </td>
                         
@@ -586,6 +602,12 @@
                             <span class="cell-value" data-value="76">76</span>
                             <span class="delta delta-prev delta-negative">-6.2%</span>
                             <span class="delta delta-first delta-positive">+4.1%</span>
+                        </td>
+                        
+                        
+                        <td class="preview-cell">
+                            <span class="cell-value" data-value="63">63</span>
+                            <span class="delta delta-negative">-17.1%</span>
                         </td>
                         
                     </tr>
@@ -599,14 +621,8 @@
                         </td>
                         
                         <td>
-                            <span class="cell-value" data-value="50">50</span>
-                            <span class="delta delta-prev delta-negative">-33.3%</span>
-                            <span class="delta delta-first delta-negative">-33.3%</span>
-                        </td>
-                        
-                        <td>
                             <span class="cell-value" data-value="68">68</span>
-                            <span class="delta delta-prev delta-positive">+36.0%</span>
+                            <span class="delta delta-prev delta-negative">-9.3%</span>
                             <span class="delta delta-first delta-negative">-9.3%</span>
                         </td>
                         
@@ -614,6 +630,12 @@
                             <span class="cell-value" data-value="64">64</span>
                             <span class="delta delta-prev delta-negative">-5.9%</span>
                             <span class="delta delta-first delta-negative">-14.7%</span>
+                        </td>
+                        
+                        
+                        <td class="preview-cell">
+                            <span class="cell-value" data-value="50">50</span>
+                            <span class="delta delta-negative">-21.9%</span>
                         </td>
                         
                     </tr>
@@ -627,14 +649,8 @@
                         </td>
                         
                         <td>
-                            <span class="cell-value" data-value="19248">19248</span>
-                            <span class="delta delta-prev delta-negative">-31.0%</span>
-                            <span class="delta delta-first delta-negative">-31.0%</span>
-                        </td>
-                        
-                        <td>
                             <span class="cell-value" data-value="28322">28322</span>
-                            <span class="delta delta-prev delta-positive">+47.1%</span>
+                            <span class="delta delta-prev delta-positive">+1.6%</span>
                             <span class="delta delta-first delta-positive">+1.6%</span>
                         </td>
                         
@@ -642,6 +658,12 @@
                             <span class="cell-value" data-value="23733">23733</span>
                             <span class="delta delta-prev delta-negative">-16.2%</span>
                             <span class="delta delta-first delta-negative">-14.9%</span>
+                        </td>
+                        
+                        
+                        <td class="preview-cell">
+                            <span class="cell-value" data-value="19248">19248</span>
+                            <span class="delta delta-negative">-18.9%</span>
                         </td>
                         
                     </tr>
@@ -655,7 +677,8 @@
                 <thead>
                     <tr>
                         <th>Metric</th>
-                        <th>1.45.0.0</th><th>1.61.0.0</th><th>1.64.0.0</th><th>1.65.0.0</th>
+                        <th>1.45.0.0</th><th>1.64.0.0</th><th>1.65.0.0</th>
+                        <th class="preview-col">1.61.0.0 <span class="preview-badge">preview</span></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -669,14 +692,8 @@
                         </td>
                         
                         <td>
-                            <span class="cell-value" data-value="129093086599">129093086599</span>
-                            <span class="delta delta-prev delta-negative">-39.5%</span>
-                            <span class="delta delta-first delta-negative">-39.5%</span>
-                        </td>
-                        
-                        <td>
                             <span class="cell-value" data-value="175016233630">175016233630</span>
-                            <span class="delta delta-prev delta-positive">+35.6%</span>
+                            <span class="delta delta-prev delta-negative">-18.0%</span>
                             <span class="delta delta-first delta-negative">-18.0%</span>
                         </td>
                         
@@ -684,6 +701,12 @@
                             <span class="cell-value" data-value="170746233630">170746233630</span>
                             <span class="delta delta-prev delta-negative">-2.4%</span>
                             <span class="delta delta-first delta-negative">-20.0%</span>
+                        </td>
+                        
+                        
+                        <td class="preview-cell">
+                            <span class="cell-value" data-value="129093086599">129093086599</span>
+                            <span class="delta delta-negative">-24.4%</span>
                         </td>
                         
                     </tr>
@@ -697,14 +720,8 @@
                         </td>
                         
                         <td>
-                            <span class="cell-value" data-value="481520743">481520743</span>
-                            <span class="delta delta-prev delta-negative">-45.4%</span>
-                            <span class="delta delta-first delta-negative">-45.4%</span>
-                        </td>
-                        
-                        <td>
                             <span class="cell-value" data-value="641939062">641939062</span>
-                            <span class="delta delta-prev delta-positive">+33.3%</span>
+                            <span class="delta delta-prev delta-negative">-27.2%</span>
                             <span class="delta delta-first delta-negative">-27.2%</span>
                         </td>
                         
@@ -712,6 +729,12 @@
                             <span class="cell-value" data-value="615251562">615251562</span>
                             <span class="delta delta-prev delta-negative">-4.2%</span>
                             <span class="delta delta-first delta-negative">-30.3%</span>
+                        </td>
+                        
+                        
+                        <td class="preview-cell">
+                            <span class="cell-value" data-value="481520743">481520743</span>
+                            <span class="delta delta-negative">-21.7%</span>
                         </td>
                         
                     </tr>
@@ -725,14 +748,8 @@
                         </td>
                         
                         <td>
-                            <span class="cell-value" data-value="43">43</span>
-                            <span class="delta delta-prev delta-negative">-15.7%</span>
-                            <span class="delta delta-first delta-negative">-15.7%</span>
-                        </td>
-                        
-                        <td>
                             <span class="cell-value" data-value="48">48</span>
-                            <span class="delta delta-prev delta-positive">+11.6%</span>
+                            <span class="delta delta-prev delta-negative">-5.9%</span>
                             <span class="delta delta-first delta-negative">-5.9%</span>
                         </td>
                         
@@ -740,6 +757,12 @@
                             <span class="cell-value" data-value="50">50</span>
                             <span class="delta delta-prev delta-positive">+4.2%</span>
                             <span class="delta delta-first delta-negative">-2.0%</span>
+                        </td>
+                        
+                        
+                        <td class="preview-cell">
+                            <span class="cell-value" data-value="43">43</span>
+                            <span class="delta delta-negative">-14.0%</span>
                         </td>
                         
                     </tr>
@@ -753,14 +776,8 @@
                         </td>
                         
                         <td>
-                            <span class="cell-value" data-value="36">36</span>
-                            <span class="delta delta-prev delta-negative">-26.5%</span>
-                            <span class="delta delta-first delta-negative">-26.5%</span>
-                        </td>
-                        
-                        <td>
                             <span class="cell-value" data-value="42">42</span>
-                            <span class="delta delta-prev delta-positive">+16.7%</span>
+                            <span class="delta delta-prev delta-negative">-14.3%</span>
                             <span class="delta delta-first delta-negative">-14.3%</span>
                         </td>
                         
@@ -768,6 +785,12 @@
                             <span class="cell-value" data-value="45">45</span>
                             <span class="delta delta-prev delta-positive">+7.1%</span>
                             <span class="delta delta-first delta-negative">-8.2%</span>
+                        </td>
+                        
+                        
+                        <td class="preview-cell">
+                            <span class="cell-value" data-value="36">36</span>
+                            <span class="delta delta-negative">-20.0%</span>
                         </td>
                         
                     </tr>
@@ -781,14 +804,8 @@
                         </td>
                         
                         <td>
-                            <span class="cell-value" data-value="37092004">37092004</span>
-                            <span class="delta delta-prev delta-negative">-44.0%</span>
-                            <span class="delta delta-first delta-negative">-44.0%</span>
-                        </td>
-                        
-                        <td>
                             <span class="cell-value" data-value="49659275">49659275</span>
-                            <span class="delta delta-prev delta-positive">+33.9%</span>
+                            <span class="delta delta-prev delta-negative">-25.1%</span>
                             <span class="delta delta-first delta-negative">-25.1%</span>
                         </td>
                         
@@ -796,6 +813,12 @@
                             <span class="cell-value" data-value="47811569">47811569</span>
                             <span class="delta delta-prev delta-negative">-3.7%</span>
                             <span class="delta delta-first delta-negative">-27.9%</span>
+                        </td>
+                        
+                        
+                        <td class="preview-cell">
+                            <span class="cell-value" data-value="37092004">37092004</span>
+                            <span class="delta delta-negative">-22.4%</span>
                         </td>
                         
                     </tr>
@@ -809,7 +832,8 @@
                 <thead>
                     <tr>
                         <th>Metric</th>
-                        <th>1.45.0.0</th><th>1.61.0.0</th><th>1.64.0.0</th><th>1.65.0.0</th>
+                        <th>1.45.0.0</th><th>1.64.0.0</th><th>1.65.0.0</th>
+                        <th class="preview-col">1.61.0.0 <span class="preview-badge">preview</span></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -823,14 +847,8 @@
                         </td>
                         
                         <td>
-                            <span class="cell-value" data-value="276203514">276203514</span>
-                            <span class="delta delta-prev delta-negative">-37.4%</span>
-                            <span class="delta delta-first delta-negative">-37.4%</span>
-                        </td>
-                        
-                        <td>
                             <span class="cell-value" data-value="356473569">356473569</span>
-                            <span class="delta delta-prev delta-positive">+29.1%</span>
+                            <span class="delta delta-prev delta-negative">-19.2%</span>
                             <span class="delta delta-first delta-negative">-19.2%</span>
                         </td>
                         
@@ -838,6 +856,12 @@
                             <span class="cell-value" data-value="307129569">307129569</span>
                             <span class="delta delta-prev delta-negative">-13.8%</span>
                             <span class="delta delta-first delta-negative">-30.4%</span>
+                        </td>
+                        
+                        
+                        <td class="preview-cell">
+                            <span class="cell-value" data-value="276203514">276203514</span>
+                            <span class="delta delta-negative">-10.1%</span>
                         </td>
                         
                     </tr>
@@ -851,14 +875,8 @@
                         </td>
                         
                         <td>
-                            <span class="cell-value" data-value="1041493">1041493</span>
-                            <span class="delta delta-prev delta-negative">-28.1%</span>
-                            <span class="delta delta-first delta-negative">-28.1%</span>
-                        </td>
-                        
-                        <td>
                             <span class="cell-value" data-value="1034842">1034842</span>
-                            <span class="delta delta-prev delta-negative">-0.6%</span>
+                            <span class="delta delta-prev delta-negative">-28.5%</span>
                             <span class="delta delta-first delta-negative">-28.5%</span>
                         </td>
                         
@@ -866,6 +884,12 @@
                             <span class="cell-value" data-value="726442">726442</span>
                             <span class="delta delta-prev delta-negative">-29.8%</span>
                             <span class="delta delta-first delta-negative">-49.8%</span>
+                        </td>
+                        
+                        
+                        <td class="preview-cell">
+                            <span class="cell-value" data-value="1041493">1041493</span>
+                            <span class="delta delta-positive">+43.4%</span>
                         </td>
                         
                     </tr>
@@ -879,14 +903,8 @@
                         </td>
                         
                         <td>
-                            <span class="cell-value" data-value="799">799</span>
-                            <span class="delta delta-prev delta-negative">-48.7%</span>
-                            <span class="delta delta-first delta-negative">-48.7%</span>
-                        </td>
-                        
-                        <td>
                             <span class="cell-value" data-value="4135">4135</span>
-                            <span class="delta delta-prev delta-positive">+417.5%</span>
+                            <span class="delta delta-prev delta-positive">+165.6%</span>
                             <span class="delta delta-first delta-positive">+165.6%</span>
                         </td>
                         
@@ -894,6 +912,12 @@
                             <span class="cell-value" data-value="3815">3815</span>
                             <span class="delta delta-prev delta-negative">-7.7%</span>
                             <span class="delta delta-first delta-positive">+145.0%</span>
+                        </td>
+                        
+                        
+                        <td class="preview-cell">
+                            <span class="cell-value" data-value="799">799</span>
+                            <span class="delta delta-negative">-79.1%</span>
                         </td>
                         
                     </tr>
@@ -907,14 +931,8 @@
                         </td>
                         
                         <td>
-                            <span class="cell-value" data-value="881">881</span>
-                            <span class="delta delta-prev delta-negative">-34.2%</span>
-                            <span class="delta delta-first delta-negative">-34.2%</span>
-                        </td>
-                        
-                        <td>
                             <span class="cell-value" data-value="4580">4580</span>
-                            <span class="delta delta-prev delta-positive">+419.9%</span>
+                            <span class="delta delta-prev delta-positive">+242.3%</span>
                             <span class="delta delta-first delta-positive">+242.3%</span>
                         </td>
                         
@@ -922,6 +940,12 @@
                             <span class="cell-value" data-value="3765">3765</span>
                             <span class="delta delta-prev delta-negative">-17.8%</span>
                             <span class="delta delta-first delta-positive">+181.4%</span>
+                        </td>
+                        
+                        
+                        <td class="preview-cell">
+                            <span class="cell-value" data-value="881">881</span>
+                            <span class="delta delta-negative">-76.6%</span>
                         </td>
                         
                     </tr>
@@ -935,14 +959,8 @@
                         </td>
                         
                         <td>
-                            <span class="cell-value" data-value="91994">91994</span>
-                            <span class="delta delta-prev delta-negative">-33.7%</span>
-                            <span class="delta delta-first delta-negative">-33.7%</span>
-                        </td>
-                        
-                        <td>
                             <span class="cell-value" data-value="147438">147438</span>
-                            <span class="delta delta-prev delta-positive">+60.3%</span>
+                            <span class="delta delta-prev delta-positive">+6.3%</span>
                             <span class="delta delta-first delta-positive">+6.3%</span>
                         </td>
                         
@@ -950,6 +968,12 @@
                             <span class="cell-value" data-value="121285">121285</span>
                             <span class="delta delta-prev delta-negative">-17.7%</span>
                             <span class="delta delta-first delta-negative">-12.6%</span>
+                        </td>
+                        
+                        
+                        <td class="preview-cell">
+                            <span class="cell-value" data-value="91994">91994</span>
+                            <span class="delta delta-negative">-24.2%</span>
                         </td>
                         
                     </tr>
@@ -963,7 +987,8 @@
                 <thead>
                     <tr>
                         <th>Metric</th>
-                        <th>1.45.0.0</th><th>1.61.0.0</th><th>1.64.0.0</th><th>1.65.0.0</th>
+                        <th>1.45.0.0</th><th>1.64.0.0</th><th>1.65.0.0</th>
+                        <th class="preview-col">1.61.0.0 <span class="preview-badge">preview</span></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -977,14 +1002,8 @@
                         </td>
                         
                         <td>
-                            <span class="cell-value" data-value="1746262888">1746262888</span>
-                            <span class="delta delta-prev delta-negative">-36.5%</span>
-                            <span class="delta delta-first delta-negative">-36.5%</span>
-                        </td>
-                        
-                        <td>
                             <span class="cell-value" data-value="2293227790">2293227790</span>
-                            <span class="delta delta-prev delta-positive">+31.3%</span>
+                            <span class="delta delta-prev delta-negative">-16.7%</span>
                             <span class="delta delta-first delta-negative">-16.7%</span>
                         </td>
                         
@@ -992,6 +1011,12 @@
                             <span class="cell-value" data-value="2133083790">2133083790</span>
                             <span class="delta delta-prev delta-negative">-7.0%</span>
                             <span class="delta delta-first delta-negative">-22.5%</span>
+                        </td>
+                        
+                        
+                        <td class="preview-cell">
+                            <span class="cell-value" data-value="1746262888">1746262888</span>
+                            <span class="delta delta-negative">-18.1%</span>
                         </td>
                         
                     </tr>
@@ -1005,14 +1030,8 @@
                         </td>
                         
                         <td>
-                            <span class="cell-value" data-value="6471589">6471589</span>
-                            <span class="delta delta-prev delta-negative">-34.8%</span>
-                            <span class="delta delta-first delta-negative">-34.8%</span>
-                        </td>
-                        
-                        <td>
                             <span class="cell-value" data-value="7859242">7859242</span>
-                            <span class="delta delta-prev delta-positive">+21.4%</span>
+                            <span class="delta delta-prev delta-negative">-20.8%</span>
                             <span class="delta delta-first delta-negative">-20.8%</span>
                         </td>
                         
@@ -1020,6 +1039,12 @@
                             <span class="cell-value" data-value="6858342">6858342</span>
                             <span class="delta delta-prev delta-negative">-12.7%</span>
                             <span class="delta delta-first delta-negative">-30.9%</span>
+                        </td>
+                        
+                        
+                        <td class="preview-cell">
+                            <span class="cell-value" data-value="6471589">6471589</span>
+                            <span class="delta delta-negative">-5.6%</span>
                         </td>
                         
                     </tr>
@@ -1033,14 +1058,8 @@
                         </td>
                         
                         <td>
-                            <span class="cell-value" data-value="1337">1337</span>
-                            <span class="delta delta-prev delta-negative">-53.7%</span>
-                            <span class="delta delta-first delta-negative">-53.7%</span>
-                        </td>
-                        
-                        <td>
                             <span class="cell-value" data-value="1569">1569</span>
-                            <span class="delta delta-prev delta-positive">+17.4%</span>
+                            <span class="delta delta-prev delta-negative">-45.7%</span>
                             <span class="delta delta-first delta-negative">-45.7%</span>
                         </td>
                         
@@ -1048,6 +1067,12 @@
                             <span class="cell-value" data-value="1522">1522</span>
                             <span class="delta delta-prev delta-negative">-3.0%</span>
                             <span class="delta delta-first delta-negative">-47.3%</span>
+                        </td>
+                        
+                        
+                        <td class="preview-cell">
+                            <span class="cell-value" data-value="1337">1337</span>
+                            <span class="delta delta-negative">-12.2%</span>
                         </td>
                         
                     </tr>
@@ -1061,14 +1086,8 @@
                         </td>
                         
                         <td>
-                            <span class="cell-value" data-value="1501">1501</span>
-                            <span class="delta delta-prev delta-negative">-47.1%</span>
-                            <span class="delta delta-first delta-negative">-47.1%</span>
-                        </td>
-                        
-                        <td>
                             <span class="cell-value" data-value="1757">1757</span>
-                            <span class="delta delta-prev delta-positive">+17.1%</span>
+                            <span class="delta delta-prev delta-negative">-38.1%</span>
                             <span class="delta delta-first delta-negative">-38.1%</span>
                         </td>
                         
@@ -1076,6 +1095,12 @@
                             <span class="cell-value" data-value="1610">1610</span>
                             <span class="delta delta-prev delta-negative">-8.4%</span>
                             <span class="delta delta-first delta-negative">-43.3%</span>
+                        </td>
+                        
+                        
+                        <td class="preview-cell">
+                            <span class="cell-value" data-value="1501">1501</span>
+                            <span class="delta delta-negative">-6.8%</span>
                         </td>
                         
                     </tr>
@@ -1089,14 +1114,8 @@
                         </td>
                         
                         <td>
-                            <span class="cell-value" data-value="519372">519372</span>
-                            <span class="delta delta-prev delta-negative">-36.2%</span>
-                            <span class="delta delta-first delta-negative">-36.2%</span>
-                        </td>
-                        
-                        <td>
                             <span class="cell-value" data-value="642355">642355</span>
-                            <span class="delta delta-prev delta-positive">+23.7%</span>
+                            <span class="delta delta-prev delta-negative">-21.1%</span>
                             <span class="delta delta-first delta-negative">-21.1%</span>
                         </td>
                         
@@ -1104,6 +1123,12 @@
                             <span class="cell-value" data-value="572352">572352</span>
                             <span class="delta delta-prev delta-negative">-10.9%</span>
                             <span class="delta delta-first delta-negative">-29.7%</span>
+                        </td>
+                        
+                        
+                        <td class="preview-cell">
+                            <span class="cell-value" data-value="519372">519372</span>
+                            <span class="delta delta-negative">-9.3%</span>
                         </td>
                         
                     </tr>
@@ -1117,7 +1142,8 @@
                 <thead>
                     <tr>
                         <th>Metric</th>
-                        <th>1.45.0.0</th><th>1.61.0.0</th><th>1.64.0.0</th><th>1.65.0.0</th>
+                        <th>1.45.0.0</th><th>1.64.0.0</th><th>1.65.0.0</th>
+                        <th class="preview-col">1.61.0.0 <span class="preview-badge">preview</span></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -1131,14 +1157,8 @@
                         </td>
                         
                         <td>
-                            <span class="cell-value" data-value="1396706874">1396706874</span>
-                            <span class="delta delta-prev delta-negative">-38.2%</span>
-                            <span class="delta delta-first delta-negative">-38.2%</span>
-                        </td>
-                        
-                        <td>
                             <span class="cell-value" data-value="2182085275">2182085275</span>
-                            <span class="delta delta-prev delta-positive">+56.2%</span>
+                            <span class="delta delta-prev delta-negative">-3.5%</span>
                             <span class="delta delta-first delta-negative">-3.5%</span>
                         </td>
                         
@@ -1146,6 +1166,12 @@
                             <span class="cell-value" data-value="2023467315">2023467315</span>
                             <span class="delta delta-prev delta-negative">-7.3%</span>
                             <span class="delta delta-first delta-negative">-10.5%</span>
+                        </td>
+                        
+                        
+                        <td class="preview-cell">
+                            <span class="cell-value" data-value="1396706874">1396706874</span>
+                            <span class="delta delta-negative">-31.0%</span>
                         </td>
                         
                     </tr>
@@ -1159,14 +1185,8 @@
                         </td>
                         
                         <td>
-                            <span class="cell-value" data-value="5567462">5567462</span>
-                            <span class="delta delta-prev delta-negative">-35.0%</span>
-                            <span class="delta delta-first delta-negative">-35.0%</span>
-                        </td>
-                        
-                        <td>
                             <span class="cell-value" data-value="7868448">7868448</span>
-                            <span class="delta delta-prev delta-positive">+41.3%</span>
+                            <span class="delta delta-prev delta-negative">-8.2%</span>
                             <span class="delta delta-first delta-negative">-8.2%</span>
                         </td>
                         
@@ -1174,6 +1194,12 @@
                             <span class="cell-value" data-value="6881738">6881738</span>
                             <span class="delta delta-prev delta-negative">-12.5%</span>
                             <span class="delta delta-first delta-negative">-19.7%</span>
+                        </td>
+                        
+                        
+                        <td class="preview-cell">
+                            <span class="cell-value" data-value="5567462">5567462</span>
+                            <span class="delta delta-negative">-19.1%</span>
                         </td>
                         
                     </tr>
@@ -1187,14 +1213,8 @@
                         </td>
                         
                         <td>
-                            <span class="cell-value" data-value="2264">2264</span>
-                            <span class="delta delta-prev delta-negative">-28.2%</span>
-                            <span class="delta delta-first delta-negative">-28.2%</span>
-                        </td>
-                        
-                        <td>
                             <span class="cell-value" data-value="2623">2623</span>
-                            <span class="delta delta-prev delta-positive">+15.9%</span>
+                            <span class="delta delta-prev delta-negative">-16.8%</span>
                             <span class="delta delta-first delta-negative">-16.8%</span>
                         </td>
                         
@@ -1202,6 +1222,12 @@
                             <span class="cell-value" data-value="2539">2539</span>
                             <span class="delta delta-prev delta-negative">-3.2%</span>
                             <span class="delta delta-first delta-negative">-19.5%</span>
+                        </td>
+                        
+                        
+                        <td class="preview-cell">
+                            <span class="cell-value" data-value="2264">2264</span>
+                            <span class="delta delta-negative">-10.8%</span>
                         </td>
                         
                     </tr>
@@ -1215,14 +1241,8 @@
                         </td>
                         
                         <td>
-                            <span class="cell-value" data-value="2131">2131</span>
-                            <span class="delta delta-prev delta-negative">-37.4%</span>
-                            <span class="delta delta-first delta-negative">-37.4%</span>
-                        </td>
-                        
-                        <td>
                             <span class="cell-value" data-value="2522">2522</span>
-                            <span class="delta delta-prev delta-positive">+18.3%</span>
+                            <span class="delta delta-prev delta-negative">-26.0%</span>
                             <span class="delta delta-first delta-negative">-26.0%</span>
                         </td>
                         
@@ -1230,6 +1250,12 @@
                             <span class="cell-value" data-value="2308">2308</span>
                             <span class="delta delta-prev delta-negative">-8.5%</span>
                             <span class="delta delta-first delta-negative">-32.2%</span>
+                        </td>
+                        
+                        
+                        <td class="preview-cell">
+                            <span class="cell-value" data-value="2131">2131</span>
+                            <span class="delta delta-negative">-7.7%</span>
                         </td>
                         
                     </tr>
@@ -1243,14 +1269,8 @@
                         </td>
                         
                         <td>
-                            <span class="cell-value" data-value="455906">455906</span>
-                            <span class="delta delta-prev delta-negative">-35.3%</span>
-                            <span class="delta delta-first delta-negative">-35.3%</span>
-                        </td>
-                        
-                        <td>
                             <span class="cell-value" data-value="650683">650683</span>
-                            <span class="delta delta-prev delta-positive">+42.7%</span>
+                            <span class="delta delta-prev delta-negative">-7.7%</span>
                             <span class="delta delta-first delta-negative">-7.7%</span>
                         </td>
                         
@@ -1260,16 +1280,21 @@
                             <span class="delta delta-first delta-negative">-17.5%</span>
                         </td>
                         
+                        
+                        <td class="preview-cell">
+                            <span class="cell-value" data-value="455906">455906</span>
+                            <span class="delta delta-negative">-21.5%</span>
+                        </td>
+                        
                     </tr>
                 </tbody>
             </table>
         </div>
         
     </section>
-    
 
     <div class="footer">
-        <p>EVOLUTION &mdash; Generated by UPLC-CAPE on 2026-06-22 12:09:00 CEST &middot; <a href="https://github.com/IntersectMBO/UPLC-CAPE">View on GitHub</a> &middot; <a href="../../index.html">Production report</a></p>
+        <p>EVOLUTION &mdash; Generated by UPLC-CAPE on 2026-06-22 12:53:56 CEST &middot; <a href="https://github.com/IntersectMBO/UPLC-CAPE">View on GitHub</a> &middot; <a href="../../index.html">Production report</a></p>
     </div>
 
     <script>
