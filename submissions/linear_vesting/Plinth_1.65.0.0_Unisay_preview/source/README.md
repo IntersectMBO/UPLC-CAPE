@@ -2,7 +2,7 @@
 
 **Repository**: <https://github.com/Unisay/plinth-cape-submissions>
 
-**Branch**: `yura/plinth-1.65-preview-submissions`
+**Branch**: `main`
 
 **Commit**: `3efc19ad785a7dcb6aead5a936d18654f0649a2b`
 
