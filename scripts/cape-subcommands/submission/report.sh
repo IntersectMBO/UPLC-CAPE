@@ -11,6 +11,8 @@ trap 'code=$?; echo "Error: ${BASH_SOURCE[0]}:${LINENO}: command \"${BASH_COMMAN
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # shellcheck disable=SC1091
 source "$SCRIPT_DIR/../../lib/cape_common.sh"
+# shellcheck disable=SC1091
+source "$SCRIPT_DIR/../../lib/cape_versions.sh"
 cape_detect_root "$SCRIPT_DIR"
 PROJECT_ROOT="${PROJECT_ROOT:-$(cd "$SCRIPT_DIR/../../.." && pwd)}"
 # Prefer installed 'cape', fallback to repo script
@@ -81,7 +83,7 @@ fi
 # Validate benchmark name pattern when provided (lowercase, underscores only)
 valid_benchmark_name() { [[ $1 =~ ^[a-z][a-z0-9_]*[a-z0-9]$|^[a-z]$ ]]; }
 
-# CSV format: benchmark,timestamp,language,version,user,variant,cpu_units,memory_units,script_size_bytes,term_size,execution_fee_lovelace,reference_script_fee_lovelace,total_fee_lovelace,tx_memory_budget_pct,tx_cpu_budget_pct,block_memory_budget_pct,block_cpu_budget_pct,scripts_per_tx,scripts_per_block,submission_dir
+# CSV format: benchmark,timestamp,language,version,user,variant,cpu_units,memory_units,script_size_bytes,term_size,execution_fee_lovelace,reference_script_fee_lovelace,total_fee_lovelace,tx_memory_budget_pct,tx_cpu_budget_pct,block_memory_budget_pct,block_cpu_budget_pct,scripts_per_tx,scripts_per_block,submission_dir,min_plutus_version
 declare -A CSV_COL=(
   [benchmark]=1
   [timestamp]=2
@@ -103,6 +105,7 @@ declare -A CSV_COL=(
   [scripts_per_tx]=18
   [scripts_per_block]=19
   [submission_dir]=20
+  [min_plutus_version]=21
 )
 
 # Helper function to extract a CSV field by column name
@@ -631,115 +634,193 @@ EOF
   fi
 }
 
-# Build compiler comparison stats for preview report (compiler-centric).
-# Correlates production and preview submissions by (benchmark, compiler, author),
-# computes delta percentages. Outputs JSON to stdout.
-build_compiler_comparison_stats() {
-  local current_csv preview_csv
-  current_csv=$($CAPE_CMD submission aggregate --target=current 2> /dev/null | tail -n +2)
-  preview_csv=$($CAPE_CMD submission aggregate --target=preview 2> /dev/null | tail -n +2)
+# Build evolution stats per (compiler, author) for the evolution report.
+# Only the `default` variant is included (variant experiments live in the
+# per-scenario production report, not on a version timeline). Versions are
+# partitioned into mainnet (min_plutus_version absent or ≤ current) and
+# preview (min_plutus_version > current). The mainnet track is rendered as a
+# version chain with delta-vs-previous / delta-vs-first. The latest preview
+# version is rendered as a "sneak peek" teaser column with a single
+# delta-vs-latest-mainnet — its baseline is the latest mainnet column, not
+# the previous overall column.
+build_evolution_stats() {
+  local all_csv
+  all_csv=$($CAPE_CMD submission aggregate 2> /dev/null | tail -n +2)
 
-  if [ -z "$preview_csv" ]; then
-    echo '{"generated_at":"'"$(date -u +"%Y-%m-%dT%H:%M:%SZ")"'","compilers":[]}'
+  local ts
+  ts=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+
+  if [ -z "$all_csv" ]; then
+    jq -n --arg ts "$ts" '{generated_at: $ts, compilers: []}'
     return
   fi
 
-  local result='[]'
+  printf '%s\n' "$all_csv" | jq -Rs \
+    --arg ts "$ts" \
+    --arg current "$CAPE_CURRENT_PLUTUS_VERSION" \
+    '
+    # Format a number to exactly one decimal place as a string. jq normalizes
+    # whole-number floats to integers (e.g. 38.0 → 38), which then survive
+    # JSON round-tripping as a different Go type than 28.6 and break gomplate
+    # template comparisons. Forcing the textual representation here keeps
+    # downstream rendering type-uniform.
+    def fmt1:
+      ((. * 10 | round) / 10) as $q
+      | ($q | tostring) as $s
+      | if ($s | test("\\.")) then $s else $s + ".0" end;
 
-  local compiler_keys
-  compiler_keys=$(echo "$preview_csv" | awk -F, '{print $3 "," $5}' | sort -u)
-
-  while IFS=',' read -r compiler author; do
-    [ -n "$compiler" ] || continue
-
-    local preview_rows prod_version preview_version scenarios_json='[]'
-    preview_rows=$(echo "$preview_csv" | awk -F, -v c="$compiler" -v a="$author" '$3==c && $5==a')
-    # Pick the highest preview version for this (compiler, author) and
-    # restrict to its rows. Without this, mixing two preview versions
-    # under one author (e.g. Plinth 1.61 and 1.64 for the same scenario)
-    # produces a title from the lexicographically-first row and
-    # duplicate benchmark entries in the scenario table.
-    # TODO(#204): replace this single-version view with a per-version
-    # evolution view that shows deltas across all versions.
-    preview_version=$(echo "$preview_rows" | cut -d, -f4 | sort -uV | tail -n1)
-    preview_rows=$(echo "$preview_rows" | awk -F, -v v="$preview_version" '$4==v')
-
-    prod_version=$(echo "$current_csv" | awk -F, -v c="$compiler" -v a="$author" '$3==c && $5==a {print $4; exit}')
-
-    local scenario_count=0
-
-    while IFS= read -r preview_row; do
-      [ -n "$preview_row" ] || continue
-      local benchmark p_cpu p_mem p_size p_term p_fee
-      benchmark=$(echo "$preview_row" | cut -d, -f1)
-      p_cpu=$(echo "$preview_row" | cut -d, -f7)
-      p_mem=$(echo "$preview_row" | cut -d, -f8)
-      p_size=$(echo "$preview_row" | cut -d, -f9)
-      p_term=$(echo "$preview_row" | cut -d, -f10)
-      p_fee=$(echo "$preview_row" | cut -d, -f13)
-
-      local prod_row c_cpu c_mem c_size c_term c_fee
-      prod_row=$(echo "$current_csv" | awk -F, -v b="$benchmark" -v c="$compiler" -v a="$author" '$1==b && $3==c && $5==a' | head -1)
-
-      if [ -n "$prod_row" ]; then
-        c_cpu=$(echo "$prod_row" | cut -d, -f7)
-        c_mem=$(echo "$prod_row" | cut -d, -f8)
-        c_size=$(echo "$prod_row" | cut -d, -f9)
-        c_term=$(echo "$prod_row" | cut -d, -f10)
-        c_fee=$(echo "$prod_row" | cut -d, -f13)
+    # Build a {text, class} delta object or null when undefined. The template
+    # tests truthiness via `{{with}}` and never compares numbers directly.
+    def delta_obj(curr; base):
+      if (base == null) or (base == 0) or (curr == null) then null
       else
-        c_cpu="" c_mem="" c_size="" c_term="" c_fee=""
-      fi
+        (((curr - base) * 100.0 / base)) as $d
+        | ($d | fmt1) as $signed
+        | {
+            text:  (if $d > 0 then "+" + $signed + "%" else $signed + "%" end),
+            class: (if $d > 0 then "delta-positive"
+                    elif $d < 0 then "delta-negative"
+                    else "delta-zero" end)
+          }
+      end;
 
-      local d_cpu d_mem d_size d_term d_fee
-      if [ -n "$c_cpu" ] && [ "$c_cpu" != "0" ]; then
-        d_cpu=$(awk "BEGIN{printf \"%.1f\", (($p_cpu - $c_cpu) / $c_cpu) * 100}")
-        d_mem=$(awk "BEGIN{printf \"%.1f\", (($p_mem - $c_mem) / $c_mem) * 100}")
-        d_fee=$(awk "BEGIN{printf \"%.1f\", (($p_fee - $c_fee) / $c_fee) * 100}")
-      else
-        d_cpu="null" d_mem="null" d_fee="null"
-      fi
-      if [ -n "$c_size" ] && [ "$c_size" != "0" ]; then
-        d_size=$(awk "BEGIN{printf \"%.1f\", (($p_size - $c_size) / $c_size) * 100}")
-        d_term=$(awk "BEGIN{printf \"%.1f\", (($p_term - $c_term) / $c_term) * 100}")
-      else
-        d_size="null" d_term="null"
-      fi
+    def vkey: split(".") | map(tonumber? // 0);
+    # Track classification mirrors cape_is_preview_submission: empty
+    # min_plutus_version → mainnet; anything strictly greater than the
+    # current plutus version → preview.
+    def track(mpv; cur):
+      if (mpv == null) or (mpv == "") then "mainnet"
+      elif (mpv | vkey) > (cur | vkey) then "preview"
+      else "mainnet"
+      end;
 
-      scenarios_json=$(echo "$scenarios_json" | jq \
-        --arg name "$benchmark" \
-        --argjson p_cpu "${p_cpu:-0}" --argjson p_mem "${p_mem:-0}" \
-        --argjson p_size "${p_size:-0}" --argjson p_term "${p_term:-0}" \
-        --argjson p_fee "${p_fee:-0}" \
-        --argjson c_cpu "${c_cpu:-null}" --argjson c_mem "${c_mem:-null}" \
-        --argjson c_size "${c_size:-null}" --argjson c_term "${c_term:-null}" \
-        --argjson c_fee "${c_fee:-null}" \
-        --argjson d_cpu "${d_cpu}" --argjson d_mem "${d_mem}" \
-        --argjson d_size "${d_size}" --argjson d_term "${d_term}" \
-        --argjson d_fee "${d_fee}" \
-        '. + [{
-          name: $name,
-          prod: {cpu_units: $c_cpu, memory_units: $c_mem, script_size_bytes: $c_size, term_size: $c_term, total_fee_lovelace: $c_fee},
-          preview: {cpu_units: $p_cpu, memory_units: $p_mem, script_size_bytes: $p_size, term_size: $p_term, total_fee_lovelace: $p_fee},
-          deltas: {cpu_units_pct: $d_cpu, memory_units_pct: $d_mem, script_size_pct: $d_size, term_size_pct: $d_term, total_fee_pct: $d_fee}
-        }]')
-      scenario_count=$((scenario_count + 1))
-    done <<< "$preview_rows"
+    # Lift one row into the metric record we store per (compiler, author, version, scenario).
+    def metrics_of(r):
+      {
+        version:            r.version,
+        cpu_units:          r.cpu_units,
+        memory_units:       r.memory_units,
+        script_size_bytes:  r.script_size_bytes,
+        term_size:          r.term_size,
+        total_fee_lovelace: r.total_fee_lovelace
+      };
 
-    result=$(echo "$result" | jq \
-      --arg compiler "$compiler" --arg author "$author" \
-      --arg prod_version "${prod_version:-N/A}" --arg preview_version "$preview_version" \
-      --argjson scenario_count "$scenario_count" \
-      --argjson scenarios "$scenarios_json" \
-      '. + [{
-        compiler: $compiler, author: $author,
-        prod_version: $prod_version, preview_version: $preview_version,
-        scenario_count: $scenario_count, scenarios: $scenarios
-      }]')
-  done <<< "$compiler_keys"
-
-  jq -n --argjson compilers "$result" \
-    '{generated_at: "'"$(date -u +"%Y-%m-%dT%H:%M:%SZ")"'", compilers: $compilers}'
+    split("\n")
+    | map(select(length > 0) | split(",") | {
+        benchmark:          .[0],
+        compiler:           .[2],
+        version:            .[3],
+        author:             .[4],
+        variant:            .[5],
+        cpu_units:          (.[6]  | tonumber? // null),
+        memory_units:       (.[7]  | tonumber? // null),
+        script_size_bytes:  (.[8]  | tonumber? // null),
+        term_size:          (.[9]  | tonumber? // null),
+        total_fee_lovelace: (.[12] | tonumber? // null),
+        min_plutus_version: .[20]
+      })
+    | map(. + {track: track(.min_plutus_version; $current)})
+    | map(select(.variant == "default"))
+    | group_by({compiler, author})
+    | map(
+        . as $rows
+        | ($rows | map(select(.track == "mainnet") | .version) | unique | sort_by(vkey)) as $mainnet_versions
+        | ($rows | map(select(.track == "preview") | .version) | unique | sort_by(vkey) | last) as $preview_version
+        | {
+            compiler: .[0].compiler,
+            author:   .[0].author,
+            mainnet_versions: $mainnet_versions,
+            preview_version:  $preview_version,
+            scenarios: (
+              $rows
+              | group_by(.benchmark)
+              | map(
+                  . as $srows
+                  | {
+                      name: .[0].benchmark,
+                      mainnet_values: (
+                        $mainnet_versions | map(
+                          . as $v
+                          | ($srows | map(select(.version == $v and .track == "mainnet")) | .[0]) as $r
+                          | (if $r == null then
+                               { version: $v, cpu_units: null, memory_units: null, script_size_bytes: null, term_size: null, total_fee_lovelace: null }
+                             else metrics_of($r) end)
+                        )
+                      ),
+                      preview_value: (
+                        if $preview_version == null then null
+                        else
+                          ($srows | map(select(.version == $preview_version and .track == "preview")) | .[0]) as $r
+                          | (if $r == null then null else metrics_of($r) end)
+                        end
+                      )
+                    }
+                  # Decorate mainnet_values with delta_prev / delta_first.
+                  | .mainnet_values |= (
+                      . as $vals
+                      | [ range(0; length) as $i
+                          | $vals[$i] as $curr
+                          | ($vals[0:$i] | map(.cpu_units)          | map(select(. != null))) as $cpu_p
+                          | ($vals[0:$i] | map(.memory_units)       | map(select(. != null))) as $mem_p
+                          | ($vals[0:$i] | map(.script_size_bytes)  | map(select(. != null))) as $size_p
+                          | ($vals[0:$i] | map(.term_size)          | map(select(. != null))) as $term_p
+                          | ($vals[0:$i] | map(.total_fee_lovelace) | map(select(. != null))) as $fee_p
+                          | $curr + {
+                              delta_prev: {
+                                cpu_units:          delta_obj($curr.cpu_units;          $cpu_p  | last),
+                                memory_units:       delta_obj($curr.memory_units;       $mem_p  | last),
+                                script_size_bytes:  delta_obj($curr.script_size_bytes;  $size_p | last),
+                                term_size:          delta_obj($curr.term_size;          $term_p | last),
+                                total_fee_lovelace: delta_obj($curr.total_fee_lovelace; $fee_p  | last)
+                              },
+                              delta_first: {
+                                cpu_units:          delta_obj($curr.cpu_units;          $cpu_p  | first),
+                                memory_units:       delta_obj($curr.memory_units;       $mem_p  | first),
+                                script_size_bytes:  delta_obj($curr.script_size_bytes;  $size_p | first),
+                                term_size:          delta_obj($curr.term_size;          $term_p | first),
+                                total_fee_lovelace: delta_obj($curr.total_fee_lovelace; $fee_p  | first)
+                              }
+                            }
+                        ]
+                    )
+                  # Decorate preview_value with delta_vs_latest_mainnet
+                  # (baseline = latest non-null mainnet value for this scenario,
+                  # NOT the previous overall column). Pre-compute the bases at
+                  # the scenario level because inside `.preview_value |= (…)`
+                  # the bound `.` refers to preview_value, not the scenario.
+                  | (.mainnet_values | map(.cpu_units)          | map(select(. != null)) | last) as $cpu_base
+                  | (.mainnet_values | map(.memory_units)       | map(select(. != null)) | last) as $mem_base
+                  | (.mainnet_values | map(.script_size_bytes)  | map(select(. != null)) | last) as $size_base
+                  | (.mainnet_values | map(.term_size)          | map(select(. != null)) | last) as $term_base
+                  | (.mainnet_values | map(.total_fee_lovelace) | map(select(. != null)) | last) as $fee_base
+                  | .preview_value |= (
+                      if . == null then null
+                      else
+                        . + {
+                          delta_vs_latest_mainnet: {
+                            cpu_units:          delta_obj(.cpu_units;          $cpu_base),
+                            memory_units:       delta_obj(.memory_units;       $mem_base),
+                            script_size_bytes:  delta_obj(.script_size_bytes;  $size_base),
+                            term_size:          delta_obj(.term_size;          $term_base),
+                            total_fee_lovelace: delta_obj(.total_fee_lovelace; $fee_base)
+                          }
+                        }
+                      end
+                    )
+                )
+              # A scenario contributes to the timeline only when it has at
+              # least two non-null mainnet points. Preview-only scenarios
+              # carry no improvement signal and are dropped.
+              | map(select([.mainnet_values[] | select(.cpu_units != null)] | length >= 2))
+              | sort_by(.name)
+            )
+          }
+      )
+    # Drop compilers with no surviving scenarios.
+    | map(select(.scenarios | length > 0))
+    | sort_by(.compiler, .author)
+    | {generated_at: $ts, compilers: .}
+  '
 }
 
 # ─── Entry points ──────────────────────────────────────────────────────
@@ -801,19 +882,19 @@ if [ "$1" = "--all" ]; then
   fi
 
   echo ""
-  echo "🔮 Generating Preview Reports (compiler-centric)..."
-  preview_dir="$report_dir/preview"
+  echo "🌱 Generating Evolution Reports (per-compiler version timeline)..."
+  evolution_dir="$report_dir/evolution"
   if [[ $DRY_RUN -eq 0 ]]; then
-    rm -rf "$preview_dir"
-    mkdir -p "$preview_dir/compilers"
-    cp -f "$PROJECT_ROOT/uplc-cape-logo.png" "$preview_dir/uplc-cape-logo.png"
+    rm -rf "$evolution_dir"
+    mkdir -p "$evolution_dir/compilers"
+    cp -f "$PROJECT_ROOT/uplc-cape-logo.png" "$evolution_dir/uplc-cape-logo.png"
   fi
 
   if [[ $DRY_RUN -eq 1 ]]; then
-    echo "  [dry-run] Would generate compiler-centric preview report"
+    echo "  [dry-run] Would generate per-compiler evolution report"
   else
     temp_compiler_stats=$(mktemp_json)
-    build_compiler_comparison_stats > "$temp_compiler_stats"
+    build_evolution_stats > "$temp_compiler_stats"
 
     compiler_count=$(jq '.compilers | length' "$temp_compiler_stats")
 
@@ -821,7 +902,7 @@ if [ "$1" = "--all" ]; then
       temp_index_json=$(mktemp_json)
       jq --arg ts "$(date '+%Y-%m-%d %H:%M:%S %Z')" \
         '{timestamp: $ts, compilers: .compilers}' "$temp_compiler_stats" > "$temp_index_json"
-      gomplate -f "$SCRIPT_DIR/index-preview.html.tmpl" -c .="$temp_index_json" > "$preview_dir/index.html"
+      gomplate -f "$SCRIPT_DIR/index-evolution.html.tmpl" -c .="$temp_index_json" > "$evolution_dir/index.html"
 
       for i in $(seq 0 $((compiler_count - 1))); do
         compiler_name=$(jq -r ".compilers[$i].compiler" "$temp_compiler_stats")
@@ -830,18 +911,20 @@ if [ "$1" = "--all" ]; then
         temp_compiler_json=$(mktemp_json)
         jq --arg ts "$(date '+%Y-%m-%d %H:%M:%S %Z')" \
           ".compilers[$i] + {timestamp: \$ts}" "$temp_compiler_stats" > "$temp_compiler_json"
-        gomplate -f "$SCRIPT_DIR/compiler-preview.html.tmpl" -c .="$temp_compiler_json" \
-          > "$preview_dir/compilers/${compiler_name}_${author}.html"
+        gomplate -f "$SCRIPT_DIR/compiler-evolution.html.tmpl" -c .="$temp_compiler_json" \
+          > "$evolution_dir/compilers/${compiler_name}_${author}.html"
 
-        echo "  Preview: $compiler_name by $author ($(jq -r ".compilers[$i].scenario_count" "$temp_compiler_stats") scenarios)"
+        mainnet_count=$(jq -r ".compilers[$i].mainnet_versions | length" "$temp_compiler_stats")
+        preview_version=$(jq -r '.compilers['"$i"'].preview_version // "—"' "$temp_compiler_stats")
+        echo "  Evolution: $compiler_name by $author (mainnet: $mainnet_count, preview: $preview_version)"
       done
 
       echo ""
-      echo "✅ Preview HTML reports generated:"
-      echo "   📄 $preview_dir/index.html (compiler-centric index)"
-      echo "   📊 Compiler detail pages in $preview_dir/compilers/"
+      echo "✅ Evolution HTML reports generated:"
+      echo "   📄 $evolution_dir/index.html (compiler-centric index)"
+      echo "   📊 Compiler detail pages in $evolution_dir/compilers/"
     else
-      echo "  (No preview submissions found — preview report skipped)"
+      echo "  (No multi-version compilers found — evolution report skipped)"
     fi
   fi
 
