@@ -74,20 +74,13 @@
             font-size: 0.9em;
             margin-bottom: 12px;
         }
-        .variant-list {
+        .timeline-row {
             margin-top: 12px;
-        }
-        .variant-row {
             padding: 8px 0;
             display: flex;
             align-items: baseline;
             gap: 12px;
             flex-wrap: wrap;
-        }
-        .variant-name {
-            font-weight: 600;
-            color: #334155;
-            min-width: 140px;
         }
         .version-chip {
             display: inline-block;
@@ -98,6 +91,28 @@
             background: #e2e8f0;
             color: #334155;
             margin-right: 4px;
+        }
+        .version-chip.preview {
+            background: #fef3c7;
+            color: #92400e;
+        }
+        .preview-divider {
+            display: inline-block;
+            margin: 0 6px;
+            color: #94a3b8;
+        }
+        .preview-badge {
+            display: inline-block;
+            padding: 1px 6px;
+            margin-left: 6px;
+            border-radius: 3px;
+            background: #f59e0b;
+            color: white;
+            font-size: 0.7em;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            vertical-align: middle;
         }
         .scenario-count {
             color: #6c757d;
@@ -128,9 +143,9 @@
     </div>
 
     <div class="evolution-banner">
-        <strong>EVOLUTION</strong> &mdash; Per-compiler version timeline across all submissions, including preview Plutus versions that have not yet shipped to mainnet.
-        Compilers and variants with only a single submission version are omitted (no improvement signal).
-        <div class="disclaimer">Note: preview Plutus versions may differ from the version deployed on the Cardano preview testnet.</div>
+        <strong>EVOLUTION</strong> &mdash; Per-compiler default-variant timeline of mainnet submissions, with an optional <span style="background:#f59e0b;color:white;padding:0 4px;border-radius:2px;font-size:0.85em;font-weight:700;">preview</span> teaser for the latest upcoming Plutus version.
+        Compilers with fewer than two mainnet versions are omitted (no improvement signal).
+        <div class="disclaimer">Note: preview Plutus versions may differ from the version deployed on the Cardano preview testnet. Alternative variants (BuiltinCasing, vanrossem, prepacked, …) live in the per-scenario production report.</div>
     </div>
 
     <div class="header">
@@ -146,14 +161,9 @@
     <div class="compiler-card">
         <h2><a href="compilers/{{.compiler}}_{{.author}}.html">{{.compiler}}</a></h2>
         <div class="compiler-meta">by {{.author}}</div>
-        <div class="variant-list">
-            {{range .variants}}
-            <div class="variant-row">
-                <span class="variant-name">{{.variant}}</span>
-                <span>{{range $i, $v := .versions}}{{if $i}} &rarr; {{end}}<span class="version-chip">{{$v}}</span>{{end}}</span>
-                <span class="scenario-count">&middot; {{len .scenarios}} scenarios</span>
-            </div>
-            {{end}}
+        <div class="timeline-row">
+            <span>{{range $i, $v := .mainnet_versions}}{{if $i}} &rarr; {{end}}<span class="version-chip">{{$v}}</span>{{end}}{{if .preview_version}}<span class="preview-divider">&middot;</span><span class="version-chip preview">{{.preview_version}}</span><span class="preview-badge">preview</span>{{end}}</span>
+            <span class="scenario-count">&middot; {{len .scenarios}} scenarios</span>
         </div>
     </div>
     {{end}}

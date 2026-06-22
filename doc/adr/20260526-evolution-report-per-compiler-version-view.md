@@ -82,6 +82,38 @@ Chosen option: **Option 2 — per-`(compiler, author)` evolution page, variant a
 - The "delta vs first" toggle is computed client-side, which adds a small JS payload (~1 KB) to a previously script-free page.
 - Variants with a single version are invisible in the report. This is intentional but worth noting: contributors who add a brand-new variant will not see it on the evolution page until a second version of that variant lands.
 
+## Refinement (2026-06-22)
+
+Visual review of the deployed `pr-209/evolution/compilers/Plinth_Unisay.html` surfaced a real semantic problem with the originally-shipped data model: the timeline for `(Plinth, Unisay, default)` rendered `1.45.0.0 → 1.61.0.0 → 1.64.0.0 → 1.65.0.0` as a single chain, reading 1.61→1.64 as a "+28.6% CPU regression". 1.61 is a preview-only submission compiled against a different cost model with the `BuiltinCasing` flag — features mainnet cannot execute. Mixing it into a mainnet-baseline timeline is apples-to-grapes and obscures the actual mainnet evolution (1.45 → 1.64 → 1.65 shows the expected monotonic improvement).
+
+Two refinements address this:
+
+### Mainnet/preview split
+
+The timeline is now mainnet-only. Submissions are partitioned by the existing `cape_is_preview_submission` semantics — a submission is **preview** when its `compilation_config.min_plutus_version` exceeds `CAPE_CURRENT_PLUTUS_VERSION` (defined in `scripts/lib/cape_versions.sh`); everything else is **mainnet**. The mainnet chain renders as before with `delta_prev` / `delta_first` toggle. The latest preview version (if any) appears as a single "sneak peek" column on the right with a single `delta_vs_latest_mainnet` figure — the baseline is the latest mainnet column for that scenario, **not** the previous overall column. Visually the column is tinted (`#fffbeb`) and tagged with a `preview` badge so it reads as different territory; the mainnet baseline toggle does not affect it.
+
+### Default-variant only
+
+Per-variant sections are dropped. Variants like `_builtincasing`, `_vanrossem`, `_prepacked` are alternative implementation strategies (sibling experiments answering "what if we wrote this differently?"), not points on a version timeline answering "how did the compiler evolve?". They remain visible in the per-scenario production report, which is the right place to compare implementations against each other. The evolution view filters `.variant == "default"` at the top of the jq pipeline.
+
+### Why this overrides the original design
+
+Option 2 in "Considered Options" treated production and preview as undifferentiated points on a timeline, on the grounds that "production / preview is just a `min_plutus_version` attribute on each version, not a top-level partition". That symmetry argument turned out to be wrong in practice for one specific reason: preview submissions are compiled against a different cost model, and a delta between a mainnet row and a preview row mixes both compiler-level improvement and cost-model drift in the same number. There is no clean way to interpret such a delta. Separating the two tracks restores the property that every delta in the mainnet chain is attributable to a compiler change.
+
+### Data-model changes
+
+- `scripts/cape-subcommands/submission/aggregate.sh` now emits `min_plutus_version` as CSV column 21. The value already existed in metadata (`compilation_config.min_plutus_version`) and was read internally for the `--target=preview/current` filter; it is now also exposed downstream.
+- `build_evolution_stats` in `scripts/cape-subcommands/submission/report.sh` produces a flatter shape:
+  - `.compilers[]` no longer carries a `variants[]` wrapper.
+  - Each compiler has `mainnet_versions: [string]` and `preview_version: string | null` (the latest preview by version-key, or null).
+  - Each scenario has `mainnet_values: [{version, cpu_units, …, delta_prev, delta_first}]` and `preview_value: {version, cpu_units, …, delta_vs_latest_mainnet} | null`.
+- A scenario contributes to the timeline only when it has ≥2 non-null **mainnet** values. Preview-only scenarios carry no improvement signal and are dropped; a preview column without a mainnet baseline cannot produce a delta anyway.
+
+### Out of scope for the refinement
+
+- Promotion of preview submissions to mainnet when `CAPE_CURRENT_PLUTUS_VERSION` bumps. The classification re-derives on every render from current state — no migration is needed, the same submission simply shifts tracks the next time the report regenerates.
+- A "Variants" report. Variants stay in the per-scenario production report. A dedicated variant-evolution view becomes interesting only when ≥2 variants share a version timeline; today none do.
+
 ## Links
 
 - Issue: [#204 — Redesign preview report as a per-compiler version-evolution view](https://github.com/IntersectMBO/UPLC-CAPE/issues/204)

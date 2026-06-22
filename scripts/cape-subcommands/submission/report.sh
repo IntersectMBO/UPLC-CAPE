@@ -11,6 +11,8 @@ trap 'code=$?; echo "Error: ${BASH_SOURCE[0]}:${LINENO}: command \"${BASH_COMMAN
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # shellcheck disable=SC1091
 source "$SCRIPT_DIR/../../lib/cape_common.sh"
+# shellcheck disable=SC1091
+source "$SCRIPT_DIR/../../lib/cape_versions.sh"
 cape_detect_root "$SCRIPT_DIR"
 PROJECT_ROOT="${PROJECT_ROOT:-$(cd "$SCRIPT_DIR/../../.." && pwd)}"
 # Prefer installed 'cape', fallback to repo script
@@ -81,7 +83,7 @@ fi
 # Validate benchmark name pattern when provided (lowercase, underscores only)
 valid_benchmark_name() { [[ $1 =~ ^[a-z][a-z0-9_]*[a-z0-9]$|^[a-z]$ ]]; }
 
-# CSV format: benchmark,timestamp,language,version,user,variant,cpu_units,memory_units,script_size_bytes,term_size,execution_fee_lovelace,reference_script_fee_lovelace,total_fee_lovelace,tx_memory_budget_pct,tx_cpu_budget_pct,block_memory_budget_pct,block_cpu_budget_pct,scripts_per_tx,scripts_per_block,submission_dir
+# CSV format: benchmark,timestamp,language,version,user,variant,cpu_units,memory_units,script_size_bytes,term_size,execution_fee_lovelace,reference_script_fee_lovelace,total_fee_lovelace,tx_memory_budget_pct,tx_cpu_budget_pct,block_memory_budget_pct,block_cpu_budget_pct,scripts_per_tx,scripts_per_block,submission_dir,min_plutus_version
 declare -A CSV_COL=(
   [benchmark]=1
   [timestamp]=2
@@ -103,6 +105,7 @@ declare -A CSV_COL=(
   [scripts_per_tx]=18
   [scripts_per_block]=19
   [submission_dir]=20
+  [min_plutus_version]=21
 )
 
 # Helper function to extract a CSV field by column name
@@ -632,10 +635,14 @@ EOF
 }
 
 # Build evolution stats per (compiler, author) for the evolution report.
-# Groups submissions by (compiler, author, variant), orders versions with
-# semver-aware sort, and for each scenario computes percentage deltas vs the
-# previous and the first version on the same variant track. Scenarios with
-# fewer than two data points are dropped (no improvement signal).
+# Only the `default` variant is included (variant experiments live in the
+# per-scenario production report, not on a version timeline). Versions are
+# partitioned into mainnet (min_plutus_version absent or ≤ current) and
+# preview (min_plutus_version > current). The mainnet track is rendered as a
+# version chain with delta-vs-previous / delta-vs-first. The latest preview
+# version is rendered as a "sneak peek" teaser column with a single
+# delta-vs-latest-mainnet — its baseline is the latest mainnet column, not
+# the previous overall column.
 build_evolution_stats() {
   local all_csv
   all_csv=$($CAPE_CMD submission aggregate 2> /dev/null | tail -n +2)
@@ -648,7 +655,10 @@ build_evolution_stats() {
     return
   fi
 
-  printf '%s\n' "$all_csv" | jq -Rs --arg ts "$ts" '
+  printf '%s\n' "$all_csv" | jq -Rs \
+    --arg ts "$ts" \
+    --arg current "$CAPE_CURRENT_PLUTUS_VERSION" \
+    '
     # Format a number to exactly one decimal place as a string. jq normalizes
     # whole-number floats to integers (e.g. 38.0 → 38), which then survive
     # JSON round-tripping as a different Go type than 28.6 and break gomplate
@@ -675,6 +685,25 @@ build_evolution_stats() {
       end;
 
     def vkey: split(".") | map(tonumber? // 0);
+    # Track classification mirrors cape_is_preview_submission: empty
+    # min_plutus_version → mainnet; anything strictly greater than the
+    # current plutus version → preview.
+    def track(mpv; cur):
+      if (mpv == null) or (mpv == "") then "mainnet"
+      elif (mpv | vkey) > (cur | vkey) then "preview"
+      else "mainnet"
+      end;
+
+    # Lift one row into the metric record we store per (compiler, author, version, scenario).
+    def metrics_of(r):
+      {
+        version:            r.version,
+        cpu_units:          r.cpu_units,
+        memory_units:       r.memory_units,
+        script_size_bytes:  r.script_size_bytes,
+        term_size:          r.term_size,
+        total_fee_lovelace: r.total_fee_lovelace
+      };
 
     split("\n")
     | map(select(length > 0) | split(",") | {
@@ -687,84 +716,108 @@ build_evolution_stats() {
         memory_units:       (.[7]  | tonumber? // null),
         script_size_bytes:  (.[8]  | tonumber? // null),
         term_size:          (.[9]  | tonumber? // null),
-        total_fee_lovelace: (.[12] | tonumber? // null)
+        total_fee_lovelace: (.[12] | tonumber? // null),
+        min_plutus_version: .[20]
       })
+    | map(. + {track: track(.min_plutus_version; $current)})
+    | map(select(.variant == "default"))
     | group_by({compiler, author})
     | map(
         . as $rows
+        | ($rows | map(select(.track == "mainnet") | .version) | unique | sort_by(vkey)) as $mainnet_versions
+        | ($rows | map(select(.track == "preview") | .version) | unique | sort_by(vkey) | last) as $preview_version
         | {
             compiler: .[0].compiler,
             author:   .[0].author,
-            variants: (
+            mainnet_versions: $mainnet_versions,
+            preview_version:  $preview_version,
+            scenarios: (
               $rows
-              | group_by(.variant)
+              | group_by(.benchmark)
               | map(
-                  . as $vrows
-                  | ($vrows | map(.version) | unique | sort_by(vkey)) as $versions
+                  . as $srows
                   | {
-                      variant: .[0].variant,
-                      versions: $versions,
-                      scenarios: (
-                        $vrows
-                        | group_by(.benchmark)
-                        | map(
-                            . as $srows
-                            | {
-                                name: .[0].benchmark,
-                                values: (
-                                  $versions | map(
-                                    . as $v
-                                    | ($srows | map(select(.version == $v)) | .[0]) as $r
-                                    | {
-                                        version:            $v,
-                                        cpu_units:          ($r.cpu_units          // null),
-                                        memory_units:       ($r.memory_units       // null),
-                                        script_size_bytes:  ($r.script_size_bytes  // null),
-                                        term_size:          ($r.term_size          // null),
-                                        total_fee_lovelace: ($r.total_fee_lovelace // null)
-                                      }
-                                  )
-                                )
-                              }
-                            | .values |= (
-                                . as $vals
-                                | [ range(0; length) as $i
-                                    | $vals[$i] as $curr
-                                    | ($vals[0:$i] | map(.cpu_units)          | map(select(. != null))) as $cpu_p
-                                    | ($vals[0:$i] | map(.memory_units)       | map(select(. != null))) as $mem_p
-                                    | ($vals[0:$i] | map(.script_size_bytes)  | map(select(. != null))) as $size_p
-                                    | ($vals[0:$i] | map(.term_size)          | map(select(. != null))) as $term_p
-                                    | ($vals[0:$i] | map(.total_fee_lovelace) | map(select(. != null))) as $fee_p
-                                    | $curr + {
-                                        delta_prev: {
-                                          cpu_units:          delta_obj($curr.cpu_units;          $cpu_p  | last),
-                                          memory_units:       delta_obj($curr.memory_units;       $mem_p  | last),
-                                          script_size_bytes:  delta_obj($curr.script_size_bytes;  $size_p | last),
-                                          term_size:          delta_obj($curr.term_size;          $term_p | last),
-                                          total_fee_lovelace: delta_obj($curr.total_fee_lovelace; $fee_p  | last)
-                                        },
-                                        delta_first: {
-                                          cpu_units:          delta_obj($curr.cpu_units;          $cpu_p  | first),
-                                          memory_units:       delta_obj($curr.memory_units;       $mem_p  | first),
-                                          script_size_bytes:  delta_obj($curr.script_size_bytes;  $size_p | first),
-                                          term_size:          delta_obj($curr.term_size;          $term_p | first),
-                                          total_fee_lovelace: delta_obj($curr.total_fee_lovelace; $fee_p  | first)
-                                        }
-                                      }
-                                  ]
-                              )
-                          )
-                        | map(select([.values[] | select(.cpu_units != null)] | length >= 2))
-                        | sort_by(.name)
+                      name: .[0].benchmark,
+                      mainnet_values: (
+                        $mainnet_versions | map(
+                          . as $v
+                          | ($srows | map(select(.version == $v and .track == "mainnet")) | .[0]) as $r
+                          | (if $r == null then
+                               { version: $v, cpu_units: null, memory_units: null, script_size_bytes: null, term_size: null, total_fee_lovelace: null }
+                             else metrics_of($r) end)
+                        )
+                      ),
+                      preview_value: (
+                        if $preview_version == null then null
+                        else
+                          ($srows | map(select(.version == $preview_version and .track == "preview")) | .[0]) as $r
+                          | (if $r == null then null else metrics_of($r) end)
+                        end
                       )
                     }
+                  # Decorate mainnet_values with delta_prev / delta_first.
+                  | .mainnet_values |= (
+                      . as $vals
+                      | [ range(0; length) as $i
+                          | $vals[$i] as $curr
+                          | ($vals[0:$i] | map(.cpu_units)          | map(select(. != null))) as $cpu_p
+                          | ($vals[0:$i] | map(.memory_units)       | map(select(. != null))) as $mem_p
+                          | ($vals[0:$i] | map(.script_size_bytes)  | map(select(. != null))) as $size_p
+                          | ($vals[0:$i] | map(.term_size)          | map(select(. != null))) as $term_p
+                          | ($vals[0:$i] | map(.total_fee_lovelace) | map(select(. != null))) as $fee_p
+                          | $curr + {
+                              delta_prev: {
+                                cpu_units:          delta_obj($curr.cpu_units;          $cpu_p  | last),
+                                memory_units:       delta_obj($curr.memory_units;       $mem_p  | last),
+                                script_size_bytes:  delta_obj($curr.script_size_bytes;  $size_p | last),
+                                term_size:          delta_obj($curr.term_size;          $term_p | last),
+                                total_fee_lovelace: delta_obj($curr.total_fee_lovelace; $fee_p  | last)
+                              },
+                              delta_first: {
+                                cpu_units:          delta_obj($curr.cpu_units;          $cpu_p  | first),
+                                memory_units:       delta_obj($curr.memory_units;       $mem_p  | first),
+                                script_size_bytes:  delta_obj($curr.script_size_bytes;  $size_p | first),
+                                term_size:          delta_obj($curr.term_size;          $term_p | first),
+                                total_fee_lovelace: delta_obj($curr.total_fee_lovelace; $fee_p  | first)
+                              }
+                            }
+                        ]
+                    )
+                  # Decorate preview_value with delta_vs_latest_mainnet
+                  # (baseline = latest non-null mainnet value for this scenario,
+                  # NOT the previous overall column). Pre-compute the bases at
+                  # the scenario level because inside `.preview_value |= (…)`
+                  # the bound `.` refers to preview_value, not the scenario.
+                  | (.mainnet_values | map(.cpu_units)          | map(select(. != null)) | last) as $cpu_base
+                  | (.mainnet_values | map(.memory_units)       | map(select(. != null)) | last) as $mem_base
+                  | (.mainnet_values | map(.script_size_bytes)  | map(select(. != null)) | last) as $size_base
+                  | (.mainnet_values | map(.term_size)          | map(select(. != null)) | last) as $term_base
+                  | (.mainnet_values | map(.total_fee_lovelace) | map(select(. != null)) | last) as $fee_base
+                  | .preview_value |= (
+                      if . == null then null
+                      else
+                        . + {
+                          delta_vs_latest_mainnet: {
+                            cpu_units:          delta_obj(.cpu_units;          $cpu_base),
+                            memory_units:       delta_obj(.memory_units;       $mem_base),
+                            script_size_bytes:  delta_obj(.script_size_bytes;  $size_base),
+                            term_size:          delta_obj(.term_size;          $term_base),
+                            total_fee_lovelace: delta_obj(.total_fee_lovelace; $fee_base)
+                          }
+                        }
+                      end
+                    )
                 )
-              | map(select(.scenarios | length > 0))
-              | sort_by(.variant)
+              # A scenario contributes to the timeline only when it has at
+              # least two non-null mainnet points. Preview-only scenarios
+              # carry no improvement signal and are dropped.
+              | map(select([.mainnet_values[] | select(.cpu_units != null)] | length >= 2))
+              | sort_by(.name)
             )
           }
       )
-    | map(select(.variants | length > 0))
+    # Drop compilers with no surviving scenarios.
+    | map(select(.scenarios | length > 0))
     | sort_by(.compiler, .author)
     | {generated_at: $ts, compilers: .}
   '
@@ -861,8 +914,9 @@ if [ "$1" = "--all" ]; then
         gomplate -f "$SCRIPT_DIR/compiler-evolution.html.tmpl" -c .="$temp_compiler_json" \
           > "$evolution_dir/compilers/${compiler_name}_${author}.html"
 
-        variant_count=$(jq -r ".compilers[$i].variants | length" "$temp_compiler_stats")
-        echo "  Evolution: $compiler_name by $author ($variant_count variants)"
+        mainnet_count=$(jq -r ".compilers[$i].mainnet_versions | length" "$temp_compiler_stats")
+        preview_version=$(jq -r '.compilers['"$i"'].preview_version // "—"' "$temp_compiler_stats")
+        echo "  Evolution: $compiler_name by $author (mainnet: $mainnet_count, preview: $preview_version)"
       done
 
       echo ""
