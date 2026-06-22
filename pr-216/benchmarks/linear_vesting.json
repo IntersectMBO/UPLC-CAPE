@@ -1,6 +1,6 @@
 {
   "benchmark": "linear_vesting",
-  "generated_at": "2026-06-22T14:52:05Z",
+  "generated_at": "2026-06-22T15:33:39Z",
   "submissions": [
     {
       "timestamp": "2026-05-20T17:35:23Z",
@@ -26,7 +26,7 @@
       }
     },
     {
-      "timestamp": "2026-06-22T14:44:48Z",
+      "timestamp": "2026-06-22T15:26:09Z",
       "compiler": "Plinth",
       "version": "1.64.0.0",
       "user": "Unisay",
