@@ -1,0 +1,75 @@
+{
+  "benchmark": "two_party_escrow",
+  "generated_at": "2026-06-22T14:52:05Z",
+  "submissions": [
+    {
+      "timestamp": "2026-05-20T17:35:23Z",
+      "compiler": "Plinth",
+      "version": "1.45.0.0",
+      "user": "Unisay",
+      "variant": "default",
+      "submission_dir": "Plinth_1.45.0.0_Unisay",
+      "metrics": {
+        "cpu_units": 2261092951,
+        "memory_units": 8567836,
+        "script_size_bytes": 3153,
+        "term_size": 3406,
+        "execution_fee_lovelace": 657389,
+        "reference_script_fee_lovelace": 47295,
+        "total_fee_lovelace": 704684,
+        "tx_memory_budget_pct": 5.0845,
+        "tx_cpu_budget_pct": 1.8763223400000002,
+        "block_memory_budget_pct": 1.1481129032258064,
+        "block_cpu_budget_pct": 0.46908058500000005,
+        "scripts_per_tx": 19,
+        "scripts_per_block": 87
+      }
+    },
+    {
+      "timestamp": "2026-05-20T17:35:23Z",
+      "compiler": "Plinth",
+      "version": "1.64.0.0",
+      "user": "Unisay",
+      "variant": "default",
+      "submission_dir": "Plinth_1.64.0.0_Unisay",
+      "metrics": {
+        "cpu_units": 2182085275,
+        "memory_units": 7868448,
+        "script_size_bytes": 2623,
+        "term_size": 2522,
+        "execution_fee_lovelace": 611338,
+        "reference_script_fee_lovelace": 39345,
+        "total_fee_lovelace": 650683,
+        "tx_memory_budget_pct": 4.607814285714286,
+        "tx_cpu_budget_pct": 1.80085893,
+        "block_memory_budget_pct": 1.0404741935483872,
+        "block_cpu_budget_pct": 0.4502147325,
+        "scripts_per_tx": 21,
+        "scripts_per_block": 96
+      }
+    },
+    {
+      "timestamp": "2026-05-29T10:38:22Z",
+      "compiler": "Plinth",
+      "version": "1.65.0.0",
+      "user": "Unisay",
+      "variant": "default",
+      "submission_dir": "Plinth_1.65.0.0_Unisay",
+      "metrics": {
+        "cpu_units": 2023467315,
+        "memory_units": 6881738,
+        "script_size_bytes": 2539,
+        "term_size": 2308,
+        "execution_fee_lovelace": 542969,
+        "reference_script_fee_lovelace": 38085,
+        "total_fee_lovelace": 581054,
+        "tx_memory_budget_pct": 4.074235714285714,
+        "tx_cpu_budget_pct": 1.68059297,
+        "block_memory_budget_pct": 0.9199887096774193,
+        "block_cpu_budget_pct": 0.4201482425,
+        "scripts_per_tx": 24,
+        "scripts_per_block": 108
+      }
+    }
+  ]
+}
