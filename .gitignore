@@ -12,3 +12,8 @@ result-*
 .direnv
 .local
 worktrees/
+
+# Generated HTML report. CI (static.yml on main, pr-ci.yml on PRs) runs
+# `cape submission report --all` and deploys to gh-pages — the tracked
+# snapshot in main is redundant and only produces PR-diff noise.
+report/
