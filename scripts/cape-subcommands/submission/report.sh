@@ -11,8 +11,6 @@ trap 'code=$?; echo "Error: ${BASH_SOURCE[0]}:${LINENO}: command \"${BASH_COMMAN
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # shellcheck disable=SC1091
 source "$SCRIPT_DIR/../../lib/cape_common.sh"
-# shellcheck disable=SC1091
-source "$SCRIPT_DIR/../../lib/cape_versions.sh"
 cape_detect_root "$SCRIPT_DIR"
 PROJECT_ROOT="${PROJECT_ROOT:-$(cd "$SCRIPT_DIR/../../.." && pwd)}"
 # Prefer installed 'cape', fallback to repo script
@@ -635,14 +633,17 @@ EOF
 }
 
 # Build evolution stats per (compiler, author) for the evolution report.
-# Only the `default` variant is included (variant experiments live in the
-# per-scenario production report, not on a version timeline). Versions are
-# partitioned into mainnet (min_plutus_version absent or ≤ current) and
-# preview (min_plutus_version > current). The mainnet track is rendered as a
-# version chain with delta-vs-previous / delta-vs-first. The latest preview
-# version is rendered as a "sneak peek" teaser column with a single
-# delta-vs-latest-mainnet — its baseline is the latest mainnet column, not
-# the previous overall column.
+# Submissions are partitioned by directory-name variant:
+#   - variant `default`  → mainnet timeline (version chain with delta-vs-
+#     previous / delta-vs-first)
+#   - variant `preview`  → preview teaser column (single
+#     delta-vs-latest-mainnet computed against the latest mainnet column,
+#     NOT the previous overall column)
+# All other variants are sibling experiments and live in the per-scenario
+# production report, not on the evolution timeline. Track classification is
+# author-declared via the directory suffix, not derived from the runtime
+# `min_plutus_version` threshold — that field still drives `cape submission
+# verify --all` skipping but no longer steers the report.
 build_evolution_stats() {
   local all_csv
   all_csv=$($CAPE_CMD submission aggregate 2> /dev/null | tail -n +2)
@@ -655,10 +656,7 @@ build_evolution_stats() {
     return
   fi
 
-  printf '%s\n' "$all_csv" | jq -Rs \
-    --arg ts "$ts" \
-    --arg current "$CAPE_CURRENT_PLUTUS_VERSION" \
-    '
+  printf '%s\n' "$all_csv" | jq -Rs --arg ts "$ts" '
     # Format a number to exactly one decimal place as a string. jq normalizes
     # whole-number floats to integers (e.g. 38.0 → 38), which then survive
     # JSON round-tripping as a different Go type than 28.6 and break gomplate
@@ -685,14 +683,6 @@ build_evolution_stats() {
       end;
 
     def vkey: split(".") | map(tonumber? // 0);
-    # Track classification mirrors cape_is_preview_submission: empty
-    # min_plutus_version → mainnet; anything strictly greater than the
-    # current plutus version → preview.
-    def track(mpv; cur):
-      if (mpv == null) or (mpv == "") then "mainnet"
-      elif (mpv | vkey) > (cur | vkey) then "preview"
-      else "mainnet"
-      end;
 
     # Lift one row into the metric record we store per (compiler, author, version, scenario).
     def metrics_of(r):
@@ -716,16 +706,14 @@ build_evolution_stats() {
         memory_units:       (.[7]  | tonumber? // null),
         script_size_bytes:  (.[8]  | tonumber? // null),
         term_size:          (.[9]  | tonumber? // null),
-        total_fee_lovelace: (.[12] | tonumber? // null),
-        min_plutus_version: .[20]
+        total_fee_lovelace: (.[12] | tonumber? // null)
       })
-    | map(. + {track: track(.min_plutus_version; $current)})
-    | map(select(.variant == "default"))
+    | map(select(.variant == "default" or .variant == "preview"))
     | group_by({compiler, author})
     | map(
         . as $rows
-        | ($rows | map(select(.track == "mainnet") | .version) | unique | sort_by(vkey)) as $mainnet_versions
-        | ($rows | map(select(.track == "preview") | .version) | unique | sort_by(vkey) | last) as $preview_version
+        | ($rows | map(select(.variant == "default") | .version) | unique | sort_by(vkey)) as $mainnet_versions
+        | ($rows | map(select(.variant == "preview") | .version) | unique | sort_by(vkey) | last) as $preview_version
         | {
             compiler: .[0].compiler,
             author:   .[0].author,
@@ -741,7 +729,7 @@ build_evolution_stats() {
                       mainnet_values: (
                         $mainnet_versions | map(
                           . as $v
-                          | ($srows | map(select(.version == $v and .track == "mainnet")) | .[0]) as $r
+                          | ($srows | map(select(.version == $v and .variant == "default")) | .[0]) as $r
                           | (if $r == null then
                                { version: $v, cpu_units: null, memory_units: null, script_size_bytes: null, term_size: null, total_fee_lovelace: null }
                              else metrics_of($r) end)
@@ -750,7 +738,7 @@ build_evolution_stats() {
                       preview_value: (
                         if $preview_version == null then null
                         else
-                          ($srows | map(select(.version == $preview_version and .track == "preview")) | .[0]) as $r
+                          ($srows | map(select(.version == $preview_version and .variant == "preview")) | .[0]) as $r
                           | (if $r == null then null else metrics_of($r) end)
                         end
                       )
