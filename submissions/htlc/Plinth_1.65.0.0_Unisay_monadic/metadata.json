@@ -1,0 +1,22 @@
+{
+  "compiler": {
+    "name": "Plinth",
+    "version": "1.65.0.0",
+    "commit_hash": "b2db512618df08bd696e8d9c4229effcede01169"
+  },
+  "compilation_config": {
+    "optimization_level": "Plinth",
+    "target": "uplc",
+    "flags": ["Plinth"]
+  },
+  "contributors": [
+    { "name": "Unisay", "organization": "UPLC-CAPE Project" }
+  ],
+  "submission": {
+    "date": "2026-07-01T17:31:03Z",
+    "source_available": true,
+    "source_repository": "https://github.com/Unisay/plinth-cape-submissions",
+    "source_commit_hash": "616fe5da245e8478aec9a1e2fcbac652893f2313",
+    "implementation_notes": "HTLC validator variant built on a zero-cost, Cont-style early-termination Validator monad (Plinth.Validator): decode-or-abort steps and boolean guards sequenced into a flat, short-circuiting do-chain that compiles to zero overhead. Each ScriptContext/datum/TxInfo field is decoded at most once, only when a guard reaches it; values that are merely compared are never structurally decoded. Source: lib/HTLC/Monadic.hs + lib/Plinth/Validator.hs in plinth-cape-submissions @ 616fe5da245e8478aec9a1e2fcbac652893f2313. Per-module inliner tuning inline-unconditional-growth=110 (cost optimum for this tree)."
+  }
+}
