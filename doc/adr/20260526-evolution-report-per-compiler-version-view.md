@@ -152,6 +152,31 @@ Option 3 in the original "Considered Options" treated each variant as its own pa
 - The naming convention is enforceable by humans (review-time check of directory names) without needing to inspect `metadata.json`.
 - Backward break for anyone with `pr-*/evolution/.../Plinth_1.61.0.0_Unisay/...` bookmarks — the directory is gone. PR-preview deployments are short-lived; mainline pages refresh on the next CI run.
 
+## Refinement 3 (2026-07-03)
+
+Refinement 1's "Default-variant only" section drew a firm line: variants like `_builtincasing`, `_vanrossem`, `_prepacked` are "alternative implementation strategies... not points on a version timeline," and only the no-suffix `default` variant belongs on the mainnet evolution chain. Implicit in that framing — and confirmed by the htlc `Plinth_1.45.0.0_Unisay` / `_1.64.0.0_` / `_1.65.0.0_` submissions all sharing the same `lib/HTLC.hs` asData-based implementation since 1.45.0.0 — was that `default` denotes one fixed implementation lineage, tracked release-over-release so that every delta on the chain is attributable purely to compiler improvement, not to an implementation change.
+
+That assumption broke on its own terms: the htlc `Plinth_1.65.0.0_Unisay_monadic` variant (a Cont-style early-termination decoding DSL, `plinth-cape-submissions#10`/`#11`) does not merely differ from the asData `default` — it strictly dominates it on every measured metric (total fee 65538 vs 121285 lovelace, ~46% lower; script size, CPU, and memory improve correspondingly). Treating it as a permanent "sibling experiment" excluded from the evolution view, while a strictly worse implementation keeps the `default` label purely by incumbency, no longer serves the report's purpose of showing "how good can this compiler/author combination currently do."
+
+### New rule: `default` tracks the best-measured implementation, per version
+
+`default` no longer means "the original/fixed implementation lineage." It means "the best-measured implementation strategy this author has published for this compiler version," decided independently per `(compiler, version, author)`:
+
+- When a new implementation strategy is shown (via `cape submission measure`) to beat the incumbent `default` for a given version, it is promoted: the new implementation takes the no-suffix `default` directory name, and the incumbent is renamed to a descriptive variant suffix (e.g. `_asdata`) rather than being dropped or overwritten. Both stay in the repository and in the per-scenario production report; only the evolution-chain classification changes.
+- This decision is made independently per compiler version. A newer implementation strategy winning at one version does not retroactively promote or demote anything at other versions — each version's `default` is decided on its own measured numbers.
+- A variant that has _not_ been shown to beat the incumbent stays a "sibling experiment" exactly as Refinement 1 described. Promotion requires a measured win, not just a new idea.
+
+### htlc Plinth 1.65.0.0: concrete promotion
+
+`Plinth_1.65.0.0_Unisay_monadic` → `Plinth_1.65.0.0_Unisay` (now `default`); the prior `Plinth_1.65.0.0_Unisay` (asData/`lib/HTLC.hs`) → `Plinth_1.65.0.0_Unisay_asdata` (now a named variant). Pure `git mv` in both directions; no rebuild, since both artifacts already existed and were already measured.
+
+Queued separately: the monadic decoding DSL is being considered for backport to the 1.45.0.0 and 1.64.0.0 Plinth toolchains (via the existing `plinth-cape-submissions` coordination protocol — they attempt the port, UPLC-CAPE measures and decides). Until that lands, `Plinth_1.45.0.0_Unisay` and `Plinth_1.64.0.0_Unisay` remain `default` under the asData implementation; nothing about them changes as part of this refinement.
+
+### Consequences
+
+- The mainnet evolution chain can now show a delta that mixes an implementation-strategy change with a compiler-version change (e.g. once 1.64.0.0 gets a monadic port that also wins, the 1.64.0.0 → 1.65.0.0 `default` delta reflects both the compiler upgrade and the algorithm swap in the same number). This is the same category of ambiguity Refinement 1 eliminated for mainnet-vs-preview cost-model drift — reintroducing it here for algorithm swaps is a deliberate, accepted tradeoff: the chain now answers "how good has this author's best mainnet artifact gotten release over release," not "how did one fixed algorithm's cost evolve."
+- A future session (or contributor) reading only the _original_ "Default-variant only" text should not treat a demonstrably-losing incumbent's directory name as untouchable. Promotion-on-measured-win is now an explicit, sanctioned reason to rename `default` ↔ a named variant, alongside the track-reclassification reason already established in Refinement 2.
+
 ## Links
 
 - Issue: [#204 — Redesign preview report as a per-compiler version-evolution view](https://github.com/IntersectMBO/UPLC-CAPE/issues/204)
