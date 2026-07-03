@@ -1,14 +1,14 @@
 # Scalus Fibonacci Naive Recursion Implementation
 
-**Source Code**: [FibonacciNaiveRecursion.scala](https://github.com/Unisay/scalus-cape-submissions/blob/2126a807bbe2a744e2b924bda3099881e09d969f/src/fibonacci_naive_recursion/FibonacciNaiveRecursion.scala)
+**Source Code**: [FibonacciNaiveRecursion.scala](https://github.com/Unisay/scalus-cape-submissions/blob/01d5b6b6a31655dcebe34f5a52549d2b4c12f4aa/src/fibonacci_naive_recursion/FibonacciNaiveRecursion.scala)
 
 **Repository**: <https://github.com/Unisay/scalus-cape-submissions>
 
-**Commit**: `2126a807bbe2a744e2b924bda3099881e09d969f`
+**Commit**: `01d5b6b6a31655dcebe34f5a52549d2b4c12f4aa`
 
 **Path**: `src/fibonacci_naive_recursion/FibonacciNaiveRecursion.scala`
 
-This submission uses Scalus compiler version 0.16.0 with a naive recursive implementation (no optimization, per scenario specification).
+This submission uses Scalus compiler version 0.16.0 with a naive recursive implementation (no optimization, per scenario specification), compiled with `Options.release`. `removeTraces=true`/`generateErrorTraces=false` have no visible effect on this scenario since the source has no `fail()`/`require()` calls to strip.
 
 ## Reproducing the Compilation
 
@@ -22,7 +22,7 @@ This submission uses Scalus compiler version 0.16.0 with a naive recursive imple
 2. Check out the specific commit:
 
    ```bash
-   git checkout 2126a807bbe2a744e2b924bda3099881e09d969f
+   git checkout 01d5b6b6a31655dcebe34f5a52549d2b4c12f4aa
    ```
 
 3. Follow build instructions in the repository README
