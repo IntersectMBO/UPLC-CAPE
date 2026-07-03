@@ -1,0 +1,25 @@
+{
+  "compiler": {
+    "name": "Plinth",
+    "version": "1.64.0.0",
+    "commit_hash": "61b1eedf082050d89cde8db89d73aae65bc95a65"
+  },
+  "compilation_config": {
+    "optimization_level": "Plinth",
+    "target": "uplc",
+    "flags": ["Plinth"]
+  },
+  "contributors": [
+    {
+      "name": "Unisay",
+      "organization": "UPLC-CAPE Project"
+    }
+  ],
+  "submission": {
+    "date": "2026-05-20T15:31:14Z",
+    "source_available": true,
+    "source_repository": "https://github.com/Unisay/plinth-cape-submissions",
+    "source_commit_hash": "fbb37ddd6ba6ea6fd29312494a32a3074ba332b0",
+    "implementation_notes": "Hashed Time-Locked Contract validator compiled with Plinth 1.64.0.0, decoding datum/redeemer via PlutusTx.AsData.asData-derived pattern matching (no BuiltinCasing). Source: lib/HTLC.hs in plinth-cape-submissions @ fbb37ddd6ba6ea6fd29312494a32a3074ba332b0."
+  }
+}
