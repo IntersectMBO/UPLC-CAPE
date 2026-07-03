@@ -1,8 +1,8 @@
 # Benchmark Implementation Notes
 
-**Scenario**: `fibonacci_naive_recursion`
+**Scenario**: `factorial_naive_recursion`
 
-**Submission ID**: `Scalus_0.17.0_Unisay_vanrossem`
+**Submission ID**: `Scalus_0.17.0_Unisay_preview`
 
 ## Implementation Details
 
