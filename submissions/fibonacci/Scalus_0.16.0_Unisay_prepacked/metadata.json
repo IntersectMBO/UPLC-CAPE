@@ -20,6 +20,6 @@
     "source_available": true,
     "source_repository": "https://github.com/Unisay/scalus-cape-submissions",
     "source_commit_hash": "01d5b6b6a31655dcebe34f5a52549d2b4c12f4aa",
-    "implementation_notes": "Optimized prepacked implementation using pre-computed Fibonacci numbers stored in a ByteString for O(1) constant-time lookup. Pre-computed values for fib(0) through fib(25), each encoded as 3 bytes in big-endian format. Compiled with Options.release (removeTraces=true, generateErrorTraces=false have no visible effect here since the source has no fail()/require() calls to strip). AST-level alpha-rename pass applied: all generated identifiers rewritten to short purely-alphabetic names before serialisation."
+    "implementation_notes": "Optimized prepacked implementation using pre-computed Fibonacci numbers stored in a ByteString for O(1) constant-time lookup. Pre-computed values for fib(0) through fib(25), each encoded as 3 bytes in big-endian format. Compiled with Options.release (removeTraces=true and generateErrorTraces=false have no visible effect here since the source has no fail()/require() calls to strip). AST-level alpha-rename pass applied: all generated identifiers rewritten to short purely-alphabetic names before serialisation."
   }
 }
