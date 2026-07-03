@@ -19,7 +19,7 @@
     "date": "2026-04-24T12:48:44Z",
     "source_available": true,
     "source_repository": "https://github.com/Unisay/scalus-cape-submissions",
-    "source_commit_hash": "07350edfbaaa3f4c42cf116a3c360ba3098ccf3f",
-    "implementation_notes": "Scalus 0.16.0 HTLC spending validator (`@Compile object HTLCValidator`, `Data -> Unit`). Derives FromData/ToData for HTLCDatum and HTLCRedeemer. Claim reads the upper bound of `txInfoValidRange` (finite, strictly `< timeout`); refund reads the lower bound (finite, strictly `> timeout`). Matches the production-safe convention introduced in IntersectMBO/UPLC-CAPE#170. Uses `toUplcOptimized()` with CaseConstrApply and builtin-packing; an AST-level alpha-rename pass rewrites all generated names to short purely-alphabetic identifiers (a, b, ..., z, aa, ...) before serialisation, ensuring compatibility with the plutus-core 1.45.0.0 textual parser."
+    "source_commit_hash": "01d5b6b6a31655dcebe34f5a52549d2b4c12f4aa",
+    "implementation_notes": "Scalus 0.16.0 HTLC spending validator (`@Compile object HTLCValidator`, `Data -> Unit`). Derives FromData/ToData for HTLCDatum and HTLCRedeemer. Claim reads the upper bound of `txInfoValidRange` (finite, strictly `< timeout`); refund reads the lower bound (finite, strictly `> timeout`). Matches the production-safe convention introduced in IntersectMBO/UPLC-CAPE#170. Uses `toUplcOptimized(using Options.release)` with CaseConstrApply and builtin-packing (`removeTraces=true`, `generateErrorTraces=false`); an AST-level alpha-rename pass rewrites all generated names to short purely-alphabetic identifiers (a, b, ..., z, aa, ...) before serialisation, ensuring compatibility with the plutus-core 1.45.0.0 textual parser."
   }
 }
