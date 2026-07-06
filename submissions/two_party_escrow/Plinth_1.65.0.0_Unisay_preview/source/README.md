@@ -4,18 +4,18 @@
 
 **Branch**: `main`
 
-**Commit**: `3efc19ad785a7dcb6aead5a936d18654f0649a2b`
+**Commit**: `4b3215042c1ccd481b5f62ad192d23b0e1f96758`
 
-**Path**: `lib/TwoPartyEscrow.hs`
+**Path**: `lib/TwoPartyEscrow/AsData.hs`
 
-This submission compiles `lib/TwoPartyEscrow.hs` from the Plinth source repository with the Plinth (plutus-tx-plugin) 1.65.0.0 line and the BuiltinCasing preview flag enabled. Requires `plutus-core >= 1.65.0.0` (not yet on mainnet).
+This submission compiles `lib/TwoPartyEscrow/AsData.hs` from the Plinth source repository with the Plinth (plutus-tx-plugin) 1.65.0.0 line and the BuiltinCasing preview flag enabled. Requires `plutus-core >= 1.65.0.0` (not yet on mainnet).
 
 ## Reproducing the compilation
 
 ```bash
 git clone https://github.com/Unisay/plinth-cape-submissions
 cd plinth-cape-submissions
-git checkout 3efc19ad785a7dcb6aead5a936d18654f0649a2b
+git checkout 4b3215042c1ccd481b5f62ad192d23b0e1f96758
 ```
 
 `CAPE_REPO` must point at the sibling UPLC-CAPE checkout; the build aborts if the variable is unset. The recommended place is `.envrc.local` (gitignored), e.g.:
