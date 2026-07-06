@@ -446,8 +446,9 @@
             note.hidden = excluded === 0;
             if (excluded > 0) {
                 note.textContent =
-                    `Aggregates cover expected on-chain evaluations only; ${excluded} failure-path ` +
-                    `tests are measured per submission but excluded — see each submission's ` +
+                    `Aggregates cover expected on-chain evaluations only; ${excluded} ` +
+                    `evaluations (failure-path checks and/or pending measurements) are ` +
+                    `measured per submission but excluded — see each submission's ` +
                     `metrics.json for their cost.`;
             }
         }

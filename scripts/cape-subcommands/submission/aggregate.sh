@@ -22,7 +22,8 @@ fi
 #
 #   cpu_units/memory_units are sums over evaluations included in aggregates
 #   (included_in_aggregates and not pending); excluded_* columns summarise
-#   the rest (attacks, malformed inputs, defensive checks).
+#   the rest (attacks, malformed inputs, defensive checks, and pending
+#   measurements).
 
 # Early help
 if cape_help_requested "$@"; then
