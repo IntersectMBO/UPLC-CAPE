@@ -363,26 +363,27 @@ Use the standard metrics schema as defined in `submissions/TEMPLATE/metrics.sche
 ```json
 {
   "scenario": "htlc",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "measurements": {
     "cpu_units": {
       "maximum": 0,
       "sum": 0,
       "minimum": 0,
-      "median": 0,
-      "sum_positive": 0,
-      "sum_negative": 0
+      "median": 0
     },
     "memory_units": {
       "maximum": 0,
       "sum": 0,
       "minimum": 0,
-      "median": 0,
-      "sum_positive": 0,
-      "sum_negative": 0
+      "median": 0
     },
     "script_size_bytes": 0,
-    "term_size": 0
+    "term_size": 0,
+    "excluded": {
+      "count": 0,
+      "cpu_units": { "sum": 0, "maximum": 0 },
+      "memory_units": { "sum": 0, "maximum": 0 }
+    }
   },
   "evaluations": [
     {
@@ -390,14 +391,16 @@ Use the standard metrics schema as defined in `submissions/TEMPLATE/metrics.sche
       "description": "Claim at time=50 with correct preimage and recipient signature should succeed",
       "cpu_units": 0,
       "memory_units": 0,
-      "execution_result": "success"
+      "execution_result": "success",
+      "included_in_aggregates": true
     },
     {
       "name": "refund_well_after_timeout",
       "description": "Refund at time=200 with payer signature should succeed",
       "cpu_units": 0,
       "memory_units": 0,
-      "execution_result": "success"
+      "execution_result": "success",
+      "included_in_aggregates": true
     }
   ],
   "execution_environment": {

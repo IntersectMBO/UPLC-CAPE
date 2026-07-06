@@ -1,0 +1,109 @@
+# Exclude Failure-Path Evaluations from Aggregated Metrics
+
+- Status: accepted
+- Deciders: Unisay
+- Date: 2026-07-06
+- Tags: metrics, scenarios, schema, reporting
+
+Technical Story: [#219](https://github.com/IntersectMBO/UPLC-CAPE/issues/219)
+
+## Context and Problem Statement
+
+Submission metrics aggregate every scenario evaluation with equal weight: `cpu_units.sum` / `memory_units.sum` drive the fee figures, and `cpu_units.maximum` / `memory_units.maximum` drive the budget percentages and scripts-per-tx/block capacity figures. A scenario's test suite, however, mixes two very different kinds of evaluation: executions an honest user actually pays for on-chain, and failure-path executions that exist to prove the validator rejects (attacks such as double satisfaction, malformed redeemers no real client produces, defensive checks on impossible transaction shapes).
+
+In the htlc suite 21 of 25 tests are failure-path, contributing ~67% of `cpu_units.sum`, and the headline `cpu_units.maximum` was set by the `claim_double_satisfaction` attack test — exceeding the happy-path maximum. Ranking submissions on these aggregates measures rejection efficiency as much as happy-path efficiency, and rewards gaming the reject-path check order over optimizing the path production actually executes.
+
+Two latent defects compounded the problem:
+
+- The `sum_positive` / `sum_negative` aggregates split on `execution_result`, which records "did the test outcome match its expectation" — always `success` for a correct submission — so `sum_negative` was always zero and the split carried no signal. The report never read these fields.
+- Pending tests (expected failures awaiting a fix) fed the aggregates too, so a known-broken measurement could distort every derived figure.
+
+**Question**: which evaluations should the aggregated metrics cover, and where does the classification live?
+
+## Decision Drivers
+
+- The fee metric is meant to estimate what running the script costs in real use; failure-path executions borne by no honest user should not weigh on it.
+- `expected.type` is a verification concern ("what must the CEK machine produce") and should stay one; whether a measurement represents real-world cost is an independent, economic judgement.
+- The classification is a judgement about the protocol's semantics that only the scenario author can make — a machine cannot infer it from the test's shape.
+- Every measurement must remain recorded so consumers can re-weight without re-running anything.
+- Negative scenarios stay in the suites — they are essential correctness checks; only their weight in headline numbers changes.
+
+## Considered Options
+
+### 1. Derive inclusion from `expected.type`
+
+Treat all `value` tests as costed and all `error` tests as diagnostic (or extend the enum to `value | error | exception`).
+
+- Good, because no new field: the data already exists.
+- Bad, because the `error` bucket conflates designed protocol rejections (timing boundaries the protocol's semantics define) with attacks and malformed inputs — collapsing an economic judgement into a verification tag.
+- Bad (for the enum extension), because it couples two orthogonal concerns in one field: a test's expected machine outcome and its cost relevance would have to move together, and a `value` test could never be marked non-representative.
+
+### 2. Remove failure-path tests from the suites
+
+- Good, because it makes the aggregates trivially happy-path.
+- Bad, because it destroys the verification value of the suites; rejected outright by the issue's non-goals.
+
+### 3. Orthogonal per-test flag `included_in_aggregates`
+
+A new optional boolean on the test case, `included_in_aggregates` (default `true`). `expected` keeps answering the verification question; the flag answers the economics question.
+
+- Good, because the two judgements are separated without touching expectations.
+- Good, because the default keeps old suites valid and the diff is confined to the excluded minority.
+- Bad, because the default is invisible: a reader must know the flag exists to understand which tests count, and nothing forces an author of a new test to make the judgement explicitly.
+- Bad, because under the classification policy below the flag turned out to be fully derivable from `expected.type` across every existing suite — dozens of annotation lines carrying no information beyond the expectation.
+
+### 4. Structural split: `measurements` vs `checks` collections (chosen)
+
+`cape-tests.json` separates its test cases into two collections instead of one `tests` array with an attribute: `measurements` verify correctness AND feed the aggregated metrics; `checks` verify correctness only.
+
+- Good, because the taxonomy is the file structure — visible at a glance, no invisible default.
+- Good, because an author adding a test must choose a collection; the judgement cannot be skipped.
+- Good, because the vocabulary names what a test _is_ (a measurement, a check) rather than what the pipeline does with it.
+- Bad, because it restructures every suite file and bumps the cape-tests schema version (a one-time cost).
+
+## Decision Outcome
+
+Chosen option: **Option 4 — structural split into `measurements` and `checks`**. Option 3 was implemented first and superseded by this one during review.
+
+### Semantics
+
+- `cape-tests.json` (schema version 3.0.0) has `measurements` (required, non-empty) and `checks` (optional) collections of the same test-case shape. Test names must be unique across both.
+- Effective inclusion in aggregates = the test is a measurement AND not `pending`. Pending tests never feed aggregates: their measurement reflects behaviour that is known to be wrong. This also fixes the pre-existing leak of pending budgets into aggregates.
+- The schema deliberately does not constrain a measurement's `expected.type`: a future scenario may measure a rejection (`expected.type: error`) if its cost genuinely belongs in the profile. The mechanism stays policy-neutral; this ADR carries the policy.
+- `measurements.cpu_units` / `measurements.memory_units` in metrics.json (sum, maximum, minimum, median) — and everything derived from them (fees, budget percentages, scripts-per-tx/block) — cover effectively-included evaluations only.
+- Excluded evaluations are summarised in a `measurements.excluded` diagnostic block (`count`, cpu/memory `sum` and `maximum`) and each `evaluations[]` entry carries its effective `included_in_aggregates` boolean, so consumers can re-weight from the raw data without consulting the suite.
+- The broken `sum_positive` / `sum_negative` aggregates are removed. metrics.json `version` bumps to `2.0.0`, and the metrics schema pins that version so CI catches any submission that was not regenerated.
+- In Haskell the collection membership decodes into `data AggregationPolicy = IncludedInAggregates | ExcludedFromAggregates` (`Cape.Metrics`), not a bare `Bool`.
+
+### Classification policy
+
+The criterion for a test: **does this execution occur in standard protocol operation?**
+
+Only accepting executions do. A rejecting transaction is stopped before it lands on-chain: the wallet evaluates the script while building, and node validation rejects it at submission — nobody pays for the rejecting execution in normal operation. Race losers never reach the script at all: a spent input or an expired validity interval fails phase-1 validation, which runs no scripts. A rejecting execution can be forced on-chain deliberately (an attacker bypassing validation and forfeiting collateral), but the benchmark is under no obligation to optimize that path — it suffices that the validator rejects it.
+
+Applied to the suites:
+
+- Accepts (`expected.type: value`) — measurements.
+- Every expected rejection — checks: attacks (double satisfaction, missing/wrong signatures, wrong preimages, amount/address violations, datum tampering), malformed inputs (raw-integer/bytestring redeemers no client produces), defensive checks on impossible transaction shapes (infinite validity bounds, missing time range), and protocol-rule rejections (timing/boundary tests such as htlc's `claim_after_timeout`).
+
+The last group was initially going to stay in the cost profile, on the argument that such rejections are the protocol "doing its job" when honest transactions lose a race. The standard-operation criterion applies to them equally, though: script execution is deterministic in the transaction (the script sees the validity interval, not the current time), so only a protocol-incorrectly built transaction ever reaches the rejecting execution on-chain — an honest transaction that loses a race dies in phase-1 validation without executing the script.
+
+The mechanism is deliberately policy-neutral: a future scenario can still measure a specific rejection without framework changes.
+
+### Positive Consequences
+
+- Headline metrics reflect the cost profile of expected on-chain executions; htlc's maxima are no longer set by an attack test.
+- The dead `sum_positive` / `sum_negative` fields are gone; the pending-tests leak is fixed.
+- Raw per-evaluation measurements are unchanged and now self-describing (each entry carries its inclusion flag).
+- The benchmark report's headline numbers become included-only by construction; excluded totals surface as a muted footnote and in the aggregate CSV (`excluded_count`, `excluded_cpu_sum`, `excluded_mem_sum`).
+
+### Negative Consequences
+
+- Every submission's metrics.json had to be regenerated (raw per-evaluation numbers verified byte-identical; only aggregates and schema shape changed).
+- Cross-version comparisons straddling the change see a discontinuity in aggregate-derived figures for scenarios with excluded tests (htlc, linear_vesting, two_party_escrow).
+- Classifying existing and future error tests is a manual judgement per test; misclassification skews the profile until review catches it.
+
+## Links
+
+- Issue [#219](https://github.com/IntersectMBO/UPLC-CAPE/issues/219) — problem statement and design discussion
+- [doc/metrics.md](../metrics.md) — metric definitions and aggregation strategy

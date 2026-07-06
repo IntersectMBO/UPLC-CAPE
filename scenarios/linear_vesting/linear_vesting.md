@@ -14,10 +14,7 @@ Implement a linear vesting validator that handles partial and full unlock operat
 
 **Required Files**: Submit `linear_vesting.uplc`, `metadata.json`, `metrics.json` to `submissions/linear_vesting/{Compiler}_{Version}_{Handle}/`
 
-**Target**: Both PartialUnlock and FullUnlock sequences. Expected result: `() (unit)`
-**Metrics**: CPU units, Memory units, Script size (bytes), Term size
-**Constraints**: Plutus Core 1.1.0, Plutus V3 recommended, CEK machine budget limits
-**Implementation**: Handle partial unlock with schedule enforcement and full unlock with deadline enforcement
+**Target**: Both PartialUnlock and FullUnlock sequences. Expected result: `() (unit)` **Metrics**: CPU units, Memory units, Script size (bytes), Term size **Constraints**: Plutus Core 1.1.0, Plutus V3 recommended, CEK machine budget limits **Implementation**: Handle partial unlock with schedule enforcement and full unlock with deadline enforcement
 
 ## Exact Task
 
@@ -236,16 +233,17 @@ Both **PartialUnlock** and **FullUnlock** sequences are measured for comprehensi
 With the test constants (vestingPeriodStart=0, vestingPeriodEnd=100, totalInstallments=10, totalVestingQty=1000):
 
 | Time | vestingTimeRemaining | timeBetweenInstallments | futureInstallments | expectedRemaining |
-|------|---------------------|------------------------|--------------------|-------------------|
-| 11   | 89                  | 10                     | 9                  | 900               |
-| 20   | 80                  | 10                     | 8                  | 800               |
-| 25   | 75                  | 10                     | 8                  | 800               |
-| 50   | 50                  | 10                     | 5                  | 500               |
-| 91   | 9                   | 10                     | 1                  | 100               |
-| 99   | 1                   | 10                     | 1                  | 100               |
-| 100  | 0                   | 10                     | 0                  | 0 (FullUnlock)    |
+| --- | --- | --- | --- | --- |
+| 11 | 89 | 10 | 9 | 900 |
+| 20 | 80 | 10 | 8 | 800 |
+| 25 | 75 | 10 | 8 | 800 |
+| 50 | 50 | 10 | 5 | 500 |
+| 91 | 9 | 10 | 1 | 100 |
+| 99 | 1 | 10 | 1 | 100 |
+| 100 | 0 | 10 | 0 | 0 (FullUnlock) |
 
 **Calculation Walkthrough (time=25)**:
+
 - `vestingPeriodLength = 100 - 0 = 100`
 - `vestingTimeRemaining = 100 - 25 = 75`
 - `timeBetweenTwoInstallments = divCeil(100, 10) = 10`
@@ -323,110 +321,81 @@ The linear vesting validator is tested through a comprehensive suite of test cas
 
 ### Invalid Redeemer Tests
 
-- **`redeemer_integer_0`**
-  Tests that validator fails when redeemer is raw integer 0 instead of constructor 0()
+- **`redeemer_integer_0`** Tests that validator fails when redeemer is raw integer 0 instead of constructor 0()
 
-- **`redeemer_integer_1`**
-  Tests that validator fails when redeemer is raw integer 1 instead of constructor 1()
+- **`redeemer_integer_1`** Tests that validator fails when redeemer is raw integer 1 instead of constructor 1()
 
-- **`redeemer_integer_99`**
-  Tests that validator fails when redeemer is an arbitrary integer
+- **`redeemer_integer_99`** Tests that validator fails when redeemer is an arbitrary integer
 
-- **`redeemer_bytestring`**
-  Tests that validator fails when redeemer is a bytestring instead of a constructor
+- **`redeemer_bytestring`** Tests that validator fails when redeemer is a bytestring instead of a constructor
 
-- **`redeemer_list`**
-  Tests that validator fails when redeemer is a list instead of a constructor
+- **`redeemer_list`** Tests that validator fails when redeemer is a list instead of a constructor
 
 ### PartialUnlock Happy Path Tests
 
-- **`partial_unlock_first_installment`**
-  Verifies successful partial unlock at time=11, remaining goes from 1000 to 900 tokens. Beneficiary signature present, datum preserved, single script input.
+- **`partial_unlock_first_installment`** Verifies successful partial unlock at time=11, remaining goes from 1000 to 900 tokens. Beneficiary signature present, datum preserved, single script input.
 
-- **`partial_unlock_mid_vesting`**
-  Verifies successful partial unlock at time=50, remaining goes from 1000 to 500 tokens. Tests mid-schedule withdrawal with correct remaining calculation.
+- **`partial_unlock_mid_vesting`** Verifies successful partial unlock at time=50, remaining goes from 1000 to 500 tokens. Tests mid-schedule withdrawal with correct remaining calculation.
 
-- **`partial_unlock_near_end`**
-  Verifies successful partial unlock at time=91, remaining goes from 1000 to 100 tokens. Tests near-end withdrawal where only one future installment remains.
+- **`partial_unlock_near_end`** Verifies successful partial unlock at time=91, remaining goes from 1000 to 100 tokens. Tests near-end withdrawal where only one future installment remains.
 
-- **`partial_unlock_between_installments`**
-  Verifies successful partial unlock at time=25, remaining goes from 1000 to 800 tokens. Tests that withdrawal between installment boundaries uses ceiling division correctly (same result as time=20).
+- **`partial_unlock_between_installments`** Verifies successful partial unlock at time=25, remaining goes from 1000 to 800 tokens. Tests that withdrawal between installment boundaries uses ceiling division correctly (same result as time=20).
 
 ### FullUnlock Happy Path Tests
 
-- **`full_unlock_after_period_end`**
-  Verifies successful full unlock at time=101. Beneficiary signature present, all tokens released.
+- **`full_unlock_after_period_end`** Verifies successful full unlock at time=101. Beneficiary signature present, all tokens released.
 
-- **`full_unlock_well_after`**
-  Verifies successful full unlock at time=200. Tests that unlock works well beyond the vesting period end.
+- **`full_unlock_well_after`** Verifies successful full unlock at time=200. Tests that unlock works well beyond the vesting period end.
 
 ### PartialUnlock Authorization Failure Tests
 
-- **`partial_unlock_missing_signature`**
-  Verifies partial unlock fails when beneficiary signature is missing from the transaction. All other conditions valid (time=11, correct remaining=900).
+- **`partial_unlock_missing_signature`** Verifies partial unlock fails when beneficiary signature is missing from the transaction. All other conditions valid (time=11, correct remaining=900).
 
-- **`partial_unlock_wrong_signature`**
-  Verifies partial unlock fails when impostor signature is present instead of beneficiary. All other conditions valid.
+- **`partial_unlock_wrong_signature`** Verifies partial unlock fails when impostor signature is present instead of beneficiary. All other conditions valid.
 
-- **`partial_unlock_no_signatures`**
-  Verifies partial unlock fails when the signatories list is empty. All other conditions valid.
+- **`partial_unlock_no_signatures`** Verifies partial unlock fails when the signatories list is empty. All other conditions valid.
 
 ### PartialUnlock Temporal Failure Tests
 
-- **`partial_unlock_before_first_unlock`**
-  Verifies partial unlock fails when time=5, which is before the firstUnlockPossibleAfter threshold of 10.
+- **`partial_unlock_before_first_unlock`** Verifies partial unlock fails when time=5, which is before the firstUnlockPossibleAfter threshold of 10.
 
-- **`partial_unlock_at_first_unlock`**
-  Verifies partial unlock fails when time=10, exactly at the firstUnlockPossibleAfter boundary. The check is strictly greater than, so equal is not sufficient.
+- **`partial_unlock_at_first_unlock`** Verifies partial unlock fails when time=10, exactly at the firstUnlockPossibleAfter boundary. The check is strictly greater than, so equal is not sufficient.
 
-- **`partial_unlock_infinite_lower_bound`**
-  Verifies partial unlock fails when the validity range has no lower bound (`(−∞, 90]`). The validator rejects an infinite lower bound.
+- **`partial_unlock_infinite_lower_bound`** Verifies partial unlock fails when the validity range has no lower bound (`(−∞, 90]`). The validator rejects an infinite lower bound.
 
 ### PartialUnlock Amount Failure Tests
 
-- **`partial_unlock_zero_remaining`**
-  Verifies partial unlock fails when new remaining quantity is 0. The non-zero check requires remaining > 0 for partial unlock (full unlock should be used when all tokens are released).
+- **`partial_unlock_zero_remaining`** Verifies partial unlock fails when new remaining quantity is 0. The non-zero check requires remaining > 0 for partial unlock (full unlock should be used when all tokens are released).
 
-- **`partial_unlock_not_decreasing`**
-  Verifies partial unlock fails when new remaining quantity is greater than or equal to the old remaining. The monotonic decrease check prevents no-op or inflationary transactions.
+- **`partial_unlock_not_decreasing`** Verifies partial unlock fails when new remaining quantity is greater than or equal to the old remaining. The monotonic decrease check prevents no-op or inflationary transactions.
 
-- **`partial_unlock_wrong_remaining_too_low`**
-  Verifies partial unlock fails when remaining quantity is lower than what the vesting schedule dictates. For example, at time=11 the expected remaining is 900 but the output contains 800.
+- **`partial_unlock_wrong_remaining_too_low`** Verifies partial unlock fails when remaining quantity is lower than what the vesting schedule dictates. For example, at time=11 the expected remaining is 900 but the output contains 800.
 
-- **`partial_unlock_wrong_remaining_too_high`**
-  Verifies partial unlock fails when remaining quantity is higher than what the vesting schedule dictates. For example, at time=11 the expected remaining is 900 but the output contains 950.
+- **`partial_unlock_wrong_remaining_too_high`** Verifies partial unlock fails when remaining quantity is higher than what the vesting schedule dictates. For example, at time=11 the expected remaining is 900 but the output contains 950.
 
 ### PartialUnlock Datum Failure Tests
 
-- **`partial_unlock_datum_modified`**
-  Verifies partial unlock fails when the output datum at the script address differs from the input datum. Datum preservation is required to maintain vesting parameters across partial withdrawals.
+- **`partial_unlock_datum_modified`** Verifies partial unlock fails when the output datum at the script address differs from the input datum. Datum preservation is required to maintain vesting parameters across partial withdrawals.
 
-- **`partial_unlock_datum_missing`**
-  Verifies partial unlock fails when the continuing output at the script address has no datum attached. The validator requires datum continuity.
+- **`partial_unlock_datum_missing`** Verifies partial unlock fails when the continuing output at the script address has no datum attached. The validator requires datum continuity.
 
 ### PartialUnlock Double Satisfaction Test
 
-- **`partial_unlock_double_satisfaction`**
-  Verifies partial unlock fails when there are two inputs from the script address. The single-script-input check prevents double satisfaction attacks where an attacker pairs their own script input with the vesting input.
+- **`partial_unlock_double_satisfaction`** Verifies partial unlock fails when there are two inputs from the script address. The single-script-input check prevents double satisfaction attacks where an attacker pairs their own script input with the vesting input.
 
 ### FullUnlock Authorization Failure Tests
 
-- **`full_unlock_missing_signature`**
-  Verifies full unlock fails when beneficiary signature is missing from the transaction. Time is valid (101), but no signature present.
+- **`full_unlock_missing_signature`** Verifies full unlock fails when beneficiary signature is missing from the transaction. Time is valid (101), but no signature present.
 
-- **`full_unlock_wrong_signature`**
-  Verifies full unlock fails when impostor signature is present instead of beneficiary. Time is valid (101).
+- **`full_unlock_wrong_signature`** Verifies full unlock fails when impostor signature is present instead of beneficiary. Time is valid (101).
 
 ### FullUnlock Temporal Failure Tests
 
-- **`full_unlock_before_period_end`**
-  Verifies full unlock fails when time=50, which is before the vestingPeriodEnd of 100. The beneficiary must use partial unlock during the vesting period.
+- **`full_unlock_before_period_end`** Verifies full unlock fails when time=50, which is before the vestingPeriodEnd of 100. The beneficiary must use partial unlock during the vesting period.
 
-- **`full_unlock_at_period_end`**
-  Verifies full unlock fails when time=100, exactly at the vestingPeriodEnd boundary. The check is strictly greater than, so equal is not sufficient.
+- **`full_unlock_at_period_end`** Verifies full unlock fails when time=100, exactly at the vestingPeriodEnd boundary. The check is strictly greater than, so equal is not sufficient.
 
-- **`full_unlock_infinite_lower_bound`**
-  Verifies full unlock fails when the validity range has no lower bound (`(−∞, 200]`). The validator rejects an infinite lower bound.
+- **`full_unlock_infinite_lower_bound`** Verifies full unlock fails when the validity range has no lower bound (`(−∞, 200]`). The validator rejects an infinite lower bound.
 
 ### Primary Test Cases for Performance Measurement
 
@@ -464,26 +433,27 @@ Use the standard metrics schema as defined in `submissions/TEMPLATE/metrics.sche
 ```json
 {
   "scenario": "linear_vesting",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "measurements": {
     "cpu_units": {
       "maximum": 0,
       "sum": 0,
       "minimum": 0,
-      "median": 0,
-      "sum_positive": 0,
-      "sum_negative": 0
+      "median": 0
     },
     "memory_units": {
       "maximum": 0,
       "sum": 0,
       "minimum": 0,
-      "median": 0,
-      "sum_positive": 0,
-      "sum_negative": 0
+      "median": 0
     },
     "script_size_bytes": 0,
-    "term_size": 0
+    "term_size": 0,
+    "excluded": {
+      "count": 0,
+      "cpu_units": { "sum": 0, "maximum": 0 },
+      "memory_units": { "sum": 0, "maximum": 0 }
+    }
   },
   "evaluations": [
     {
@@ -491,21 +461,24 @@ Use the standard metrics schema as defined in `submissions/TEMPLATE/metrics.sche
       "description": "Partial unlock at time=11, remaining 1000 to 900 tokens should succeed",
       "cpu_units": 0,
       "memory_units": 0,
-      "execution_result": "success"
+      "execution_result": "success",
+      "included_in_aggregates": true
     },
     {
       "name": "partial_unlock_mid_vesting",
       "description": "Partial unlock at time=50, remaining 1000 to 500 tokens should succeed",
       "cpu_units": 0,
       "memory_units": 0,
-      "execution_result": "success"
+      "execution_result": "success",
+      "included_in_aggregates": true
     },
     {
       "name": "full_unlock_after_period_end",
       "description": "Full unlock at time=101, all tokens released should succeed",
       "cpu_units": 0,
       "memory_units": 0,
-      "execution_result": "success"
+      "execution_result": "success",
+      "included_in_aggregates": true
     }
   ],
   "execution_environment": {
@@ -518,18 +491,17 @@ Use the standard metrics schema as defined in `submissions/TEMPLATE/metrics.sche
 
 **Field Explanations:**
 
-**Measurements Object**: Contains performance metrics across all test evaluations:
+**Measurements Object**: Contains performance metrics across the scenario's `measurements` tests (those not `pending`); `checks` tests are recorded in `evaluations` but excluded from aggregates:
 
 - **cpu_units/memory_units objects**: Multiple aggregation strategies for comprehensive analysis:
   - `maximum`: Peak resource usage (worst-case performance)
-  - `sum`: Total resources across all evaluations (overall computational work)
+  - `sum`: Total resources across included evaluations (overall computational work)
   - `minimum`: Best-case resource usage (optimal performance)
   - `median`: Typical resource usage (normal performance)
-  - `sum_positive`: Resources from successful evaluations only
-  - `sum_negative`: Resources from failed evaluations only
 
 - **script_size_bytes**: Size of the compiled UPLC validator script in bytes
 - **term_size**: Number of AST nodes in the UPLC term representation
+- **excluded**: Diagnostic totals for evaluations excluded from aggregates (attacks, malformed inputs, defensive checks, pending tests)
 
 **Evaluations Array**: Individual test case measurements showing per-evaluation performance data. Each evaluation includes:
 
@@ -537,6 +509,7 @@ Use the standard metrics schema as defined in `submissions/TEMPLATE/metrics.sche
 - `description`: What the test validates
 - `cpu_units/memory_units`: Resources consumed for this specific test
 - `execution_result`: "success" for validation pass, "error" for validation failure
+- `included_in_aggregates`: Whether this evaluation feeds the aggregated metrics
 
 **Environment Info**:
 
