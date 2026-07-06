@@ -81,7 +81,7 @@ fi
 # Validate benchmark name pattern when provided (lowercase, underscores only)
 valid_benchmark_name() { [[ $1 =~ ^[a-z][a-z0-9_]*[a-z0-9]$|^[a-z]$ ]]; }
 
-# CSV format: benchmark,timestamp,language,version,user,variant,cpu_units,memory_units,script_size_bytes,term_size,execution_fee_lovelace,reference_script_fee_lovelace,total_fee_lovelace,tx_memory_budget_pct,tx_cpu_budget_pct,block_memory_budget_pct,block_cpu_budget_pct,scripts_per_tx,scripts_per_block,submission_dir,min_plutus_version
+# CSV format: benchmark,timestamp,language,version,user,variant,cpu_units,memory_units,script_size_bytes,term_size,execution_fee_lovelace,reference_script_fee_lovelace,total_fee_lovelace,tx_memory_budget_pct,tx_cpu_budget_pct,block_memory_budget_pct,block_cpu_budget_pct,scripts_per_tx,scripts_per_block,submission_dir,min_plutus_version,excluded_count,excluded_cpu_sum,excluded_mem_sum
 declare -A CSV_COL=(
   [benchmark]=1
   [timestamp]=2
@@ -104,6 +104,9 @@ declare -A CSV_COL=(
   [scripts_per_block]=19
   [submission_dir]=20
   [min_plutus_version]=21
+  [excluded_count]=22
+  [excluded_cpu_sum]=23
+  [excluded_mem_sum]=24
 )
 
 # Helper function to extract a CSV field by column name
@@ -205,6 +208,7 @@ generate_benchmark_data_json() {
     local exec_fee ref_fee total_fee
     local tx_mem_pct tx_cpu_pct block_mem_pct block_cpu_pct
     local spt spb submission_dir
+    local excluded_count excluded_cpu_sum excluded_mem_sum
 
     timestamp=$(csv_field "$line" "timestamp")
     language=$(csv_field "$line" "language")
@@ -225,6 +229,9 @@ generate_benchmark_data_json() {
     spt=$(csv_field "$line" "scripts_per_tx")
     spb=$(csv_field "$line" "scripts_per_block")
     submission_dir=$(csv_field "$line" "submission_dir")
+    excluded_count=$(csv_field "$line" "excluded_count")
+    excluded_cpu_sum=$(csv_field "$line" "excluded_cpu_sum")
+    excluded_mem_sum=$(csv_field "$line" "excluded_mem_sum")
 
     local next
     next=$(jq -n \
@@ -247,6 +254,9 @@ generate_benchmark_data_json() {
       --argjson block_cpu_pct "${block_cpu_pct:-null}" \
       --argjson spt "${spt:-null}" \
       --argjson spb "${spb:-null}" \
+      --argjson excluded_count "${excluded_count:-null}" \
+      --argjson excluded_cpu_sum "${excluded_cpu_sum:-null}" \
+      --argjson excluded_mem_sum "${excluded_mem_sum:-null}" \
       '{
         timestamp: $timestamp,
         compiler: $compiler,
@@ -267,7 +277,10 @@ generate_benchmark_data_json() {
           block_memory_budget_pct: $block_mem_pct,
           block_cpu_budget_pct: $block_cpu_pct,
           scripts_per_tx: $spt,
-          scripts_per_block: $spb
+          scripts_per_block: $spb,
+          excluded_count: $excluded_count,
+          excluded_cpu_sum: $excluded_cpu_sum,
+          excluded_mem_sum: $excluded_mem_sum
         }
       }')
     jq --argjson item "$next" '. + [$item]' "$tmp_submissions" > "$tmp_submissions.new"
