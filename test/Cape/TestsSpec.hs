@@ -2,6 +2,7 @@ module Cape.TestsSpec (spec) where
 
 import Prelude
 
+import Cape.Metrics (AggregationPolicy (..))
 import Cape.Tests
 import Data.Aeson qualified as Json
 import Data.List ((!!))
@@ -13,9 +14,10 @@ import Test.Hspec
 mkSuite :: Maybe (Map Text DataStructureEntry) -> TestSuite
 mkSuite ds =
   TestSuite
-    { tsVersion = "2.0.0"
+    { tsVersion = "3.0.0"
     , tsDescription = Just "test"
-    , tsTests = []
+    , tsMeasurements = []
+    , tsChecks = []
     , tsDataStructures = ds
     }
 
@@ -405,3 +407,61 @@ spec = do
             length (tcInputs testCase) `shouldBe` 2
             tiType (tcInputs testCase !! 0) `shouldBe` BuiltinData
             tiType (tcInputs testCase !! 1) `shouldBe` BuiltinData
+
+  describe "Aggregation policy" do
+    let parseSuite :: LByteString -> (TestSuite -> Expectation) -> Expectation
+        parseSuite jsonText check =
+          case Json.eitherDecode jsonText of
+            Left err -> expectationFailure $ "Failed to parse: " <> err
+            Right suite -> check suite
+
+    it "tags measurements as included and checks as excluded" do
+      parseSuite
+        [__i|{
+          "version": "3.0.0",
+          "measurements": [
+            {"name": "happy", "inputs": [], "expected": {"type": "value", "content": "(con unit ())"}}
+          ],
+          "checks": [
+            {"name": "attack", "inputs": [], "expected": {"type": "error"}}
+          ]
+        }|]
+        \suite ->
+          [(p, tcName tc) | (p, tc) <- suiteTests suite]
+            `shouldBe` [(IncludedInAggregates, "happy"), (ExcludedFromAggregates, "attack")]
+
+    it "defaults checks to empty when the key is absent" do
+      parseSuite
+        [__i|{
+          "version": "3.0.0",
+          "measurements": [
+            {"name": "happy", "inputs": [], "expected": {"type": "value", "content": "(con unit ())"}}
+          ]
+        }|]
+        \suite -> do
+          map (tcName . snd) (suiteTests suite) `shouldBe` ["happy"]
+          map tcName (tsChecks suite) `shouldBe` []
+
+    it "allows a measurement to expect an error" do
+      parseSuite
+        [__i|{
+          "version": "3.0.0",
+          "measurements": [
+            {"name": "costed_rejection", "inputs": [], "expected": {"type": "error"}}
+          ]
+        }|]
+        \suite ->
+          [(p, tcName tc) | (p, tc) <- suiteTests suite]
+            `shouldBe` [(IncludedInAggregates, "costed_rejection")]
+
+    it "excludes pending measurements from aggregates" do
+      parseSuite
+        [__i|{
+          "version": "3.0.0",
+          "measurements": [
+            {"name": "broken", "pending": true, "inputs": [], "expected": {"type": "value", "content": "(con unit ())"}}
+          ]
+        }|]
+        \suite ->
+          [effectiveAggregationPolicy p tc | (p, tc) <- suiteTests suite]
+            `shouldBe` [ExcludedFromAggregates]

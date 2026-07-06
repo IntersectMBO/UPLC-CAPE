@@ -12,9 +12,9 @@
     },
     "version": {
       "type": "string",
-      "pattern": "^\\d+\\.\\d+\\.\\d+$",
+      "enum": ["2.0.0"],
       "description": "Schema version in semantic versioning format",
-      "default": "1.0.0"
+      "default": "2.0.0"
     },
     "measurements": {
       "type": "object",
@@ -22,78 +22,58 @@
       "properties": {
         "cpu_units": {
           "type": "object",
-          "description": "CPU execution units aggregations",
+          "description": "CPU execution units aggregations over evaluations included in aggregates (included_in_aggregates and not pending)",
           "properties": {
             "maximum": {
               "type": "integer",
               "minimum": 0,
-              "description": "Maximum CPU units across all evaluations"
+              "description": "Maximum CPU units across included evaluations"
             },
             "sum": {
               "type": "integer",
               "minimum": 0,
-              "description": "Sum of CPU units across all evaluations"
+              "description": "Sum of CPU units across included evaluations"
             },
             "minimum": {
               "type": "integer",
               "minimum": 0,
-              "description": "Minimum CPU units across all evaluations"
+              "description": "Minimum CPU units across included evaluations"
             },
             "median": {
               "type": "integer",
               "minimum": 0,
-              "description": "Median CPU units across all evaluations"
-            },
-            "sum_positive": {
-              "type": "integer",
-              "minimum": 0,
-              "description": "Sum of CPU units from successful evaluations only"
-            },
-            "sum_negative": {
-              "type": "integer",
-              "minimum": 0,
-              "description": "Sum of CPU units from failed evaluations only"
+              "description": "Median CPU units across included evaluations"
             }
           },
-          "required": ["maximum", "sum", "minimum", "median", "sum_positive", "sum_negative"],
+          "required": ["maximum", "sum", "minimum", "median"],
           "additionalProperties": false
         },
         "memory_units": {
           "type": "object",
-          "description": "Memory units aggregations",
+          "description": "Memory units aggregations over evaluations included in aggregates (included_in_aggregates and not pending)",
           "properties": {
             "maximum": {
               "type": "integer",
               "minimum": 0,
-              "description": "Maximum memory units across all evaluations"
+              "description": "Maximum memory units across included evaluations"
             },
             "sum": {
               "type": "integer",
               "minimum": 0,
-              "description": "Sum of memory units across all evaluations"
+              "description": "Sum of memory units across included evaluations"
             },
             "minimum": {
               "type": "integer",
               "minimum": 0,
-              "description": "Minimum memory units across all evaluations"
+              "description": "Minimum memory units across included evaluations"
             },
             "median": {
               "type": "integer",
               "minimum": 0,
-              "description": "Median memory units across all evaluations"
-            },
-            "sum_positive": {
-              "type": "integer",
-              "minimum": 0,
-              "description": "Sum of memory units from successful evaluations only"
-            },
-            "sum_negative": {
-              "type": "integer",
-              "minimum": 0,
-              "description": "Sum of memory units from failed evaluations only"
+              "description": "Median memory units across included evaluations"
             }
           },
-          "required": ["maximum", "sum", "minimum", "median", "sum_positive", "sum_negative"],
+          "required": ["maximum", "sum", "minimum", "median"],
           "additionalProperties": false
         },
         "script_size_bytes": {
@@ -150,6 +130,53 @@
           "type": "integer",
           "minimum": 0,
           "description": "Maximum number of script executions that fit in a single block"
+        },
+        "excluded": {
+          "type": "object",
+          "description": "Diagnostic totals for evaluations excluded from aggregates (attacks, malformed inputs, defensive checks, pending tests). Always present; count is 0 when nothing is excluded.",
+          "properties": {
+            "count": {
+              "type": "integer",
+              "minimum": 0,
+              "description": "Number of excluded evaluations"
+            },
+            "cpu_units": {
+              "type": "object",
+              "properties": {
+                "sum": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "description": "Sum of CPU units across excluded evaluations"
+                },
+                "maximum": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "description": "Maximum CPU units across excluded evaluations"
+                }
+              },
+              "required": ["sum", "maximum"],
+              "additionalProperties": false
+            },
+            "memory_units": {
+              "type": "object",
+              "properties": {
+                "sum": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "description": "Sum of memory units across excluded evaluations"
+                },
+                "maximum": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "description": "Maximum memory units across excluded evaluations"
+                }
+              },
+              "required": ["sum", "maximum"],
+              "additionalProperties": false
+            }
+          },
+          "required": ["count", "cpu_units", "memory_units"],
+          "additionalProperties": false
         }
       },
       "required": [
@@ -165,7 +192,8 @@
         "block_memory_budget_pct",
         "block_cpu_budget_pct",
         "scripts_per_tx",
-        "scripts_per_block"
+        "scripts_per_block",
+        "excluded"
       ],
       "additionalProperties": false
     },
@@ -197,9 +225,20 @@
             "type": "string",
             "enum": ["success", "error"],
             "description": "Result of the evaluation execution"
+          },
+          "included_in_aggregates": {
+            "type": "boolean",
+            "description": "Effective inclusion in aggregated metrics (the test is a measurement, not a check, AND not pending)"
           }
         },
-        "required": ["name", "description", "cpu_units", "memory_units", "execution_result"],
+        "required": [
+          "name",
+          "description",
+          "cpu_units",
+          "memory_units",
+          "execution_result",
+          "included_in_aggregates"
+        ],
         "additionalProperties": false
       }
     },

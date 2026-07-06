@@ -20,18 +20,16 @@ These metrics are directly measured from UPLC script evaluation:
 
 ### `cpu_units`
 
-**Type:** Integer aggregations (`maximum`, `sum`, `minimum`, `median`, `sum_positive`, `sum_negative`)
+**Type:** Integer aggregations (`maximum`, `sum`, `minimum`, `median`)
 
 **Description:** CPU execution units consumed during script evaluation. Represents computational cost.
 
-**Aggregations:**
+**Aggregations** (over evaluations included in aggregates — see [Which evaluations feed aggregates](#which-evaluations-feed-aggregates)):
 
-- `maximum`: Worst-case CPU cost across all test cases
-- `sum`: Total CPU cost across all test cases
-- `minimum`: Best-case CPU cost across all test cases
-- `median`: Median CPU cost across all test cases
-- `sum_positive`: Total CPU cost from successful evaluations only
-- `sum_negative`: Total CPU cost from failed evaluations only
+- `maximum`: Worst-case CPU cost across included test cases
+- `sum`: Total CPU cost across included test cases
+- `minimum`: Best-case CPU cost across included test cases
+- `median`: Median CPU cost across included test cases
 
 **Usage:** Primary metric for comparing computational efficiency between implementations.
 
@@ -42,15 +40,13 @@ These metrics are directly measured from UPLC script evaluation:
   "maximum": 500000000,
   "sum": 1500000000,
   "minimum": 450000000,
-  "median": 500000000,
-  "sum_positive": 1500000000,
-  "sum_negative": 0
+  "median": 500000000
 }
 ```
 
 ### `memory_units`
 
-**Type:** Integer aggregations (`maximum`, `sum`, `minimum`, `median`, `sum_positive`, `sum_negative`)
+**Type:** Integer aggregations (`maximum`, `sum`, `minimum`, `median`)
 
 **Description:** Memory units consumed during script evaluation. Represents memory cost.
 
@@ -65,9 +61,23 @@ These metrics are directly measured from UPLC script evaluation:
   "maximum": 1000000,
   "sum": 3000000,
   "minimum": 900000,
-  "median": 1000000,
-  "sum_positive": 3000000,
-  "sum_negative": 0
+  "median": 1000000
+}
+```
+
+### `excluded`
+
+**Type:** Object (`count`, `cpu_units.{sum,maximum}`, `memory_units.{sum,maximum}`)
+
+**Description:** Diagnostic totals for evaluations excluded from the aggregates above (attacks, malformed inputs, defensive checks, pending tests). Always present; `count` is 0 when the scenario excludes nothing.
+
+**Example:**
+
+```json
+"excluded": {
+  "count": 17,
+  "cpu_units": { "sum": 237201773, "maximum": 26023985 },
+  "memory_units": { "sum": 758862, "maximum": 63716 }
 }
 ```
 
@@ -447,20 +457,29 @@ _For 1,000,000 memory units and 500,000,000 CPU steps:_
 
 For benchmarks with multiple test cases, raw measurements use various aggregation strategies:
 
-| Strategy       | Description                                    |
-| -------------- | ---------------------------------------------- |
-| `maximum`      | Worst-case value across all test cases         |
-| `sum`          | Total value across all test cases              |
-| `minimum`      | Best-case value across all test cases          |
-| `median`       | Median value across all test cases             |
-| `sum_positive` | Sum of values from successful evaluations only |
-| `sum_negative` | Sum of values from failed evaluations only     |
+| Strategy  | Description                                 |
+| --------- | ------------------------------------------- |
+| `maximum` | Worst-case value across included test cases |
+| `sum`     | Total value across included test cases      |
+| `minimum` | Best-case value across included test cases  |
+| `median`  | Median value across included test cases     |
 
 **Derived metrics** use a **hybrid aggregation strategy**:
 
 - **Budget/Capacity metrics** (budget percentages, scripts per tx/block) use `maximum` for worst-case semantics
 - **Fee metrics** (execution fee, total fee) use `sum` to represent total test suite cost
 - See [Aggregation Strategy for Derived Metrics](#aggregation-strategy-for-derived-metrics) for detailed rationale
+
+### Which evaluations feed aggregates
+
+A scenario's `cape-tests.json` separates its test cases into two collections:
+
+- `measurements` — verify correctness AND feed the aggregated metrics. These are the executions that occur in standard protocol operation.
+- `checks` — verify correctness only: attacks, malformed inputs, defensive checks, and rejected-path calls in general. A rejecting transaction is stopped by wallet/node validation before it lands on-chain, so in the current suites every expected-rejection test is a check.
+
+Every test case in both collections is measured and recorded in `evaluations[]`, but aggregates (and everything derived from them) cover only measurements that are not `pending`. Excluded evaluations are summarised in the `measurements.excluded` diagnostic block, and each `evaluations[]` entry carries its effective `included_in_aggregates` flag so consumers can re-weight from raw data.
+
+See [ADR: Exclude Failure-Path Evaluations from Aggregated Metrics](adr/20260706-exclude-failure-path-evaluations-from-aggregated-metrics.md) for the rationale and classification policy.
 
 ---
 
@@ -546,23 +565,19 @@ This indicates which optimization (reducing memory vs reducing CPU) would have g
 ```json
 {
   "scenario": "fibonacci",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "measurements": {
     "cpu_units": {
       "maximum": 500000000,
       "sum": 1500000000,
       "minimum": 450000000,
-      "median": 500000000,
-      "sum_positive": 1500000000,
-      "sum_negative": 0
+      "median": 500000000
     },
     "memory_units": {
       "maximum": 1000000,
       "sum": 3000000,
       "minimum": 900000,
-      "median": 1000000,
-      "sum_positive": 3000000,
-      "sum_negative": 0
+      "median": 1000000
     },
     "script_size_bytes": 10000,
     "term_size": 1234,
@@ -574,7 +589,12 @@ This indicates which optimization (reducing memory vs reducing CPU) would have g
     "block_memory_budget_pct": 4.84,
     "block_cpu_budget_pct": 3.75,
     "scripts_per_tx": 4,
-    "scripts_per_block": 13
+    "scripts_per_block": 13,
+    "excluded": {
+      "count": 0,
+      "cpu_units": { "sum": 0, "maximum": 0 },
+      "memory_units": { "sum": 0, "maximum": 0 }
+    }
   },
   "evaluations": [
     {
@@ -582,7 +602,8 @@ This indicates which optimization (reducing memory vs reducing CPU) would have g
       "description": "Fibonacci of 10",
       "cpu_units": 500000000,
       "memory_units": 1000000,
-      "execution_result": "success"
+      "execution_result": "success",
+      "included_in_aggregates": true
     }
   ],
   "execution_environment": {

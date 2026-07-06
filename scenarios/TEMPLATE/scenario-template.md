@@ -216,26 +216,27 @@ Use the standard metrics schema as defined in `submissions/TEMPLATE/metrics.sche
 ```json
 {
   "scenario": "{scenario_name}",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "measurements": {
     "cpu_units": {
       "maximum": 0,
       "sum": 0,
       "minimum": 0,
-      "median": 0,
-      "sum_positive": 0,
-      "sum_negative": 0
+      "median": 0
     },
     "memory_units": {
       "maximum": 0,
       "sum": 0,
       "minimum": 0,
-      "median": 0,
-      "sum_positive": 0,
-      "sum_negative": 0
+      "median": 0
     },
     "script_size_bytes": 0,
-    "term_size": 0
+    "term_size": 0,
+    "excluded": {
+      "count": 0,
+      "cpu_units": { "sum": 0, "maximum": 0 },
+      "memory_units": { "sum": 0, "maximum": 0 }
+    }
   },
   "evaluations": [
     {
@@ -243,7 +244,8 @@ Use the standard metrics schema as defined in `submissions/TEMPLATE/metrics.sche
       "description": "{what_this_test_validates}",
       "cpu_units": 0,
       "memory_units": 0,
-      "execution_result": "success"
+      "execution_result": "success",
+      "included_in_aggregates": true
     }
   ],
   "execution_environment": {
@@ -256,18 +258,17 @@ Use the standard metrics schema as defined in `submissions/TEMPLATE/metrics.sche
 
 **Field Explanations:**
 
-**Measurements Object**: Contains aggregated performance metrics across all test evaluations:
+**Measurements Object**: Contains aggregated performance metrics across the scenario's `measurements` tests (those not `pending`); `checks` tests are recorded in `evaluations` but excluded from aggregates:
 
 - **cpu_units/memory_units objects**: Multiple aggregation strategies for comprehensive analysis:
   - `maximum`: Peak resource usage (worst-case performance)
-  - `sum`: Total resources across all evaluations (overall computational work)
+  - `sum`: Total resources across included evaluations (overall computational work)
   - `minimum`: Best-case resource usage (optimal performance)
   - `median`: Typical resource usage (normal performance)
-  - `sum_positive`: Resources from successful evaluations only
-  - `sum_negative`: Resources from failed evaluations only
 
 - **script_size_bytes**: Size of the compiled UPLC validator script in bytes
 - **term_size**: Number of AST nodes in the UPLC term representation
+- **excluded**: Diagnostic totals for evaluations excluded from aggregates (attacks, malformed inputs, defensive checks, pending tests)
 
 **Evaluations Array**: Individual test case measurements showing per-evaluation performance data. Each evaluation includes:
 
@@ -275,6 +276,7 @@ Use the standard metrics schema as defined in `submissions/TEMPLATE/metrics.sche
 - `description`: What the test validates
 - `cpu_units/memory_units`: Resources consumed for this specific test
 - `execution_result`: "success" for validation pass, "error" for validation failure
+- `included_in_aggregates`: Whether this evaluation feeds the aggregated metrics (see the [ADR](../../doc/adr/20260706-exclude-failure-path-evaluations-from-aggregated-metrics.md))
 
 **Environment Info**:
 

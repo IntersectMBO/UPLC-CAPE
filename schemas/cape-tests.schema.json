@@ -8,7 +8,7 @@
     "version": {
       "type": "string",
       "description": "Schema version",
-      "enum": ["2.0.0"]
+      "enum": ["3.0.0"]
     },
     "description": {
       "type": "string",
@@ -24,24 +24,28 @@
       },
       "additionalProperties": false
     },
-    "tests": {
+    "measurements": {
       "type": "array",
-      "description": "Array of test cases to execute",
+      "description": "Test cases that verify correctness AND feed the aggregated metrics (sums, maxima, medians, derived fees and budget percentages). These are the executions that occur in standard protocol operation.",
       "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/test_case"
+      }
+    },
+    "checks": {
+      "type": "array",
+      "description": "Test cases that verify correctness only: attacks, malformed inputs, defensive checks, and rejected-path calls in general (a rejecting transaction is stopped by wallet/node validation before it lands on-chain). Their measured budget is recorded in metrics.json evaluations[] but excluded from aggregates.",
       "items": {
         "$ref": "#/$defs/test_case"
       }
     }
   },
-  "required": ["version", "tests"],
+  "required": ["version", "measurements"],
   "additionalProperties": false,
   "$defs": {
     "builtin_data_value": {
       "description": "BuiltinData value. Encoded either as a string in UPLC text Data syntax (e.g. \"Constr 0 [I 42, B #cafe]\", \"I 42\", \"B #deadbeef\", \"List [I 1, I 2]\", \"Map [(I 1, B #ab)]\") or as an object in the Plutus JSON detailed schema (e.g. {\"int\": 42}, {\"bytes\": \"deadbeef\"}, {\"constructor\": 0, \"fields\": [...]}, {\"list\": [...]}, {\"map\": [{\"k\": ..., \"v\": ...}]}). A string value of the form \"@name\" is a reference into data_structures.",
-      "oneOf": [
-        { "type": "string" },
-        { "$ref": "#/$defs/plutus_json_data" }
-      ]
+      "oneOf": [{ "type": "string" }, { "$ref": "#/$defs/plutus_json_data" }]
     },
     "plutus_json_data": {
       "description": "Plutus Data in the cardano-cli ScriptDataJsonDetailedSchema format.",
@@ -152,22 +156,18 @@
           "type": "boolean",
           "description": "Mark test as pending - expected to fail until fixed. When true, test failures don't affect suite success, but if test starts passing, it becomes an error."
         },
-        "input": {
-          "oneOf": [
-            {
-              "type": "null",
-              "description": "No input - for parameterless programs"
-            },
-            {
-              "$ref": "#/$defs/test_input"
-            }
-          ]
+        "inputs": {
+          "type": "array",
+          "description": "Inputs applied to the program sequentially (empty for programs evaluated without arguments)",
+          "items": {
+            "$ref": "#/$defs/test_input"
+          }
         },
         "expected": {
           "$ref": "#/$defs/expected_result"
         }
       },
-      "required": ["name", "input", "expected"],
+      "required": ["name", "inputs", "expected"],
       "additionalProperties": false
     },
     "test_input": {
@@ -198,18 +198,18 @@
         },
         {
           "type": "object",
-          "description": "Raw UPLC input",
+          "description": "UPLC term input (spliced into the program as an argument)",
           "properties": {
             "type": {
-              "const": "raw_uplc"
+              "const": "uplc"
             },
             "value": {
               "type": "string",
-              "description": "Inline UPLC program text"
+              "description": "Inline UPLC term text, e.g. \"(con integer 42)\""
             },
             "file": {
               "type": "string",
-              "description": "Path to file containing UPLC program (relative to cape-tests.json)"
+              "description": "Path to file containing UPLC term text (relative to cape-tests.json)"
             }
           },
           "required": ["type"],
@@ -316,17 +316,18 @@
               "type": "string",
               "description": "UTXO reference as 'txid:index'"
             },
-            "lovelace": {
-              "type": "integer",
-              "description": "Lovelace amount",
-              "minimum": 0
+            "value": {
+              "$ref": "#/$defs/value_spec"
             },
             "is_own_input": {
               "type": "boolean",
               "description": "Whether this is the UTXO being spent by the script"
+            },
+            "datum": {
+              "$ref": "#/$defs/builtin_data_value"
             }
           },
-          "required": ["op", "utxo_ref", "lovelace", "is_own_input"],
+          "required": ["op", "utxo_ref", "value", "is_own_input"],
           "additionalProperties": false
         },
         {
@@ -337,13 +338,14 @@
             "address": {
               "$ref": "#/$defs/address_spec"
             },
-            "lovelace": {
-              "type": "integer",
-              "description": "Lovelace amount",
-              "minimum": 0
+            "value": {
+              "$ref": "#/$defs/value_spec"
+            },
+            "datum": {
+              "$ref": "#/$defs/builtin_data_value"
             }
           },
-          "required": ["op", "address", "lovelace"],
+          "required": ["op", "address", "value"],
           "additionalProperties": false
         },
         {
@@ -378,8 +380,56 @@
           },
           "required": ["op"],
           "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "description": "Set the datum of the script's own input",
+          "properties": {
+            "op": { "const": "set_script_datum" },
+            "datum": {
+              "$ref": "#/$defs/builtin_data_value"
+            }
+          },
+          "required": ["op", "datum"],
+          "additionalProperties": false
         }
       ]
+    },
+    "value_spec": {
+      "type": "object",
+      "description": "Multi-asset value: lovelace plus optional native assets",
+      "properties": {
+        "lovelace": {
+          "type": "integer",
+          "description": "Lovelace amount",
+          "minimum": 0
+        },
+        "assets": {
+          "type": "array",
+          "description": "Native assets included in the value",
+          "items": {
+            "type": "object",
+            "properties": {
+              "currency_symbol": {
+                "type": "string",
+                "description": "Policy id as hex string or @reference"
+              },
+              "token_name": {
+                "type": "string",
+                "description": "Token name as hex string or @reference"
+              },
+              "quantity": {
+                "type": "integer",
+                "description": "Asset quantity"
+              }
+            },
+            "required": ["currency_symbol", "token_name", "quantity"],
+            "additionalProperties": false
+          }
+        }
+      },
+      "required": ["lovelace"],
+      "additionalProperties": false
     },
     "address_spec": {
       "type": "object",
@@ -395,10 +445,10 @@
             "type": { "const": "script" },
             "script_hash": {
               "type": "string",
-              "description": "Script hash as 56-character hex string or 'standard' for all-1s hash",
+              "description": "Script hash as hex string or 'standard' for all-1s hash",
               "oneOf": [
                 {
-                  "pattern": "^[0-9a-fA-F]{56}$"
+                  "pattern": "^[0-9a-fA-F]+$"
                 },
                 {
                   "const": "standard"
@@ -406,7 +456,7 @@
               ]
             }
           },
-          "required": ["type"],
+          "required": ["type", "script_hash"],
           "additionalProperties": false
         },
         {

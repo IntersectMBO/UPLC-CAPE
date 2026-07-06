@@ -25,17 +25,28 @@ import Cape.Protocol.Parameters (
   txMemoryBudget,
  )
 import Cape.Data.UplcText (renderUplcDataText)
+import Cape.Metrics (
+  AggregationPolicy,
+  BudgetAggregations (..),
+  EvaluationMetrics (..),
+  ExcludedAggregates,
+  calculateBudgetAggregations,
+  calculateExcludedAggregates,
+  partitionByPolicy,
+ )
 import Cape.Tests (
   ExpectedResult (..),
   ResolvedInput (..),
   TestCase (..),
   TestInput,
   TestSuite (..),
+  effectiveAggregationPolicy,
   getTestBaseDir,
   isPendingTest,
   loadTestSuite,
   resolveExpectedResult,
   resolveTestInput,
+  suiteTests,
  )
 import Control.Exception qualified as E
 import Control.Monad (foldM)
@@ -45,7 +56,6 @@ import Data.Aeson.Encode.Pretty qualified as AesonPretty
 import Data.ByteString qualified as BS
 import Data.ByteString.Lazy qualified as LBS
 import Data.ByteString.Short qualified as SBS
-import Data.List (maximum, minimum, (!!))
 import Data.SatInt (unSatInt)
 import Data.Text.Encoding qualified as TE
 import Data.Time (defaultTimeLocale, formatTime, getCurrentTime)
@@ -179,8 +189,8 @@ runTestSuite uplcFile testsFile metricsFileOpt debugContext = do
     Right prog -> pure prog
 
   -- Run each test case and collect results and metrics
-  testResultsAndMetrics <- forM (tsTests testSuite) \testCase -> do
-    runSingleTest program baseDir testSuite testCase debugContext
+  testResultsAndMetrics <- forM (suiteTests testSuite) \(policy, testCase) -> do
+    runSingleTest program baseDir testSuite policy testCase debugContext
 
   let (testResults, evaluationMetrics) = unzip testResultsAndMetrics
 
@@ -285,10 +295,11 @@ runSingleTest ::
   UPLC.Program UPLC.Name PLC.DefaultUni PLC.DefaultFun PLC.SrcSpan ->
   FilePath ->
   TestSuite ->
+  AggregationPolicy ->
   TestCase ->
   Bool ->
   IO (TestResult, EvaluationMetrics)
-runSingleTest program baseDir testSuite testCase debugContext = do
+runSingleTest program baseDir testSuite declaredPolicy testCase debugContext = do
   -- Apply inputs sequentially to the program
   let inputs = tcInputs testCase
   finalProgram <-
@@ -312,6 +323,7 @@ runSingleTest program baseDir testSuite testCase debugContext = do
           , evalCpuUnits = fromIntegral (unSatInt cpu)
           , evalMemoryUnits = fromIntegral (unSatInt mem)
           , evalExecutionResult = executionResult
+          , evalAggregationPolicy = effectiveAggregationPolicy declaredPolicy testCase
           }
 
   pure (testResult, evaluationMetrics)
@@ -363,18 +375,13 @@ writeDetailedMetrics program evaluations metricsFile = do
       termSize = fromIntegral $ unSize $ programSize $ getPlc code
 #endif
 
-  -- Extract CPU and memory data for aggregations
-  let cpuData =
-        [ (evalCpuUnits eval, evalExecutionResult eval == "success") | eval <- evaluations
-        ]
-      memoryData =
-        [ (evalMemoryUnits eval, evalExecutionResult eval == "success")
-        | eval <- evaluations
-        ]
-
-  -- Calculate aggregations
-  let cpuAggregations = calculateBudgetAggregations cpuData
-      memoryAggregations = calculateBudgetAggregations memoryData
+  -- Aggregates cover only evaluations whose test is effectively included
+  -- (included_in_aggregates and not pending); the rest are summarised in
+  -- the "excluded" diagnostic block.
+  let (includedEvals, excludedEvals) = partitionByPolicy evaluations
+      cpuAggregations = calculateBudgetAggregations (map evalCpuUnits includedEvals)
+      memoryAggregations = calculateBudgetAggregations (map evalMemoryUnits includedEvals)
+      excludedAggregates = calculateExcludedAggregates excludedEvals
 
   -- Calculate derived metrics using hybrid aggregation strategy:
   -- - Budget/Capacity metrics use 'maximum' (worst-case single execution)
@@ -404,6 +411,7 @@ writeDetailedMetrics program evaluations metricsFile = do
           , -- Capacity metrics: use maximum (worst-case constraint)
             measScriptsPerTx = scriptsPerTransaction memMax cpuMax
           , measScriptsPerBlock = scriptsPerBlock memMax cpuMax
+          , measExcluded = excludedAggregates
           }
 
   -- Get current timestamp
@@ -426,7 +434,7 @@ writeDetailedMetrics program evaluations metricsFile = do
           { metricsMeasurements = measurements
           , metricsEvaluations = evaluations
           , metricsScenario = "unknown" -- TODO: extract from test suite or CLI
-          , metricsVersion = "1.0.0"
+          , metricsVersion = "2.0.0"
           , metricsExecutionEnvironment = execEnv
           , metricsTimestamp = timestamp
           , metricsNotes = Nothing
@@ -441,46 +449,6 @@ data TestResult = TestResult
   , trPending :: Bool
   , trName :: Text
   }
-
--- | Individual evaluation metrics
-data EvaluationMetrics = EvaluationMetrics
-  { evalName :: Text
-  , evalDescription :: Text
-  , evalCpuUnits :: Integer
-  , evalMemoryUnits :: Integer
-  , evalExecutionResult :: Text -- "success" or "error"
-  }
-
-instance ToJSON EvaluationMetrics where
-  toJSON (EvaluationMetrics name desc cpu mem result) =
-    Json.object
-      [ "name" .= name
-      , "description" .= desc
-      , "cpu_units" .= cpu
-      , "memory_units" .= mem
-      , "execution_result" .= result
-      ]
-
--- | Aggregated budget measurements
-data BudgetAggregations = BudgetAggregations
-  { aggMaximum :: Integer
-  , aggSum :: Integer
-  , aggMinimum :: Integer
-  , aggMedian :: Integer
-  , aggSumPositive :: Integer
-  , aggSumNegative :: Integer
-  }
-
-instance ToJSON BudgetAggregations where
-  toJSON (BudgetAggregations maxVal sumVal minVal medVal sumPos sumNeg) =
-    Json.object
-      [ "maximum" .= maxVal
-      , "sum" .= sumVal
-      , "minimum" .= minVal
-      , "median" .= medVal
-      , "sum_positive" .= sumPos
-      , "sum_negative" .= sumNeg
-      ]
 
 -- | Top-level measurements with aggregations and derived metrics
 data Measurements = Measurements
@@ -498,6 +466,7 @@ data Measurements = Measurements
   , measBlockCpuBudgetPct :: Double
   , measScriptsPerTx :: Integer
   , measScriptsPerBlock :: Integer
+  , measExcluded :: ExcludedAggregates
   }
 
 instance ToJSON Measurements where
@@ -516,6 +485,7 @@ instance ToJSON Measurements where
         blockCpuBudgetPct
         scriptsPerTx
         scriptsPerBlk
+        excluded
       ) =
       Json.object
         [ "cpu_units" .= cpuAgg
@@ -531,6 +501,7 @@ instance ToJSON Measurements where
         , "block_cpu_budget_pct" .= blockCpuBudgetPct
         , "scripts_per_tx" .= scriptsPerTx
         , "scripts_per_block" .= scriptsPerBlk
+        , "excluded" .= excluded
         ]
 
 -- | Complete metrics data structure matching the schema
@@ -557,33 +528,6 @@ instance ToJSON Metrics where
         <> case notes of
           Nothing -> []
           Just n -> ["notes" .= n]
-
--- | Calculate aggregations for a list of budget values with success/error info
-calculateBudgetAggregations :: [(Integer, Bool)] -> BudgetAggregations
-calculateBudgetAggregations budgetData =
-  let values = map fst budgetData
-      successValues = [val | (val, True) <- budgetData]
-      errorValues = [val | (val, False) <- budgetData]
-      sortedValues = sort values
-      median = calculateMedian sortedValues
-   in BudgetAggregations
-        { aggMaximum = if null values then 0 else maximum values
-        , aggSum = sum values
-        , aggMinimum = if null values then 0 else minimum values
-        , aggMedian = median
-        , aggSumPositive = sum successValues
-        , aggSumNegative = sum errorValues
-        }
-
--- | Calculate median from a sorted list
-calculateMedian :: [Integer] -> Integer
-calculateMedian [] = 0
-calculateMedian xs =
-  let len = length xs
-      mid = len `div` 2
-   in if even len
-        then (xs !! (mid - 1) + xs !! mid) `div` 2
-        else xs !! mid
 
 -- Helper: strict UTF-8 file reader with exception handling
 readTextUtf8 :: FilePath -> IO Text

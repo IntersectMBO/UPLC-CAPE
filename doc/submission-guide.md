@@ -29,12 +29,12 @@ All submissions are measured on these standardized metrics using the CEK machine
 
 The `measure` tool runs multiple test cases per program and provides several aggregation methods for CPU and memory metrics:
 
-- `maximum`: Peak resource usage across all test cases (worst-case performance)
-- `sum`: Total computational work across all test cases (overall efficiency)
+- `maximum`: Peak resource usage across included test cases (worst-case performance)
+- `sum`: Total computational work across included test cases (overall efficiency)
 - `minimum`: Best-case resource usage (optimal performance)
 - `median`: Typical resource usage (normal performance)
-- `sum_positive`: Total resources for successful test cases only (valid execution cost)
-- `sum_negative`: Total resources for failed test cases only (error handling cost)
+
+Aggregates cover only the scenario's `measurements` tests (and only those not `pending`). The `checks` tests are excluded from aggregates but still measured — a rejecting transaction is stopped by wallet/node validation before it lands on-chain, so those executions do not occur in standard protocol operation; their totals appear in the `measurements.excluded` diagnostic block. See the [ADR](adr/20260706-exclude-failure-path-evaluations-from-aggregated-metrics.md) for the rationale.
 
 Higher-level tooling can extract the most relevant aggregation for specific analysis needs.
 
@@ -303,26 +303,27 @@ Generated automatically by `cape submission measure`, but follows this structure
 ```json
 {
   "scenario": "fibonacci",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "measurements": {
     "cpu_units": {
       "maximum": 185916,
       "sum": 185916,
       "minimum": 185916,
-      "median": 185916,
-      "sum_positive": 185916,
-      "sum_negative": 0
+      "median": 185916
     },
     "memory_units": {
       "maximum": 592,
       "sum": 592,
       "minimum": 592,
-      "median": 592,
-      "sum_positive": 592,
-      "sum_negative": 0
+      "median": 592
     },
     "script_size_bytes": 1234,
-    "term_size": 45
+    "term_size": 45,
+    "excluded": {
+      "count": 0,
+      "cpu_units": { "sum": 0, "maximum": 0 },
+      "memory_units": { "sum": 0, "maximum": 0 }
+    }
   },
   "evaluations": [
     {
@@ -330,7 +331,8 @@ Generated automatically by `cape submission measure`, but follows this structure
       "description": "Test case description",
       "cpu_units": 185916,
       "memory_units": 592,
-      "execution_result": "success"
+      "execution_result": "success",
+      "included_in_aggregates": true
     }
   ],
   "execution_environment": {

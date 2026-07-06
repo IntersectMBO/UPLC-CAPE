@@ -458,26 +458,27 @@ Use the standard metrics schema as defined in `submissions/TEMPLATE/metrics.sche
 ```json
 {
   "scenario": "two_party_escrow",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "measurements": {
     "cpu_units": {
       "maximum": 137218582,
       "sum": 1162842794,
       "minimum": 24688,
-      "median": 48391310,
-      "sum_positive": 1162842794,
-      "sum_negative": 0
+      "median": 48391310
     },
     "memory_units": {
       "maximum": 511363,
       "sum": 4329175,
       "minimum": 132,
-      "median": 178493,
-      "sum_positive": 4329175,
-      "sum_negative": 0
+      "median": 178493
     },
     "script_size_bytes": 2392,
-    "term_size": 2221
+    "term_size": 2221,
+    "excluded": {
+      "count": 0,
+      "cpu_units": { "sum": 0, "maximum": 0 },
+      "memory_units": { "sum": 0, "maximum": 0 }
+    }
   },
   "evaluations": [
     {
@@ -485,21 +486,24 @@ Use the standard metrics schema as defined in `submissions/TEMPLATE/metrics.sche
       "description": "Deposit with buyer signature and exactly 75 ADA should succeed",
       "cpu_units": 56261599,
       "memory_units": 207514,
-      "execution_result": "success"
+      "execution_result": "success",
+      "included_in_aggregates": true
     },
     {
       "name": "accept_successful",
       "description": "Accept with seller signature and 75 ADA to seller should succeed",
       "cpu_units": 96881280,
       "memory_units": 365535,
-      "execution_result": "success"
+      "execution_result": "success",
+      "included_in_aggregates": true
     },
     {
       "name": "refund_successful",
       "description": "Refund after deadline with buyer signature should succeed",
       "cpu_units": 78453623,
       "memory_units": 294717,
-      "execution_result": "success"
+      "execution_result": "success",
+      "included_in_aggregates": true
     }
   ],
   "execution_environment": {
@@ -512,18 +516,17 @@ Use the standard metrics schema as defined in `submissions/TEMPLATE/metrics.sche
 
 **Field Explanations:**
 
-**Measurements Object**: Contains performance metrics across all test evaluations:
+**Measurements Object**: Contains performance metrics across the scenario's `measurements` tests (those not `pending`); `checks` tests are recorded in `evaluations` but excluded from aggregates:
 
 - **cpu_units/memory_units objects**: Multiple aggregation strategies for comprehensive analysis:
   - `maximum`: Peak resource usage (worst-case performance)
-  - `sum`: Total resources across all evaluations (overall computational work)
+  - `sum`: Total resources across included evaluations (overall computational work)
   - `minimum`: Best-case resource usage (optimal performance)
   - `median`: Typical resource usage (normal performance)
-  - `sum_positive`: Resources from successful evaluations only
-  - `sum_negative`: Resources from failed evaluations only
 
 - **script_size_bytes**: Size of the compiled UPLC validator script in bytes
 - **term_size**: Number of AST nodes in the UPLC term representation
+- **excluded**: Diagnostic totals for evaluations excluded from aggregates (attacks, malformed inputs, defensive checks, pending tests)
 
 **Evaluations Array**: Individual test case measurements showing per-evaluation performance data. Each evaluation includes:
 
@@ -531,6 +534,7 @@ Use the standard metrics schema as defined in `submissions/TEMPLATE/metrics.sche
 - `description`: What the test validates
 - `cpu_units/memory_units`: Resources consumed for this specific test
 - `execution_result`: "success" for validation pass, "error" for validation failure
+- `included_in_aggregates`: Whether this evaluation feeds the aggregated metrics
 
 **Environment Info**:
 

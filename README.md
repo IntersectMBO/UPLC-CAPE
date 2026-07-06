@@ -281,12 +281,12 @@ The output includes formatted metrics, best value indicators, and submission met
      - Produces output that validates against `submissions/TEMPLATE/metrics.schema.json`
 
    - **Aggregation Strategies**: The `measure` tool now runs multiple test cases per program and provides several aggregation methods for CPU and memory metrics:
-     - `maximum`: Peak resource usage across all test cases (useful for identifying worst-case performance)
-     - `sum`: Total computational work across all test cases (useful for overall efficiency comparison)
+     - `maximum`: Peak resource usage across included test cases (useful for identifying worst-case performance)
+     - `sum`: Total computational work across included test cases (useful for overall efficiency comparison)
      - `minimum`: Best-case resource usage (useful for identifying optimal performance)
      - `median`: Typical resource usage (useful for understanding normal performance)
-     - `sum_positive`: Total resources for successful test cases only (valid execution cost)
-     - `sum_negative`: Total resources for failed test cases only (error handling cost)
+
+     Aggregates cover only the scenario's `measurements` tests (and only those not `pending`); the `checks` tests — attacks, malformed inputs, and other failure paths — are still measured, with their totals reported in the `measurements.excluded` diagnostic block. See [doc/adr/20260706-exclude-failure-path-evaluations-from-aggregated-metrics.md](doc/adr/20260706-exclude-failure-path-evaluations-from-aggregated-metrics.md).
 
      Higher-level tooling can extract the most relevant aggregation for specific analysis needs.
 
@@ -295,26 +295,27 @@ The output includes formatted metrics, best value indicators, and submission met
      ```json
      {
        "scenario": "fibonacci",
-       "version": "1.0.0",
+       "version": "2.0.0",
        "measurements": {
          "cpu_units": {
            "maximum": 185916,
            "sum": 185916,
            "minimum": 185916,
-           "median": 185916,
-           "sum_positive": 185916,
-           "sum_negative": 0
+           "median": 185916
          },
          "memory_units": {
            "maximum": 592,
            "sum": 592,
            "minimum": 592,
-           "median": 592,
-           "sum_positive": 592,
-           "sum_negative": 0
+           "median": 592
          },
          "script_size_bytes": 1234,
-         "term_size": 45
+         "term_size": 45,
+         "excluded": {
+           "count": 0,
+           "cpu_units": { "sum": 0, "maximum": 0 },
+           "memory_units": { "sum": 0, "maximum": 0 }
+         }
        },
        "evaluations": [
          {
@@ -322,7 +323,8 @@ The output includes formatted metrics, best value indicators, and submission met
            "description": "Pre-applied fibonacci(25) should return 75025",
            "cpu_units": 185916,
            "memory_units": 592,
-           "execution_result": "success"
+           "execution_result": "success",
+           "included_in_aggregates": true
          }
        ],
        "execution_environment": {
@@ -414,12 +416,7 @@ UPLC-CAPE/
   - plutus-tx >= 1.45.0.0
   - plutus-ledger-api >= 1.45.0.0
 
-Plinth (PlutusTx) source for every benchmark scenario lives in a
-separate repository, [Unisay/plinth-cape-submissions][plinth-repo]; see
-[ADR 20260520][adr-plinth-move]. This repository is plugin-free and
-consumes the produced `.uplc` artefacts together with the accompanying
-`metadata.json`, `metrics.json`, and `source/README.md` per
-submission.
+Plinth (PlutusTx) source for every benchmark scenario lives in a separate repository, [Unisay/plinth-cape-submissions][plinth-repo]; see [ADR 20260520][adr-plinth-move]. This repository is plugin-free and consumes the produced `.uplc` artefacts together with the accompanying `metadata.json`, `metrics.json`, and `source/README.md` per submission.
 
 [plinth-repo]: https://github.com/Unisay/plinth-cape-submissions
 [adr-plinth-move]: ./doc/adr/20260520-move-plinth-source-to-separate-repository.md

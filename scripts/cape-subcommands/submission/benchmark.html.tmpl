@@ -80,6 +80,12 @@
             margin-bottom: 20px;
         }
 
+        .excluded-note {
+            color: #8a94a3;
+            font-size: 0.85em;
+            margin-top: 12px;
+        }
+
         .chart-table {
             width: 100%;
             border-collapse: collapse;
@@ -212,6 +218,7 @@
         <div id="chart-container">
             <div class="loading">Loading data…</div>
         </div>
+        <div id="excluded-note" class="excluded-note" hidden></div>
     </div>
 
     <div class="breadcrumb">
@@ -427,7 +434,23 @@
             renderTabs(key);
             document.getElementById("tab-description").textContent = metric.subtitle;
             document.getElementById("chart-container").innerHTML = renderTab(metric, submissions);
+            renderExcludedNote(submissions);
             requestAnimationFrame(flipOverflowingValues);
+        }
+
+        // The excluded count is a property of the scenario's test suite, so it is
+        // identical across submissions — read it from any of them.
+        function renderExcludedNote(submissions) {
+            const note = document.getElementById("excluded-note");
+            const excluded = submissions[0]?.metrics?.excluded_count ?? 0;
+            note.hidden = excluded === 0;
+            if (excluded > 0) {
+                note.textContent =
+                    `Aggregates cover expected on-chain evaluations only; ${excluded} ` +
+                    `evaluations (failure-path checks and/or pending measurements) are ` +
+                    `measured per submission but excluded — see each submission's ` +
+                    `metrics.json for their cost.`;
+            }
         }
 
         fetch(`${encodeURIComponent(BENCHMARK)}.json`, { cache: "no-cache" })

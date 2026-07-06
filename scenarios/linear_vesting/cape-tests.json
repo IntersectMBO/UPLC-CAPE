@@ -1,5 +1,5 @@
 {
-  "version": "2.0.0",
+  "version": "3.0.0",
   "description": "Test cases for linear vesting smart contract validator",
   "data_structures": {
     "beneficiary_pubkey": {
@@ -125,72 +125,7 @@
       }
     }
   },
-  "tests": [
-    {
-      "name": "redeemer_integer_0",
-      "description": "Validator fails when redeemer is raw integer 0 instead of constructor 0()",
-      "expected": {
-        "type": "error"
-      },
-      "inputs": [
-        {
-          "type": "builtin_data",
-          "value": "I 0"
-        }
-      ]
-    },
-    {
-      "name": "redeemer_integer_1",
-      "description": "Validator fails when redeemer is raw integer 1 instead of constructor 1()",
-      "expected": {
-        "type": "error"
-      },
-      "inputs": [
-        {
-          "type": "builtin_data",
-          "value": "I 1"
-        }
-      ]
-    },
-    {
-      "name": "redeemer_integer_99",
-      "description": "Validator fails when redeemer is raw integer 99 (not a valid constructor)",
-      "expected": {
-        "type": "error"
-      },
-      "inputs": [
-        {
-          "type": "builtin_data",
-          "value": "I 99"
-        }
-      ]
-    },
-    {
-      "name": "redeemer_bytestring",
-      "description": "Validator fails when redeemer is bytestring instead of constructor",
-      "expected": {
-        "type": "error"
-      },
-      "inputs": [
-        {
-          "type": "builtin_data",
-          "value": "B #deadbeef"
-        }
-      ]
-    },
-    {
-      "name": "redeemer_list",
-      "description": "Validator fails when redeemer is list [1 2 3] instead of constructor",
-      "expected": {
-        "type": "error"
-      },
-      "inputs": [
-        {
-          "type": "builtin_data",
-          "value": "List [I 1, I 2, I 3]"
-        }
-      ]
-    },
+  "measurements": [
     {
       "name": "partial_unlock_first_installment",
       "description": "PartialUnlock at time=11 with 900 tokens remaining should succeed (first installment unlocked)",
@@ -364,6 +299,73 @@
               }
             ]
           }
+        }
+      ]
+    }
+  ],
+  "checks": [
+    {
+      "name": "redeemer_integer_0",
+      "description": "Validator fails when redeemer is raw integer 0 instead of constructor 0()",
+      "expected": {
+        "type": "error"
+      },
+      "inputs": [
+        {
+          "type": "builtin_data",
+          "value": "I 0"
+        }
+      ]
+    },
+    {
+      "name": "redeemer_integer_1",
+      "description": "Validator fails when redeemer is raw integer 1 instead of constructor 1()",
+      "expected": {
+        "type": "error"
+      },
+      "inputs": [
+        {
+          "type": "builtin_data",
+          "value": "I 1"
+        }
+      ]
+    },
+    {
+      "name": "redeemer_integer_99",
+      "description": "Validator fails when redeemer is raw integer 99 (not a valid constructor)",
+      "expected": {
+        "type": "error"
+      },
+      "inputs": [
+        {
+          "type": "builtin_data",
+          "value": "I 99"
+        }
+      ]
+    },
+    {
+      "name": "redeemer_bytestring",
+      "description": "Validator fails when redeemer is bytestring instead of constructor",
+      "expected": {
+        "type": "error"
+      },
+      "inputs": [
+        {
+          "type": "builtin_data",
+          "value": "B #deadbeef"
+        }
+      ]
+    },
+    {
+      "name": "redeemer_list",
+      "description": "Validator fails when redeemer is list [1 2 3] instead of constructor",
+      "expected": {
+        "type": "error"
+      },
+      "inputs": [
+        {
+          "type": "builtin_data",
+          "value": "List [I 1, I 2, I 3]"
         }
       ]
     },

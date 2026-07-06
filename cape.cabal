@@ -93,6 +93,7 @@ library
     Cape.Data.UplcText
     Cape.Error
     Cape.Fixture
+    Cape.Metrics
     Cape.PrettyResult
     Cape.Protocol.Parameters
     Cape.ScriptContextBuilder
@@ -176,6 +177,7 @@ test-suite cape-tests
   other-modules:
     Cape.Data.PlutusJsonSpec
     Cape.Data.UplcTextSpec
+    Cape.MetricsSpec
     Cape.Protocol.ParametersSpec
     Cape.ScriptContextBuilderSpec
     Cape.TestsSpec
