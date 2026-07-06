@@ -36,11 +36,14 @@ module Cape.Tests (
   resolveExpectedResult,
   getTestBaseDir,
   isPendingTest,
+  suiteTests,
+  effectiveAggregationPolicy,
 ) where
 
 import Prelude
 
 import Cape.Data.Decode (decodeBuiltinData)
+import Cape.Metrics (AggregationPolicy (..))
 import Cape.ScriptContextBuilder
 import Data.Aeson (FromJSON (..), withObject, (.!=), (.:), (.:?))
 import Data.Aeson qualified as Json
@@ -137,10 +140,16 @@ data TestSuite = TestSuite
   --       }
   --     }
   --     @
-  , tsTests :: [TestCase]
-  -- ^ List of test cases
+  , tsMeasurements :: [TestCase]
+  -- ^ Test cases that verify correctness AND feed the aggregated metrics
+  -- (sums, maxima, medians, derived fees and budget percentages)
   --
-  --     JSON: @"tests": [...]@
+  --     JSON: @"measurements": [...]@
+  , tsChecks :: [TestCase]
+  -- ^ Test cases that verify correctness only; their measured budget is
+  -- recorded in metrics.json @evaluations@ but excluded from aggregates
+  --
+  --     JSON: @"checks": [...]@ (optional, defaults to empty)
   }
   deriving stock (Show)
 
@@ -290,13 +299,14 @@ data ScriptContextSpec = ScriptContextSpec
   }
   deriving stock (Show)
 
--- | Specification for a UTXO value (lovelace + optional native assets).
---
---     JSON examples:
---     @
---     {"lovelace": 2000000}
---     {"lovelace": 2000000, "assets": [{"currency_symbol": "#dddd...", "token_name": "#7465", "quantity": 1000}]}
---     @
+{- | Specification for a UTXO value (lovelace + optional native assets).
+
+    JSON examples:
+    @
+    {"lovelace": 2000000}
+    {"lovelace": 2000000, "assets": [{"currency_symbol": "#dddd...", "token_name": "#7465", "quantity": 1000}]}
+    @
+-}
 data ValueSpec = ValueSpec
   { vsLovelace :: Integer
   -- ^ Lovelace amount
@@ -505,7 +515,8 @@ instance FromJSON TestSuite where
       <$> o .: "version"
       <*> o .:? "description"
       <*> o .:? "data_structures"
-      <*> o .: "tests"
+      <*> o .: "measurements"
+      <*> o .:? "checks" .!= []
 
 instance FromJSON TestCase where
   parseJSON = withObject "TestCase" \o ->
@@ -614,7 +625,22 @@ loadTestSuite testFile = do
   content <- LBS.readFile testFile
   case Json.eitherDecode content of
     Left err -> die ("Failed to parse test file: " <> err)
-    Right suite -> pure suite
+    Right suite -> do
+      let names = [tcName tc | (_, tc) <- suiteTests suite]
+          duplicates =
+            HaskellMap.keys
+              ( HaskellMap.filter
+                  (> 1)
+                  (HaskellMap.fromListWith (+) [(n, 1 :: Int) | n <- names])
+              )
+      unless (null duplicates) $
+        die
+          ( "Duplicate test names across measurements and checks in "
+              <> testFile
+              <> ": "
+              <> toString (Text.intercalate ", " duplicates)
+          )
+      pure suite
 
 {- | Resolve test input with support for script_context type.
 
@@ -714,6 +740,24 @@ Pending tests are skipped during execution.
 -}
 isPendingTest :: TestCase -> Bool
 isPendingTest tc = fromMaybe False (tcPending tc)
+
+{- | All test cases of a suite, in execution order, each tagged with the
+aggregation policy its collection declares: measurements feed the
+aggregated metrics, checks verify correctness only.
+-}
+suiteTests :: TestSuite -> [(AggregationPolicy, TestCase)]
+suiteTests ts =
+  [(IncludedInAggregates, tc) | tc <- tsMeasurements ts]
+    <> [(ExcludedFromAggregates, tc) | tc <- tsChecks ts]
+
+{- | Effective aggregation policy of a test case: pending tests never feed
+aggregates, regardless of the collection they belong to — a pending
+test's measurement reflects behaviour that is known to be wrong.
+-}
+effectiveAggregationPolicy :: AggregationPolicy -> TestCase -> AggregationPolicy
+effectiveAggregationPolicy declared tc
+  | isPendingTest tc = ExcludedFromAggregates
+  | otherwise = declared
 
 -- * Reference Resolution Functions
 
@@ -908,7 +952,10 @@ Supports @references (resolving from data_structures)
 and inline BuiltinData text literals.
 -}
 resolveDatumValue ::
-  HaskellMap.Map Text DataStructureEntry -> Text -> AesonTypes.Value -> IO V3.Datum
+  HaskellMap.Map Text DataStructureEntry ->
+  Text ->
+  AesonTypes.Value ->
+  IO V3.Datum
 resolveDatumValue dataStructures context value =
   V3.Datum <$> decodeBuiltinDataValue dataStructures context value
 
