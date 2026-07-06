@@ -1,9 +1,9 @@
 {
   "benchmark": "fibonacci",
-  "generated_at": "2026-07-06T07:07:30Z",
+  "generated_at": "2026-07-06T13:52:27Z",
   "submissions": [
     {
-      "timestamp": "2026-05-20T17:35:15Z",
+      "timestamp": "2026-07-06T11:38:00Z",
       "compiler": "Aiken",
       "version": "v1.1.19",
       "user": "Matthias Benkort",
@@ -22,11 +22,14 @@
         "block_memory_budget_pct": 0.007601612903225806,
         "block_cpu_budget_pct": 0.0055121375,
         "scripts_per_tx": 2970,
-        "scripts_per_block": 13155
+        "scripts_per_block": 13155,
+        "excluded_count": 0,
+        "excluded_cpu_sum": 0,
+        "excluded_mem_sum": 0
       }
     },
     {
-      "timestamp": "2026-05-20T17:35:15Z",
+      "timestamp": "2026-07-06T11:38:00Z",
       "compiler": "Aiken",
       "version": "v1.1.19",
       "user": "Matthias Benkort",
@@ -45,11 +48,14 @@
         "block_memory_budget_pct": 0.11603870967741936,
         "block_cpu_budget_pct": 0.048574825,
         "scripts_per_tx": 194,
-        "scripts_per_block": 861
+        "scripts_per_block": 861,
+        "excluded_count": 0,
+        "excluded_cpu_sum": 0,
+        "excluded_mem_sum": 0
       }
     },
     {
-      "timestamp": "2026-05-20T17:35:15Z",
+      "timestamp": "2026-07-06T11:38:00Z",
       "compiler": "OpShin",
       "version": "0.26.1",
       "user": "Niels Mündler",
@@ -68,11 +74,14 @@
         "block_memory_budget_pct": 0.5342806451612904,
         "block_cpu_budget_pct": 0.1532416325,
         "scripts_per_tx": 42,
-        "scripts_per_block": 187
+        "scripts_per_block": 187,
+        "excluded_count": 0,
+        "excluded_cpu_sum": 0,
+        "excluded_mem_sum": 0
       }
     },
     {
-      "timestamp": "2026-05-20T17:35:16Z",
+      "timestamp": "2026-07-06T11:38:00Z",
       "compiler": "Plinth",
       "version": "1.45.0.0",
       "user": "Unisay",
@@ -91,11 +100,14 @@
         "block_memory_budget_pct": 0.15636774193548386,
         "block_cpu_budget_pct": 0.058617800000000005,
         "scripts_per_tx": 144,
-        "scripts_per_block": 639
+        "scripts_per_block": 639,
+        "excluded_count": 0,
+        "excluded_cpu_sum": 0,
+        "excluded_mem_sum": 0
       }
     },
     {
-      "timestamp": "2026-05-20T17:35:16Z",
+      "timestamp": "2026-07-06T11:38:00Z",
       "compiler": "Plinth",
       "version": "1.64.0.0",
       "user": "Unisay",
@@ -114,11 +126,14 @@
         "block_memory_budget_pct": 0.15608548387096774,
         "block_cpu_budget_pct": 0.06329086249999999,
         "scripts_per_tx": 144,
-        "scripts_per_block": 640
+        "scripts_per_block": 640,
+        "excluded_count": 0,
+        "excluded_cpu_sum": 0,
+        "excluded_mem_sum": 0
       }
     },
     {
-      "timestamp": "2026-05-29T10:38:20Z",
+      "timestamp": "2026-07-06T11:38:00Z",
       "compiler": "Plinth",
       "version": "1.65.0.0",
       "user": "Unisay",
@@ -137,11 +152,14 @@
         "block_memory_budget_pct": 0.12830322580645162,
         "block_cpu_budget_pct": 0.0517486125,
         "scripts_per_tx": 175,
-        "scripts_per_block": 779
+        "scripts_per_block": 779,
+        "excluded_count": 0,
+        "excluded_cpu_sum": 0,
+        "excluded_mem_sum": 0
       }
     },
     {
-      "timestamp": "2026-05-20T17:35:16Z",
+      "timestamp": "2026-07-06T11:38:01Z",
       "compiler": "Plutarch",
       "version": "1.11.0",
       "user": "SeungheonOh",
@@ -160,11 +178,14 @@
         "block_memory_budget_pct": 941.7701967741936,
         "block_cpu_budget_pct": 397.983518045,
         "scripts_per_tx": 0,
-        "scripts_per_block": 0
+        "scripts_per_block": 0,
+        "excluded_count": 0,
+        "excluded_cpu_sum": 0,
+        "excluded_mem_sum": 0
       }
     },
     {
-      "timestamp": "2026-05-20T17:35:16Z",
+      "timestamp": "2026-07-06T11:38:01Z",
       "compiler": "Plutarch",
       "version": "1.11.0",
       "user": "SeungheonOh",
@@ -183,11 +204,14 @@
         "block_memory_budget_pct": 0.004853225806451613,
         "block_cpu_budget_pct": 0.0043633275,
         "scripts_per_tx": 4652,
-        "scripts_per_block": 20604
+        "scripts_per_block": 20604,
+        "excluded_count": 0,
+        "excluded_cpu_sum": 0,
+        "excluded_mem_sum": 0
       }
     },
     {
-      "timestamp": "2026-05-20T17:35:17Z",
+      "timestamp": "2026-07-06T11:38:01Z",
       "compiler": "Plutarch",
       "version": "1.11.0",
       "user": "SeungheonOh",
@@ -206,11 +230,14 @@
         "block_memory_budget_pct": 941.7706806451612,
         "block_cpu_budget_pct": 397.983638045,
         "scripts_per_tx": 0,
-        "scripts_per_block": 0
+        "scripts_per_block": 0,
+        "excluded_count": 0,
+        "excluded_cpu_sum": 0,
+        "excluded_mem_sum": 0
       }
     },
     {
-      "timestamp": "2026-05-20T17:35:17Z",
+      "timestamp": "2026-07-06T11:38:01Z",
       "compiler": "Scalus",
       "version": "0.12.1",
       "user": "Unisay",
@@ -229,11 +256,14 @@
         "block_memory_budget_pct": 941.7706806451612,
         "block_cpu_budget_pct": 397.983638045,
         "scripts_per_tx": 0,
-        "scripts_per_block": 0
+        "scripts_per_block": 0,
+        "excluded_count": 0,
+        "excluded_cpu_sum": 0,
+        "excluded_mem_sum": 0
       }
     },
     {
-      "timestamp": "2026-05-20T17:35:17Z",
+      "timestamp": "2026-07-06T11:38:01Z",
       "compiler": "Scalus",
       "version": "0.12.1",
       "user": "Alexander Nemish",
@@ -252,11 +282,14 @@
         "block_memory_budget_pct": 0.004853225806451613,
         "block_cpu_budget_pct": 0.0043633275,
         "scripts_per_tx": 4652,
-        "scripts_per_block": 20604
+        "scripts_per_block": 20604,
+        "excluded_count": 0,
+        "excluded_cpu_sum": 0,
+        "excluded_mem_sum": 0
       }
     },
     {
-      "timestamp": "2026-05-20T17:35:18Z",
+      "timestamp": "2026-07-06T11:38:02Z",
       "compiler": "Scalus",
       "version": "0.16.0",
       "user": "Unisay",
@@ -275,11 +308,14 @@
         "block_memory_budget_pct": 941.7706806451612,
         "block_cpu_budget_pct": 397.983638045,
         "scripts_per_tx": 0,
-        "scripts_per_block": 0
+        "scripts_per_block": 0,
+        "excluded_count": 0,
+        "excluded_cpu_sum": 0,
+        "excluded_mem_sum": 0
       }
     },
     {
-      "timestamp": "2026-05-20T17:35:18Z",
+      "timestamp": "2026-07-06T11:38:02Z",
       "compiler": "Scalus",
       "version": "0.16.0",
       "user": "Unisay",
@@ -298,11 +334,14 @@
         "block_memory_budget_pct": 0.004853225806451613,
         "block_cpu_budget_pct": 0.0043633275,
         "scripts_per_tx": 4652,
-        "scripts_per_block": 20604
+        "scripts_per_block": 20604,
+        "excluded_count": 0,
+        "excluded_cpu_sum": 0,
+        "excluded_mem_sum": 0
       }
     },
     {
-      "timestamp": "2026-05-20T17:35:18Z",
+      "timestamp": "2026-07-06T11:38:02Z",
       "compiler": "Scalus",
       "version": "0.17.0",
       "user": "Unisay",
@@ -321,7 +360,10 @@
         "block_memory_budget_pct": 941.7706806451612,
         "block_cpu_budget_pct": 397.983638045,
         "scripts_per_tx": 0,
-        "scripts_per_block": 0
+        "scripts_per_block": 0,
+        "excluded_count": 0,
+        "excluded_cpu_sum": 0,
+        "excluded_mem_sum": 0
       }
     }
   ]

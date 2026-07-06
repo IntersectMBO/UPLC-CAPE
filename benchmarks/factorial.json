@@ -1,9 +1,9 @@
 {
   "benchmark": "factorial",
-  "generated_at": "2026-07-06T07:07:29Z",
+  "generated_at": "2026-07-06T13:52:25Z",
   "submissions": [
     {
-      "timestamp": "2026-05-20T17:35:12Z",
+      "timestamp": "2026-07-06T11:37:58Z",
       "compiler": "Plutarch",
       "version": "1.11.0",
       "user": "SeungheonOh",
@@ -22,11 +22,14 @@
         "block_memory_budget_pct": 0.05366774193548387,
         "block_cpu_budget_pct": 0.022901375,
         "scripts_per_tx": 420,
-        "scripts_per_block": 1863
+        "scripts_per_block": 1863,
+        "excluded_count": 0,
+        "excluded_cpu_sum": 0,
+        "excluded_mem_sum": 0
       }
     },
     {
-      "timestamp": "2026-05-20T17:35:12Z",
+      "timestamp": "2026-07-06T11:37:58Z",
       "compiler": "Plutarch",
       "version": "1.11.0",
       "user": "SeungheonOh",
@@ -45,11 +48,14 @@
         "block_memory_budget_pct": 0.05415161290322581,
         "block_cpu_budget_pct": 0.023021375,
         "scripts_per_tx": 416,
-        "scripts_per_block": 1846
+        "scripts_per_block": 1846,
+        "excluded_count": 0,
+        "excluded_cpu_sum": 0,
+        "excluded_mem_sum": 0
       }
     },
     {
-      "timestamp": "2026-05-20T17:35:13Z",
+      "timestamp": "2026-07-06T11:37:58Z",
       "compiler": "Scalus",
       "version": "0.12.1",
       "user": "Unisay",
@@ -68,11 +74,14 @@
         "block_memory_budget_pct": 0.05415161290322581,
         "block_cpu_budget_pct": 0.023021375,
         "scripts_per_tx": 416,
-        "scripts_per_block": 1846
+        "scripts_per_block": 1846,
+        "excluded_count": 0,
+        "excluded_cpu_sum": 0,
+        "excluded_mem_sum": 0
       }
     },
     {
-      "timestamp": "2026-05-20T17:35:13Z",
+      "timestamp": "2026-07-06T11:37:58Z",
       "compiler": "Scalus",
       "version": "0.16.0",
       "user": "Unisay",
@@ -91,11 +100,14 @@
         "block_memory_budget_pct": 0.05415161290322581,
         "block_cpu_budget_pct": 0.023021375,
         "scripts_per_tx": 416,
-        "scripts_per_block": 1846
+        "scripts_per_block": 1846,
+        "excluded_count": 0,
+        "excluded_cpu_sum": 0,
+        "excluded_mem_sum": 0
       }
     },
     {
-      "timestamp": "2026-05-20T17:35:13Z",
+      "timestamp": "2026-07-06T11:37:58Z",
       "compiler": "Scalus",
       "version": "0.17.0",
       "user": "Unisay",
@@ -114,7 +126,10 @@
         "block_memory_budget_pct": 0.05415161290322581,
         "block_cpu_budget_pct": 0.023021375,
         "scripts_per_tx": 416,
-        "scripts_per_block": 1846
+        "scripts_per_block": 1846,
+        "excluded_count": 0,
+        "excluded_cpu_sum": 0,
+        "excluded_mem_sum": 0
       }
     }
   ]
