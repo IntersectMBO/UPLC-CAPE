@@ -284,7 +284,7 @@ cape_write_metrics_json() {
         notes: $notes,
         scenario: $scenario,
         timestamp: $timestamp,
-        version: $version
+        version: ($m[0].version // $version)
       }
     ' > "$tmp_new_metrics" 2> /dev/null; then
 
@@ -323,7 +323,7 @@ cape_write_metrics_json() {
       notes: $notes,
       scenario: $scenario,
       timestamp: $timestamp,
-      version: $version
+      version: ($m[0].version // $version)
     }
   ' > "$tmp_out"; then
     cape_error "Failed to compose metrics.json"
