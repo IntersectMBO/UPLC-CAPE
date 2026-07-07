@@ -1,35 +1,35 @@
 {
   "evaluations": [
     {
-      "cpu_units": 23063456,
+      "cpu_units": 23303456,
       "description": "Claim at time=50 with correct preimage and recipient signature should succeed",
       "execution_result": "success",
       "included_in_aggregates": true,
-      "memory_units": 61296,
+      "memory_units": 62796,
       "name": "claim_well_before_timeout"
     },
     {
-      "cpu_units": 23063456,
+      "cpu_units": 23303456,
       "description": "Claim at time=99 (just before timeout=100) with correct preimage should succeed",
       "execution_result": "success",
       "included_in_aggregates": true,
-      "memory_units": 61296,
+      "memory_units": 62796,
       "name": "claim_just_before_timeout"
     },
     {
-      "cpu_units": 22010660,
+      "cpu_units": 22250660,
       "description": "Refund at time=101 (just after timeout=100) with payer signature should succeed",
       "execution_result": "success",
       "included_in_aggregates": true,
-      "memory_units": 58900,
+      "memory_units": 60400,
       "name": "refund_just_after_timeout"
     },
     {
-      "cpu_units": 22010660,
+      "cpu_units": 22250660,
       "description": "Refund at time=200 with payer signature should succeed",
       "execution_result": "success",
       "included_in_aggregates": true,
-      "memory_units": 58900,
+      "memory_units": 60400,
       "name": "refund_well_after_timeout"
     },
     {
@@ -205,13 +205,13 @@
     "evaluator": "PlutusTx.Eval-1.45.0.0"
   },
   "measurements": {
-    "block_cpu_budget_pct": 0.057658640000000004,
-    "block_memory_budget_pct": 0.09886451612903224,
+    "block_cpu_budget_pct": 0.05825864,
+    "block_memory_budget_pct": 0.10128387096774193,
     "cpu_units": {
-      "maximum": 23063456,
-      "median": 22537058,
-      "minimum": 22010660,
-      "sum": 90148232
+      "maximum": 23303456,
+      "median": 22777058,
+      "minimum": 22250660,
+      "sum": 91108232
     },
     "excluded": {
       "count": 21,
@@ -224,24 +224,24 @@
         "sum": 391842
       }
     },
-    "execution_fee_lovelace": 20371,
+    "execution_fee_lovelace": 20786,
     "memory_units": {
-      "maximum": 61296,
-      "median": 60098,
-      "minimum": 58900,
-      "sum": 240392
+      "maximum": 62796,
+      "median": 61598,
+      "minimum": 60400,
+      "sum": 246392
     },
-    "reference_script_fee_lovelace": 18405,
-    "script_size_bytes": 1227,
-    "scripts_per_block": 1011,
-    "scripts_per_tx": 228,
-    "term_size": 1366,
-    "total_fee_lovelace": 38776,
-    "tx_cpu_budget_pct": 0.23063456000000002,
-    "tx_memory_budget_pct": 0.4378285714285714
+    "reference_script_fee_lovelace": 11040,
+    "script_size_bytes": 736,
+    "scripts_per_block": 987,
+    "scripts_per_tx": 222,
+    "term_size": 832,
+    "total_fee_lovelace": 31826,
+    "tx_cpu_budget_pct": 0.23303456,
+    "tx_memory_budget_pct": 0.4485428571428572
   },
   "scenario": "htlc",
-  "timestamp": "2026-07-06T12:45:07Z",
+  "timestamp": "2026-07-07T12:28:40Z",
   "version": "2.0.0",
   "notes": "<optional notes>"
 }
