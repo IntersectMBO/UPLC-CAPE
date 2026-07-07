@@ -4,12 +4,11 @@
 
 **Branch**: `plinth-1.61`
 
-**Commit**: `b09485c75e3ab6b596b9613320abc2b325087612`
+**Commit**: `6046d6f44cf17e040ad88bb1ffba893fae3a1b59`
 
 **Path**: `lib/TwoPartyEscrow.hs`
 
-This submission compiles `lib/TwoPartyEscrow.hs` from the Plinth source
-repository with the Plinth (plutus-tx-plugin) 1.61.0.0 line.
+This submission compiles `lib/TwoPartyEscrow.hs` from the Plinth source repository with the Plinth (plutus-tx-plugin) 1.61.0.0 line.
 
 The `plinth-1.61` branch builds against a newer plutus-core / plutus-tx-plugin line (BuiltinCasing-aware) than the mainnet baseline.
 
@@ -18,12 +17,10 @@ The `plinth-1.61` branch builds against a newer plutus-core / plutus-tx-plugin l
 ```bash
 git clone https://github.com/Unisay/plinth-cape-submissions
 cd plinth-cape-submissions
-git checkout b09485c75e3ab6b596b9613320abc2b325087612
+git checkout 6046d6f44cf17e040ad88bb1ffba893fae3a1b59
 ```
 
-`CAPE_REPO` must point at the sibling UPLC-CAPE checkout; the
-build aborts if the variable is unset. The recommended place is
-`.envrc.local` (gitignored), e.g.:
+`CAPE_REPO` must point at the sibling UPLC-CAPE checkout; the build aborts if the variable is unset. The recommended place is `.envrc.local` (gitignored), e.g.:
 
 ```sh
 export CAPE_REPO="$HOME/src/UPLC-CAPE"
@@ -36,6 +33,4 @@ nix develop
 cabal run --project-file=cabal.project.preview -f preview plinth-submissions-preview
 ```
 
-The produced UPLC writes to
-`$CAPE_REPO/submissions/two_party_escrow/Plinth_1.61.0.0_Unisay/two_party_escrow.uplc`
-and matches the `two_party_escrow.uplc` in this submission.
+The produced UPLC writes to `$CAPE_REPO/submissions/two_party_escrow/Plinth_1.61.0.0_Unisay_preview/two_party_escrow.uplc` and matches the `two_party_escrow.uplc` in this submission.

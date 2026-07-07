@@ -7,10 +7,7 @@
   "compilation_config": {
     "optimization_level": "Plinth",
     "target": "uplc",
-    "flags": [
-      "Plinth",
-      "BuiltinCasing"
-    ],
+    "flags": ["Plinth", "BuiltinCasing"],
     "min_plutus_version": "1.65.0.0"
   },
   "contributors": [
@@ -20,10 +17,10 @@
     }
   ],
   "submission": {
-    "date": "2026-06-22T14:29:56Z",
+    "date": "2026-07-06T17:43:54Z",
     "source_available": true,
     "source_repository": "https://github.com/Unisay/plinth-cape-submissions",
-    "source_commit_hash": "3efc19ad785a7dcb6aead5a936d18654f0649a2b",
-    "implementation_notes": "Compiled with Plinth 1.65.0.0 and BuiltinCasing enabled (preview line; requires plutus-core >= 1.65 — not yet on mainnet). Source: lib/TwoPartyEscrow.hs in plinth-cape-submissions @ 3efc19ad785a7dcb6aead5a936d18654f0649a2b."
+    "source_commit_hash": "4b3215042c1ccd481b5f62ad192d23b0e1f96758",
+    "implementation_notes": "Compiled with Plinth 1.65.0.0 and BuiltinCasing enabled (preview line; requires plutus-core >= 1.65 — not yet on mainnet). Source: lib/TwoPartyEscrow/AsData.hs in plinth-cape-submissions @ 4b3215042c1ccd481b5f62ad192d23b0e1f96758."
   }
 }

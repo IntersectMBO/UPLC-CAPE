@@ -16,10 +16,10 @@
     }
   ],
   "submission": {
-    "date": "2026-05-20T15:31:14Z",
+    "date": "2026-07-06T17:43:54Z",
     "source_available": true,
     "source_repository": "https://github.com/Unisay/plinth-cape-submissions",
-    "source_commit_hash": "5c014861ac6a7a0e85234ab8a7369a0c8f2adf20",
-    "implementation_notes": "Two-party escrow validator compiled with Plinth 1.64.0.0 (production line; no BuiltinCasing). Source: lib/TwoPartyEscrow.hs in plinth-cape-submissions @ 5c014861ac6a7a0e85234ab8a7369a0c8f2adf20."
+    "source_commit_hash": "63eaf4b8cb94e6d5be4350fcc481152dca94b15f",
+    "implementation_notes": "Two-party escrow validator compiled with Plinth 1.64.0.0 (production line; no BuiltinCasing). Source: lib/TwoPartyEscrow.hs in plinth-cape-submissions @ 63eaf4b8cb94e6d5be4350fcc481152dca94b15f (branch plinth-1.64)."
   }
 }
