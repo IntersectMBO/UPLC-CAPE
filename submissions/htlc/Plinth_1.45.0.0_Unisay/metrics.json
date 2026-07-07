@@ -1,35 +1,35 @@
 {
   "evaluations": [
     {
-      "cpu_units": 30261740,
+      "cpu_units": 26416480,
       "description": "Claim at time=50 with correct preimage and recipient signature should succeed",
       "execution_result": "success",
       "included_in_aggregates": true,
-      "memory_units": 95928,
+      "memory_units": 81492,
       "name": "claim_well_before_timeout"
     },
     {
-      "cpu_units": 30261740,
+      "cpu_units": 26416480,
       "description": "Claim at time=99 (just before timeout=100) with correct preimage should succeed",
       "execution_result": "success",
       "included_in_aggregates": true,
-      "memory_units": 95928,
+      "memory_units": 81492,
       "name": "claim_just_before_timeout"
     },
     {
-      "cpu_units": 27177973,
+      "cpu_units": 25102476,
       "description": "Refund at time=101 (just after timeout=100) with payer signature should succeed",
       "execution_result": "success",
       "included_in_aggregates": true,
-      "memory_units": 85442,
+      "memory_units": 78094,
       "name": "refund_just_after_timeout"
     },
     {
-      "cpu_units": 27177973,
+      "cpu_units": 25102476,
       "description": "Refund at time=200 with payer signature should succeed",
       "execution_result": "success",
       "included_in_aggregates": true,
-      "memory_units": 85442,
+      "memory_units": 78094,
       "name": "refund_well_after_timeout"
     },
     {
@@ -65,139 +65,139 @@
       "name": "redeemer_list"
     },
     {
-      "cpu_units": 1763736,
+      "cpu_units": 2424755,
       "description": "Validator fails when Claim is constructor 0() with no preimage field",
       "execution_result": "success",
       "included_in_aggregates": false,
-      "memory_units": 710,
+      "memory_units": 966,
       "name": "redeemer_claim_without_preimage"
     },
     {
-      "cpu_units": 11902131,
+      "cpu_units": 7813182,
       "description": "Claim without recipient signature should fail",
       "execution_result": "success",
       "included_in_aggregates": false,
-      "memory_units": 42094,
+      "memory_units": 21678,
       "name": "claim_missing_signature"
     },
     {
-      "cpu_units": 13642097,
+      "cpu_units": 12753148,
       "description": "Claim with only payer signature (not recipient) should fail",
       "execution_result": "success",
       "included_in_aggregates": false,
-      "memory_units": 42288,
+      "memory_units": 41872,
       "name": "claim_wrong_signature_payer"
     },
     {
-      "cpu_units": 13642097,
+      "cpu_units": 12753148,
       "description": "Claim with only impostor signature (not recipient) should fail",
       "execution_result": "success",
       "included_in_aggregates": false,
-      "memory_units": 42288,
+      "memory_units": 41872,
       "name": "claim_wrong_signature_impostor"
     },
     {
-      "cpu_units": 6227370,
+      "cpu_units": 6123476,
       "description": "Claim with preimage #cafebabe (hash does not match) should fail",
       "execution_result": "success",
       "included_in_aggregates": false,
-      "memory_units": 21132,
+      "memory_units": 21068,
       "name": "claim_wrong_preimage"
     },
     {
-      "cpu_units": 6227370,
+      "cpu_units": 6123476,
       "description": "Claim with empty preimage (hash does not match) should fail",
       "execution_result": "success",
       "included_in_aggregates": false,
-      "memory_units": 21132,
+      "memory_units": 21068,
       "name": "claim_empty_preimage"
     },
     {
-      "cpu_units": 19296804,
+      "cpu_units": 14443544,
       "description": "Claim at time=100 (boundary, must be strictly before timeout) should fail",
       "execution_result": "success",
       "included_in_aggregates": false,
-      "memory_units": 63128,
+      "memory_units": 42392,
       "name": "claim_at_timeout"
     },
     {
-      "cpu_units": 19296804,
+      "cpu_units": 14443544,
       "description": "Claim at time=150 (after timeout) should fail even with correct preimage",
       "execution_result": "success",
       "included_in_aggregates": false,
-      "memory_units": 63128,
+      "memory_units": 42392,
       "name": "claim_after_timeout"
     },
     {
-      "cpu_units": 18471354,
+      "cpu_units": 13618094,
       "description": "Claim with from_time=50 and no upper bound (+inf) should fail; the upper bound must be finite",
       "execution_result": "success",
       "included_in_aggregates": false,
-      "memory_units": 62900,
+      "memory_units": 42164,
       "name": "claim_infinite_upper_bound"
     },
     {
-      "cpu_units": 34273767,
+      "cpu_units": 29420507,
       "description": "Claim with two script inputs should fail (double satisfaction attack)",
       "execution_result": "success",
       "included_in_aggregates": false,
-      "memory_units": 104580,
+      "memory_units": 83844,
       "name": "claim_double_satisfaction"
     },
     {
-      "cpu_units": 7401235,
+      "cpu_units": 7194049,
       "description": "Refund without payer signature should fail",
       "execution_result": "success",
       "included_in_aggregates": false,
-      "memory_units": 21642,
+      "memory_units": 21514,
       "name": "refund_missing_signature"
     },
     {
-      "cpu_units": 12341201,
+      "cpu_units": 12134015,
       "description": "Refund with only recipient signature (not payer) should fail",
       "execution_result": "success",
       "included_in_aggregates": false,
-      "memory_units": 41836,
+      "memory_units": 41708,
       "name": "refund_wrong_signature_recipient"
     },
     {
-      "cpu_units": 12341201,
+      "cpu_units": 12134015,
       "description": "Refund with only impostor signature (not payer) should fail",
       "execution_result": "success",
       "included_in_aggregates": false,
-      "memory_units": 41836,
+      "memory_units": 41708,
       "name": "refund_wrong_signature_impostor"
     },
     {
-      "cpu_units": 14613037,
+      "cpu_units": 13641540,
       "description": "Refund at time=50 (before timeout) should fail",
       "execution_result": "success",
       "included_in_aggregates": false,
-      "memory_units": 42642,
+      "memory_units": 42194,
       "name": "refund_before_timeout"
     },
     {
-      "cpu_units": 14613037,
+      "cpu_units": 13641540,
       "description": "Refund at time=100 (boundary, must be strictly after timeout) should fail",
       "execution_result": "success",
       "included_in_aggregates": false,
-      "memory_units": 42642,
+      "memory_units": 42194,
       "name": "refund_at_timeout"
     },
     {
-      "cpu_units": 13002532,
+      "cpu_units": 12795346,
       "description": "Refund with no lower bound (-inf) should fail; the lower bound must be finite",
       "execution_result": "success",
       "included_in_aggregates": false,
-      "memory_units": 42062,
+      "memory_units": 41934,
       "name": "refund_infinite_lower_bound"
     },
     {
-      "cpu_units": 29590000,
+      "cpu_units": 28618503,
       "description": "Refund with two script inputs should fail (double satisfaction attack)",
       "execution_result": "success",
       "included_in_aggregates": false,
-      "memory_units": 84094,
+      "memory_units": 83646,
       "name": "refund_double_satisfaction"
     }
   ],
@@ -205,43 +205,43 @@
     "evaluator": "PlutusTx.Eval-1.45.0.0"
   },
   "measurements": {
-    "block_cpu_budget_pct": 0.07565435,
-    "block_memory_budget_pct": 0.15472258064516128,
+    "block_cpu_budget_pct": 0.0660412,
+    "block_memory_budget_pct": 0.13143870967741936,
     "cpu_units": {
-      "maximum": 30261740,
-      "median": 28719856,
-      "minimum": 27177973,
-      "sum": 114879426
+      "maximum": 26416480,
+      "median": 25759478,
+      "minimum": 25102476,
+      "sum": 103037912
     },
     "excluded": {
       "count": 21,
       "cpu_units": {
-        "maximum": 34273767,
-        "sum": 248744525
+        "maximum": 29420507,
+        "sum": 220174634
       },
       "memory_units": {
-        "maximum": 104580,
-        "sum": 780662
+        "maximum": 83844,
+        "sum": 674742
       }
     },
-    "execution_fee_lovelace": 29213,
+    "execution_fee_lovelace": 25846,
     "memory_units": {
-      "maximum": 95928,
-      "median": 90685,
-      "minimum": 85442,
-      "sum": 362740
+      "maximum": 81492,
+      "median": 79793,
+      "minimum": 78094,
+      "sum": 319172
     },
-    "reference_script_fee_lovelace": 18810,
-    "script_size_bytes": 1254,
-    "scripts_per_block": 646,
-    "scripts_per_tx": 145,
-    "term_size": 1079,
-    "total_fee_lovelace": 48023,
-    "tx_cpu_budget_pct": 0.3026174,
-    "tx_memory_budget_pct": 0.6851999999999999
+    "reference_script_fee_lovelace": 18630,
+    "script_size_bytes": 1242,
+    "scripts_per_block": 760,
+    "scripts_per_tx": 171,
+    "term_size": 1058,
+    "total_fee_lovelace": 44476,
+    "tx_cpu_budget_pct": 0.2641648,
+    "tx_memory_budget_pct": 0.5820857142857143
   },
   "scenario": "htlc",
-  "timestamp": "2026-07-06T12:45:06Z",
+  "timestamp": "2026-07-07T12:28:39Z",
   "version": "2.0.0",
   "notes": "<optional notes>"
 }

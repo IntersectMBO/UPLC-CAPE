@@ -4,18 +4,20 @@
 
 **Branch**: `plinth-1.64`
 
-**Commit**: `1618ee79536fd3a9a8c081acd519f9c9a2c7b2c2`
+**Commit**: `5fd8602f46ff303c01877b5217fed51e93156658`
 
-**Path**: `lib/HTLC/Monadic.hs` (+ `lib/Plinth/Validator.hs`, `lib/Plinth/Decoder.hs`, `lib/Plinth/Decoder/Named.hs`, `lib/Plinth/Decoder/Named/ScriptContext.hs`, `lib/Plinth/Encoded.hs`)
+**Path**: `lib/HTLC/Monadic.hs` (+ `lib/Plinth/Validator.hs`, `lib/Plinth/Decoder/Named.hs`, `lib/Plinth/Decoder/Named/ScriptContext.hs`, `lib/Plinth/Encoded.hs`)
 
-HTLC validator variant built on `Plinth.Validator`, a zero-cost Cont-style early-termination monad that sequences decode-or-abort steps and boolean guards into a flat, short-circuiting `do`-chain, plus a zero-cost typed decoding DSL (`Plinth.Decoder.Named`), originally added in [Unisay/plinth-cape-submissions#10](https://github.com/Unisay/plinth-cape-submissions/pull/10) for Plinth 1.65.0.0 and ported unchanged onto the frozen `plinth-1.64` branch. `IxDecoder` tracks the walk cursor in the type via a Peano-indexed fundep class (`FieldAt`), so walk regions are placed directly between guards and double as the decode plan; `Plinth.Encoded` gives a zero-cost typed view of still-`Data`-encoded values so a field that is only compared is never structurally decoded. Each ScriptContext/datum/TxInfo field is walked at most once. Plugin pragmas live in `plinth-cape-submissions.cabal`; the validator module sets `inline-unconditional-growth=52` (same tuning as the 1.65.0.0 original), which lets the inliner fuse the decode walks — a larger term but lower CPU/mem.
+HTLC monadic validator written in `do`-notation on `Plinth.Validator`, a zero-cost early-termination monad, together with the zero-cost typed decoding DSL `Plinth.Decoder.Named`, on the frozen `plinth-1.64` branch. `QualifiedDo` keeps two `do` blocks side by side: `V.do` sequences decode-or-abort stages, `N.do` builds Named walk regions. `IxDecoder` tracks the walk cursor in the type via a Peano-indexed fundep class (`FieldAt`), so each `ScriptContext`/datum/`TxInfo` field is decoded with a single `Constr` walk, and a value that is only compared is never structurally decoded (`Plinth.Encoded`).
+
+This submission is re-optimised for CAPE metrics schema 2.0.0, whose aggregates cover only the happy-path (accept) measurements. The decisive change is per-path fields-regions over `HTLCDatum`: the claim path reads `recipient`/`secretHash`/`timeout`, the refund path reads `payer`/`timeout`, replacing the lazy asData field selectors and shrinking the term. The inliner budget was re-swept against the happy-path-only `total_fee`: the previous optimum `inline-unconditional-growth=52` no longer wins, and the new optimum is `24` (plateau 24-30). Net effect: `total_fee` 38776 to 31826 lovelace (-17.9%) and script size 1227 to 736 bytes, with `cpu_max`/`mem_max` up under 2.4% as the lexicographic price of the fee optimum.
 
 ## Reproducing the compilation
 
 ```bash
 git clone https://github.com/Unisay/plinth-cape-submissions
 cd plinth-cape-submissions
-git checkout 1618ee79536fd3a9a8c081acd519f9c9a2c7b2c2
+git checkout 5fd8602f46ff303c01877b5217fed51e93156658
 ```
 
 `CAPE_REPO` must point at the sibling UPLC-CAPE checkout (build aborts if unset); set it in `.envrc.local` (gitignored). Then:
