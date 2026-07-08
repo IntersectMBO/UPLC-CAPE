@@ -17,10 +17,10 @@
     }
   ],
   "submission": {
-    "date": "2026-07-08T11:39:07Z",
+    "date": "2026-07-08T14:36:30Z",
     "source_available": true,
     "source_repository": "https://github.com/Unisay/plinth-cape-submissions",
-    "source_commit_hash": "6b75b5a3fe1cf56b195cc4222cf939a2812cee78",
-    "implementation_notes": "Compiled with Plinth 1.65.0.0 and BuiltinCasing enabled (preview line; requires plutus-core >= 1.65 \u2014 not yet on mainnet). This build additionally emits the batch-6 `dropList` builtin (van Rossem protocol version) for cursor gaps of three or more fields in the typed decoder, replacing the chained `tailList` induction with a single call whose term size does not grow with the gap; the emission is PREVIEW-gated (same track as BuiltinCasing), so the production build stays byte-identical. Source: `lib/LinearVesting.hs` (+ `lib/Plinth/Decoder.hs`, `lib/Plinth/Decoder/Named.hs`) in plinth-cape-submissions @ 6b75b5a3fe1cf56b195cc4222cf939a2812cee78."
+    "source_commit_hash": "d078652f03d31ed728c1fb63f1d9f8824218494c",
+    "implementation_notes": "Compiled with Plinth 1.65.0.0 and BuiltinCasing enabled (preview line; requires plutus-core >= 1.65 \u2014 not yet on mainnet). Emits the batch-6 `dropList` builtin for cursor gaps of three or more fields in the typed decoder (PREVIEW-gated, so the production build stays byte-identical). This round reads the vesting-token quantity with a bytestring-keyed map lookup (`lookupBytesE`, comparing the unwrapped `CurrencySymbol`/`TokenName` keys with `equalsByteString`) rather than comparing whole `Value` keys with `equalsData`, and re-sweeps the inliner budget for the new shape. total_fee 49805 to 48971 lovelace (-1.7%). Source: lib/LinearVesting.hs (+ `lib/Plinth/Decoder.hs`, `lib/Plinth/Decoder/Named.hs`, `lib/Plinth/Encoded.hs`) in plinth-cape-submissions @ d078652f03d31ed728c1fb63f1d9f8824218494c."
   }
 }
