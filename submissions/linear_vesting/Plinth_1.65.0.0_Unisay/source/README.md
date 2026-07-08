@@ -30,3 +30,5 @@ Then enter the dev shell and run the generator:
 nix develop
 cabal run plinth-submissions
 ```
+
+The produced UPLC writes to `$CAPE_REPO/submissions/linear_vesting/Plinth_1.65.0.0_Unisay/linear_vesting.uplc` and matches the UPLC in this submission.
