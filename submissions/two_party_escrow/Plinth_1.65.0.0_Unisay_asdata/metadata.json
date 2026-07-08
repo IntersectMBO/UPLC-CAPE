@@ -1,0 +1,25 @@
+{
+  "compiler": {
+    "name": "Plinth",
+    "version": "1.65.0.0",
+    "commit_hash": "b2db512618df08bd696e8d9c4229effcede01169"
+  },
+  "compilation_config": {
+    "optimization_level": "Plinth",
+    "target": "uplc",
+    "flags": ["Plinth"]
+  },
+  "contributors": [
+    {
+      "name": "Unisay",
+      "organization": "UPLC-CAPE Project"
+    }
+  ],
+  "submission": {
+    "date": "2026-07-06T17:43:54Z",
+    "source_available": true,
+    "source_repository": "https://github.com/Unisay/plinth-cape-submissions",
+    "source_commit_hash": "4b3215042c1ccd481b5f62ad192d23b0e1f96758",
+    "implementation_notes": "Two-party escrow validator compiled with Plinth 1.65.0.0 (production line; no BuiltinCasing). Source: lib/TwoPartyEscrow/AsData.hs in plinth-cape-submissions @ 4b3215042c1ccd481b5f62ad192d23b0e1f96758."
+  }
+}

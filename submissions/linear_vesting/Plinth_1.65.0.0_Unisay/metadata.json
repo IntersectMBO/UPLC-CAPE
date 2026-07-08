@@ -16,10 +16,10 @@
     }
   ],
   "submission": {
-    "date": "2026-05-29T10:37:05Z",
+    "date": "2026-07-08T07:23:46Z",
     "source_available": true,
     "source_repository": "https://github.com/Unisay/plinth-cape-submissions",
-    "source_commit_hash": "b77cd0c4987779f8f7d70a1ddd564b8765ecc9a3",
-    "implementation_notes": "Linear vesting validator compiled with Plinth 1.65.0.0 (production line; no BuiltinCasing). Source: lib/LinearVesting.hs in plinth-cape-submissions @ b77cd0c4987779f8f7d70a1ddd564b8765ecc9a3."
+    "source_commit_hash": "f9ef6bdf4ed08ec16039600903d8af7e6c22046b",
+    "implementation_notes": "Linear vesting validator written in `do`-notation on `Plinth.Validator`, a zero-cost early-termination monad, together with the zero-cost typed decoding DSL `Plinth.Decoder.Named` (`V.do`/`N.do` via `QualifiedDo`; `IxDecoder`/`FieldAt` Peano-indexed cursor; `Plinth.Encoded` compare-without-decode). Re-optimised for CAPE metrics schema 2.0.0, whose aggregates cover only the happy-path (accept) measurements. This round's structural change decodes the `VestingDatum` on the partial-unlock path in a single 7-field region. total_fee 173470 to 59048 lovelace (-66.0%); promoted to the default artifact for this line, with the previous plain implementation retained as Plinth_1.65.0.0_Unisay_plain. Source: lib/LinearVesting.hs (+ `lib/Plinth/Validator.hs`, `lib/Plinth/Decoder/Named.hs`, `lib/Plinth/Decoder/Named/ScriptContext.hs`, `lib/Plinth/Encoded.hs`) in plinth-cape-submissions @ f9ef6bdf4ed08ec16039600903d8af7e6c22046b (branch main)."
   }
 }

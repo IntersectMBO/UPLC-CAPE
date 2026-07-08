@@ -16,10 +16,10 @@
     }
   ],
   "submission": {
-    "date": "2026-07-06T17:43:54Z",
+    "date": "2026-07-08T07:23:46Z",
     "source_available": true,
     "source_repository": "https://github.com/Unisay/plinth-cape-submissions",
-    "source_commit_hash": "4b3215042c1ccd481b5f62ad192d23b0e1f96758",
-    "implementation_notes": "Two-party escrow validator compiled with Plinth 1.65.0.0 (production line; no BuiltinCasing). Source: lib/TwoPartyEscrow/AsData.hs in plinth-cape-submissions @ 4b3215042c1ccd481b5f62ad192d23b0e1f96758."
+    "source_commit_hash": "f9ef6bdf4ed08ec16039600903d8af7e6c22046b",
+    "implementation_notes": "Two-party escrow validator written in `do`-notation on `Plinth.Validator`, a zero-cost early-termination monad, together with the zero-cost typed decoding DSL `Plinth.Decoder.Named`. `QualifiedDo` keeps `V.do` (decode-or-abort stages) beside `N.do` (Named walk regions); `IxDecoder` tracks the walk cursor in the type via a Peano-indexed fundep class (`FieldAt`), so each `ScriptContext`/datum field is decoded with a single `Constr` walk, and a value that is only compared is never structurally decoded (`Plinth.Encoded`). Retains the escrow security hardening: the escrow input is tied to the script's own payment credential, and the incomplete-withdrawal guard compares the payment credential only (ignoring the staking part). Re-optimised for CAPE metrics schema 2.0.0, whose aggregates cover only the happy-path (accept) measurements. total_fee 311093 to 101588 lovelace (-67.3%); promoted to the default artifact for this line, with the previous asdata implementation retained as Plinth_1.65.0.0_Unisay_asdata. Source: lib/TwoPartyEscrow.hs (+ `lib/Plinth/Validator.hs`, `lib/Plinth/Decoder/Named.hs`, `lib/Plinth/Decoder/Named/ScriptContext.hs`, `lib/Plinth/Encoded.hs`) in plinth-cape-submissions @ f9ef6bdf4ed08ec16039600903d8af7e6c22046b (branch main)."
   }
 }
