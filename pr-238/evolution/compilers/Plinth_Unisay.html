@@ -1,0 +1,1318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UPLC-CAPE Evolution — Plinth by Unisay</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #fdf6e3;
+        }
+        .evolution-banner {
+            background: linear-gradient(135deg, #0ea5e9, #0369a1);
+            color: white;
+            padding: 12px 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 0.9em;
+        }
+        .report-nav {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 24px;
+        }
+        .report-nav a {
+            display: inline-block;
+            padding: 8px 16px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9em;
+        }
+        .report-nav .active { background: #0ea5e9; color: white; }
+        .report-nav .inactive { background: #667eea; color: white; }
+        .report-nav .inactive:hover { background: #5a6fd6; }
+        .header {
+            margin-bottom: 30px;
+            padding: 20px 0;
+        }
+        .header h1 { color: #333; margin: 0 0 8px 0; }
+        .breadcrumb {
+            color: #6c757d;
+            font-size: 0.9em;
+            margin-bottom: 10px;
+        }
+        .breadcrumb a { color: #0369a1; text-decoration: none; }
+        .breadcrumb a:hover { text-decoration: underline; }
+        .baseline-toggle {
+            display: inline-flex;
+            align-items: center;
+            gap: 0;
+            background: #e2e8f0;
+            border-radius: 6px;
+            padding: 3px;
+            margin-bottom: 24px;
+        }
+        .baseline-toggle .label {
+            padding: 0 10px;
+            color: #475569;
+            font-size: 0.85em;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .baseline-toggle button {
+            background: transparent;
+            border: 0;
+            padding: 6px 12px;
+            border-radius: 4px;
+            font-weight: 600;
+            font-size: 0.85em;
+            color: #475569;
+            cursor: pointer;
+        }
+        .baseline-toggle button.active {
+            background: white;
+            color: #0369a1;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+        }
+        .timeline-section {
+            background: white;
+            border-radius: 10px;
+            padding: 24px;
+            margin-bottom: 32px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        .version-chips {
+            color: #6c757d;
+            font-size: 0.9em;
+            margin-bottom: 20px;
+        }
+        .version-chip {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-family: 'Monaco', 'Menlo', monospace;
+            font-size: 0.85em;
+            background: #e2e8f0;
+            color: #334155;
+        }
+        .version-chip.preview {
+            background: #fef3c7;
+            color: #92400e;
+        }
+        .preview-divider {
+            display: inline-block;
+            margin: 0 6px;
+            color: #94a3b8;
+        }
+        .preview-badge {
+            display: inline-block;
+            padding: 1px 6px;
+            margin-left: 6px;
+            border-radius: 3px;
+            background: #f59e0b;
+            color: white;
+            font-size: 0.7em;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            vertical-align: middle;
+        }
+        .scenario {
+            margin-top: 20px;
+            padding-top: 16px;
+            border-top: 1px solid #f1f5f9;
+        }
+        .scenario:first-of-type { border-top: 0; padding-top: 0; }
+        .scenario h3 {
+            color: #333;
+            margin: 0 0 10px 0;
+            font-size: 1.05em;
+            font-family: 'Monaco', 'Menlo', monospace;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.92em;
+        }
+        th, td {
+            padding: 8px 12px;
+            text-align: right;
+            border-bottom: 1px solid #f1f5f9;
+        }
+        th { color: #6c757d; font-size: 0.8em; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600; }
+        th:first-child, td:first-child { text-align: left; }
+        td.metric-name { font-weight: 500; color: #333; }
+        th.preview-col, td.preview-cell { background: #fffbeb; }
+        th.preview-col { color: #92400e; }
+        .cell-value { display: block; font-variant-numeric: tabular-nums; }
+        .delta {
+            display: block;
+            font-size: 0.82em;
+            font-variant-numeric: tabular-nums;
+            margin-top: 2px;
+        }
+        body[data-baseline="prev"]  .delta-first { display: none; }
+        body[data-baseline="first"] .delta-prev  { display: none; }
+        .delta-positive { color: #dc2626; }
+        .delta-negative { color: #16a34a; }
+        .delta-zero { color: #94a3b8; }
+        .footer {
+            text-align: center;
+            margin-top: 50px;
+            padding: 20px;
+            color: #6c757d;
+            border-top: 1px solid #e9ecef;
+        }
+    </style>
+</head>
+<body data-baseline="prev">
+    <div class="report-nav">
+        <a class="inactive" href="../../index.html">Production</a>
+        <a class="active" href="../index.html">Evolution</a>
+    </div>
+
+    <div class="evolution-banner">
+        <strong>EVOLUTION</strong> &mdash; Default-variant mainnet timeline for this compiler/author. Deltas highlight improvement between releases. The rightmost <span style="background:#f59e0b;color:white;padding:0 4px;border-radius:2px;font-size:0.85em;font-weight:700;">preview</span> column (if present) is a sneak peek at an upcoming Plutus version; its delta is computed against the latest mainnet column.
+    </div>
+
+    <div class="header">
+        <div class="breadcrumb">
+            <a href="../index.html">Evolution compilers</a> &rarr; Plinth
+        </div>
+        <h1>Plinth by Unisay</h1>
+    </div>
+
+    <div class="baseline-toggle">
+        <span class="label">Mainnet baseline</span>
+        <button type="button" data-baseline="prev"  class="active">vs Previous</button>
+        <button type="button" data-baseline="first">vs First</button>
+    </div>
+
+    <section class="timeline-section">
+        <div class="version-chips">
+            <span class="version-chip">1.45.0.0</span> &rarr; <span class="version-chip">1.64.0.0</span> &rarr; <span class="version-chip">1.65.0.0</span>
+            <span class="preview-divider">&middot;</span><span class="version-chip preview">1.65.0.0</span><span class="preview-badge">preview</span>
+            &middot; 7 scenarios with evolution
+        </div>
+
+        
+        
+        
+        <div class="scenario">
+            <h3>ecd</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Metric</th>
+                        <th>1.45.0.0</th><th>1.64.0.0</th><th>1.65.0.0</th>
+                        <th class="preview-col">1.65.0.0 <span class="preview-badge">preview</span></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="metric-name">CPU Units</td>
+                        
+                        <td>
+                            <span class="cell-value" data-value="36668998">36668998</span>
+                            
+                            
+                        </td>
+                        
+                        <td>
+                            <span class="cell-value" data-value="29228998">29228998</span>
+                            <span class="delta delta-prev delta-negative">-20.3%</span>
+                            <span class="delta delta-first delta-negative">-20.3%</span>
+                        </td>
+                        
+                        <td>
+                            <span class="cell-value" data-value="29148998">29148998</span>
+                            <span class="delta delta-prev delta-negative">-0.3%</span>
+                            <span class="delta delta-first delta-negative">-20.5%</span>
+                        </td>
+                        
+                        
+                        <td class="preview-cell">
+                            <span class="cell-value" data-value="18747572">18747572</span>
+                            <span class="delta delta-negative">-35.7%</span>
+                        </td>
+                        
+                    </tr>
+                    <tr>
+                        <td class="metric-name">Memory Units</td>
+                        
+                        <td>
+                            <span class="cell-value" data-value="154557">154557</span>
+                            
+                            
+                        </td>
+                        
+                        <td>
+                            <span class="cell-value" data-value="108057">108057</span>
+                            <span class="delta delta-prev delta-negative">-30.1%</span>
+                            <span class="delta delta-first delta-negative">-30.1%</span>
+                        </td>
+                        
+                        <td>
+                            <span class="cell-value" data-value="107557">107557</span>
+                            <span class="delta delta-prev delta-negative">-0.5%</span>
+                            <span class="delta delta-first delta-negative">-30.4%</span>
+                        </td>
+                        
+                        
+                        <td class="preview-cell">
+                            <span class="cell-value" data-value="71396">71396</span>
+                            <span class="delta delta-negative">-33.6%</span>
+                        </td>
+                        
+                    </tr>
+                    <tr>
+                        <td class="metric-name">Script Size (bytes)</td>
+                        
+                        <td>
+                            <span class="cell-value" data-value="56">56</span>
+                            
+                            
+                        </td>
+                        
+                        <td>
+                            <span class="cell-value" data-value="604">604</span>
+                            <span class="delta delta-prev delta-positive">+978.6%</span>
+                            <span class="delta delta-first delta-positive">+978.6%</span>
+                        </td>
+                        
+                        <td>
+                            <span class="cell-value" data-value="595">595</span>
+                            <span class="delta delta-prev delta-negative">-1.5%</span>
+                            <span class="delta delta-first delta-positive">+962.5%</span>
+                        </td>
+                        
+                        
+                        <td class="preview-cell">
+                            <span class="cell-value" data-value="502">502</span>
+                            <span class="delta delta-negative">-15.6%</span>
+                        </td>
+                        
+                    </tr>
+                    <tr>
+                        <td class="metric-name">Term Size (AST nodes)</td>
+                        
+                        <td>
+                            <span class="cell-value" data-value="57">57</span>
+                            
+                            
+                        </td>
+                        
+                        <td>
+                            <span class="cell-value" data-value="570">570</span>
+                            <span class="delta delta-prev delta-positive">+900.0%</span>
+                            <span class="delta delta-first delta-positive">+900.0%</span>
+                        </td>
+                        
+                        <td>
+                            <span class="cell-value" data-value="544">544</span>
+                            <span class="delta delta-prev delta-negative">-4.6%</span>
+                            <span class="delta delta-first delta-positive">+854.4%</span>
+                        </td>
+                        
+                        
+                        <td class="preview-cell">
+                            <span class="cell-value" data-value="440">440</span>
+                            <span class="delta delta-negative">-19.1%</span>
+                        </td>
+                        
+                    </tr>
+                    <tr>
+                        <td class="metric-name">Total Fee (lovelace)</td>
+                        
+                        <td>
+                            <span class="cell-value" data-value="12402">12402</span>
+                            
+                            
+                        </td>
+                        
+                        <td>
+                            <span class="cell-value" data-value="17403">17403</span>
+                            <span class="delta delta-prev delta-positive">+40.3%</span>
+                            <span class="delta delta-first delta-positive">+40.3%</span>
+                        </td>
+                        
+                        <td>
+                            <span class="cell-value" data-value="17233">17233</span>
+                            <span class="delta delta-prev delta-negative">-1.0%</span>
+                            <span class="delta delta-first delta-positive">+39.0%</span>
+                        </td>
+                        
+                        
+                        <td class="preview-cell">
+                            <span class="cell-value" data-value="13002">13002</span>
+                            <span class="delta delta-negative">-24.6%</span>
+                        </td>
+                        
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <div class="scenario">
+            <h3>factorial_naive_recursion</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Metric</th>
+                        <th>1.45.0.0</th><th>1.64.0.0</th><th>1.65.0.0</th>
+                        <th class="preview-col">1.65.0.0 <span class="preview-badge">preview</span></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="metric-name">CPU Units</td>
+                        
+                        <td>
+                            <span class="cell-value" data-value="42281975">42281975</span>
+                            
+                            
+                        </td>
+                        
+                        <td>
+                            <span class="cell-value" data-value="37481975">37481975</span>
+                            <span class="delta delta-prev delta-negative">-11.4%</span>
+                            <span class="delta delta-first delta-negative">-11.4%</span>
+                        </td>
+                        
+                        <td>
+                            <span class="cell-value" data-value="37241975">37241975</span>
+                            <span class="delta delta-prev delta-negative">-0.6%</span>
+                            <span class="delta delta-first delta-negative">-11.9%</span>
+                        </td>
+                        
+                        
+                        <td class="preview-cell">
+                            <span class="cell-value" data-value="28019280">28019280</span>
+                            <span class="delta delta-negative">-24.8%</span>
+                        </td>
+                        
+                    </tr>
+                    <tr>
+                        <td class="metric-name">Memory Units</td>
+                        
+                        <td>
+                            <span class="cell-value" data-value="170290">170290</span>
+                            
+                            
+                        </td>
+                        
+                        <td>
+                            <span class="cell-value" data-value="140290">140290</span>
+                            <span class="delta delta-prev delta-negative">-17.6%</span>
+                            <span class="delta delta-first delta-negative">-17.6%</span>
+                        </td>
+                        
+                        <td>
+                            <span class="cell-value" data-value="138790">138790</span>
+                            <span class="delta delta-prev delta-negative">-1.1%</span>
+                            <span class="delta delta-first delta-negative">-18.5%</span>
+                        </td>
+                        
+                        
+                        <td class="preview-cell">
+                            <span class="cell-value" data-value="107235">107235</span>
+                            <span class="delta delta-negative">-22.7%</span>
+                        </td>
+                        
+                    </tr>
+                    <tr>
+                        <td class="metric-name">Script Size (bytes)</td>
+                        
+                        <td>
+                            <span class="cell-value" data-value="42">42</span>
+                            
+                            
+                        </td>
+                        
+                        <td>
+                            <span class="cell-value" data-value="40">40</span>
+                            <span class="delta delta-prev delta-negative">-4.8%</span>
+                            <span class="delta delta-first delta-negative">-4.8%</span>
+                        </td>
+                        
+                        <td>
+                            <span class="cell-value" data-value="42">42</span>
+                            <span class="delta delta-prev delta-positive">+5.0%</span>
+                            <span class="delta delta-first delta-zero">0.0%</span>
+                        </td>
+                        
+                        
+                        <td class="preview-cell">
+                            <span class="cell-value" data-value="34">34</span>
+                            <span class="delta delta-negative">-19.0%</span>
+                        </td>
+                        
+                    </tr>
+                    <tr>
+                        <td class="metric-name">Term Size (AST nodes)</td>
+                        
+                        <td>
+                            <span class="cell-value" data-value="40">40</span>
+                            
+                            
+                        </td>
+                        
+                        <td>
+                            <span class="cell-value" data-value="33">33</span>
+                            <span class="delta delta-prev delta-negative">-17.5%</span>
+                            <span class="delta delta-first delta-negative">-17.5%</span>
+                        </td>
+                        
+                        <td>
+                            <span class="cell-value" data-value="36">36</span>
+                            <span class="delta delta-prev delta-positive">+9.1%</span>
+                            <span class="delta delta-first delta-negative">-10.0%</span>
+                        </td>
+                        
+                        
+                        <td class="preview-cell">
+                            <span class="cell-value" data-value="27">27</span>
+                            <span class="delta delta-negative">-25.0%</span>
+                        </td>
+                        
+                    </tr>
+                    <tr>
+                        <td class="metric-name">Total Fee (lovelace)</td>
+                        
+                        <td>
+                            <span class="cell-value" data-value="13505">13505</span>
+                            
+                            
+                        </td>
+                        
+                        <td>
+                            <span class="cell-value" data-value="11398">11398</span>
+                            <span class="delta delta-prev delta-negative">-15.6%</span>
+                            <span class="delta delta-first delta-negative">-15.6%</span>
+                        </td>
+                        
+                        <td>
+                            <span class="cell-value" data-value="11324">11324</span>
+                            <span class="delta delta-prev delta-negative">-0.6%</span>
+                            <span class="delta delta-first delta-negative">-16.1%</span>
+                        </td>
+                        
+                        
+                        <td class="preview-cell">
+                            <span class="cell-value" data-value="8718">8718</span>
+                            <span class="delta delta-negative">-23.0%</span>
+                        </td>
+                        
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <div class="scenario">
+            <h3>fibonacci</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Metric</th>
+                        <th>1.45.0.0</th><th>1.64.0.0</th><th>1.65.0.0</th>
+                        <th class="preview-col">1.65.0.0 <span class="preview-badge">preview</span></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="metric-name">CPU Units</td>
+                        
+                        <td>
+                            <span class="cell-value" data-value="85087094">85087094</span>
+                            
+                            
+                        </td>
+                        
+                        <td>
+                            <span class="cell-value" data-value="91379406">91379406</span>
+                            <span class="delta delta-prev delta-positive">+7.4%</span>
+                            <span class="delta delta-first delta-positive">+7.4%</span>
+                        </td>
+                        
+                        <td>
+                            <span class="cell-value" data-value="75486958">75486958</span>
+                            <span class="delta delta-prev delta-negative">-17.4%</span>
+                            <span class="delta delta-first delta-negative">-11.3%</span>
+                        </td>
+                        
+                        
+                        <td class="preview-cell">
+                            <span class="cell-value" data-value="59334107">59334107</span>
+                            <span class="delta delta-negative">-21.4%</span>
+                        </td>
+                        
+                    </tr>
+                    <tr>
+                        <td class="metric-name">Memory Units</td>
+                        
+                        <td>
+                            <span class="cell-value" data-value="358018">358018</span>
+                            
+                            
+                        </td>
+                        
+                        <td>
+                            <span class="cell-value" data-value="355606">355606</span>
+                            <span class="delta delta-prev delta-negative">-0.7%</span>
+                            <span class="delta delta-first delta-negative">-0.7%</span>
+                        </td>
+                        
+                        <td>
+                            <span class="cell-value" data-value="297218">297218</span>
+                            <span class="delta delta-prev delta-negative">-16.4%</span>
+                            <span class="delta delta-first delta-negative">-17.0%</span>
+                        </td>
+                        
+                        
+                        <td class="preview-cell">
+                            <span class="cell-value" data-value="243219">243219</span>
+                            <span class="delta delta-negative">-18.2%</span>
+                        </td>
+                        
+                    </tr>
+                    <tr>
+                        <td class="metric-name">Script Size (bytes)</td>
+                        
+                        <td>
+                            <span class="cell-value" data-value="73">73</span>
+                            
+                            
+                        </td>
+                        
+                        <td>
+                            <span class="cell-value" data-value="81">81</span>
+                            <span class="delta delta-prev delta-positive">+11.0%</span>
+                            <span class="delta delta-first delta-positive">+11.0%</span>
+                        </td>
+                        
+                        <td>
+                            <span class="cell-value" data-value="76">76</span>
+                            <span class="delta delta-prev delta-negative">-6.2%</span>
+                            <span class="delta delta-first delta-positive">+4.1%</span>
+                        </td>
+                        
+                        
+                        <td class="preview-cell">
+                            <span class="cell-value" data-value="63">63</span>
+                            <span class="delta delta-negative">-17.1%</span>
+                        </td>
+                        
+                    </tr>
+                    <tr>
+                        <td class="metric-name">Term Size (AST nodes)</td>
+                        
+                        <td>
+                            <span class="cell-value" data-value="75">75</span>
+                            
+                            
+                        </td>
+                        
+                        <td>
+                            <span class="cell-value" data-value="68">68</span>
+                            <span class="delta delta-prev delta-negative">-9.3%</span>
+                            <span class="delta delta-first delta-negative">-9.3%</span>
+                        </td>
+                        
+                        <td>
+                            <span class="cell-value" data-value="64">64</span>
+                            <span class="delta delta-prev delta-negative">-5.9%</span>
+                            <span class="delta delta-first delta-negative">-14.7%</span>
+                        </td>
+                        
+                        
+                        <td class="preview-cell">
+                            <span class="cell-value" data-value="50">50</span>
+                            <span class="delta delta-negative">-21.9%</span>
+                        </td>
+                        
+                    </tr>
+                    <tr>
+                        <td class="metric-name">Total Fee (lovelace)</td>
+                        
+                        <td>
+                            <span class="cell-value" data-value="27888">27888</span>
+                            
+                            
+                        </td>
+                        
+                        <td>
+                            <span class="cell-value" data-value="28322">28322</span>
+                            <span class="delta delta-prev delta-positive">+1.6%</span>
+                            <span class="delta delta-first delta-positive">+1.6%</span>
+                        </td>
+                        
+                        <td>
+                            <span class="cell-value" data-value="23733">23733</span>
+                            <span class="delta delta-prev delta-negative">-16.2%</span>
+                            <span class="delta delta-first delta-negative">-14.9%</span>
+                        </td>
+                        
+                        
+                        <td class="preview-cell">
+                            <span class="cell-value" data-value="19257">19257</span>
+                            <span class="delta delta-negative">-18.9%</span>
+                        </td>
+                        
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <div class="scenario">
+            <h3>fibonacci_naive_recursion</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Metric</th>
+                        <th>1.45.0.0</th><th>1.64.0.0</th><th>1.65.0.0</th>
+                        <th class="preview-col">1.65.0.0 <span class="preview-badge">preview</span></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="metric-name">CPU Units</td>
+                        
+                        <td>
+                            <span class="cell-value" data-value="213452041630">213452041630</span>
+                            
+                            
+                        </td>
+                        
+                        <td>
+                            <span class="cell-value" data-value="175016233630">175016233630</span>
+                            <span class="delta delta-prev delta-negative">-18.0%</span>
+                            <span class="delta delta-first delta-negative">-18.0%</span>
+                        </td>
+                        
+                        <td>
+                            <span class="cell-value" data-value="170746233630">170746233630</span>
+                            <span class="delta delta-prev delta-negative">-2.4%</span>
+                            <span class="delta delta-first delta-negative">-20.0%</span>
+                        </td>
+                        
+                        
+                        <td class="preview-cell">
+                            <span class="cell-value" data-value="129093086599">129093086599</span>
+                            <span class="delta delta-negative">-24.4%</span>
+                        </td>
+                        
+                    </tr>
+                    <tr>
+                        <td class="metric-name">Memory Units</td>
+                        
+                        <td>
+                            <span class="cell-value" data-value="882162862">882162862</span>
+                            
+                            
+                        </td>
+                        
+                        <td>
+                            <span class="cell-value" data-value="641939062">641939062</span>
+                            <span class="delta delta-prev delta-negative">-27.2%</span>
+                            <span class="delta delta-first delta-negative">-27.2%</span>
+                        </td>
+                        
+                        <td>
+                            <span class="cell-value" data-value="615251562">615251562</span>
+                            <span class="delta delta-prev delta-negative">-4.2%</span>
+                            <span class="delta delta-first delta-negative">-30.3%</span>
+                        </td>
+                        
+                        
+                        <td class="preview-cell">
+                            <span class="cell-value" data-value="481520743">481520743</span>
+                            <span class="delta delta-negative">-21.7%</span>
+                        </td>
+                        
+                    </tr>
+                    <tr>
+                        <td class="metric-name">Script Size (bytes)</td>
+                        
+                        <td>
+                            <span class="cell-value" data-value="51">51</span>
+                            
+                            
+                        </td>
+                        
+                        <td>
+                            <span class="cell-value" data-value="48">48</span>
+                            <span class="delta delta-prev delta-negative">-5.9%</span>
+                            <span class="delta delta-first delta-negative">-5.9%</span>
+                        </td>
+                        
+                        <td>
+                            <span class="cell-value" data-value="50">50</span>
+                            <span class="delta delta-prev delta-positive">+4.2%</span>
+                            <span class="delta delta-first delta-negative">-2.0%</span>
+                        </td>
+                        
+                        
+                        <td class="preview-cell">
+                            <span class="cell-value" data-value="43">43</span>
+                            <span class="delta delta-negative">-14.0%</span>
+                        </td>
+                        
+                    </tr>
+                    <tr>
+                        <td class="metric-name">Term Size (AST nodes)</td>
+                        
+                        <td>
+                            <span class="cell-value" data-value="49">49</span>
+                            
+                            
+                        </td>
+                        
+                        <td>
+                            <span class="cell-value" data-value="42">42</span>
+                            <span class="delta delta-prev delta-negative">-14.3%</span>
+                            <span class="delta delta-first delta-negative">-14.3%</span>
+                        </td>
+                        
+                        <td>
+                            <span class="cell-value" data-value="45">45</span>
+                            <span class="delta delta-prev delta-positive">+7.1%</span>
+                            <span class="delta delta-first delta-negative">-8.2%</span>
+                        </td>
+                        
+                        
+                        <td class="preview-cell">
+                            <span class="cell-value" data-value="36">36</span>
+                            <span class="delta delta-negative">-20.0%</span>
+                        </td>
+                        
+                    </tr>
+                    <tr>
+                        <td class="metric-name">Total Fee (lovelace)</td>
+                        
+                        <td>
+                            <span class="cell-value" data-value="66291455">66291455</span>
+                            
+                            
+                        </td>
+                        
+                        <td>
+                            <span class="cell-value" data-value="49659275">49659275</span>
+                            <span class="delta delta-prev delta-negative">-25.1%</span>
+                            <span class="delta delta-first delta-negative">-25.1%</span>
+                        </td>
+                        
+                        <td>
+                            <span class="cell-value" data-value="47811569">47811569</span>
+                            <span class="delta delta-prev delta-negative">-3.7%</span>
+                            <span class="delta delta-first delta-negative">-27.9%</span>
+                        </td>
+                        
+                        
+                        <td class="preview-cell">
+                            <span class="cell-value" data-value="37092004">37092004</span>
+                            <span class="delta delta-negative">-22.4%</span>
+                        </td>
+                        
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <div class="scenario">
+            <h3>htlc</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Metric</th>
+                        <th>1.45.0.0</th><th>1.64.0.0</th><th>1.65.0.0</th>
+                        <th class="preview-col">1.65.0.0 <span class="preview-badge">preview</span></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="metric-name">CPU Units</td>
+                        
+                        <td>
+                            <span class="cell-value" data-value="103037912">103037912</span>
+                            
+                            
+                        </td>
+                        
+                        <td>
+                            <span class="cell-value" data-value="91108232">91108232</span>
+                            <span class="delta delta-prev delta-negative">-11.6%</span>
+                            <span class="delta delta-first delta-negative">-11.6%</span>
+                        </td>
+                        
+                        <td>
+                            <span class="cell-value" data-value="84377848">84377848</span>
+                            <span class="delta delta-prev delta-negative">-7.4%</span>
+                            <span class="delta delta-first delta-negative">-18.1%</span>
+                        </td>
+                        
+                        
+                        <td class="preview-cell">
+                            <span class="cell-value" data-value="60542648">60542648</span>
+                            <span class="delta delta-negative">-28.2%</span>
+                        </td>
+                        
+                    </tr>
+                    <tr>
+                        <td class="metric-name">Memory Units</td>
+                        
+                        <td>
+                            <span class="cell-value" data-value="319172">319172</span>
+                            
+                            
+                        </td>
+                        
+                        <td>
+                            <span class="cell-value" data-value="246392">246392</span>
+                            <span class="delta delta-prev delta-negative">-22.8%</span>
+                            <span class="delta delta-first delta-negative">-22.8%</span>
+                        </td>
+                        
+                        <td>
+                            <span class="cell-value" data-value="206188">206188</span>
+                            <span class="delta delta-prev delta-negative">-16.3%</span>
+                            <span class="delta delta-first delta-negative">-35.4%</span>
+                        </td>
+                        
+                        
+                        <td class="preview-cell">
+                            <span class="cell-value" data-value="183704">183704</span>
+                            <span class="delta delta-negative">-10.9%</span>
+                        </td>
+                        
+                    </tr>
+                    <tr>
+                        <td class="metric-name">Script Size (bytes)</td>
+                        
+                        <td>
+                            <span class="cell-value" data-value="1242">1242</span>
+                            
+                            
+                        </td>
+                        
+                        <td>
+                            <span class="cell-value" data-value="736">736</span>
+                            <span class="delta delta-prev delta-negative">-40.7%</span>
+                            <span class="delta delta-first delta-negative">-40.7%</span>
+                        </td>
+                        
+                        <td>
+                            <span class="cell-value" data-value="693">693</span>
+                            <span class="delta delta-prev delta-negative">-5.8%</span>
+                            <span class="delta delta-first delta-negative">-44.2%</span>
+                        </td>
+                        
+                        
+                        <td class="preview-cell">
+                            <span class="cell-value" data-value="591">591</span>
+                            <span class="delta delta-negative">-14.7%</span>
+                        </td>
+                        
+                    </tr>
+                    <tr>
+                        <td class="metric-name">Term Size (AST nodes)</td>
+                        
+                        <td>
+                            <span class="cell-value" data-value="1058">1058</span>
+                            
+                            
+                        </td>
+                        
+                        <td>
+                            <span class="cell-value" data-value="832">832</span>
+                            <span class="delta delta-prev delta-negative">-21.4%</span>
+                            <span class="delta delta-first delta-negative">-21.4%</span>
+                        </td>
+                        
+                        <td>
+                            <span class="cell-value" data-value="705">705</span>
+                            <span class="delta delta-prev delta-negative">-15.3%</span>
+                            <span class="delta delta-first delta-negative">-33.4%</span>
+                        </td>
+                        
+                        
+                        <td class="preview-cell">
+                            <span class="cell-value" data-value="623">623</span>
+                            <span class="delta delta-negative">-11.6%</span>
+                        </td>
+                        
+                    </tr>
+                    <tr>
+                        <td class="metric-name">Total Fee (lovelace)</td>
+                        
+                        <td>
+                            <span class="cell-value" data-value="44476">44476</span>
+                            
+                            
+                        </td>
+                        
+                        <td>
+                            <span class="cell-value" data-value="31826">31826</span>
+                            <span class="delta delta-prev delta-negative">-28.4%</span>
+                            <span class="delta delta-first delta-negative">-28.4%</span>
+                        </td>
+                        
+                        <td>
+                            <span class="cell-value" data-value="28376">28376</span>
+                            <span class="delta delta-prev delta-negative">-10.8%</span>
+                            <span class="delta delta-first delta-negative">-36.2%</span>
+                        </td>
+                        
+                        
+                        <td class="preview-cell">
+                            <span class="cell-value" data-value="23830">23830</span>
+                            <span class="delta delta-negative">-16.0%</span>
+                        </td>
+                        
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <div class="scenario">
+            <h3>linear_vesting</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Metric</th>
+                        <th>1.45.0.0</th><th>1.64.0.0</th><th>1.65.0.0</th>
+                        <th class="preview-col">1.65.0.0 <span class="preview-badge">preview</span></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="metric-name">CPU Units</td>
+                        
+                        <td>
+                            <span class="cell-value" data-value="245143090">245143090</span>
+                            
+                            
+                        </td>
+                        
+                        <td>
+                            <span class="cell-value" data-value="220599042">220599042</span>
+                            <span class="delta delta-prev delta-negative">-10.0%</span>
+                            <span class="delta delta-first delta-negative">-10.0%</span>
+                        </td>
+                        
+                        <td>
+                            <span class="cell-value" data-value="191890594">191890594</span>
+                            <span class="delta delta-prev delta-negative">-13.0%</span>
+                            <span class="delta delta-first delta-negative">-21.7%</span>
+                        </td>
+                        
+                        
+                        <td class="preview-cell">
+                            <span class="cell-value" data-value="140515320">140515320</span>
+                            <span class="delta delta-negative">-26.8%</span>
+                        </td>
+                        
+                    </tr>
+                    <tr>
+                        <td class="metric-name">Memory Units</td>
+                        
+                        <td>
+                            <span class="cell-value" data-value="741040">741040</span>
+                            
+                            
+                        </td>
+                        
+                        <td>
+                            <span class="cell-value" data-value="584608">584608</span>
+                            <span class="delta delta-prev delta-negative">-21.1%</span>
+                            <span class="delta delta-first delta-negative">-21.1%</span>
+                        </td>
+                        
+                        <td>
+                            <span class="cell-value" data-value="512166">512166</span>
+                            <span class="delta delta-prev delta-negative">-12.4%</span>
+                            <span class="delta delta-first delta-negative">-30.9%</span>
+                        </td>
+                        
+                        
+                        <td class="preview-cell">
+                            <span class="cell-value" data-value="441234">441234</span>
+                            <span class="delta delta-negative">-13.8%</span>
+                        </td>
+                        
+                    </tr>
+                    <tr>
+                        <td class="metric-name">Script Size (bytes)</td>
+                        
+                        <td>
+                            <span class="cell-value" data-value="1670">1670</span>
+                            
+                            
+                        </td>
+                        
+                        <td>
+                            <span class="cell-value" data-value="1064">1064</span>
+                            <span class="delta delta-prev delta-negative">-36.3%</span>
+                            <span class="delta delta-first delta-negative">-36.3%</span>
+                        </td>
+                        
+                        <td>
+                            <span class="cell-value" data-value="997">997</span>
+                            <span class="delta delta-prev delta-negative">-6.3%</span>
+                            <span class="delta delta-first delta-negative">-40.3%</span>
+                        </td>
+                        
+                        
+                        <td class="preview-cell">
+                            <span class="cell-value" data-value="892">892</span>
+                            <span class="delta delta-negative">-10.5%</span>
+                        </td>
+                        
+                    </tr>
+                    <tr>
+                        <td class="metric-name">Term Size (AST nodes)</td>
+                        
+                        <td>
+                            <span class="cell-value" data-value="1424">1424</span>
+                            
+                            
+                        </td>
+                        
+                        <td>
+                            <span class="cell-value" data-value="1149">1149</span>
+                            <span class="delta delta-prev delta-negative">-19.3%</span>
+                            <span class="delta delta-first delta-negative">-19.3%</span>
+                        </td>
+                        
+                        <td>
+                            <span class="cell-value" data-value="985">985</span>
+                            <span class="delta delta-prev delta-negative">-14.3%</span>
+                            <span class="delta delta-first delta-negative">-30.8%</span>
+                        </td>
+                        
+                        
+                        <td class="preview-cell">
+                            <span class="cell-value" data-value="899">899</span>
+                            <span class="delta delta-negative">-8.7%</span>
+                        </td>
+                        
+                    </tr>
+                    <tr>
+                        <td class="metric-name">Total Fee (lovelace)</td>
+                        
+                        <td>
+                            <span class="cell-value" data-value="85483">85483</span>
+                            
+                            
+                        </td>
+                        
+                        <td>
+                            <span class="cell-value" data-value="65598">65598</span>
+                            <span class="delta delta-prev delta-negative">-23.3%</span>
+                            <span class="delta delta-first delta-negative">-23.3%</span>
+                        </td>
+                        
+                        <td>
+                            <span class="cell-value" data-value="58343">58343</span>
+                            <span class="delta delta-prev delta-negative">-11.1%</span>
+                            <span class="delta delta-first delta-negative">-31.7%</span>
+                        </td>
+                        
+                        
+                        <td class="preview-cell">
+                            <span class="cell-value" data-value="48971">48971</span>
+                            <span class="delta delta-negative">-16.1%</span>
+                        </td>
+                        
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <div class="scenario">
+            <h3>two_party_escrow</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Metric</th>
+                        <th>1.45.0.0</th><th>1.64.0.0</th><th>1.65.0.0</th>
+                        <th class="preview-col">1.65.0.0 <span class="preview-badge">preview</span></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="metric-name">CPU Units</td>
+                        
+                        <td>
+                            <span class="cell-value" data-value="425273438">425273438</span>
+                            
+                            
+                        </td>
+                        
+                        <td>
+                            <span class="cell-value" data-value="376623075">376623075</span>
+                            <span class="delta delta-prev delta-negative">-11.4%</span>
+                            <span class="delta delta-first delta-negative">-11.4%</span>
+                        </td>
+                        
+                        <td>
+                            <span class="cell-value" data-value="228000651">228000651</span>
+                            <span class="delta delta-prev delta-negative">-39.5%</span>
+                            <span class="delta delta-first delta-negative">-46.4%</span>
+                        </td>
+                        
+                        
+                        <td class="preview-cell">
+                            <span class="cell-value" data-value="168065744">168065744</span>
+                            <span class="delta delta-negative">-26.3%</span>
+                        </td>
+                        
+                    </tr>
+                    <tr>
+                        <td class="metric-name">Memory Units</td>
+                        
+                        <td>
+                            <span class="cell-value" data-value="1322778">1322778</span>
+                            
+                            
+                        </td>
+                        
+                        <td>
+                            <span class="cell-value" data-value="1021313">1021313</span>
+                            <span class="delta delta-prev delta-negative">-22.8%</span>
+                            <span class="delta delta-first delta-negative">-22.8%</span>
+                        </td>
+                        
+                        <td>
+                            <span class="cell-value" data-value="596443">596443</span>
+                            <span class="delta delta-prev delta-negative">-41.6%</span>
+                            <span class="delta delta-first delta-negative">-54.9%</span>
+                        </td>
+                        
+                        
+                        <td class="preview-cell">
+                            <span class="cell-value" data-value="536464">536464</span>
+                            <span class="delta delta-negative">-10.1%</span>
+                        </td>
+                        
+                    </tr>
+                    <tr>
+                        <td class="metric-name">Script Size (bytes)</td>
+                        
+                        <td>
+                            <span class="cell-value" data-value="2731">2731</span>
+                            
+                            
+                        </td>
+                        
+                        <td>
+                            <span class="cell-value" data-value="1710">1710</span>
+                            <span class="delta delta-prev delta-negative">-37.4%</span>
+                            <span class="delta delta-first delta-negative">-37.4%</span>
+                        </td>
+                        
+                        <td>
+                            <span class="cell-value" data-value="1516">1516</span>
+                            <span class="delta delta-prev delta-negative">-11.3%</span>
+                            <span class="delta delta-first delta-negative">-44.5%</span>
+                        </td>
+                        
+                        
+                        <td class="preview-cell">
+                            <span class="cell-value" data-value="1310">1310</span>
+                            <span class="delta delta-negative">-13.6%</span>
+                        </td>
+                        
+                    </tr>
+                    <tr>
+                        <td class="metric-name">Term Size (AST nodes)</td>
+                        
+                        <td>
+                            <span class="cell-value" data-value="1965">1965</span>
+                            
+                            
+                        </td>
+                        
+                        <td>
+                            <span class="cell-value" data-value="1395">1395</span>
+                            <span class="delta delta-prev delta-negative">-29.0%</span>
+                            <span class="delta delta-first delta-negative">-29.0%</span>
+                        </td>
+                        
+                        <td>
+                            <span class="cell-value" data-value="1059">1059</span>
+                            <span class="delta delta-prev delta-negative">-24.1%</span>
+                            <span class="delta delta-first delta-negative">-46.1%</span>
+                        </td>
+                        
+                        
+                        <td class="preview-cell">
+                            <span class="cell-value" data-value="955">955</span>
+                            <span class="delta delta-negative">-9.8%</span>
+                        </td>
+                        
+                    </tr>
+                    <tr>
+                        <td class="metric-name">Total Fee (lovelace)</td>
+                        
+                        <td>
+                            <span class="cell-value" data-value="147952">147952</span>
+                            
+                            
+                        </td>
+                        
+                        <td>
+                            <span class="cell-value" data-value="111735">111735</span>
+                            <span class="delta delta-prev delta-negative">-24.5%</span>
+                            <span class="delta delta-first delta-negative">-24.5%</span>
+                        </td>
+                        
+                        <td>
+                            <span class="cell-value" data-value="73594">73594</span>
+                            <span class="delta delta-prev delta-negative">-34.1%</span>
+                            <span class="delta delta-first delta-negative">-50.3%</span>
+                        </td>
+                        
+                        
+                        <td class="preview-cell">
+                            <span class="cell-value" data-value="62722">62722</span>
+                            <span class="delta delta-negative">-14.8%</span>
+                        </td>
+                        
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+    </section>
+
+    <div class="footer">
+        <p>EVOLUTION &mdash; Generated by UPLC-CAPE on 2026-07-08 15:30:23 UTC &middot; <a href="https://github.com/IntersectMBO/UPLC-CAPE">View on GitHub</a> &middot; <a href="../../index.html">Production report</a></p>
+    </div>
+
+    <script>
+        // Format large numbers with thousand separators.
+        document.querySelectorAll('[data-value]').forEach(function (el) {
+            var v = Number(el.getAttribute('data-value'));
+            if (!Number.isNaN(v)) el.textContent = v.toLocaleString();
+        });
+
+        // Baseline toggle (delegates to body[data-baseline] CSS hooks).
+        document.querySelectorAll('.baseline-toggle button').forEach(function (btn) {
+            btn.addEventListener('click', function () {
+                document.body.setAttribute('data-baseline', btn.getAttribute('data-baseline'));
+                document.querySelectorAll('.baseline-toggle button').forEach(function (b) {
+                    b.classList.toggle('active', b === btn);
+                });
+            });
+        });
+    </script>
+</body>
+</html>
