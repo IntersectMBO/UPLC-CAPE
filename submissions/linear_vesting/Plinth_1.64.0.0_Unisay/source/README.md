@@ -1,41 +1,28 @@
-# linear_vesting Plinth 1.64.0.0 source
+# linear_vesting Plinth 1.64.0.0 (monadic, promoted to default) source
 
 **Repository**: <https://github.com/Unisay/plinth-cape-submissions>
 
-**Branch**: `main`
+**Branch**: `plinth-1.64`
 
-**Commit**: `fbb37ddd6ba6ea6fd29312494a32a3074ba332b0`
+**Commit**: `284f04a91783db603e2fef2d460cb9b403f9f1a3`
 
-**Path**: `lib/LinearVesting.hs`
+**Path**: `lib/LinearVesting/Monadic.hs` (+ `lib/Plinth/Validator.hs`, `lib/Plinth/Decoder/Named.hs`, `lib/Plinth/Decoder/Named/ScriptContext.hs`, `lib/Plinth/Encoded.hs`)
 
-This submission compiles `lib/LinearVesting.hs` from the Plinth source
-repository with the Plinth (plutus-tx-plugin) 1.64.0.0 line.
-
-Production line with Plinth 1.64.0.0 (no BuiltinCasing). Plugin pragmas live in `plinth-cape-submissions.cabal`; validator modules carry no Plinth-specific options.
+Linear vesting validator written in `do`-notation on `Plinth.Validator`, a zero-cost early-termination monad, together with the zero-cost typed decoding DSL `Plinth.Decoder.Named` (`V.do`/`N.do` via `QualifiedDo`; `IxDecoder`/`FieldAt` Peano-indexed cursor; `Plinth.Encoded` compare-without-decode). Re-optimised for CAPE metrics schema 2.0.0 (happy-path aggregates only): total_fee 192239 to 65598 lovelace (-65.9%), promoted to the default for this line.
 
 ## Reproducing the compilation
 
 ```bash
 git clone https://github.com/Unisay/plinth-cape-submissions
 cd plinth-cape-submissions
-git checkout fbb37ddd6ba6ea6fd29312494a32a3074ba332b0
+git checkout 284f04a91783db603e2fef2d460cb9b403f9f1a3
 ```
 
-`CAPE_REPO` must point at the sibling UPLC-CAPE checkout; the
-build aborts if the variable is unset. The recommended place is
-`.envrc.local` (gitignored), e.g.:
-
-```sh
-export CAPE_REPO="$HOME/src/UPLC-CAPE"
-```
-
-Then enter the dev shell and run the generator:
+`CAPE_REPO` must point at the sibling UPLC-CAPE checkout (build aborts if unset); set it in `.envrc.local` (gitignored). Then:
 
 ```bash
 nix develop
 cabal run plinth-submissions
 ```
 
-The produced UPLC writes to
-`$CAPE_REPO/submissions/linear_vesting/Plinth_1.64.0.0_Unisay/linear_vesting.uplc`
-and matches the `linear_vesting.uplc` in this submission.
+The generator writes `$CAPE_REPO/submissions/linear_vesting/Plinth_1.64.0.0_Unisay_monadic/linear_vesting.uplc`; in this submission that artifact is committed as the default `Plinth_1.64.0.0_Unisay` (the previous plain implementation is retained as `Plinth_1.64.0.0_Unisay_plain`).

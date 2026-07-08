@@ -4,33 +4,25 @@
 
 **Branch**: `main`
 
-**Commit**: `4b3215042c1ccd481b5f62ad192d23b0e1f96758`
+**Commit**: `f9ef6bdf4ed08ec16039600903d8af7e6c22046b`
 
-**Path**: `lib/TwoPartyEscrow/AsData.hs`
+**Path**: `lib/TwoPartyEscrow.hs` (+ `lib/Plinth/Validator.hs`, `lib/Plinth/Decoder/Named.hs`, `lib/Plinth/Decoder/Named/ScriptContext.hs`, `lib/Plinth/Encoded.hs`)
 
-This submission compiles `lib/TwoPartyEscrow/AsData.hs` from the Plinth source repository with the Plinth (plutus-tx-plugin) 1.65.0.0 line.
-
-Production line with Plinth 1.65.0.0 (no BuiltinCasing). Plugin pragmas live in `plinth-cape-submissions.cabal`; validator modules carry no Plinth-specific options.
+Two-party escrow validator written in `do`-notation on `Plinth.Validator`, a zero-cost early-termination monad, together with the zero-cost typed decoding DSL `Plinth.Decoder.Named`. `QualifiedDo` keeps `V.do` (decode-or-abort stages) beside `N.do` (Named walk regions); `IxDecoder` tracks the walk cursor in the type via a Peano-indexed fundep class (`FieldAt`), so each `ScriptContext`/datum field is decoded with a single `Constr` walk, and a value that is only compared is never structurally decoded (`Plinth.Encoded`). Retains the escrow security hardening: the escrow input is tied to the script's own payment credential, and the incomplete-withdrawal guard compares the payment credential only (ignoring the staking part). Re-optimised for CAPE metrics schema 2.0.0 (happy-path aggregates only): total_fee 311093 to 101588 lovelace (-67.3%), promoted to the default for this line.
 
 ## Reproducing the compilation
 
 ```bash
 git clone https://github.com/Unisay/plinth-cape-submissions
 cd plinth-cape-submissions
-git checkout 4b3215042c1ccd481b5f62ad192d23b0e1f96758
+git checkout f9ef6bdf4ed08ec16039600903d8af7e6c22046b
 ```
 
-`CAPE_REPO` must point at the sibling UPLC-CAPE checkout; the build aborts if the variable is unset. The recommended place is `.envrc.local` (gitignored), e.g.:
-
-```sh
-export CAPE_REPO="$HOME/src/UPLC-CAPE"
-```
-
-Then enter the dev shell and run the generator:
+`CAPE_REPO` must point at the sibling UPLC-CAPE checkout (build aborts if unset); set it in `.envrc.local` (gitignored). Then:
 
 ```bash
 nix develop
 cabal run plinth-submissions
 ```
 
-The produced UPLC writes to `$CAPE_REPO/submissions/two_party_escrow/Plinth_1.65.0.0_Unisay/two_party_escrow.uplc` and matches the `two_party_escrow.uplc` in this submission.
+The generator writes `$CAPE_REPO/submissions/two_party_escrow/Plinth_1.65.0.0_Unisay/two_party_escrow.uplc` (monadic is the default on `main`; the previous asdata implementation is retained as `Plinth_1.65.0.0_Unisay_asdata`).

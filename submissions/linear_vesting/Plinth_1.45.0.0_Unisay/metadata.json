@@ -16,9 +16,10 @@
     }
   ],
   "submission": {
-    "date": "2026-04-09T00:00:00Z",
+    "date": "2026-07-08T07:23:46Z",
     "source_available": true,
-    "source_repository": "https://github.com/IntersectMBO/UPLC-CAPE",
-    "implementation_notes": "Linear vesting validator using Plinth (PlutusTx) targeting Plutus Core 1.1.0 and Plutus V3. Fully-applied spending validator with high-level PlutusTx APIs. Downgraded to Plutus 1.45 for mainnet compatibility (cardano-node 10.4.1)."
+    "source_repository": "https://github.com/Unisay/plinth-cape-submissions",
+    "source_commit_hash": "b10eb9c4be0745a199c1febe963e00631ca0c3d7",
+    "implementation_notes": "Linear vesting validator written in `do`-notation on `Plinth.Validator`, a zero-cost early-termination monad, together with the zero-cost typed decoding DSL `Plinth.Decoder.Named` (`V.do`/`N.do` via `QualifiedDo`; `IxDecoder`/`FieldAt` Peano-indexed cursor; `Plinth.Encoded` compare-without-decode). Re-optimised for CAPE metrics schema 2.0.0, whose aggregates cover only the happy-path (accept) measurements. total_fee 250376 to 85483 lovelace (-65.9%); promoted to the default artifact for this line, with the previous plain implementation retained as Plinth_1.45.0.0_Unisay_plain. Source: lib/LinearVesting/Monadic.hs (+ `lib/Plinth/Validator.hs`, `lib/Plinth/Decoder/Named.hs`, `lib/Plinth/Decoder/Named/ScriptContext.hs`, `lib/Plinth/Encoded.hs`) in plinth-cape-submissions @ b10eb9c4be0745a199c1febe963e00631ca0c3d7 (branch plinth-1.45)."
   }
 }
