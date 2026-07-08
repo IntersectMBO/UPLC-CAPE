@@ -1,6 +1,6 @@
 {
   "benchmark": "two_party_escrow",
-  "generated_at": "2026-07-08T14:50:27Z",
+  "generated_at": "2026-07-08T15:32:29Z",
   "submissions": [
     {
       "timestamp": "2026-07-08T07:23:47Z",
@@ -107,7 +107,7 @@
       }
     },
     {
-      "timestamp": "2026-07-08T14:42:48Z",
+      "timestamp": "2026-07-08T15:25:18Z",
       "compiler": "Plinth",
       "version": "1.65.0.0",
       "user": "Unisay",
