@@ -18,7 +18,8 @@
   "submission": {
     "date": "2026-04-09T00:00:00Z",
     "source_available": true,
-    "source_repository": "https://github.com/IntersectMBO/UPLC-CAPE",
+    "source_repository": "https://github.com/Unisay/plinth-cape-submissions",
+    "source_commit_hash": "b09485c75e3ab6b596b9613320abc2b325087612",
     "implementation_notes": "Linear vesting validator using Plinth (PlutusTx) targeting Plutus Core 1.1.0 and Plutus V3. Fully-applied spending validator with high-level PlutusTx APIs. Downgraded to Plutus 1.45 for mainnet compatibility (cardano-node 10.4.1)."
   }
 }
