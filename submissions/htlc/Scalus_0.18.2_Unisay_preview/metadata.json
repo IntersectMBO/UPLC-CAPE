@@ -1,0 +1,29 @@
+{
+  "compiler": {
+    "name": "Scalus",
+    "version": "0.18.2",
+    "commit_hash": "a17580cd7a0fbb55083797ca16ae63ee924afe10"
+  },
+  "compilation_config": {
+    "optimization_level": "Scalus",
+    "target": "uplc",
+    "flags": [
+      "Scalus",
+      "vanRossem"
+    ],
+    "min_plutus_version": "1.60.0.0"
+  },
+  "contributors": [
+    {
+      "name": "Unisay",
+      "organization": "Intersect MBO"
+    }
+  ],
+  "submission": {
+    "date": "2026-07-07T17:13:55Z",
+    "source_available": true,
+    "source_repository": "https://github.com/Unisay/scalus-cape-submissions",
+    "source_commit_hash": "6aa01a8ab6dbf0501efdea5bca4e3b832a1307b5",
+    "implementation_notes": "Scalus 0.18.2 HTLC spending validator (`@Compile object HTLCValidator`, `Data -> Unit`) deriving FromData/ToData for `HTLCDatum` and `HTLCRedeemer`. Claim reads the upper bound of `txInfoValidRange` (finite, strictly `< timeout`); refund reads the lower bound (finite, strictly `> timeout`), following the production-safe validity-range convention from IntersectMBO/UPLC-CAPE#170. Preview submission targeting the van Rossem hard fork (Cardano protocol version 11). Same source as the corresponding current-track Scalus_0.18.2_Unisay submission, recompiled with `Options.release.copy(targetProtocolVersion = MajorProtocolVersion.vanRossemPV)`, which enables `case-on-builtins` and batch-6 builtins (e.g. `dropList`). Measured on `PlutusVM.makePlutusV3VM(MajorProtocolVersion.vanRossemPV)`. Invalid on mainnet until the hard fork activates; routed to the preview report via `min_plutus_version = 1.60.0.0`."
+  }
+}

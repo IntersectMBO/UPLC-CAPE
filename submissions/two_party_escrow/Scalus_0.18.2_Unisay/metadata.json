@@ -1,0 +1,27 @@
+{
+  "compiler": {
+    "name": "Scalus",
+    "version": "0.18.2",
+    "commit_hash": "a17580cd7a0fbb55083797ca16ae63ee924afe10"
+  },
+  "compilation_config": {
+    "optimization_level": "Scalus",
+    "target": "uplc",
+    "flags": [
+      "Scalus"
+    ]
+  },
+  "contributors": [
+    {
+      "name": "Unisay",
+      "organization": "Intersect MBO"
+    }
+  ],
+  "submission": {
+    "date": "2026-07-07T17:13:55Z",
+    "source_available": true,
+    "source_repository": "https://github.com/Unisay/scalus-cape-submissions",
+    "source_commit_hash": "6aa01a8ab6dbf0501efdea5bca4e3b832a1307b5",
+    "implementation_notes": "Scalus 0.18.2 Two-party escrow spending validator (`@Compile object TwoPartyEscrowValidator`, `Data -> Unit`) implementing a buyer/seller `Deposited -> Accepted | Refunded` state machine with parameters baked in (buyer/seller keys, 75 ADA price, 1800s deadline). Redeemer is a raw integer (0=Deposit, 1=Accept, 2=Refund); datum is `Constr 0 [state, depositTime]`. Deposit records `depositTime` as the finite upper bound of the validity range (an infinite upper bound is rejected). Compiled with `Options.release` (the Scalus release optimizer). An AST-level alpha-rename pass rewrites all generated identifiers to short purely-alphabetic names before serialisation, keeping the artifact compatible with the plutus-core 1.45.0.0 textual parser."
+  }
+}
