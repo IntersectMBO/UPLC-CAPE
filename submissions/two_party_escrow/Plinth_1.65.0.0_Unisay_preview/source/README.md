@@ -4,18 +4,18 @@
 
 **Branch**: `main`
 
-**Commit**: `6b75b5a3fe1cf56b195cc4222cf939a2812cee78`
+**Commit**: `d078652f03d31ed728c1fb63f1d9f8824218494c`
 
-**Path**: `lib/TwoPartyEscrow.hs` (decoder DSL: `lib/Plinth/Decoder.hs`, `lib/Plinth/Decoder/Named.hs`)
+**Path**: `lib/TwoPartyEscrow.hs` (+ `lib/Plinth/Decoder.hs`, `lib/Plinth/Decoder/Named.hs`, `lib/Plinth/Encoded.hs`)
 
-This submission compiles `lib/TwoPartyEscrow.hs` from the Plinth source repository with the Plinth (plutus-tx-plugin) 1.65.0.0 line and the BuiltinCasing preview flag enabled. The preview build also emits the batch-6 `dropList` builtin for cursor gaps of three or more fields in the typed decoder: a single `dropList` call replaces the chained `tailList` steps and its term size does not grow with the gap. `dropList` is only accepted from the van Rossem protocol version, so the emission is gated to the preview build (the production build keeps the pure `tailList` induction and stays byte-identical). Requires `plutus-core >= 1.65.0.0` (not yet on mainnet).
+The preview build of the monadic two-party escrow validator: BuiltinCasing plus the dropList decoder step, requiring `plutus-core >= 1.65.0.0` (not yet on mainnet).
 
 ## Reproducing the compilation
 
 ```bash
 git clone https://github.com/Unisay/plinth-cape-submissions
 cd plinth-cape-submissions
-git checkout 6b75b5a3fe1cf56b195cc4222cf939a2812cee78
+git checkout d078652f03d31ed728c1fb63f1d9f8824218494c
 ```
 
 `CAPE_REPO` must point at the sibling UPLC-CAPE checkout; the build aborts if the variable is unset. The recommended place is `.envrc.local` (gitignored), e.g.:
@@ -24,11 +24,9 @@ git checkout 6b75b5a3fe1cf56b195cc4222cf939a2812cee78
 export CAPE_REPO="$HOME/src/UPLC-CAPE"
 ```
 
-Then enter the dev shell and run the generator with the preview flag:
+Then enter the dev shell and run the generatorTrue:
 
 ```bash
 nix develop
 cabal run --flags=preview plinth-submissions
 ```
-
-The produced UPLC writes to `$CAPE_REPO/submissions/two_party_escrow/Plinth_1.65.0.0_Unisay_preview/two_party_escrow.uplc` and matches the UPLC in this submission.
