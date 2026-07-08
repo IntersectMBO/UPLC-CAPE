@@ -8,7 +8,7 @@
 
 **Path**: `src/factorial_naive_recursion/FactorialNaiveRecursion.scala`
 
-This submission uses Scalus compiler version 0.18.2. Factorial program computing `n!` by naive recursion (`Data -> Unit`), compiled with Scalus default options (no optimization). Preview submission targeting the van Rossem hard fork (Cardano protocol version 11). Same source as the corresponding current-track Scalus_0.18.2_Unisay submission, recompiled with `Options.release.copy(targetProtocolVersion = MajorProtocolVersion.vanRossemPV)`, which enables `case-on-builtins` and batch-6 builtins (e.g. `dropList`). Measured on `PlutusVM.makePlutusV3VM(MajorProtocolVersion.vanRossemPV)`. Invalid on mainnet until the hard fork activates; routed to the preview report via `min_plutus_version = 1.60.0.0`.
+This submission uses Scalus compiler version 0.18.2. Factorial program computing `n!` by naive recursion (`Data -> Unit`), compiled with Scalus default options (no optimization). Preview submission targeting the van Rossem hard fork (Cardano protocol version 11). Same source as the corresponding current-track Scalus_0.18.2_Unisay submission, recompiled with `Options.release.copy(targetProtocolVersion = MajorProtocolVersion.vanRossemPV)`, which enables `case-on-builtins` and batch-6 builtins (e.g. `dropList`). Measured on `PlutusVM.makePlutusV3VM(MajorProtocolVersion.vanRossemPV)`. Invalid on mainnet until the hard fork activates; gated by `min_plutus_version = 1.60.0.0` for measurement and verification, while the `_preview` directory variant places it in the preview report track.
 
 ## Reproducing the Compilation
 
