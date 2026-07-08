@@ -1,6 +1,6 @@
 {
   "benchmark": "linear_vesting",
-  "generated_at": "2026-07-07T14:34:24Z",
+  "generated_at": "2026-07-08T07:20:27Z",
   "submissions": [
     {
       "timestamp": "2026-07-06T12:45:09Z",
@@ -78,6 +78,32 @@
         "excluded_count": 23,
         "excluded_cpu_sum": 1550062831,
         "excluded_mem_sum": 4976122
+      }
+    },
+    {
+      "timestamp": "2026-07-07T17:08:11Z",
+      "compiler": "Scalus",
+      "version": "0.18.2",
+      "user": "Unisay",
+      "variant": "default",
+      "submission_dir": "Scalus_0.18.2_Unisay",
+      "metrics": {
+        "cpu_units": 307452349,
+        "memory_units": 873596,
+        "script_size_bytes": 1403,
+        "term_size": 1383,
+        "execution_fee_lovelace": 72574,
+        "reference_script_fee_lovelace": 21045,
+        "total_fee_lovelace": 93619,
+        "tx_memory_budget_pct": 1.4038,
+        "tx_cpu_budget_pct": 0.69552166,
+        "block_memory_budget_pct": 0.31698709677419357,
+        "block_cpu_budget_pct": 0.173880415,
+        "scripts_per_tx": 71,
+        "scripts_per_block": 315,
+        "excluded_count": 23,
+        "excluded_cpu_sum": 552060613,
+        "excluded_mem_sum": 1549341
       }
     }
   ]

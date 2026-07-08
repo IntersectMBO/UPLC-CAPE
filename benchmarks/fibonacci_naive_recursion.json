@@ -1,6 +1,6 @@
 {
   "benchmark": "fibonacci_naive_recursion",
-  "generated_at": "2026-07-07T14:34:23Z",
+  "generated_at": "2026-07-08T07:20:25Z",
   "submissions": [
     {
       "timestamp": "2026-07-06T11:38:03Z",
@@ -217,6 +217,32 @@
       "user": "Unisay",
       "variant": "default",
       "submission_dir": "Scalus_0.17.0_Unisay",
+      "metrics": {
+        "cpu_units": 161982099770,
+        "memory_units": 626283790,
+        "script_size_bytes": 74,
+        "term_size": 68,
+        "execution_fee_lovelace": 47815485,
+        "reference_script_fee_lovelace": 1110,
+        "total_fee_lovelace": 47816595,
+        "tx_memory_budget_pct": 4069.0451857142853,
+        "tx_cpu_budget_pct": 1473.40121234,
+        "block_memory_budget_pct": 918.8166548387096,
+        "block_cpu_budget_pct": 368.350303085,
+        "scripts_per_tx": 0,
+        "scripts_per_block": 0,
+        "excluded_count": 0,
+        "excluded_cpu_sum": 0,
+        "excluded_mem_sum": 0
+      }
+    },
+    {
+      "timestamp": "2026-07-07T17:08:10Z",
+      "compiler": "Scalus",
+      "version": "0.18.2",
+      "user": "Unisay",
+      "variant": "default",
+      "submission_dir": "Scalus_0.18.2_Unisay",
       "metrics": {
         "cpu_units": 161982099770,
         "memory_units": 626283790,
