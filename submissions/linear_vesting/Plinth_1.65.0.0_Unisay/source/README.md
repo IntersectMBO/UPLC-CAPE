@@ -1,28 +1,32 @@
-# linear_vesting Plinth 1.65.0.0 source
+# linear_vesting Plinth 1.65.0.0 (monadic) source
 
 **Repository**: <https://github.com/Unisay/plinth-cape-submissions>
 
 **Branch**: `main`
 
-**Commit**: `f9ef6bdf4ed08ec16039600903d8af7e6c22046b`
+**Commit**: `d078652f03d31ed728c1fb63f1d9f8824218494c`
 
 **Path**: `lib/LinearVesting.hs` (+ `lib/Plinth/Validator.hs`, `lib/Plinth/Decoder/Named.hs`, `lib/Plinth/Decoder/Named/ScriptContext.hs`, `lib/Plinth/Encoded.hs`)
 
-Linear vesting validator written in `do`-notation on `Plinth.Validator`, a zero-cost early-termination monad, together with the zero-cost typed decoding DSL `Plinth.Decoder.Named` (`V.do`/`N.do` via `QualifiedDo`; `IxDecoder`/`FieldAt` Peano-indexed cursor; `Plinth.Encoded` compare-without-decode). Re-optimised for CAPE metrics schema 2.0.0 (happy-path aggregates only): This round's structural change decodes the `VestingDatum` on the partial-unlock path in a single 7-field region. total_fee 173470 to 59048 lovelace (-66.0%), promoted to the default for this line.
+The monadic linear vesting validator; see the submission `metadata.json` for the latest decoder change. This is the default artifact for the mainnet 1.65.0.0 line.
 
 ## Reproducing the compilation
 
 ```bash
 git clone https://github.com/Unisay/plinth-cape-submissions
 cd plinth-cape-submissions
-git checkout f9ef6bdf4ed08ec16039600903d8af7e6c22046b
+git checkout d078652f03d31ed728c1fb63f1d9f8824218494c
 ```
 
-`CAPE_REPO` must point at the sibling UPLC-CAPE checkout (build aborts if unset); set it in `.envrc.local` (gitignored). Then:
+`CAPE_REPO` must point at the sibling UPLC-CAPE checkout; the build aborts if the variable is unset. The recommended place is `.envrc.local` (gitignored), e.g.:
+
+```sh
+export CAPE_REPO="$HOME/src/UPLC-CAPE"
+```
+
+Then enter the dev shell and run the generator:
 
 ```bash
 nix develop
 cabal run plinth-submissions
 ```
-
-The generator writes `$CAPE_REPO/submissions/linear_vesting/Plinth_1.65.0.0_Unisay/linear_vesting.uplc` (monadic is the default on `main`; the previous plain implementation is retained as `Plinth_1.65.0.0_Unisay_plain`).
