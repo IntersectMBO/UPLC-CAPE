@@ -1,83 +1,83 @@
 {
   "evaluations": [
     {
-      "cpu_units": 38334007,
+      "cpu_units": 18669291,
       "description": "Deposit with buyer signature and exactly 75 ADA should succeed",
       "execution_result": "success",
       "included_in_aggregates": true,
-      "memory_units": 142141,
+      "memory_units": 57020,
       "name": "deposit_successful"
     },
     {
-      "cpu_units": 61707603,
+      "cpu_units": 26011481,
       "description": "Accept with seller signature and 75 ADA to seller should succeed",
       "execution_result": "success",
       "included_in_aggregates": true,
-      "memory_units": 240421,
+      "memory_units": 74636,
       "name": "accept_successful"
     },
     {
-      "cpu_units": 61707603,
+      "cpu_units": 26011481,
       "description": "Accept with multiple script inputs (ambiguous state - expects pass)",
       "execution_result": "success",
       "included_in_aggregates": true,
-      "memory_units": 240421,
+      "memory_units": 74636,
       "name": "accept_with_multiple_inputs"
     },
     {
-      "cpu_units": 61707603,
+      "cpu_units": 26011481,
       "description": "Accept with datum attached to seller's payment (expects pass)",
       "execution_result": "success",
       "included_in_aggregates": true,
-      "memory_units": 240421,
+      "memory_units": 74636,
       "name": "accept_with_datum_attached"
     },
     {
-      "cpu_units": 91755396,
+      "cpu_units": 34187110,
       "description": "Accept with payment split across two outputs to seller (50+25 ADA - expects pass)",
       "execution_result": "success",
       "included_in_aggregates": true,
-      "memory_units": 356280,
+      "memory_units": 92990,
       "name": "accept_with_multiple_outputs_to_seller"
     },
     {
-      "cpu_units": 59564761,
+      "cpu_units": 22989728,
       "description": "Refund after deadline with buyer signature should succeed",
       "execution_result": "success",
       "included_in_aggregates": true,
-      "memory_units": 234760,
+      "memory_units": 70440,
       "name": "refund_successful"
     },
     {
-      "cpu_units": 59564761,
+      "cpu_units": 22989728,
       "description": "Refund exactly 1 second after deadline expiry should succeed",
       "execution_result": "success",
       "included_in_aggregates": true,
-      "memory_units": 234760,
+      "memory_units": 70440,
       "name": "refund_after_exact_deadline"
     },
     {
-      "cpu_units": 59564761,
+      "cpu_units": 22989728,
       "description": "Refund with multiple script inputs should succeed (no single input validation)",
       "execution_result": "success",
       "included_in_aggregates": true,
-      "memory_units": 234760,
+      "memory_units": 70440,
       "name": "refund_with_multiple_inputs"
     },
     {
-      "cpu_units": 59564761,
+      "cpu_units": 22989728,
       "description": "Refund with datum attached to buyer's output should succeed",
       "execution_result": "success",
       "included_in_aggregates": true,
-      "memory_units": 234760,
+      "memory_units": 70440,
       "name": "refund_with_datum_attached"
     },
     {
-      "cpu_units": 86043932,
+      "cpu_units": 29164385,
       "description": "Refund split across two outputs to buyer (50+25 ADA) should succeed",
       "execution_result": "success",
       "included_in_aggregates": true,
-      "memory_units": 340334,
+      "memory_units": 85165,
       "name": "refund_with_multiple_outputs_to_buyer"
     },
     {
@@ -113,7 +113,7 @@
       "name": "redeemer_integer_negative_1"
     },
     {
-      "cpu_units": 106351,
+      "cpu_units": 107838,
       "description": "Validator fails when redeemer is constructor instead of integer",
       "execution_result": "success",
       "included_in_aggregates": false,
@@ -153,227 +153,227 @@
       "name": "simple_builtin_data_redeemer_0"
     },
     {
-      "cpu_units": 22120746,
+      "cpu_units": 6173634,
       "description": "Deposit without buyer signature should fail",
       "execution_result": "success",
       "included_in_aggregates": false,
-      "memory_units": 83882,
+      "memory_units": 20684,
       "name": "deposit_without_buyer_signature"
     },
     {
-      "cpu_units": 18349840,
+      "cpu_units": 10828899,
       "description": "Deposit with buyer signature but wrong amount (50 ADA) should fail",
       "execution_result": "success",
       "included_in_aggregates": false,
-      "memory_units": 62733,
+      "memory_units": 20851,
       "name": "deposit_with_incorrect_amount"
     },
     {
-      "cpu_units": 12444062,
+      "cpu_units": 7124980,
       "description": "Deposit fails when ADA goes to pubkey address instead of script",
       "execution_result": "success",
       "included_in_aggregates": false,
-      "memory_units": 42343,
+      "memory_units": 20684,
       "name": "deposit_to_wrong_address"
     },
     {
-      "cpu_units": 22832285,
+      "cpu_units": 6933041,
       "description": "Accept operation fails when seller signature is missing",
       "execution_result": "success",
       "included_in_aggregates": false,
-      "memory_units": 84457,
+      "memory_units": 21164,
       "name": "accept_without_seller_signature"
     },
     {
-      "cpu_units": 91147396,
+      "cpu_units": 32523110,
       "description": "Accept operation fails with wrong payment amount (50 ADA instead of 75 ADA)",
       "execution_result": "success",
       "included_in_aggregates": false,
-      "memory_units": 352480,
+      "memory_units": 82590,
       "name": "accept_with_incorrect_payment_amount"
     },
     {
-      "cpu_units": 16428142,
+      "cpu_units": 1050901,
       "description": "Accept operation fails when payment goes to impostor address instead of seller",
       "execution_result": "success",
       "included_in_aggregates": false,
-      "memory_units": 62824,
+      "memory_units": 582,
       "name": "accept_with_payment_to_wrong_address"
     },
     {
-      "cpu_units": 16428142,
+      "cpu_units": 1050901,
       "description": "Accept operation without valid deposit UTXO (should fail - invalid escrow state)",
       "execution_result": "success",
       "included_in_aggregates": false,
-      "memory_units": 62824,
+      "memory_units": 582,
       "name": "accept_without_prior_deposit"
     },
     {
-      "cpu_units": 16428142,
+      "cpu_units": 1050901,
       "description": "Accept with only 50 ADA payment to seller (insufficient - expects fail)",
       "execution_result": "success",
       "included_in_aggregates": false,
-      "memory_units": 62824,
+      "memory_units": 582,
       "name": "accept_with_partial_payment_to_seller"
     },
     {
-      "cpu_units": 16428142,
+      "cpu_units": 1050901,
       "description": "Accept with 100 ADA payment to seller (excess amount - expects fail due to exact validation)",
       "execution_result": "success",
       "included_in_aggregates": false,
-      "memory_units": 62824,
+      "memory_units": 582,
       "name": "accept_with_excess_payment_to_seller"
     },
     {
-      "cpu_units": 18695450,
+      "cpu_units": 1050901,
       "description": "Accept while leaving funds in script (should fail - incomplete withdrawal)",
       "execution_result": "success",
       "included_in_aggregates": false,
-      "memory_units": 63243,
+      "memory_units": 582,
       "name": "accept_with_remaining_script_output"
     },
     {
-      "cpu_units": 21541606,
+      "cpu_units": 4725899,
       "description": "Refund without buyer signature should fail",
       "execution_result": "success",
       "included_in_aggregates": false,
-      "memory_units": 84395,
+      "memory_units": 20748,
       "name": "refund_without_buyer_signature"
     },
     {
-      "cpu_units": 11881545,
+      "cpu_units": 1020084,
       "description": "Refund with seller signature instead of buyer should fail",
       "execution_result": "success",
       "included_in_aggregates": false,
-      "memory_units": 42761,
+      "memory_units": 551,
       "name": "refund_with_seller_signature_only"
     },
     {
-      "cpu_units": 11881545,
+      "cpu_units": 1020084,
       "description": "Refund with impostor signature should fail",
       "execution_result": "success",
       "included_in_aggregates": false,
-      "memory_units": 42761,
+      "memory_units": 551,
       "name": "refund_with_impostor_signature"
     },
     {
-      "cpu_units": 11881545,
+      "cpu_units": 1020084,
       "description": "Refund before deadline expiry should fail",
       "execution_result": "success",
       "included_in_aggregates": false,
-      "memory_units": 42761,
+      "memory_units": 551,
       "name": "refund_before_deadline"
     },
     {
-      "cpu_units": 11881545,
+      "cpu_units": 1020084,
       "description": "Refund exactly at deadline should fail (must be strictly after)",
       "execution_result": "success",
       "included_in_aggregates": false,
-      "memory_units": 42761,
+      "memory_units": 551,
       "name": "refund_at_exact_deadline"
     },
     {
-      "cpu_units": 10693676,
+      "cpu_units": 1020084,
       "description": "Refund without time range should fail (missing temporal context)",
       "execution_result": "success",
       "included_in_aggregates": false,
-      "memory_units": 42184,
+      "memory_units": 551,
       "name": "refund_with_no_time_range"
     },
     {
-      "cpu_units": 11881545,
+      "cpu_units": 1020084,
       "description": "Refund with wrong total amount (80 ADA instead of 75) should fail",
       "execution_result": "success",
       "included_in_aggregates": false,
-      "memory_units": 42761,
+      "memory_units": 551,
       "name": "refund_with_incorrect_amount"
     },
     {
-      "cpu_units": 11881545,
+      "cpu_units": 1020084,
       "description": "Partial refund (50 ADA to buyer) should fail",
       "execution_result": "success",
       "included_in_aggregates": false,
-      "memory_units": 42761,
+      "memory_units": 551,
       "name": "refund_with_partial_refund"
     },
     {
-      "cpu_units": 11881545,
+      "cpu_units": 1020084,
       "description": "Excess refund (100 ADA to buyer) should fail",
       "execution_result": "success",
       "included_in_aggregates": false,
-      "memory_units": 42761,
+      "memory_units": 551,
       "name": "refund_with_excess_refund"
     },
     {
-      "cpu_units": 11881545,
+      "cpu_units": 1020084,
       "description": "Refund to wrong address (seller instead of buyer) should fail",
       "execution_result": "success",
       "included_in_aggregates": false,
-      "memory_units": 42761,
+      "memory_units": 551,
       "name": "refund_to_wrong_address"
     },
     {
-      "cpu_units": 11881545,
+      "cpu_units": 1020084,
       "description": "Refund leaving funds in script should fail (incomplete withdrawal)",
       "execution_result": "success",
       "included_in_aggregates": false,
-      "memory_units": 42761,
+      "memory_units": 551,
       "name": "refund_with_remaining_script_output"
     },
     {
-      "cpu_units": 11881545,
+      "cpu_units": 1020084,
       "description": "Refund without valid deposit UTXO should fail (invalid escrow state)",
       "execution_result": "success",
       "included_in_aggregates": false,
-      "memory_units": 42761,
+      "memory_units": 551,
       "name": "refund_without_prior_deposit"
     },
     {
-      "cpu_units": 15392898,
+      "cpu_units": 1097005,
       "description": "Refund attempt after seller has already accepted should fail (state validation)",
       "execution_result": "success",
       "included_in_aggregates": false,
-      "memory_units": 62891,
+      "memory_units": 584,
       "name": "refund_after_accept_should_fail"
     },
     {
-      "cpu_units": 16638287,
+      "cpu_units": 1127822,
       "description": "Accept attempt after buyer has already refunded should fail (state validation)",
       "execution_result": "success",
       "included_in_aggregates": false,
-      "memory_units": 62952,
+      "memory_units": 615,
       "name": "accept_after_refund_should_fail"
     },
     {
-      "cpu_units": 15392898,
+      "cpu_units": 1097005,
       "description": "Multiple refund attempts should fail (double spending prevention)",
       "execution_result": "success",
       "included_in_aggregates": false,
-      "memory_units": 62891,
+      "memory_units": 584,
       "name": "double_refund_should_fail"
     },
     {
-      "cpu_units": 16638287,
+      "cpu_units": 1127822,
       "description": "Multiple accept attempts should fail (double spending prevention)",
       "execution_result": "success",
       "included_in_aggregates": false,
-      "memory_units": 62952,
+      "memory_units": 615,
       "name": "double_accept_should_fail"
     },
     {
-      "cpu_units": 35107346,
+      "cpu_units": 15823330,
       "description": "Deposit with no upper bound (+inf) should fail; the upper bound must be finite to record the deposit time safely",
       "execution_result": "success",
       "included_in_aggregates": false,
-      "memory_units": 126256,
+      "memory_units": 41558,
       "name": "deposit_infinite_upper_bound"
     },
     {
-      "cpu_units": 10693676,
+      "cpu_units": 6529179,
       "description": "Refund with no lower bound (-inf) should fail; the lower bound must be finite to check the refund deadline",
       "execution_result": "success",
       "included_in_aggregates": false,
-      "memory_units": 42184,
+      "memory_units": 21072,
       "name": "refund_infinite_lower_bound"
     }
   ],
@@ -381,42 +381,42 @@
     "evaluator": "PlutusTx.Eval-1.65.0.0"
   },
   "measurements": {
-    "block_cpu_budget_pct": 0.22938848999999997,
-    "block_memory_budget_pct": 0.5746451612903226,
+    "block_cpu_budget_pct": 0.085467775,
+    "block_memory_budget_pct": 0.14998387096774193,
     "cpu_units": {
-      "maximum": 91755396,
-      "median": 60636182,
-      "minimum": 38334007,
-      "sum": 639515188
+      "maximum": 34187110,
+      "median": 24500604,
+      "minimum": 18669291,
+      "sum": 252014141
     },
     "excluded": {
       "count": 37,
       "cpu_units": {
-        "maximum": 91147396,
-        "sum": 512520326
+        "maximum": 32523110,
+        "sum": 111892497
       },
       "memory_units": {
-        "maximum": 352480,
-        "sum": 1915969
+        "maximum": 82590,
+        "sum": 261940
       }
     },
-    "execution_fee_lovelace": 190305,
+    "execution_fee_lovelace": 60917,
     "memory_units": {
-      "maximum": 356280,
-      "median": 237590,
-      "minimum": 142141,
-      "sum": 2499058
+      "maximum": 92990,
+      "median": 72538,
+      "minimum": 57020,
+      "sum": 740843
     },
-    "reference_script_fee_lovelace": 33570,
-    "script_size_bytes": 2238,
-    "scripts_per_block": 174,
-    "scripts_per_tx": 39,
-    "term_size": 1908,
-    "total_fee_lovelace": 223875,
-    "tx_cpu_budget_pct": 0.9175539599999999,
-    "tx_memory_budget_pct": 2.544857142857143
+    "reference_script_fee_lovelace": 22425,
+    "script_size_bytes": 1495,
+    "scripts_per_block": 666,
+    "scripts_per_tx": 150,
+    "term_size": 1086,
+    "total_fee_lovelace": 83342,
+    "tx_cpu_budget_pct": 0.3418711,
+    "tx_memory_budget_pct": 0.6642142857142856
   },
   "scenario": "two_party_escrow",
-  "timestamp": "2026-07-07T08:13:52Z",
+  "timestamp": "2026-07-08T11:39:44Z",
   "version": "2.0.0"
 }
