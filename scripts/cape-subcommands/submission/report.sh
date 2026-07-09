@@ -139,26 +139,35 @@ fi
 # it, so we fill it eagerly via `aggregate_csv_cache` before entering any loop.
 declare -A AGGREGATE_CSV=()
 
-# Populate AGGREGATE_CSV[<target_filter>] if not already set. Call from the outer
+# Map a target filter to its cache key. The unfiltered case uses an empty
+# filter string, but bash 5.3 rejects an empty associative-array subscript
+# ("bad array subscript"), so fold it to a non-empty sentinel that can't
+# collide with a real target name.
+csv_cache_key() { printf '%s' "${1:-__unfiltered__}"; }
+
+# Populate AGGREGATE_CSV[<key>] if not already set. Call from the outer
 # shell before using fetch_benchmark_csv in a $(...) context.
 aggregate_csv_cache() {
   local target_filter="${1:-}"
-  if [ -n "${AGGREGATE_CSV[$target_filter]+set}" ]; then
+  local key
+  key=$(csv_cache_key "$target_filter")
+  if [ -n "${AGGREGATE_CSV[$key]+set}" ]; then
     return 0
   fi
   local aggregate_args=()
   if [ -n "$target_filter" ]; then
     aggregate_args+=("--target=$target_filter")
   fi
-  AGGREGATE_CSV[$target_filter]=$($CAPE_CMD submission aggregate "${aggregate_args[@]}")
+  AGGREGATE_CSV[$key]=$($CAPE_CMD submission aggregate "${aggregate_args[@]}")
 }
 
 # Fetch CSV rows for one benchmark, dropping template placeholders and rows with empty core metrics.
 fetch_benchmark_csv() {
   local benchmark="$1"
   local target_filter="${2:-}"
-  local csv_data
-  csv_data=$(printf '%s' "${AGGREGATE_CSV[$target_filter]:-}" | grep "^$benchmark," || true)
+  local key csv_data
+  key=$(csv_cache_key "$target_filter")
+  csv_data=$(printf '%s' "${AGGREGATE_CSV[$key]:-}" | grep "^$benchmark," || true)
   if [ -z "$csv_data" ]; then
     return 0
   fi
@@ -322,6 +331,109 @@ EOF
     echo "ERROR: Template rendering failed" >&2
     exit 1
   fi
+}
+
+# Render per-submission evaluation breakdown pages under
+# report/benchmarks/<benchmark>/<submission_dir>.html. Each page lists every
+# evaluation from that submission's metrics.json (measurements = included in
+# aggregates, checks = excluded). The breakdown is read directly from
+# metrics.json rather than the positional aggregate CSV, which can't carry a
+# variable-length evaluation list.
+generate_submission_detail_pages() {
+  local benchmark="$1"
+  local output_dir="$2"
+  local target_filter="${3:-}"
+
+  local csv_data
+  csv_data=$(fetch_benchmark_csv "$benchmark" "$target_filter")
+  [ -n "$csv_data" ] || return 0
+
+  local detail_dir="$output_dir/benchmarks/$benchmark"
+  local abs_template_path="$SCRIPT_DIR/submission-detail.html.tmpl"
+
+  if [[ $DRY_RUN -eq 1 ]]; then
+    log_info "[dry-run] Would render submission detail pages under $detail_dir/"
+    return 0
+  fi
+
+  local ts
+  ts=$(date '+%Y-%m-%d %H:%M:%S %Z')
+  mkdir -p "$detail_dir"
+
+  while IFS= read -r line; do
+    [ -n "$line" ] || continue
+    local language version user variant submission_dir
+    language=$(csv_field "$line" "language")
+    version=$(csv_field "$line" "version")
+    user=$(csv_field "$line" "user")
+    variant=$(csv_field "$line" "variant")
+    submission_dir=$(csv_field "$line" "submission_dir")
+
+    [ -n "$submission_dir" ] || continue
+    local metrics_path="$PROJECT_ROOT/submissions/$benchmark/$submission_dir/metrics.json"
+    if [ ! -f "$metrics_path" ]; then
+      log_warn "metrics.json not found for $benchmark/$submission_dir, skipping detail page"
+      continue
+    fi
+
+    local label="$language $version"
+    if [ -n "$variant" ] && [ "$variant" != "default" ]; then
+      label="$label · $variant"
+    fi
+    label="$label · $user"
+
+    local source_url="https://github.com/IntersectMBO/UPLC-CAPE/blob/main/submissions/$benchmark/$submission_dir"
+
+    local temp_json
+    temp_json=$(mktemp_json)
+    jq \
+      --arg benchmark "$benchmark" \
+      --arg submission_dir "$submission_dir" \
+      --arg label "$label" \
+      --arg compiler "$language" \
+      --arg version "$version" \
+      --arg variant "$variant" \
+      --arg user "$user" \
+      --arg source_url "$source_url" \
+      --arg timestamp "$ts" \
+      '
+      def commafy:
+        (tostring | explode | reverse) as $rev
+        | [range(0; ($rev | length)) as $i
+           | (($rev[$i:$i+1]) | implode)
+             + (if ($i > 0 and ($i % 3 == 0)) then "," else "" end)]
+        | reverse | join("");
+      def row: {
+        name, description, execution_result,
+        cpu_units, memory_units,
+        cpu_fmt: (.cpu_units | commafy),
+        mem_fmt: (.memory_units | commafy)
+      };
+      (.evaluations // []) as $evals
+      | ($evals | map(select(.included_in_aggregates))       | map(row)) as $measurements
+      | ($evals | map(select(.included_in_aggregates | not)) | map(row)) as $checks
+      | {
+          benchmark: $benchmark,
+          submission_dir: $submission_dir,
+          label: $label,
+          compiler: $compiler,
+          version: $version,
+          variant: $variant,
+          user: $user,
+          source_url: $source_url,
+          timestamp: $timestamp,
+          measurements: $measurements,
+          checks: $checks,
+          measurements_count: ($measurements | length),
+          checks_count: ($checks | length)
+        }
+      ' "$metrics_path" > "$temp_json"
+
+    if ! gomplate -f "$abs_template_path" -c .="$temp_json" > "$detail_dir/${submission_dir}.html"; then
+      echo "ERROR: Submission detail template rendering failed for $benchmark/$submission_dir" >&2
+      exit 1
+    fi
+  done <<< "$csv_data"
 }
 
 # Build filtered benchmark stats from CSV data (consumed by index.html.tmpl).
@@ -591,6 +703,10 @@ generate_index_report() {
 EOF
 
   local first=true
+  # `benchmark` is localized so this loop doesn't clobber the caller's
+  # `benchmark` variable (the single-benchmark entry point reads it after
+  # this returns, for its success messages).
+  local benchmark
   while read -r benchmark; do
     if [ -n "$benchmark" ]; then
       if [ "$first" = "false" ]; then
@@ -860,6 +976,8 @@ if [ "$1" = "--all" ]; then
         generate_individual_benchmark_report "$benchmark" "$report_dir"
       fi
 
+      generate_submission_detail_pages "$benchmark" "$report_dir" "current"
+
       if [ -n "$benchmarks_with_submissions" ]; then
         benchmarks_with_submissions="${benchmarks_with_submissions}\n"
       fi
@@ -877,6 +995,7 @@ if [ "$1" = "--all" ]; then
     echo "   📄 $report_dir/index.html (main index)"
     echo "   📊 Individual benchmark reports in $report_dir/benchmarks/"
     echo "   📦 Benchmark data JSON in $report_dir/benchmarks/<scenario>.json"
+    echo "   🔍 Per-submission breakdowns in $report_dir/benchmarks/<scenario>/<submission_dir>.html"
   else
     echo "Error: No submissions found for report generation" >&2
     exit 1
@@ -960,6 +1079,7 @@ else
     fi
 
     generate_individual_benchmark_report "$benchmark" "$report_dir"
+    generate_submission_detail_pages "$benchmark" "$report_dir"
   else
     echo "No submissions found for benchmark: $benchmark. Creating placeholder page."
     generate_no_submissions_report "$benchmark" "$report_dir"
@@ -971,6 +1091,7 @@ else
   echo "   📄 $report_dir/index.html (main index)"
   echo "   📊 Individual benchmark report: $report_dir/benchmarks/${benchmark}.html"
   echo "   📦 Benchmark data JSON: $report_dir/benchmarks/${benchmark}.json"
+  echo "   🔍 Per-submission breakdowns: $report_dir/benchmarks/${benchmark}/<submission_dir>.html"
   echo ""
   echo "Open the main report with: xdg-open $report_dir/index.html 2>/dev/null || echo \"Open: $report_dir/index.html\""
 fi
