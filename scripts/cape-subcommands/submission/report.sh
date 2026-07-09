@@ -403,8 +403,16 @@ generate_submission_detail_pages() {
            | (($rev[$i:$i+1]) | implode)
              + (if ($i > 0 and ($i % 3 == 0)) then "," else "" end)]
         | reverse | join("");
+      # gomplate renders *.html.tmpl with Go text/template (no auto-escaping),
+      # so every interpolated string must be HTML-escaped here. Free-form
+      # fields like an evaluation description can legitimately contain < > &.
+      def esc:
+        gsub("&"; "&amp;") | gsub("<"; "&lt;") | gsub(">"; "&gt;")
+        | gsub("\""; "&quot;") | gsub("'"'"'"; "&#39;");
       def row: {
-        name, description, execution_result,
+        name: (.name | esc),
+        description: (.description | esc),
+        execution_result: (.execution_result | esc),
         cpu_units, memory_units,
         cpu_fmt: (.cpu_units | commafy),
         mem_fmt: (.memory_units | commafy)
@@ -413,15 +421,15 @@ generate_submission_detail_pages() {
       | ($evals | map(select(.included_in_aggregates))       | map(row)) as $measurements
       | ($evals | map(select(.included_in_aggregates | not)) | map(row)) as $checks
       | {
-          benchmark: $benchmark,
-          submission_dir: $submission_dir,
-          label: $label,
-          compiler: $compiler,
-          version: $version,
-          variant: $variant,
-          user: $user,
-          source_url: $source_url,
-          timestamp: $timestamp,
+          benchmark: ($benchmark | esc),
+          submission_dir: ($submission_dir | esc),
+          label: ($label | esc),
+          compiler: ($compiler | esc),
+          version: ($version | esc),
+          variant: ($variant | esc),
+          user: ($user | esc),
+          source_url: ($source_url | esc),
+          timestamp: ($timestamp | esc),
           measurements: $measurements,
           checks: $checks,
           measurements_count: ($measurements | length),
