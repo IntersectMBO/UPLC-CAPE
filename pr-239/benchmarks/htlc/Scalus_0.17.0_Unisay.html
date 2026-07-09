@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UPLC-CAPE — htlc — Scalus 0.17.0 · Unisay</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/iosevka@5/400.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/iosevka@5/700.css">
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f8f9fa;
+        }
+        .header {
+            margin-bottom: 40px;
+            padding: 20px 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+        }
+        .header img { width: 150px; height: auto; flex-shrink: 0; }
+        .header-text { flex-grow: 0; }
+        .header h1 { color: #333; margin: 0 0 10px 0; }
+        .header p { color: #6c757d; margin: 5px 0; }
+
+        .breadcrumb { color: #6c757d; font-size: 0.9em; margin-top: 10px; }
+        .breadcrumb a { color: #667eea; text-decoration: none; }
+        .breadcrumb a:hover { text-decoration: underline; }
+        .breadcrumb-separator { margin: 0 8px; }
+
+        .benchmark-section {
+            background: white;
+            margin-bottom: 40px;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        .benchmark-title {
+            color: #667eea;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 10px;
+            margin-bottom: 8px;
+        }
+        .submission-meta {
+            color: #6c757d;
+            font-size: 0.9em;
+            margin-bottom: 4px;
+        }
+        .submission-meta a { color: #667eea; text-decoration: none; }
+        .submission-meta a:hover { text-decoration: underline; }
+
+        .section-lead {
+            color: #6c757d;
+            font-size: 0.9em;
+            margin: 24px 0 20px 0;
+        }
+
+        .eval-group { margin-top: 28px; }
+        .eval-group:first-of-type { margin-top: 12px; }
+        .eval-group h3 {
+            font-size: 1.05em;
+            margin: 0 0 4px 0;
+            display: flex;
+            align-items: baseline;
+            gap: 10px;
+        }
+        .eval-group .group-count {
+            font-size: 0.8em;
+            font-weight: 400;
+            color: #6c757d;
+        }
+        .eval-group .group-note {
+            color: #8a94a3;
+            font-size: 0.85em;
+            margin: 0 0 12px 0;
+        }
+        .badge {
+            display: inline-block;
+            font-size: 0.7em;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            padding: 2px 8px;
+            border-radius: 10px;
+            vertical-align: middle;
+        }
+        .badge-included { background: #e6f4ea; color: #1e7e34; }
+        .badge-excluded { background: #f1f3f5; color: #6c757d; }
+
+        .eval-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9em;
+        }
+        .eval-table th {
+            text-align: left;
+            padding: 8px 10px;
+            border-bottom: 2px solid #e9ecef;
+            color: #495057;
+            font-weight: 600;
+            font-size: 0.85em;
+        }
+        .eval-table th.num, .eval-table td.num {
+            text-align: right;
+            font-family: 'Iosevka', ui-monospace, SFMono-Regular, Menlo, monospace;
+            white-space: nowrap;
+        }
+        .eval-table td {
+            padding: 8px 10px;
+            border-bottom: 1px solid #f0f0f0;
+            vertical-align: top;
+        }
+        .eval-table tr:hover { background-color: #f8f9fa; }
+        .eval-name {
+            font-family: 'Iosevka', ui-monospace, SFMono-Regular, Menlo, monospace;
+            font-weight: 700;
+            color: #212529;
+        }
+        .eval-desc { color: #6c757d; font-size: 0.9em; }
+        .eval-result { font-size: 0.85em; color: #6c757d; white-space: nowrap; }
+        .eval-result.error { color: #b02a37; }
+        .eval-group.excluded .eval-name { color: #495057; font-weight: 400; }
+
+        .empty-note { color: #8a94a3; font-size: 0.9em; font-style: italic; }
+
+        .footer {
+            text-align: center;
+            margin-top: 50px;
+            padding: 20px;
+            color: #6c757d;
+            border-top: 1px solid #e9ecef;
+        }
+        .timestamp { font-style: italic; color: #6c757d; margin-bottom: 20px; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <img src="../../uplc-cape-logo.png" alt="UPLC-CAPE Logo">
+        <div class="header-text">
+            <h1>UPLC-CAPE Performance Report</h1>
+            <p>Per-submission evaluation breakdown</p>
+            <div class="breadcrumb">
+                <a href="../../index.html">All benchmarks</a>
+                <span class="breadcrumb-separator">→</span>
+                <a href="../htlc.html">htlc</a>
+                <span class="breadcrumb-separator">→</span>
+                <span>Scalus 0.17.0 · Unisay</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="benchmark-section">
+        <h2 class="benchmark-title">📊 Scalus 0.17.0 · Unisay</h2>
+        <div class="submission-meta">htlc benchmark · <code>Scalus_0.17.0_Unisay</code></div>
+        <div class="submission-meta"><a href="https://github.com/IntersectMBO/UPLC-CAPE/blob/main/submissions/htlc/Scalus_0.17.0_Unisay" target="_blank" rel="noopener">View source on GitHub ↗</a></div>
+
+        <p class="section-lead">Every evaluation measured for this submission, with its stored CPU and memory units. Measurements feed the aggregate bars on the scenario page; checks (failure-path and pending evaluations) are measured but excluded from the aggregates.</p>
+
+        <div class="eval-group included">
+            <h3>Measurements <span class="badge badge-included">included in aggregates</span> <span class="group-count">4</span></h3>
+            <p class="group-note">Expected on-chain evaluations that feed this submission's aggregate metrics.</p>
+            
+            <table class="eval-table">
+                <thead>
+                    <tr>
+                        <th>Evaluation</th>
+                        <th>Result</th>
+                        <th class="num">CPU units</th>
+                        <th class="num">Memory units</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    
+                    <tr>
+                        <td>
+                            <div class="eval-name">claim_well_before_timeout</div>
+                            <div class="eval-desc">Claim at time=50 with correct preimage and recipient signature should succeed</div>
+                        </td>
+                        <td><span class="eval-result">success</span></td>
+                        <td class="num">28,176,765</td>
+                        <td class="num">78,821</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>
+                            <div class="eval-name">claim_just_before_timeout</div>
+                            <div class="eval-desc">Claim at time=99 (just before timeout=100) with correct preimage should succeed</div>
+                        </td>
+                        <td><span class="eval-result">success</span></td>
+                        <td class="num">28,176,765</td>
+                        <td class="num">78,821</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>
+                            <div class="eval-name">refund_just_after_timeout</div>
+                            <div class="eval-desc">Refund at time=101 (just after timeout=100) with payer signature should succeed</div>
+                        </td>
+                        <td><span class="eval-result">success</span></td>
+                        <td class="num">26,771,587</td>
+                        <td class="num">75,023</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>
+                            <div class="eval-name">refund_well_after_timeout</div>
+                            <div class="eval-desc">Refund at time=200 with payer signature should succeed</div>
+                        </td>
+                        <td><span class="eval-result">success</span></td>
+                        <td class="num">26,771,587</td>
+                        <td class="num">75,023</td>
+                    </tr>
+                    
+                </tbody>
+            </table>
+            
+        </div>
+
+        <div class="eval-group excluded">
+            <h3>Checks <span class="badge badge-excluded">excluded from aggregates</span> <span class="group-count">21</span></h3>
+            <p class="group-note">Failure-path checks and any pending measurements. Their cost is recorded here but does not enter the aggregates.</p>
+            
+            <table class="eval-table">
+                <thead>
+                    <tr>
+                        <th>Evaluation</th>
+                        <th>Result</th>
+                        <th class="num">CPU units</th>
+                        <th class="num">Memory units</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    
+                    <tr>
+                        <td>
+                            <div class="eval-name">redeemer_integer_0</div>
+                            <div class="eval-desc">Validator fails when redeemer is raw integer 0 instead of constructor 0(preimage)</div>
+                        </td>
+                        <td><span class="eval-result">success</span></td>
+                        <td class="num">24,688</td>
+                        <td class="num">132</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>
+                            <div class="eval-name">redeemer_integer_1</div>
+                            <div class="eval-desc">Validator fails when redeemer is raw integer 1 instead of constructor 1()</div>
+                        </td>
+                        <td><span class="eval-result">success</span></td>
+                        <td class="num">24,688</td>
+                        <td class="num">132</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>
+                            <div class="eval-name">redeemer_bytestring</div>
+                            <div class="eval-desc">Validator fails when redeemer is bytestring instead of constructor</div>
+                        </td>
+                        <td><span class="eval-result">success</span></td>
+                        <td class="num">24,688</td>
+                        <td class="num">132</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>
+                            <div class="eval-name">redeemer_list</div>
+                            <div class="eval-desc">Validator fails when redeemer is list [1 2 3] instead of constructor</div>
+                        </td>
+                        <td><span class="eval-result">success</span></td>
+                        <td class="num">24,688</td>
+                        <td class="num">132</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>
+                            <div class="eval-name">redeemer_claim_without_preimage</div>
+                            <div class="eval-desc">Validator fails when Claim is constructor 0() with no preimage field</div>
+                        </td>
+                        <td><span class="eval-result">success</span></td>
+                        <td class="num">2,804,030</td>
+                        <td class="num">970</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>
+                            <div class="eval-name">claim_missing_signature</div>
+                            <div class="eval-desc">Claim without recipient signature should fail</div>
+                        </td>
+                        <td><span class="eval-result">success</span></td>
+                        <td class="num">8,916,285</td>
+                        <td class="num">21,878</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>
+                            <div class="eval-name">claim_wrong_signature_payer</div>
+                            <div class="eval-desc">Claim with only payer signature (not recipient) should fail</div>
+                        </td>
+                        <td><span class="eval-result">success</span></td>
+                        <td class="num">10,406,521</td>
+                        <td class="num">21,976</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>
+                            <div class="eval-name">claim_wrong_signature_impostor</div>
+                            <div class="eval-desc">Claim with only impostor signature (not recipient) should fail</div>
+                        </td>
+                        <td><span class="eval-result">success</span></td>
+                        <td class="num">10,406,521</td>
+                        <td class="num">21,976</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>
+                            <div class="eval-name">claim_wrong_preimage</div>
+                            <div class="eval-desc">Claim with preimage #cafebabe (hash does not match) should fail</div>
+                        </td>
+                        <td><span class="eval-result">success</span></td>
+                        <td class="num">6,689,729</td>
+                        <td class="num">21,136</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>
+                            <div class="eval-name">claim_empty_preimage</div>
+                            <div class="eval-desc">Claim with empty preimage (hash does not match) should fail</div>
+                        </td>
+                        <td><span class="eval-result">success</span></td>
+                        <td class="num">6,689,729</td>
+                        <td class="num">21,136</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>
+                            <div class="eval-name">claim_at_timeout</div>
+                            <div class="eval-desc">Claim at time=100 (boundary, must be strictly before timeout) should fail</div>
+                        </td>
+                        <td><span class="eval-result">success</span></td>
+                        <td class="num">16,188,815</td>
+                        <td class="num">42,879</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>
+                            <div class="eval-name">claim_after_timeout</div>
+                            <div class="eval-desc">Claim at time=150 (after timeout) should fail even with correct preimage</div>
+                        </td>
+                        <td><span class="eval-result">success</span></td>
+                        <td class="num">16,188,815</td>
+                        <td class="num">42,879</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>
+                            <div class="eval-name">claim_infinite_upper_bound</div>
+                            <div class="eval-desc">Claim with from_time=50 and no upper bound (+inf) should fail; the upper bound must be finite</div>
+                        </td>
+                        <td><span class="eval-result">success</span></td>
+                        <td class="num">15,100,306</td>
+                        <td class="num">42,554</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>
+                            <div class="eval-name">claim_double_satisfaction</div>
+                            <div class="eval-desc">Claim with two script inputs should fail (double satisfaction attack)</div>
+                        </td>
+                        <td><span class="eval-result">success</span></td>
+                        <td class="num">31,016,676</td>
+                        <td class="num">85,267</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>
+                            <div class="eval-name">refund_missing_signature</div>
+                            <div class="eval-desc">Refund without payer signature should fail</div>
+                        </td>
+                        <td><span class="eval-result">success</span></td>
+                        <td class="num">8,005,444</td>
+                        <td class="num">21,648</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>
+                            <div class="eval-name">refund_wrong_signature_recipient</div>
+                            <div class="eval-desc">Refund with only recipient signature (not payer) should fail</div>
+                        </td>
+                        <td><span class="eval-result">success</span></td>
+                        <td class="num">9,495,680</td>
+                        <td class="num">21,746</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>
+                            <div class="eval-name">refund_wrong_signature_impostor</div>
+                            <div class="eval-desc">Refund with only impostor signature (not payer) should fail</div>
+                        </td>
+                        <td><span class="eval-result">success</span></td>
+                        <td class="num">9,495,680</td>
+                        <td class="num">21,746</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>
+                            <div class="eval-name">refund_before_timeout</div>
+                            <div class="eval-desc">Refund at time=50 (before timeout) should fail</div>
+                        </td>
+                        <td><span class="eval-result">success</span></td>
+                        <td class="num">15,359,637</td>
+                        <td class="num">42,681</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>
+                            <div class="eval-name">refund_at_timeout</div>
+                            <div class="eval-desc">Refund at time=100 (boundary, must be strictly after timeout) should fail</div>
+                        </td>
+                        <td><span class="eval-result">success</span></td>
+                        <td class="num">15,359,637</td>
+                        <td class="num">42,681</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>
+                            <div class="eval-name">refund_infinite_lower_bound</div>
+                            <div class="eval-desc">Refund with no lower bound (-inf) should fail; the lower bound must be finite</div>
+                        </td>
+                        <td><span class="eval-result">success</span></td>
+                        <td class="num">11,256,685</td>
+                        <td class="num">22,452</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>
+                            <div class="eval-name">refund_double_satisfaction</div>
+                            <div class="eval-desc">Refund with two script inputs should fail (double satisfaction attack)</div>
+                        </td>
+                        <td><span class="eval-result">success</span></td>
+                        <td class="num">30,187,498</td>
+                        <td class="num">85,069</td>
+                    </tr>
+                    
+                </tbody>
+            </table>
+            
+        </div>
+    </div>
+
+    <div class="breadcrumb">
+        <a href="../../index.html">All benchmarks</a>
+        <span class="breadcrumb-separator">→</span>
+        <a href="../htlc.html">htlc</a>
+        <span class="breadcrumb-separator">→</span>
+        <span>Scalus 0.17.0 · Unisay</span>
+    </div>
+
+    <div class="footer">
+        <p>Generated by UPLC-CAPE • <a href="https://github.com/IntersectMBO/UPLC-CAPE">View on GitHub</a></p>
+        <p class="timestamp">Generated on: 2026-07-09 13:52:27 UTC</p>
+    </div>
+</body>
+</html>
