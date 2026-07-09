@@ -134,16 +134,24 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Check if submission data changed
+      - name: Check if the preview needs rebuilding
         id: check_changes
         run: |
-          # Check if .uplc or metadata.json files changed compared to main
-          if git diff --name-only origin/main...HEAD | grep -qE 'submissions/.*\.(uplc|metadata\.json)$'; then
-            echo "Submission data files changed, proceeding with report generation"
-            echo "has_changes=true" >> $GITHUB_OUTPUT
+          # Deploy a preview when either the report inputs (submission data) or
+          # the report pipeline itself (generator, aggregate, templates) change.
+          # A pipeline-only PR produces no submission diff but can still change
+          # every rendered page, so it must be previewable too.
+          # Fetch the base ref first: fetch-depth:0 does not guarantee a local
+          # origin/main, so the diff below would otherwise hit an ambiguous
+          # revision (same reason the `changed` job fetches it explicitly).
+          git fetch origin main --depth=1
+          if git diff --name-only origin/main...HEAD | grep -qE \
+            'submissions/.*(\.uplc|/metadata\.json)$|scripts/cape-subcommands/submission/(report|aggregate)\.sh$|scripts/cape-subcommands/submission/.*\.html\.tmpl$'; then
+            echo "Report inputs or pipeline changed, proceeding with report generation"
+            echo "has_changes=true" >> "$GITHUB_OUTPUT"
           else
-            echo "No submission data changes detected (only docs/README), skipping deployment"
-            echo "has_changes=false" >> $GITHUB_OUTPUT
+            echo "No report-affecting changes detected, skipping preview deployment"
+            echo "has_changes=false" >> "$GITHUB_OUTPUT"
           fi
 
       - name: Install Nix
