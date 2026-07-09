@@ -14,6 +14,9 @@ Options:
 The report includes:
 - Main index page (report/index.html) listing all benchmarks
 - Individual benchmark report pages (report/benchmarks/<benchmark>.html)
+- Per-submission evaluation breakdown pages
+  (report/benchmarks/<benchmark>/<submission_dir>.html), linked from each
+  submission row on the benchmark page
 - 4 PNG chart images per benchmark comparing submissions by:
   - CPU Units: Execution cost in CPU units
   - Memory Units: Memory consumption
@@ -25,6 +28,7 @@ Each submission is labeled as: {language}_{version}_{user}
 Output:
   report/index.html                           # Main index with all benchmarks
   report/benchmarks/<benchmark>.html          # Individual benchmark reports
+  report/benchmarks/<benchmark>/<dir>.html    # Per-submission evaluation breakdowns
   report/benchmarks/images/<benchmark>_*.png  # Chart image files
 
 Examples:
