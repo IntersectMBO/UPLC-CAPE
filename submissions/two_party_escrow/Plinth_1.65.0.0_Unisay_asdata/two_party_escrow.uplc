@@ -98,7 +98,7 @@
                                                                                                                 txInfoValidRange-30
                                                                                                                 [
                                                                                                                   (lam
-                                                                                                                    `$fUnsafeFromDataEscrowDatum_$cunsafeFromBuiltinData`-31
+                                                                                                                    `$fUnsafeFromDataDatum_$cunsafeFromBuiltinData`-31
                                                                                                                     [
                                                                                                                       (lam
                                                                                                                         scriptContextTxInfo-32
@@ -316,7 +316,7 @@
                                                                                                                                                                                                               nt-40
                                                                                                                                                                                                               (case
                                                                                                                                                                                                                 [
-                                                                                                                                                                                                                  `$fUnsafeFromDataEscrowDatum_$cunsafeFromBuiltinData`-31
+                                                                                                                                                                                                                  `$fUnsafeFromDataDatum_$cunsafeFromBuiltinData`-31
                                                                                                                                                                                                                   [
                                                                                                                                                                                                                     forced-5
                                                                                                                                                                                                                     [
@@ -1407,7 +1407,7 @@
                                                                                                                                                       (lam
                                                                                                                                                         datum-92
                                                                                                                                                         [
-                                                                                                                                                          `$fUnsafeFromDataEscrowDatum_$cunsafeFromBuiltinData`-31
+                                                                                                                                                          `$fUnsafeFromDataDatum_$cunsafeFromBuiltinData`-31
                                                                                                                                                           datum-92
                                                                                                                                                         ]
                                                                                                                                                       )

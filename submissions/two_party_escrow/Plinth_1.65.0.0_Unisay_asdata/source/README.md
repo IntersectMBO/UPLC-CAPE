@@ -4,7 +4,7 @@
 
 **Branch**: `main`
 
-**Commit**: `4b3215042c1ccd481b5f62ad192d23b0e1f96758`
+**Commit**: `c663b170bb2148a20072d8400b8679c03c11de4c`
 
 **Path**: `lib/TwoPartyEscrow/AsData.hs`
 
@@ -17,7 +17,7 @@ Production line with Plinth 1.65.0.0 (no BuiltinCasing). Plugin pragmas live in 
 ```bash
 git clone https://github.com/Unisay/plinth-cape-submissions
 cd plinth-cape-submissions
-git checkout 4b3215042c1ccd481b5f62ad192d23b0e1f96758
+git checkout c663b170bb2148a20072d8400b8679c03c11de4c
 ```
 
 `CAPE_REPO` must point at the sibling UPLC-CAPE checkout; the build aborts if the variable is unset. The recommended place is `.envrc.local` (gitignored), e.g.:
