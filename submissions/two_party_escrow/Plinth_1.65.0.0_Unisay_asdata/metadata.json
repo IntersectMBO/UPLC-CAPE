@@ -16,10 +16,10 @@
     }
   ],
   "submission": {
-    "date": "2026-07-06T17:43:54Z",
+    "date": "2026-07-10T09:10:38Z",
     "source_available": true,
     "source_repository": "https://github.com/Unisay/plinth-cape-submissions",
-    "source_commit_hash": "4b3215042c1ccd481b5f62ad192d23b0e1f96758",
-    "implementation_notes": "Two-party escrow validator compiled with Plinth 1.65.0.0 (production line; no BuiltinCasing). Source: lib/TwoPartyEscrow/AsData.hs in plinth-cape-submissions @ 4b3215042c1ccd481b5f62ad192d23b0e1f96758."
+    "source_commit_hash": "c663b170bb2148a20072d8400b8679c03c11de4c",
+    "implementation_notes": "Two-party escrow validator compiled with Plinth 1.65.0.0 (production line; no BuiltinCasing). Source: lib/TwoPartyEscrow/AsData.hs in plinth-cape-submissions @ c663b170bb2148a20072d8400b8679c03c11de4c. The by-name decoder layout is now derived from the type; the datum type was renamed to bare Datum, which changes only pretty-printed instance-binder names in the UPLC (serialized program, metrics, and evaluation outcomes are unchanged)."
   }
 }
