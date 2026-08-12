@@ -7,7 +7,10 @@
   "compilation_config": {
     "optimization_level": "Plinth",
     "target": "uplc",
-    "flags": ["Plinth"]
+    "flags": [
+      "Plinth",
+      "BuiltinCasing"
+    ]
   },
   "contributors": [
     {
@@ -16,10 +19,10 @@
     }
   ],
   "submission": {
-    "date": "2026-05-29T10:37:05Z",
+    "date": "2026-06-22T14:29:56Z",
     "source_available": true,
     "source_repository": "https://github.com/Unisay/plinth-cape-submissions",
-    "source_commit_hash": "b77cd0c4987779f8f7d70a1ddd564b8765ecc9a3",
-    "implementation_notes": "Fibonacci iterative compiled with Plinth 1.65.0.0 (production line; no BuiltinCasing). Source: lib/FibonacciIterative.hs in plinth-cape-submissions @ b77cd0c4987779f8f7d70a1ddd564b8765ecc9a3."
+    "source_commit_hash": "3efc19ad785a7dcb6aead5a936d18654f0649a2b",
+    "implementation_notes": "Compiled with Plinth 1.65.0.0 and the `datatypes=BuiltinCasing` plugin flag. Builtin casing has been a mainnet feature since the van Rossem hard fork (protocol version 11, 2026-07-18); plutus-tx-plugin 1.67 dropped the flag and enables casing under the default `SumsOfProducts`. Source: lib/FibonacciIterative.hs in plinth-cape-submissions @ 3efc19ad785a7dcb6aead5a936d18654f0649a2b."
   }
 }

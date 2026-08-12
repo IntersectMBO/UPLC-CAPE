@@ -16,10 +16,10 @@
     }
   ],
   "submission": {
-    "date": "2026-05-05T17:30:00Z",
+    "date": "2026-05-06T12:00:00Z",
     "source_available": true,
     "source_repository": "https://github.com/Unisay/scalus-cape-submissions",
-    "source_commit_hash": "0c8cfdb82fff4e10cd0fdf41e69738886edd7491",
-    "implementation_notes": "Scalus with default options (naive recursive implementation, no optimization). AST-level alpha-rename pass applied: all generated identifiers rewritten to short purely-alphabetic names before serialisation."
+    "source_commit_hash": "becb41d62cb2832001de1541ff2dcde0d3ac92c6",
+    "implementation_notes": "Targets the van Rossem protocol version (Cardano protocol version 11), live on mainnet since 2026-07-18. Same naive-recursive Scalus 0.17.0 source as the corresponding current-track Scalus_0.17.0_Unisay/ submission, recompiled with `Options.release.copy(targetProtocolVersion = MajorProtocolVersion.vanRossemPV)`, which enables `case-on-builtins` and batch-6 builtins (e.g. `dropList`). Evaluated on `PlutusVM.makePlutusV3VM(MajorProtocolVersion.vanRossemPV)` against the same input as `cape-tests.json`."
   }
 }

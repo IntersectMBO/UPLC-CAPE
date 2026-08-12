@@ -1,91 +1,91 @@
 {
   "evaluations": [
     {
-      "cpu_units": 567986,
+      "cpu_units": 347937,
       "description": "Fibonacci of 0 should return 0",
       "execution_result": "success",
       "included_in_aggregates": true,
-      "memory_units": 2902,
+      "memory_units": 2001,
       "name": "fibonacci_0"
     },
     {
-      "cpu_units": 567986,
+      "cpu_units": 347937,
       "description": "Fibonacci of 1 should return 1",
       "execution_result": "success",
       "included_in_aggregates": true,
-      "memory_units": 2902,
+      "memory_units": 2001,
       "name": "fibonacci_1"
     },
     {
-      "cpu_units": 872368,
+      "cpu_units": 496270,
       "description": "Fibonacci of 2 should return 1",
       "execution_result": "success",
       "included_in_aggregates": true,
-      "memory_units": 4004,
+      "memory_units": 2602,
       "name": "fibonacci_2"
     },
     {
-      "cpu_units": 2648146,
+      "cpu_units": 1803901,
       "description": "Fibonacci of 3 should return 2",
       "execution_result": "success",
       "included_in_aggregates": true,
-      "memory_units": 10916,
+      "memory_units": 8011,
       "name": "fibonacci_3"
     },
     {
-      "cpu_units": 8584244,
+      "cpu_units": 6023460,
       "description": "Fibonacci of 5 should return 5",
       "execution_result": "success",
       "included_in_aggregates": true,
-      "memory_units": 33856,
+      "memory_units": 25440,
       "name": "fibonacci_5"
     },
     {
-      "cpu_units": 40040512,
+      "cpu_units": 28428886,
       "description": "Fibonacci of 8 should return 21",
       "execution_result": "success",
       "included_in_aggregates": true,
-      "memory_units": 155468,
+      "memory_units": 117994,
       "name": "fibonacci_8"
     },
     {
-      "cpu_units": 106808986,
+      "cpu_units": 76003333,
       "description": "Fibonacci of 10 should return 55",
       "execution_result": "success",
       "included_in_aggregates": true,
-      "memory_units": 413618,
+      "memory_units": 314521,
       "name": "fibonacci_10"
     },
     {
-      "cpu_units": 1196768802,
+      "cpu_units": 852616757,
       "description": "Fibonacci of 15 should return 610",
       "execution_result": "success",
       "included_in_aggregates": true,
-      "memory_units": 4627764,
+      "memory_units": 3522659,
       "name": "fibonacci_15"
     },
     {
-      "cpu_units": 13284551520,
+      "cpu_units": 9465344294,
       "description": "Fibonacci of 20 should return 6765",
       "execution_result": "success",
       "included_in_aggregates": true,
-      "memory_units": 51363132,
+      "memory_units": 39101258,
       "name": "fibonacci_20"
     },
     {
-      "cpu_units": 147340121234,
+      "cpu_units": 104981960625,
       "description": "Fibonacci of 25 should return 75025 (original benchmark target)",
       "execution_result": "success",
       "included_in_aggregates": true,
-      "memory_units": 569666326,
+      "memory_units": 433673985,
       "name": "fibonacci_25"
     },
     {
-      "cpu_units": 567986,
+      "cpu_units": 347937,
       "description": "Fibonacci of negative number should return the negative number itself based on current implementation",
       "execution_result": "success",
       "included_in_aggregates": true,
-      "memory_units": 2902,
+      "memory_units": 2001,
       "name": "fibonacci_negative"
     }
   ],
@@ -93,13 +93,13 @@
     "evaluator": "PlutusTx.Eval-1.63.0.0"
   },
   "measurements": {
-    "block_cpu_budget_pct": 736.70060617,
-    "block_memory_budget_pct": 791.2032305555556,
+    "block_cpu_budget_pct": 524.909803125,
+    "block_memory_budget_pct": 602.3249791666666,
     "cpu_units": {
-      "maximum": 147340121234,
-      "median": 8584244,
-      "minimum": 567986,
-      "sum": 161982099770
+      "maximum": 104981960625,
+      "median": 6023460,
+      "minimum": 347937,
+      "sum": 115413721337
     },
     "excluded": {
       "count": 0,
@@ -112,24 +112,24 @@
         "sum": 0
       }
     },
-    "execution_fee_lovelace": 47815485,
+    "execution_fee_lovelace": 35831102,
     "memory_units": {
-      "maximum": 569666326,
-      "median": 33856,
-      "minimum": 2902,
-      "sum": 626283790
+      "maximum": 433673985,
+      "median": 25440,
+      "minimum": 2001,
+      "sum": 476772473
     },
-    "reference_script_fee_lovelace": 1110,
-    "script_size_bytes": 74,
+    "reference_script_fee_lovelace": 915,
+    "script_size_bytes": 61,
     "scripts_per_block": 0,
     "scripts_per_tx": 0,
-    "term_size": 68,
-    "total_fee_lovelace": 47816595,
-    "tx_cpu_budget_pct": 1473.40121234,
-    "tx_memory_budget_pct": 3452.5231878787877
+    "term_size": 54,
+    "total_fee_lovelace": 35832017,
+    "tx_cpu_budget_pct": 1049.81960625,
+    "tx_memory_budget_pct": 2628.3271818181815
   },
   "scenario": "fibonacci_naive_recursion",
   "timestamp": "2026-08-12T10:54:19Z",
   "version": "2.0.0",
-  "notes": "<optional notes>"
+  "notes": "Generated using UPLC-CAPE measure tool"
 }

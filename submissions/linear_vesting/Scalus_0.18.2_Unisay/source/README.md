@@ -8,7 +8,7 @@
 
 **Path**: `src/linear_vesting/LinearVesting.scala`
 
-This submission uses Scalus compiler version 0.18.2. Linear vesting spending validator (`@Compile object LinearVestingValidator`, `Data -> Unit`) releasing a native asset to a beneficiary on an installment schedule, with all parameters carried in the datum. Redeemer is a nullary constructor (`Constr 0 []` = PartialUnlock, `Constr 1 []` = FullUnlock; a raw-integer redeemer is rejected). Compiled with `Options.release` (the Scalus release optimizer).
+This submission uses Scalus compiler version 0.18.2. Linear vesting spending validator (`@Compile object LinearVestingValidator`, `Data -> Unit`) releasing a native asset to a beneficiary on an installment schedule, with all parameters carried in the datum. Redeemer is a nullary constructor (`Constr 0 []` = PartialUnlock, `Constr 1 []` = FullUnlock; a raw-integer redeemer is rejected). Targets the van Rossem protocol version (Cardano protocol version 11), live on mainnet since 2026-07-18. Same source as the pre-fork Scalus_0.18.2_Unisay submission it replaces, recompiled with `Options.release.copy(targetProtocolVersion = MajorProtocolVersion.vanRossemPV)`, which enables `case-on-builtins` and batch-6 builtins (e.g. `dropList`). Measured on `PlutusVM.makePlutusV3VM(MajorProtocolVersion.vanRossemPV)`.
 
 ## Reproducing the Compilation
 
@@ -30,3 +30,5 @@ This submission uses Scalus compiler version 0.18.2. Linear vesting spending val
    ```bash
    sbt 'runMain linear_vesting.compileLinearVesting'
    ```
+
+   The `@main` writes both the changPV artifact (`linear_vesting`) and the `-preview.uplc` into `src/linear_vesting/`; this submission pins the `-preview.uplc` build.

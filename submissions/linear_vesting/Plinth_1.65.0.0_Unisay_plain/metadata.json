@@ -20,6 +20,6 @@
     "source_available": true,
     "source_repository": "https://github.com/Unisay/plinth-cape-submissions",
     "source_commit_hash": "b77cd0c4987779f8f7d70a1ddd564b8765ecc9a3",
-    "implementation_notes": "Linear vesting validator compiled with Plinth 1.65.0.0 (production line; no BuiltinCasing). Source: lib/LinearVesting.hs in plinth-cape-submissions @ b77cd0c4987779f8f7d70a1ddd564b8765ecc9a3."
+    "implementation_notes": "Linear vesting validator compiled with Plinth 1.65.0.0 (no builtin casing, unlike the default artifact for this line). Source: lib/LinearVesting.hs in plinth-cape-submissions @ b77cd0c4987779f8f7d70a1ddd564b8765ecc9a3."
   }
 }

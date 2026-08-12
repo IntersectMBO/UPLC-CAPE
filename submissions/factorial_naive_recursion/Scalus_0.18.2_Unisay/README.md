@@ -8,7 +8,7 @@
 
 - **Compiler**: `Scalus 0.18.2`
 - **Implementation Approach**: `naive recursive @Compile program, Data -> Unit`
-- **Compilation Flags**: `default`
+- **Compilation Flags**: `targetProtocolVersion = vanRossemPV` (Cardano protocol version 11)
 
 ## Performance Results
 

@@ -1,0 +1,37 @@
+# Benchmark Implementation Notes
+
+**Scenario**: `htlc`
+
+**Submission ID**: `Plinth_1.61.0.0_Unisay`
+
+## Implementation Details
+
+- **Compiler**: Plinth (PlutusTx) 1.61.0.0 (preview)
+- **Implementation Approach**: High-level PlutusTx API validator with typed datum/redeemer
+- **Compilation Flags**: `no-conservative-optimisation`, `no-preserve-logging`, `remove-trace`, `target-version=1.1.0`, `datatypes=BuiltinCasing`
+
+## Architecture
+
+The HTLC validator controls a hashed time-locked payment:
+
+- **Claim** (redeemer = `0(preimage)`): Recipient reveals a preimage whose SHA-256 digest matches the datum hash and withdraws before the timeout
+- **Refund** (redeemer = `1()`): Payer reclaims after the timeout has passed
+
+HTLC parameters (payer, recipient, stored hash, timeout) are carried on-chain as inline datum.
+
+## Performance Results
+
+- See [metrics.json](metrics.json) for detailed performance measurements
+
+## Reproducibility
+
+- **Source Available**: `true`
+- **Source Repository**: https://github.com/IntersectMBO/UPLC-CAPE
+- **Compilation Config**: built with `datatypes=BuiltinCasing`; requires plutus-core >= 1.61.0.0, which mainnet has run since the van Rossem hard fork (protocol version 11, 2026-07-18)
+
+## Notes
+
+- Source code: `lib/HTLC.hs`, `lib/HTLC/Fixture.hs`, `lib/Preview/HTLC.hs`
+- Recompiled from the same source as the 1.45 submission with `BuiltinCasing` enabled
+- Datum and redeemer are encoded with [`PlutusTx.AsData.asData`](https://plutus.cardano.intersectmbo.org/docs/working-with-scripts/optimizing-scripts-with-asData) so field extraction is lazy; the validator pattern-matches on `ScriptContext` / `TxInfo` / `TxOut` / `Address` exactly once each (no field accessors on `asData` types) to avoid re-decoding the underlying `Data`
+- SHA-256 preimage check via `sha2_256` builtin

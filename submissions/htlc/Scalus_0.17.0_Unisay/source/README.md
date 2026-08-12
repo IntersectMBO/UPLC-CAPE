@@ -1,16 +1,18 @@
-# Scalus HTLC Implementation
+# Scalus HTLC Implementation (vanRossem preview)
 
-**Source Code**: [HTLC.scala](https://github.com/Unisay/scalus-cape-submissions/blob/0c8cfdb82fff4e10cd0fdf41e69738886edd7491/src/htlc/HTLC.scala)
+**Source Code**: [HTLC.scala](https://github.com/Unisay/scalus-cape-submissions/blob/becb41d62cb2832001de1541ff2dcde0d3ac92c6/src/htlc/HTLC.scala)
 
 **Repository**: <https://github.com/Unisay/scalus-cape-submissions>
 
-**Commit**: `0c8cfdb82fff4e10cd0fdf41e69738886edd7491`
+**Commit**: `becb41d62cb2832001de1541ff2dcde0d3ac92c6`
 
 **Path**: `src/htlc/HTLC.scala`
 
-This submission uses Scalus compiler version 0.17.0 with a spending validator that enforces the production-safe validity-range convention (claim reads the upper bound, refund reads the lower bound — both finite and strict).
+The validator source is identical to the current-track `Scalus_0.17.0_Unisay/` submission (production-safe validity-range convention from #170: claim reads upper bound, refund reads lower bound — both finite, strict). The difference is in the compile command: this preview artifact is produced with `Options.release.copy(targetProtocolVersion = MajorProtocolVersion.vanRossemPV)`, which enables `case-on-builtins` and batch-6 builtins (e.g. `dropList`). The same `@main htlc.compileHtlc` writes both the current-track and the vanRossem artifact in one run.
 
-The artifact is compiled with `toUplcOptimized()` (CaseConstrApply + builtin-packing). An AST-level alpha-rename pass rewrites all generated identifiers to short purely-alphabetic names (a, b, …, z, aa, …) before serialisation. This makes the output compatible with the plutus-core 1.45.0.0 textual parser without sacrificing optimised code size.
+CPU/MEM measurements come from the minimal `ScriptContext` harness in [`src/htlc/HtlcHarness.scala`](https://github.com/Unisay/scalus-cape-submissions/blob/becb41d62cb2832001de1541ff2dcde0d3ac92c6/src/htlc/HtlcHarness.scala), which evaluates both `Claim` and `Refund` redeemers on `PlutusVM.makePlutusV3VM(MajorProtocolVersion.vanRossemPV)`.
+
+The output is invalid on mainnet until the van Rossem hard fork (Cardano protocol version 11) activates — projected late-June 2026.
 
 ## Reproducing the Compilation
 
@@ -24,9 +26,13 @@ The artifact is compiled with `toUplcOptimized()` (CaseConstrApply + builtin-pac
 2. Check out the specific commit:
 
    ```bash
-   git checkout 0c8cfdb82fff4e10cd0fdf41e69738886edd7491
+   git checkout becb41d62cb2832001de1541ff2dcde0d3ac92c6
    ```
 
-3. Follow build instructions in the repository README
+3. Run the @main object:
 
-4. The compiled UPLC output should match `htlc.uplc` in this submission
+   ```bash
+   sbt 'runMain htlc.compileHtlc'
+   ```
+
+4. The compiled UPLC output should match `htlc.uplc` in this submission (it is written to `src/htlc/htlc-vanrossem.uplc` upstream).

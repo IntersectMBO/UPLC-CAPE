@@ -74,7 +74,7 @@ Chosen option: **Option 2 — per-`(compiler, author)` evolution page, variant a
 
 - Plinth_Unisay's page now shows the natural 1.45 → 1.61 → 1.64 progression for the `default` variant; the `builtincasing` row (only 1.64 today) is dropped until a second `builtincasing` version exists, at which point it appears organically.
 - New compiler releases (e.g. Plinth 1.65 with the polymorphic builtin lifting pass) require no template changes — they just become a new column in the existing variant table.
-- The data model stops privileging mainnet. Promotion of a preview Plutus version to mainnet only flips the `min_plutus_version` interpretation, not the visual layout.
+- The data model stops privileging mainnet. (Superseded by Refinement 2 and settled by Refinement 4: report routing moved to the directory-name variant suffix, so promoting a preview Plutus version to mainnet is a directory rename, not an automatic re-derivation.)
 
 ### Negative Consequences
 
@@ -111,7 +111,7 @@ Option 2 in "Considered Options" treated production and preview as undifferentia
 
 ### Out of scope for the refinement
 
-- Promotion of preview submissions to mainnet when `CAPE_CURRENT_PLUTUS_VERSION` bumps. The classification re-derives on every render from current state — no migration is needed, the same submission simply shifts tracks the next time the report regenerates.
+- Promotion of preview submissions to mainnet when `CAPE_CURRENT_PLUTUS_VERSION` bumps. (This claim held only while routing was derived from `min_plutus_version`; Refinement 2 moved routing to the directory suffix, and Refinement 4 carried out the migration it implies.)
 - A "Variants" report. Variants stay in the per-scenario production report. A dedicated variant-evolution view becomes interesting only when ≥2 variants share a version timeline; today none do.
 
 ## Refinement 2 (2026-06-22)
@@ -176,6 +176,33 @@ Queued separately: the monadic decoding DSL is being considered for backport to 
 
 - The mainnet evolution chain can now show a delta that mixes an implementation-strategy change with a compiler-version change (e.g. once 1.64.0.0 gets a monadic port that also wins, the 1.64.0.0 → 1.65.0.0 `default` delta reflects both the compiler upgrade and the algorithm swap in the same number). This is the same category of ambiguity Refinement 1 eliminated for mainnet-vs-preview cost-model drift — reintroducing it here for algorithm swaps is a deliberate, accepted tradeoff: the chain now answers "how good has this author's best mainnet artifact gotten release over release," not "how did one fixed algorithm's cost evolve."
 - A future session (or contributor) reading only the _original_ "Default-variant only" text should not treat a demonstrably-losing incumbent's directory name as untouchable. Promotion-on-measured-win is now an explicit, sanctioned reason to rename `default` ↔ a named variant, alongside the track-reclassification reason already established in Refinement 2.
+
+## Refinement 4 (2026-08-12)
+
+The van Rossem hard fork activated on mainnet on 2026-07-18 (protocol version 11), making builtin casing and the batch-6 builtins production features. `plutus-tx-plugin` 1.67 then removed the `datatypes=BuiltinCasing` option outright: `SumsOfProducts`, the default, enables casing on its own. The preview track had nothing left to preview.
+
+### The split is retired, the machinery is not
+
+Two changes, in this order:
+
+1. The production evaluator moved from `plutus-core` 1.45 to 1.63.0.0, the line shipped by `cardano-node` 11.0.1, and the preview evaluator from 1.65 to 1.67.0.0. `CAPE_CURRENT_PLUTUS_VERSION` and `CAPE_PREVIEW_PLUTUS_VERSION` follow.
+2. All 30 `_preview` submissions were promoted onto the production track: `compilation_config.min_plutus_version` dropped, the `BuiltinCasing` / `vanRossem` entries dropped from `flags`, and each directory renamed onto the non-casing sibling it was built from, which is then retired.
+
+The preview machinery (`cabal.project.preview`, `cape.cabal`'s `preview` flag, `measure-preview`, `cape submission measure --preview`, `aggregate --target`) stays in place, re-aimed at 1.67. `cape submission measure --preview` now reports "No preview submissions found", which is the correct steady state until a submission targets protocol version 12.
+
+### Promoted onto the matching-pin sibling, not blindly onto `default`
+
+Refinement 3 established that `default` means the best-measured implementation for a version. That rule decides which sibling each casing build replaces, and it is not always `default`.
+
+For 27 of the 30, the casing build shares its source lineage with the version's `default`, and promoting it there improves the headline number by 13% to 32%. For three Plinth 1.64 submissions (`htlc`, `linear_vesting`, `two_party_escrow`) it does not: those casing artifacts share a source commit with the `_plain` / `_asdata` variant, having been built before the monadic decoder landed for that line. Promoting them onto `default` would have replaced the monadic artifacts with ones 111% to 153% more expensive and put a large regression into the 1.64 column that reflects a source revision, not a compiler feature.
+
+They were promoted onto `_plain` / `_asdata` instead, where they win by 7.7%, 28.1% and 31.3%, and the monadic `default` for the 1.64 line is untouched. The general rule: a casing build replaces the sibling it was compiled from, decided per submission by source pin, and every promotion must show a measured win over what it replaces.
+
+### Consequences
+
+- The evolution report has no preview teaser column. Every column is a mainnet column, and the Plinth timeline gains a 1.61 point that was previously preview-only.
+- `min_plutus_version` keeps its operational role for a future protocol version, and the schema still documents it. No submission sets it today.
+- The pre-fork non-casing artifacts for the promoted lines are gone from the working tree. They remain in git history; the surviving `_plain` and `_asdata` variants continue to provide a non-casing comparison where one was already published.
 
 ## Links
 

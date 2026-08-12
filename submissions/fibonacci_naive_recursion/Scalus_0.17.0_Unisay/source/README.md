@@ -1,14 +1,16 @@
-# Scalus Fibonacci Naive Recursion Implementation
+# Scalus Fibonacci Naive Recursion Implementation (vanRossem preview)
 
-**Source Code**: [FibonacciNaiveRecursion.scala](https://github.com/Unisay/scalus-cape-submissions/blob/0c8cfdb82fff4e10cd0fdf41e69738886edd7491/src/fibonacci_naive_recursion/FibonacciNaiveRecursion.scala)
+**Source Code**: [FibonacciNaiveRecursion.scala](https://github.com/Unisay/scalus-cape-submissions/blob/becb41d62cb2832001de1541ff2dcde0d3ac92c6/src/fibonacci_naive_recursion/FibonacciNaiveRecursion.scala)
 
 **Repository**: <https://github.com/Unisay/scalus-cape-submissions>
 
-**Commit**: `0c8cfdb82fff4e10cd0fdf41e69738886edd7491`
+**Commit**: `becb41d62cb2832001de1541ff2dcde0d3ac92c6`
 
 **Path**: `src/fibonacci_naive_recursion/FibonacciNaiveRecursion.scala`
 
-This submission uses Scalus compiler version 0.17.0 with a naive recursive implementation (no optimization, per scenario specification).
+The Scala source is identical to the current-track `Scalus_0.17.0_Unisay/` submission. The difference is in the compile command: this preview artifact is produced with `Options.release.copy(targetProtocolVersion = MajorProtocolVersion.vanRossemPV)`, which enables `case-on-builtins` and batch-6 builtins (e.g. `dropList`). The same `@main fibonacci_naive_recursion.compileFibonacciNaiveRecursion` writes both the current-track and the vanRossem artifact in one run.
+
+The output is invalid on mainnet until the van Rossem hard fork (Cardano protocol version 11) activates — projected late-June 2026.
 
 ## Reproducing the Compilation
 
@@ -22,11 +24,15 @@ This submission uses Scalus compiler version 0.17.0 with a naive recursive imple
 2. Check out the specific commit:
 
    ```bash
-   git checkout 0c8cfdb82fff4e10cd0fdf41e69738886edd7491
+   git checkout becb41d62cb2832001de1541ff2dcde0d3ac92c6
    ```
 
-3. Follow build instructions in the repository README
+3. Run the @main object:
 
-4. The compiled UPLC output should match `fibonacci_naive_recursion.uplc` in this submission
+   ```bash
+   sbt 'runMain fibonacci_naive_recursion.compileFibonacciNaiveRecursion'
+   ```
+
+4. The compiled UPLC output should match `fibonacci_naive_recursion.uplc` in this submission (it is written to `src/fibonacci_naive_recursion/fibonacci-vanrossem.uplc` upstream).
 
 For detailed build instructions and environment setup, see the repository README.

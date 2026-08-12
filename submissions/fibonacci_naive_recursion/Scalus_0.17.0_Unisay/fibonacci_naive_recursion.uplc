@@ -4,64 +4,30 @@
     (lam
       a-0
       [
-        (lam
-          b-1
-          [
-            (lam c-2 [ b-1 (lam d-3 [ [ c-2 c-2 ] d-3 ]) ])
-            (lam c-2 [ b-1 (lam d-3 [ [ c-2 c-2 ] d-3 ]) ])
-          ]
-        )
-        (lam
-          e-4
-          (lam
-            f-5
-            (force
-              (case
-                (constr
-                  0
-                  [ [ (builtin lessThanEqualsInteger) f-5 ] (con integer 1) ]
-                  (delay f-5)
-                  (delay
-                    (force
-                      (case
-                        (constr
-                          0
-                          [ [ (builtin equalsInteger) f-5 ] (con integer 2) ]
-                          (delay (con integer 1))
-                          (delay
-                            [
-                              [
-                                (builtin addInteger)
-                                [
-                                  e-4
-                                  [
-                                    [ (builtin subtractInteger) f-5 ]
-                                    (con integer 1)
-                                  ]
-                                ]
-                              ]
-                              [
-                                e-4
-                                [
-                                  [ (builtin subtractInteger) f-5 ]
-                                  (con integer 2)
-                                ]
-                              ]
-                            ]
-                          )
-                        )
-                        a-0
-                      )
-                    )
-                  )
-                )
-                a-0
-              )
-            )
-          )
-        )
+        (lam b-1 [ a-0 (lam c-2 [ [ b-1 b-1 ] c-2 ]) ])
+        (lam b-1 [ a-0 (lam c-2 [ [ b-1 b-1 ] c-2 ]) ])
       ]
     )
-    (force (builtin ifThenElse))
+    (lam
+      d-3
+      (lam
+        e-4
+        (case
+          [ [ (builtin lessThanEqualsInteger) e-4 ] (con integer 1) ]
+          (case
+            [ [ (builtin equalsInteger) e-4 ] (con integer 2) ]
+            [
+              [
+                (builtin addInteger)
+                [ d-3 [ [ (builtin subtractInteger) e-4 ] (con integer 1) ] ]
+              ]
+              [ d-3 [ [ (builtin subtractInteger) e-4 ] (con integer 2) ] ]
+            ]
+            (con integer 1)
+          )
+          e-4
+        )
+      )
+    )
   ]
 )

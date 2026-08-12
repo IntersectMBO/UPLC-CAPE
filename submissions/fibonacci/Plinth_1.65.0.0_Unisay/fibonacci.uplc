@@ -2,75 +2,51 @@
   1.1.0
   [
     (lam
-      forced-0
-      [
+      fibonacciLoop-0
+      (lam
+        n-1
+        (case
+          [ [ (builtin lessThanEqualsInteger) n-1 ] (con integer 1) ]
+          (case
+            (constr 0 (con integer 0) (con integer 1) (con integer 2) n-1)
+            fibonacciLoop-0
+          )
+          n-1
+        )
+      )
+    )
+    [
+      (lam s-2 [ s-2 s-2 ])
+      (lam
+        s-3
         (lam
-          fibonacciLoop-1
+          prev-4
           (lam
-            n-2
-            (force
-              (case
-                (constr
-                  0
-                  [ [ (builtin lessThanEqualsInteger) n-2 ] (con integer 1) ]
-                  (delay n-2)
-                  (delay
-                    (case
-                      (constr
-                        0 (con integer 0) (con integer 1) (con integer 2) n-2
-                      )
-                      fibonacciLoop-1
+            curr-5
+            (lam
+              i-6
+              (lam
+                n-7
+                (case
+                  [ [ (builtin lessThanInteger) n-7 ] i-6 ]
+                  (case
+                    (constr
+                      0
+                      s-3
+                      curr-5
+                      [ [ (builtin addInteger) prev-4 ] curr-5 ]
+                      [ [ (builtin addInteger) (con integer 1) ] i-6 ]
+                      n-7
                     )
+                    s-3
                   )
+                  curr-5
                 )
-                forced-0
               )
             )
           )
         )
-        [
-          (lam s-3 [ s-3 s-3 ])
-          (lam
-            s-4
-            (lam
-              prev-5
-              (lam
-                curr-6
-                (lam
-                  i-7
-                  (lam
-                    n-8
-                    (force
-                      (case
-                        (constr
-                          0
-                          [ [ (builtin lessThanInteger) n-8 ] i-7 ]
-                          (delay curr-6)
-                          (delay
-                            (case
-                              (constr
-                                0
-                                s-4
-                                curr-6
-                                [ [ (builtin addInteger) prev-5 ] curr-6 ]
-                                [ [ (builtin addInteger) (con integer 1) ] i-7 ]
-                                n-8
-                              )
-                              s-4
-                            )
-                          )
-                        )
-                        forced-0
-                      )
-                    )
-                  )
-                )
-              )
-            )
-          )
-        ]
-      ]
-    )
-    (force (builtin ifThenElse))
+      )
+    ]
   ]
 )

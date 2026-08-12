@@ -1,4 +1,4 @@
-# linear_vesting Plinth 1.65.0.0 (monadic) source
+# linear_vesting Plinth 1.65.0.0 (BuiltinCasing + dropList) source
 
 **Repository**: <https://github.com/Unisay/plinth-cape-submissions>
 
@@ -6,9 +6,9 @@
 
 **Commit**: `d078652f03d31ed728c1fb63f1d9f8824218494c`
 
-**Path**: `lib/LinearVesting.hs` (+ `lib/Plinth/Validator.hs`, `lib/Plinth/Decoder/Named.hs`, `lib/Plinth/Decoder/Named/ScriptContext.hs`, `lib/Plinth/Encoded.hs`)
+**Path**: `lib/LinearVesting.hs` (+ `lib/Plinth/Decoder.hs`, `lib/Plinth/Decoder/Named.hs`, `lib/Plinth/Encoded.hs`)
 
-The monadic linear vesting validator; see the submission `metadata.json` for the latest decoder change. This is the default artifact for the mainnet 1.65.0.0 line.
+The monadic linear vesting validator with builtin casing plus the `dropList` decoder step. Both have been mainnet features since the van Rossem hard fork (protocol version 11, 2026-07-18).
 
 ## Reproducing the compilation
 
@@ -28,7 +28,7 @@ Then enter the dev shell and run the generator:
 
 ```bash
 nix develop
-cabal run plinth-submissions
+cabal run --flags=preview plinth-submissions
 ```
 
 The produced UPLC writes to `$CAPE_REPO/submissions/linear_vesting/Plinth_1.65.0.0_Unisay/linear_vesting.uplc` and matches the UPLC in this submission.

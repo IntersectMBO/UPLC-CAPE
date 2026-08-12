@@ -9,12 +9,17 @@
     "target": "uplc",
     "flags": ["Plinth"]
   },
-  "contributors": [{ "name": "Unisay", "organization": "UPLC-CAPE Project" }],
+  "contributors": [
+    {
+      "name": "Unisay",
+      "organization": "UPLC-CAPE Project"
+    }
+  ],
   "submission": {
-    "date": "2026-07-07T12:28:29Z",
+    "date": "2026-07-08T11:39:07Z",
     "source_available": true,
     "source_repository": "https://github.com/Unisay/plinth-cape-submissions",
-    "source_commit_hash": "4a70c059be150822ab3ee56ce8820fc3db81f35b",
-    "implementation_notes": "HTLC validator in do-notation on the zero-cost early-termination Validator monad (Plinth.Validator) with the typed decoding DSL (Plinth.Decoder.Named): QualifiedDo sequences decode-or-abort stages (V.do) and Named walk regions (N.do); each ScriptContext/datum/TxInfo field is decoded with a single Constr walk, and a value that is only compared is never structurally decoded (Plinth.Encoded). Re-optimised for CAPE metrics schema 2.0.0, whose aggregates cover only the happy-path (accept) measurements: per-path fields-regions over HTLCDatum (claim reads recipient/secretHash/timeout, refund reads payer/timeout) replace the lazy asData selectors and shrink the term, and the inliner budget was re-swept against the happy-path-only total_fee. The old optimum inline-unconditional-growth=52, tuned under the summed accept+reject aggregation, no longer wins; the new optimum is 32 (plateau 32-42). total_fee 34840 to 28376 lovelace (-18.6%), script size 1135 to 693 bytes; cpu_max and mem_max rise under 1.2% as the lexicographic price of the fee optimum. Source: lib/HTLC.hs (+ lib/Plinth/Validator.hs, lib/Plinth/Decoder/Named.hs, lib/Plinth/Decoder/Named/ScriptContext.hs, lib/Plinth/Encoded.hs) in plinth-cape-submissions @ 4a70c059be150822ab3ee56ce8820fc3db81f35b (branch main)."
+    "source_commit_hash": "6b75b5a3fe1cf56b195cc4222cf939a2812cee78",
+    "implementation_notes": "Compiled with Plinth 1.65.0.0 and the `datatypes=BuiltinCasing` plugin flag. Builtin casing has been a mainnet feature since the van Rossem hard fork (protocol version 11, 2026-07-18); plutus-tx-plugin 1.67 dropped the flag and enables casing under the default `SumsOfProducts`. This build additionally emits the batch-6 `dropList` builtin (van Rossem protocol version) for cursor gaps of three or more fields in the typed decoder, replacing the chained `tailList` induction with a single call whose term size does not grow with the gap; the emission was gated behind the same build flag, so the non-casing sibling for this line stays byte-identical. Source: `lib/HTLC.hs` (+ `lib/Plinth/Decoder.hs`, `lib/Plinth/Decoder/Named.hs`) in plinth-cape-submissions @ 6b75b5a3fe1cf56b195cc4222cf939a2812cee78."
   }
 }

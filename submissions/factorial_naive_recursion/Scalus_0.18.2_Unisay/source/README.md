@@ -8,7 +8,7 @@
 
 **Path**: `src/factorial_naive_recursion/FactorialNaiveRecursion.scala`
 
-This submission uses Scalus compiler version 0.18.2. Factorial program computing `n!` by naive recursion (`Data -> Unit`), compiled with Scalus default options (no optimization).
+This submission uses Scalus compiler version 0.18.2. Factorial program computing `n!` by naive recursion (`Data -> Unit`), compiled with Scalus default options (no optimization). Targets the van Rossem protocol version (Cardano protocol version 11), live on mainnet since 2026-07-18. Same source as the pre-fork Scalus_0.18.2_Unisay submission it replaces, recompiled with `Options.release.copy(targetProtocolVersion = MajorProtocolVersion.vanRossemPV)`, which enables `case-on-builtins` and batch-6 builtins (e.g. `dropList`). Measured on `PlutusVM.makePlutusV3VM(MajorProtocolVersion.vanRossemPV)`.
 
 ## Reproducing the Compilation
 
@@ -30,3 +30,5 @@ This submission uses Scalus compiler version 0.18.2. Factorial program computing
    ```bash
    sbt 'runMain factorial_naive_recursion.compileFactorialNaiveRecursion'
    ```
+
+   The `@main` writes both the changPV artifact (`factorial_naive_recursion`) and the `-preview.uplc` into `src/factorial_naive_recursion/`; this submission pins the `-preview.uplc` build.

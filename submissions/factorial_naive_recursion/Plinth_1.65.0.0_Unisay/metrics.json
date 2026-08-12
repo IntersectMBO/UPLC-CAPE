@@ -1,83 +1,83 @@
 {
   "evaluations": [
     {
-      "cpu_units": 519986,
+      "cpu_units": 299937,
       "description": "Factorial of 0 should return 1 (mathematical definition)",
       "execution_result": "success",
       "included_in_aggregates": true,
-      "memory_units": 2602,
+      "memory_units": 1701,
       "name": "factorial_0"
     },
     {
-      "cpu_units": 1232033,
+      "cpu_units": 855935,
       "description": "Factorial of 1 should return 1",
       "execution_result": "success",
       "included_in_aggregates": true,
-      "memory_units": 5108,
+      "memory_units": 3706,
       "name": "factorial_1"
     },
     {
-      "cpu_units": 1944080,
+      "cpu_units": 1411933,
       "description": "Factorial of 2 should return 2",
       "execution_result": "success",
       "included_in_aggregates": true,
-      "memory_units": 7614,
+      "memory_units": 5711,
       "name": "factorial_2"
     },
     {
-      "cpu_units": 2656127,
+      "cpu_units": 1967931,
       "description": "Factorial of 3 should return 6",
       "execution_result": "success",
       "included_in_aggregates": true,
-      "memory_units": 10120,
+      "memory_units": 7716,
       "name": "factorial_3"
     },
     {
-      "cpu_units": 3368174,
+      "cpu_units": 2523929,
       "description": "Factorial of 4 should return 24",
       "execution_result": "success",
       "included_in_aggregates": true,
-      "memory_units": 12626,
+      "memory_units": 9721,
       "name": "factorial_4"
     },
     {
-      "cpu_units": 4080221,
+      "cpu_units": 3079927,
       "description": "Factorial of 5 should return 120",
       "execution_result": "success",
       "included_in_aggregates": true,
-      "memory_units": 15132,
+      "memory_units": 11726,
       "name": "factorial_5"
     },
     {
-      "cpu_units": 6216362,
+      "cpu_units": 4747921,
       "description": "Factorial of 8 should return 40320",
       "execution_result": "success",
       "included_in_aggregates": true,
-      "memory_units": 22650,
+      "memory_units": 17741,
       "name": "factorial_8"
     },
     {
-      "cpu_units": 7640456,
+      "cpu_units": 5859917,
       "description": "Factorial of 10 should return 3628800 (original benchmark target)",
       "execution_result": "success",
       "included_in_aggregates": true,
-      "memory_units": 27662,
+      "memory_units": 21751,
       "name": "factorial_10"
     },
     {
-      "cpu_units": 9064550,
+      "cpu_units": 6971913,
       "description": "Factorial of 12 should return 479001600",
       "execution_result": "success",
       "included_in_aggregates": true,
-      "memory_units": 32674,
+      "memory_units": 25761,
       "name": "factorial_12"
     },
     {
-      "cpu_units": 519986,
+      "cpu_units": 299937,
       "description": "Factorial of negative number should return 1 based on current implementation (n <= 0 case)",
       "execution_result": "success",
       "included_in_aggregates": true,
-      "memory_units": 2602,
+      "memory_units": 1701,
       "name": "factorial_negative"
     }
   ],
@@ -85,13 +85,13 @@
     "evaluator": "PlutusTx.Eval-1.63.0.0"
   },
   "measurements": {
-    "block_cpu_budget_pct": 0.04532275,
-    "block_memory_budget_pct": 0.045380555555555556,
+    "block_cpu_budget_pct": 0.034859565,
+    "block_memory_budget_pct": 0.03577916666666667,
     "cpu_units": {
-      "maximum": 9064550,
-      "median": 3012150,
-      "minimum": 519986,
-      "sum": 37241975
+      "maximum": 6971913,
+      "median": 2245930,
+      "minimum": 299937,
+      "sum": 28019280
     },
     "excluded": {
       "count": 0,
@@ -104,24 +104,24 @@
         "sum": 0
       }
     },
-    "execution_fee_lovelace": 10694,
+    "execution_fee_lovelace": 8208,
     "memory_units": {
-      "maximum": 32674,
-      "median": 11373,
-      "minimum": 2602,
-      "sum": 138790
+      "maximum": 25761,
+      "median": 8718,
+      "minimum": 1701,
+      "sum": 107235
     },
-    "reference_script_fee_lovelace": 630,
-    "script_size_bytes": 42,
-    "scripts_per_block": 2203,
-    "scripts_per_tx": 504,
-    "term_size": 36,
-    "total_fee_lovelace": 11324,
-    "tx_cpu_budget_pct": 0.0906455,
-    "tx_memory_budget_pct": 0.19802424242424244
+    "reference_script_fee_lovelace": 510,
+    "script_size_bytes": 34,
+    "scripts_per_block": 2794,
+    "scripts_per_tx": 640,
+    "term_size": 27,
+    "total_fee_lovelace": 8718,
+    "tx_cpu_budget_pct": 0.06971913,
+    "tx_memory_budget_pct": 0.15612727272727273
   },
   "scenario": "factorial_naive_recursion",
-  "timestamp": "2026-08-12T10:54:12Z",
+  "timestamp": "2026-08-12T11:17:38Z",
   "version": "2.0.0",
   "notes": "Generated using UPLC-CAPE measure tool"
 }

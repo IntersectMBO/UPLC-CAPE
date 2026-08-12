@@ -22,6 +22,6 @@
     "source_available": true,
     "source_repository": "https://github.com/Unisay/scalus-cape-submissions",
     "source_commit_hash": "6aa01a8ab6dbf0501efdea5bca4e3b832a1307b5",
-    "implementation_notes": "Scalus 0.18.2 Prepacked Fibonacci implementation: pre-computed `fib(0)`..`fib(25)` packed as 3-byte big-endian entries in a `ByteString`, looked up in O(1) constant time (`Data -> Unit`). Compiled with `Options.release`. An AST-level alpha-rename pass rewrites all generated identifiers to short purely-alphabetic names before serialisation, keeping the artifact compatible with the plutus-core 1.45.0.0 textual parser."
+    "implementation_notes": "Scalus 0.18.2 Prepacked Fibonacci implementation: pre-computed `fib(0)`..`fib(25)` packed as 3-byte big-endian entries in a `ByteString`, looked up in O(1) constant time (`Data -> Unit`). Targets the van Rossem protocol version (Cardano protocol version 11), live on mainnet since 2026-07-18. Same source as the pre-fork Scalus_0.18.2_Unisay submission it replaces, recompiled with `Options.release.copy(targetProtocolVersion = MajorProtocolVersion.vanRossemPV)`, which enables `case-on-builtins` and batch-6 builtins (e.g. `dropList`). Measured on `PlutusVM.makePlutusV3VM(MajorProtocolVersion.vanRossemPV)`."
   }
 }
