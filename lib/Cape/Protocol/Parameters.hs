@@ -3,6 +3,11 @@
 This module provides protocol parameters and derived metric calculations
 for the UPLC-CAPE benchmarking framework.
 
+Values below are mainnet's, last verified at epoch 653 (protocol version
+11.0, post van Rossem). To re-verify:
+
+> curl -s https://api.koios.rest/api/v1/epoch_params | jq '.[0]'
+
 For comprehensive documentation including formulas, examples, and
 interpretation guidelines, see: doc/metrics.md
 -}
@@ -74,24 +79,24 @@ priceSteps = 721 % 10_000_000 -- 0.0000721
 --------------------------------------------------------------------------------
 -- Execution Unit Limits (Per Transaction) -------------------------------------
 
--- | Maximum memory units per transaction
+-- | Maximum memory units per transaction (@maxTxExMem@)
 maxTxMemory :: Integer
-maxTxMemory = 14_000_000
+maxTxMemory = 16_500_000
 
--- | Maximum CPU steps per transaction
+-- | Maximum CPU steps per transaction (@maxTxExSteps@)
 maxTxCpu :: Integer
 maxTxCpu = 10_000_000_000
 
 --------------------------------------------------------------------------------
 -- Execution Unit Limits (Per Block) -------------------------------------------
 
--- | Maximum memory units per block
+-- | Maximum memory units per block (@maxBlockExMem@)
 maxBlockMemory :: Integer
-maxBlockMemory = 62_000_000
+maxBlockMemory = 72_000_000
 
--- | Maximum CPU steps per block
+-- | Maximum CPU steps per block (@maxBlockExSteps@)
 maxBlockCpu :: Integer
-maxBlockCpu = 40_000_000_000
+maxBlockCpu = 20_000_000_000
 
 --------------------------------------------------------------------------------
 -- Reference Script Fee Parameters (Conway Era) --------------------------------

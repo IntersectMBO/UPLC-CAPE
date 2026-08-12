@@ -6,7 +6,17 @@ import Prelude
 
 import Cape.Cli (Options (..), parseOptions)
 import Cape.Compile (compileProgram)
+import Cape.Data.UplcText (renderUplcDataText)
 import Cape.Error (MeasureError (..), exitCodeForError, renderMeasureError)
+import Cape.Metrics (
+  AggregationPolicy,
+  BudgetAggregations (..),
+  EvaluationMetrics (..),
+  ExcludedAggregates,
+  calculateBudgetAggregations,
+  calculateExcludedAggregates,
+  partitionByPolicy,
+ )
 import Cape.PrettyResult (
   EvalResult (..),
   compareResult,
@@ -23,16 +33,6 @@ import Cape.Protocol.Parameters (
   totalFee,
   txCpuBudget,
   txMemoryBudget,
- )
-import Cape.Data.UplcText (renderUplcDataText)
-import Cape.Metrics (
-  AggregationPolicy,
-  BudgetAggregations (..),
-  EvaluationMetrics (..),
-  ExcludedAggregates,
-  calculateBudgetAggregations,
-  calculateExcludedAggregates,
-  partitionByPolicy,
  )
 import Cape.Tests (
   ExpectedResult (..),
@@ -60,14 +60,11 @@ import Data.SatInt (unSatInt)
 import Data.Text.Encoding qualified as TE
 import Data.Time (defaultTimeLocale, formatTime, getCurrentTime)
 import PlutusCore qualified as PLC
+import PlutusCore.AstSize (unAstSize)
+import PlutusCore.Error (ParserErrorBundle)
 import PlutusCore.Evaluation.Machine.ExBudget (ExBudget (..))
 import PlutusCore.Evaluation.Machine.ExMemory (ExCPU (..), ExMemory (..))
 import PlutusCore.MkPlc qualified as MkPlc
-#if MIN_VERSION_plutus_core(1,46,0)
-import PlutusCore.AstSize (unAstSize)
-#else
-import PlutusCore.Size (unSize)
-#endif
 import PlutusLedgerApi.Common (serialiseCompiledCode)
 import PlutusTx.Builtins qualified as Builtins
 import PlutusTx.Code (getPlc)
@@ -82,32 +79,22 @@ import System.Console.ANSI (
 import System.Exit qualified as Exit
 import System.IO (putChar)
 import UntypedPlutusCore qualified as UPLC
-import UntypedPlutusCore.Parser qualified as UPLCParser
-#if MIN_VERSION_plutus_core(1,46,0)
-import PlutusCore.Error (ParserErrorBundle)
 import UntypedPlutusCore.AstSize (programAstSize)
-#else
-import UntypedPlutusCore.Size (programSize)
-#endif
+import UntypedPlutusCore.Parser qualified as UPLCParser
 
--- | Parse UPLC program text, handling API differences between plutus-core versions
+-- | Parse UPLC program text
 parseUplcProgram ::
   Text ->
   Either
     String
     (UPLC.Program UPLC.Name PLC.DefaultUni PLC.DefaultFun PLC.SrcSpan)
 parseUplcProgram txt =
-#if MIN_VERSION_plutus_core(1,46,0)
   case PLC.runQuote (runExceptT (UPLCParser.parseProgram txt)) ::
-    Either ParserErrorBundle (UPLC.Program UPLC.Name PLC.DefaultUni PLC.DefaultFun PLC.SrcSpan) of
+        Either
+          ParserErrorBundle
+          (UPLC.Program UPLC.Name PLC.DefaultUni PLC.DefaultFun PLC.SrcSpan) of
     Left err -> Left (show err)
     Right prog -> Right prog
-#else
-  case PLC.runQuote (runExceptT (UPLCParser.parseProgram txt)) ::
-    Either (PLC.Error PLC.DefaultUni PLC.DefaultFun PLC.SrcSpan) (UPLC.Program UPLC.Name PLC.DefaultUni PLC.DefaultFun PLC.SrcSpan) of
-    Left err -> Left (show err)
-    Right prog -> Right prog
-#endif
 
 -- | Colorize text with green for PASS results
 colorizePass :: Text -> IO ()
@@ -369,11 +356,7 @@ writeDetailedMetrics program evaluations metricsFile = do
   code <- compileProgram program Nothing
   let scriptBytes = SBS.fromShort (serialiseCompiledCode code)
       scriptSize = BS.length scriptBytes
-#if MIN_VERSION_plutus_core(1,46,0)
       termSize = fromIntegral $ unAstSize $ programAstSize $ getPlc code
-#else
-      termSize = fromIntegral $ unSize $ programSize $ getPlc code
-#endif
 
   -- Aggregates cover only evaluations whose test is effectively included
   -- (included_in_aggregates and not pending); the rest are summarised in

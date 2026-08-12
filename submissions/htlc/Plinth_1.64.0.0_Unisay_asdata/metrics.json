@@ -1,7 +1,7 @@
 {
   "evaluations": [
     {
-      "cpu_units": 26142171,
+      "cpu_units": 26140682,
       "description": "Claim at time=50 with correct preimage and recipient signature should succeed",
       "execution_result": "success",
       "included_in_aggregates": true,
@@ -9,7 +9,7 @@
       "name": "claim_well_before_timeout"
     },
     {
-      "cpu_units": 26142171,
+      "cpu_units": 26140682,
       "description": "Claim at time=99 (just before timeout=100) with correct preimage should succeed",
       "execution_result": "success",
       "included_in_aggregates": true,
@@ -17,7 +17,7 @@
       "name": "claim_just_before_timeout"
     },
     {
-      "cpu_units": 24917326,
+      "cpu_units": 24916432,
       "description": "Refund at time=101 (just after timeout=100) with payer signature should succeed",
       "execution_result": "success",
       "included_in_aggregates": true,
@@ -25,7 +25,7 @@
       "name": "refund_just_after_timeout"
     },
     {
-      "cpu_units": 24917326,
+      "cpu_units": 24916432,
       "description": "Refund at time=200 with payer signature should succeed",
       "execution_result": "success",
       "included_in_aggregates": true,
@@ -97,7 +97,7 @@
       "name": "claim_wrong_signature_impostor"
     },
     {
-      "cpu_units": 15126676,
+      "cpu_units": 15126081,
       "description": "Claim with preimage #cafebabe (hash does not match) should fail",
       "execution_result": "success",
       "included_in_aggregates": false,
@@ -105,7 +105,7 @@
       "name": "claim_wrong_preimage"
     },
     {
-      "cpu_units": 15126676,
+      "cpu_units": 15126081,
       "description": "Claim with empty preimage (hash does not match) should fail",
       "execution_result": "success",
       "included_in_aggregates": false,
@@ -113,7 +113,7 @@
       "name": "claim_empty_preimage"
     },
     {
-      "cpu_units": 15432119,
+      "cpu_units": 15431524,
       "description": "Claim at time=100 (boundary, must be strictly before timeout) should fail",
       "execution_result": "success",
       "included_in_aggregates": false,
@@ -121,7 +121,7 @@
       "name": "claim_at_timeout"
     },
     {
-      "cpu_units": 15432119,
+      "cpu_units": 15431524,
       "description": "Claim at time=150 (after timeout) should fail even with correct preimage",
       "execution_result": "success",
       "included_in_aggregates": false,
@@ -137,7 +137,7 @@
       "name": "claim_infinite_upper_bound"
     },
     {
-      "cpu_units": 28802039,
+      "cpu_units": 28800103,
       "description": "Claim with two script inputs should fail (double satisfaction attack)",
       "execution_result": "success",
       "included_in_aggregates": false,
@@ -193,7 +193,7 @@
       "name": "refund_infinite_lower_bound"
     },
     {
-      "cpu_units": 28025194,
+      "cpu_units": 28023853,
       "description": "Refund with two script inputs should fail (double satisfaction attack)",
       "execution_result": "success",
       "included_in_aggregates": false,
@@ -202,22 +202,22 @@
     }
   ],
   "execution_environment": {
-    "evaluator": "PlutusTx.Eval-1.45.0.0"
+    "evaluator": "PlutusTx.Eval-1.63.0.0"
   },
   "measurements": {
-    "block_cpu_budget_pct": 0.0653554275,
-    "block_memory_budget_pct": 0.12796290322580645,
+    "block_cpu_budget_pct": 0.13070341,
+    "block_memory_budget_pct": 0.11019027777777778,
     "cpu_units": {
-      "maximum": 26142171,
-      "median": 25529748,
-      "minimum": 24917326,
-      "sum": 102118994
+      "maximum": 26140682,
+      "median": 25528557,
+      "minimum": 24916432,
+      "sum": 102114228
     },
     "excluded": {
       "count": 21,
       "cpu_units": {
-        "maximum": 28802039,
-        "sum": 254354575
+        "maximum": 28800103,
+        "sum": 254348918
       },
       "memory_units": {
         "maximum": 84819,
@@ -233,15 +233,15 @@
     },
     "reference_script_fee_lovelace": 62025,
     "script_size_bytes": 4135,
-    "scripts_per_block": 781,
-    "scripts_per_tx": 176,
+    "scripts_per_block": 765,
+    "scripts_per_tx": 207,
     "term_size": 4580,
     "total_fee_lovelace": 87353,
-    "tx_cpu_budget_pct": 0.26142171,
-    "tx_memory_budget_pct": 0.5666928571428571
+    "tx_cpu_budget_pct": 0.26140682,
+    "tx_memory_budget_pct": 0.480830303030303
   },
   "scenario": "htlc",
-  "timestamp": "2026-07-06T12:45:07Z",
+  "timestamp": "2026-08-12T10:54:20Z",
   "version": "2.0.0",
   "notes": "Generated using UPLC-CAPE measure tool"
 }

@@ -1,7 +1,7 @@
 {
   "evaluations": [
     {
-      "cpu_units": 1646133,
+      "cpu_units": 1646544,
       "description": "ECD of 0 and 12 should return 12 (edge case: first argument is zero)",
       "execution_result": "success",
       "included_in_aggregates": true,
@@ -17,7 +17,7 @@
       "name": "ecd_12_0"
     },
     {
-      "cpu_units": 1646133,
+      "cpu_units": 1646544,
       "description": "ECD of 7 and 7 should return 7 (edge case: identical numbers)",
       "execution_result": "success",
       "included_in_aggregates": true,
@@ -25,7 +25,7 @@
       "name": "ecd_7_7"
     },
     {
-      "cpu_units": 3062757,
+      "cpu_units": 3063990,
       "description": "ECD of 6 and 9 should return 3",
       "execution_result": "success",
       "included_in_aggregates": true,
@@ -33,7 +33,7 @@
       "name": "ecd_6_9"
     },
     {
-      "cpu_units": 2354445,
+      "cpu_units": 2355267,
       "description": "ECD of 12 and 8 should return 4",
       "execution_result": "success",
       "included_in_aggregates": true,
@@ -41,7 +41,7 @@
       "name": "ecd_12_8"
     },
     {
-      "cpu_units": 3771069,
+      "cpu_units": 3772713,
       "description": "ECD of 15 and 25 should return 5",
       "execution_result": "success",
       "included_in_aggregates": true,
@@ -49,7 +49,7 @@
       "name": "ecd_15_25"
     },
     {
-      "cpu_units": 3771069,
+      "cpu_units": 3772713,
       "description": "ECD of 17 and 19 should return 1 (coprime numbers)",
       "execution_result": "success",
       "included_in_aggregates": true,
@@ -57,7 +57,7 @@
       "name": "ecd_17_19"
     },
     {
-      "cpu_units": 3771069,
+      "cpu_units": 3772713,
       "description": "ECD of 13 and 29 should return 1 (coprime numbers)",
       "execution_result": "success",
       "included_in_aggregates": true,
@@ -65,7 +65,7 @@
       "name": "ecd_13_29"
     },
     {
-      "cpu_units": 3062757,
+      "cpu_units": 3063990,
       "description": "ECD of 48 and 18 should return 6",
       "execution_result": "success",
       "included_in_aggregates": true,
@@ -73,7 +73,7 @@
       "name": "ecd_48_18"
     },
     {
-      "cpu_units": 2354445,
+      "cpu_units": 2355267,
       "description": "ECD of 100 and 75 should return 25",
       "execution_result": "success",
       "included_in_aggregates": true,
@@ -81,7 +81,7 @@
       "name": "ecd_100_75"
     },
     {
-      "cpu_units": 3062757,
+      "cpu_units": 3063990,
       "description": "ECD of 1071 and 462 should return 21 (larger numbers)",
       "execution_result": "success",
       "included_in_aggregates": true,
@@ -89,7 +89,7 @@
       "name": "ecd_1071_462"
     },
     {
-      "cpu_units": 2354445,
+      "cpu_units": 2355267,
       "description": "ECD of 2520 and 1890 should return 630 (larger numbers)",
       "execution_result": "success",
       "included_in_aggregates": true,
@@ -97,7 +97,7 @@
       "name": "ecd_2520_1890"
     },
     {
-      "cpu_units": 2354445,
+      "cpu_units": 2355267,
       "description": "ECD of -12 and 8 should return 4 (negative first argument handled via abs)",
       "execution_result": "success",
       "included_in_aggregates": true,
@@ -105,7 +105,7 @@
       "name": "ecd_negative_12_8"
     },
     {
-      "cpu_units": 2519653,
+      "cpu_units": 2520475,
       "description": "ECD of 12 and -8 should return 4 (negative second argument handled via abs)",
       "execution_result": "success",
       "included_in_aggregates": true,
@@ -114,16 +114,16 @@
     }
   ],
   "execution_environment": {
-    "evaluator": "PlutusTx.Eval-1.45.0.0"
+    "evaluator": "PlutusTx.Eval-1.63.0.0"
   },
   "measurements": {
-    "block_cpu_budget_pct": 0.009427672500000001,
-    "block_memory_budget_pct": 0.02518709677419355,
+    "block_cpu_budget_pct": 0.018863565,
+    "block_memory_budget_pct": 0.02168888888888889,
     "cpu_units": {
-      "maximum": 3771069,
-      "median": 2437049,
+      "maximum": 3772713,
+      "median": 2437871,
       "minimum": 937821,
-      "sum": 36668998
+      "sum": 36682561
     },
     "excluded": {
       "count": 0,
@@ -136,7 +136,7 @@
         "sum": 0
       }
     },
-    "execution_fee_lovelace": 11562,
+    "execution_fee_lovelace": 11563,
     "memory_units": {
       "maximum": 15616,
       "median": 10211,
@@ -145,15 +145,15 @@
     },
     "reference_script_fee_lovelace": 840,
     "script_size_bytes": 56,
-    "scripts_per_block": 3970,
-    "scripts_per_tx": 896,
+    "scripts_per_block": 4610,
+    "scripts_per_tx": 1056,
     "term_size": 57,
-    "total_fee_lovelace": 12402,
-    "tx_cpu_budget_pct": 0.037710690000000005,
-    "tx_memory_budget_pct": 0.11154285714285715
+    "total_fee_lovelace": 12403,
+    "tx_cpu_budget_pct": 0.03772713,
+    "tx_memory_budget_pct": 0.09464242424242424
   },
   "scenario": "ecd",
-  "timestamp": "2026-07-06T11:37:57Z",
+  "timestamp": "2026-08-12T10:54:10Z",
   "version": "2.0.0",
   "notes": "Generated using UPLC-CAPE measure tool"
 }

@@ -57,8 +57,8 @@
         "min_plutus_version": {
           "type": "string",
           "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+\\.[0-9]+$",
-          "description": "Minimum plutus-core version required to evaluate this submission. Submissions requiring a version higher than the current production version appear only in the preview report. Omit for submissions compatible with the current production version.",
-          "examples": ["1.45.0.0", "1.60.0.0"]
+          "description": "Minimum plutus-core version required to evaluate this submission, compared against CAPE_CURRENT_PLUTUS_VERSION in scripts/lib/cape_versions.sh. A submission above that threshold is measured with the preview evaluator instead of the production one, and is skipped by 'cape submission verify --all'. Omit for submissions the production evaluator can execute, which is the normal case. Note this drives measurement only: which track a submission is rendered in is decided by its directory-name variant suffix.",
+          "examples": ["1.63.0.0", "1.68.0.0"]
         }
       },
       "required": ["target"],

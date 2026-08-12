@@ -51,9 +51,9 @@ direnv allow # Or use direnv (recommended)
 
 **Package Versions (CHaP):**
 
-- plutus-core >= 1.45.0.0
-- plutus-tx >= 1.45.0.0
-- plutus-ledger-api >= 1.45.0.0
+- plutus-core ^>= 1.63 (the line `cardano-node` 11.0.1 ships, i.e. what mainnet charges)
+- plutus-tx ^>= 1.63
+- plutus-ledger-api ^>= 1.63
 - relude ^>= 1.2.2 (replaces Prelude for consistency)
 
 > Plinth (PlutusTx) source for benchmark submissions lives in the

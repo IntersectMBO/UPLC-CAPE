@@ -234,11 +234,11 @@
     }
   ],
   "execution_environment": {
-    "evaluator": "PlutusTx.Eval-1.65.0.0"
+    "evaluator": "PlutusTx.Eval-1.68.0.0"
   },
   "measurements": {
-    "block_cpu_budget_pct": 0.0776215425,
-    "block_memory_budget_pct": 0.1544209677419355,
+    "block_cpu_budget_pct": 0.155243085,
+    "block_memory_budget_pct": 0.1329736111111111,
     "cpu_units": {
       "maximum": 31048617,
       "median": 31048617,
@@ -265,14 +265,14 @@
     },
     "reference_script_fee_lovelace": 13380,
     "script_size_bytes": 892,
-    "scripts_per_block": 647,
-    "scripts_per_tx": 146,
+    "scripts_per_block": 644,
+    "scripts_per_tx": 172,
     "term_size": 899,
     "total_fee_lovelace": 48971,
     "tx_cpu_budget_pct": 0.31048617,
-    "tx_memory_budget_pct": 0.6838642857142857
+    "tx_memory_budget_pct": 0.5802484848484848
   },
   "scenario": "linear_vesting",
-  "timestamp": "2026-07-08T14:37:18Z",
+  "timestamp": "2026-09-03T09:09:20Z",
   "version": "2.0.0"
 }

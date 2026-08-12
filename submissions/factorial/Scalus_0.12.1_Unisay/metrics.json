@@ -82,11 +82,11 @@
     }
   ],
   "execution_environment": {
-    "evaluator": "PlutusTx.Eval-1.45.0.0"
+    "evaluator": "PlutusTx.Eval-1.63.0.0"
   },
   "measurements": {
-    "block_cpu_budget_pct": 0.023021375,
-    "block_memory_budget_pct": 0.05415161290322581,
+    "block_cpu_budget_pct": 0.04604275,
+    "block_memory_budget_pct": 0.04663055555555556,
     "cpu_units": {
       "maximum": 9208550,
       "median": 3020150,
@@ -113,15 +113,15 @@
     },
     "reference_script_fee_lovelace": 600,
     "script_size_bytes": 40,
-    "scripts_per_block": 1846,
-    "scripts_per_tx": 416,
+    "scripts_per_block": 2144,
+    "scripts_per_tx": 491,
     "term_size": 33,
     "total_fee_lovelace": 11398,
     "tx_cpu_budget_pct": 0.0920855,
-    "tx_memory_budget_pct": 0.2398142857142857
+    "tx_memory_budget_pct": 0.2034787878787879
   },
   "scenario": "factorial",
-  "timestamp": "2026-07-06T11:37:58Z",
+  "timestamp": "2026-08-12T10:54:11Z",
   "version": "2.0.0",
   "notes": "Placeholder metrics - actual measurements to be performed by UPLC-CAPE benchmark framework"
 }

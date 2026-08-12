@@ -284,22 +284,22 @@ These metrics show what percentage of transaction and block execution budgets ar
 **Formula:**
 
 ```
-tx_memory_budget_pct = (memory_units.maximum / 14,000,000) × 100
+tx_memory_budget_pct = (memory_units.maximum / 16,500,000) × 100
 ```
 
-**Limit:** 14,000,000 memory units per transaction
+**Limit:** 16,500,000 memory units per transaction
 
 **Usage:** Indicates how much of the transaction's memory budget this script consumes in the worst case. Values >50% may limit how many scripts can fit in a transaction.
 
 **Example:**
 
 ```json
-"tx_memory_budget_pct": 7.14
+"tx_memory_budget_pct": 6.06
 ```
 
 _For 1,000,000 memory units:_
 
-- 1,000,000 / 14,000,000 × 100 = 7.14%
+- 1,000,000 / 16,500,000 × 100 = 6.06%
 
 #### `tx_cpu_budget_pct`
 
@@ -340,22 +340,22 @@ _For 500,000,000 CPU steps:_
 **Formula:**
 
 ```
-block_memory_budget_pct = (memory_units.maximum / 62,000,000) × 100
+block_memory_budget_pct = (memory_units.maximum / 72,000,000) × 100
 ```
 
-**Limit:** 62,000,000 memory units per block
+**Limit:** 72,000,000 memory units per block
 
 **Usage:** Indicates block-level resource consumption in the worst case. Useful for understanding blockchain capacity impact.
 
 **Example:**
 
 ```json
-"block_memory_budget_pct": 1.61
+"block_memory_budget_pct": 1.39
 ```
 
 _For 1,000,000 memory units:_
 
-- 1,000,000 / 62,000,000 × 100 = 1.61%
+- 1,000,000 / 72,000,000 × 100 = 1.39%
 
 #### `block_cpu_budget_pct`
 
@@ -368,22 +368,22 @@ _For 1,000,000 memory units:_
 **Formula:**
 
 ```
-block_cpu_budget_pct = (cpu_units.maximum / 40,000,000,000) × 100
+block_cpu_budget_pct = (cpu_units.maximum / 20,000,000,000) × 100
 ```
 
-**Limit:** 40,000,000,000 CPU steps per block
+**Limit:** 20,000,000,000 CPU steps per block
 
 **Usage:** Indicates block-level CPU consumption in the worst case.
 
 **Example:**
 
 ```json
-"block_cpu_budget_pct": 1.25
+"block_cpu_budget_pct": 2.5
 ```
 
 _For 500,000,000 CPU steps:_
 
-- 500,000,000 / 40,000,000,000 × 100 = 1.25%
+- 500,000,000 / 20,000,000,000 × 100 = 2.50%
 
 ### Capacity Calculations
 
@@ -401,7 +401,7 @@ These metrics indicate how many script executions can fit within transaction and
 
 ```
 scripts_per_tx = min(
-  floor(14,000,000 / memory_units.maximum),
+  floor(16,500,000 / memory_units.maximum),
   floor(10,000,000,000 / cpu_units.maximum)
 )
 ```
@@ -411,14 +411,14 @@ scripts_per_tx = min(
 **Example:**
 
 ```json
-"scripts_per_tx": 14
+"scripts_per_tx": 16
 ```
 
 _For 1,000,000 memory units and 500,000,000 CPU steps:_
 
-- Memory limit: 14,000,000 / 1,000,000 = 14
+- Memory limit: 16,500,000 / 1,000,000 = 16
 - CPU limit: 10,000,000,000 / 500,000,000 = 20
-- Result: min(14, 20) = 14 (memory-limited)
+- Result: min(16, 20) = 16 (memory-limited)
 
 #### `scripts_per_block`
 
@@ -432,8 +432,8 @@ _For 1,000,000 memory units and 500,000,000 CPU steps:_
 
 ```
 scripts_per_block = min(
-  floor(62,000,000 / memory_units.maximum),
-  floor(40,000,000,000 / cpu_units.maximum)
+  floor(72,000,000 / memory_units.maximum),
+  floor(20,000,000,000 / cpu_units.maximum)
 )
 ```
 
@@ -442,14 +442,14 @@ scripts_per_block = min(
 **Example:**
 
 ```json
-"scripts_per_block": 62
+"scripts_per_block": 40
 ```
 
 _For 1,000,000 memory units and 500,000,000 CPU steps:_
 
-- Memory limit: 62,000,000 / 1,000,000 = 62
-- CPU limit: 40,000,000,000 / 500,000,000 = 80
-- Result: min(62, 80) = 62 (memory-limited)
+- Memory limit: 72,000,000 / 1,000,000 = 72
+- CPU limit: 20,000,000,000 / 500,000,000 = 40
+- Result: min(72, 40) = 40 (CPU-limited)
 
 ---
 
@@ -485,17 +485,17 @@ See [ADR: Exclude Failure-Path Evaluations from Aggregated Metrics](adr/20260706
 
 ## Protocol Parameters Reference
 
-All derived metrics use Conway mainnet protocol parameters (as of 2025):
+All derived metrics use Conway mainnet protocol parameters, last verified at epoch 648 (protocol version 11.0, post van Rossem) via `curl -s https://api.koios.rest/api/v1/epoch_params`:
 
 ### Transaction Limits
 
-- **Max memory per transaction:** 14,000,000 units
+- **Max memory per transaction:** 16,500,000 units
 - **Max CPU per transaction:** 10,000,000,000 steps
 
 ### Block Limits
 
-- **Max memory per block:** 62,000,000 units
-- **Max CPU per block:** 40,000,000,000 steps
+- **Max memory per block:** 72,000,000 units
+- **Max CPU per block:** 20,000,000,000 steps
 
 ### Execution Unit Pricing
 

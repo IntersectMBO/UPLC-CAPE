@@ -1,25 +1,23 @@
--- Preview cabal project: uses latest plutus-core from CHaP
--- This file is used to build against a newer plutus-core version
--- that may include features not yet deployed on Cardano mainnet.
+-- Preview cabal project: uses the newest plutus-core release from CHaP.
+-- This file builds the measure-preview evaluator for submissions targeting
+-- a protocol version that mainnet has not activated yet.
 --
 -- Usage: cabal --project-file=cabal.project.preview build measure-preview
 
 import: cabal.project
 
--- Use a CHaP index-state new enough to resolve plutus-core 1.65.0.0
-index-state: cardano-haskell-packages 2026-05-28T00:00:00Z
-
--- Enable preview flag to build Preview.* modules with BuiltinCasing
+-- Enable preview flag to build the measure-preview executable
 flags: +preview
 
--- Pin plutus-* to the latest released line (1.65) so the haskell.nix shell's
--- globally installed 1.45 cannot win the solve. Mirrors the constraints used
--- in plinth-cape-submissions/cabal.project.
+-- Pin plutus-* to the latest released line (1.68, released 2026-08-21). The
+-- allow-newer below lifts cape.cabal's production ^>=1.63 bound; this block is
+-- what then forces 1.68 rather than letting the solver fall back. The CHaP
+-- index-state that resolves it is inherited from cabal.project.
 constraints:
-    plutus-core       ^>=1.65
-  , plutus-ledger-api ^>=1.65
-  , plutus-tx         ^>=1.65
-  , plutus-tx-plugin  ^>=1.65
+    plutus-core       ^>=1.68
+  , plutus-ledger-api ^>=1.68
+  , plutus-tx         ^>=1.68
+  , plutus-tx-plugin  ^>=1.68
 
 -- Relax version constraints to accept newer plutus packages
 allow-newer:

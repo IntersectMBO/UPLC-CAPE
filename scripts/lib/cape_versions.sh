@@ -1,11 +1,18 @@
 #!/usr/bin/env bash
 # CAPE version configuration for dual-CEK (current + preview) report filtering
 #
-# Current: production plutus-core version (matches cardano-node on mainnet)
-# Preview: latest tagged plutus release (may include features not yet on mainnet)
+# Current: production plutus-core version (matches cardano-node on mainnet).
+#   1.63.0.0 is the line shipped by cardano-node 11.0.1, the release running
+#   mainnet since the van Rossem hard fork (protocol v11, 2026-07-18). This is
+#   the only load-bearing constant here: cape_is_preview_submission compares
+#   every submission's min_plutus_version against it.
+# Preview: latest tagged plutus release, pinned in cabal.project.preview.
+#   Informational only -- nothing reads it. measure --preview deliberately runs
+#   every above-threshold submission against the single preview binary,
+#   whatever version each one declares.
 
-CAPE_CURRENT_PLUTUS_VERSION="1.45.0.0"
-CAPE_PREVIEW_PLUTUS_VERSION="1.60.0.0"
+CAPE_CURRENT_PLUTUS_VERSION="1.63.0.0"
+CAPE_PREVIEW_PLUTUS_VERSION="1.68.0.0"
 
 # Compare two semver4 versions using sort -V
 # Returns 0 (true) if $1 > $2
