@@ -6,7 +6,8 @@
   "compilation_config": {
     "optimization_level": "Plinth",
     "target": "uplc",
-    "flags": ["Plinth"]
+    "flags": ["Plinth"],
+    "min_protocol_version": 11
   },
   "contributors": [
     {

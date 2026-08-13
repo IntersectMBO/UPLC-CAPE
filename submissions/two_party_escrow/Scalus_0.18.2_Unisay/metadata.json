@@ -9,7 +9,8 @@
     "target": "uplc",
     "flags": [
       "Scalus"
-    ]
+    ],
+    "min_protocol_version": 11
   },
   "contributors": [
     {

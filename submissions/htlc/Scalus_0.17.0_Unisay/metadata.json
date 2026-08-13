@@ -7,7 +7,8 @@
   "compilation_config": {
     "optimization_level": "Scalus",
     "target": "uplc",
-    "flags": ["Scalus"]
+    "flags": ["Scalus"],
+    "min_protocol_version": 11
   },
   "contributors": [
     {

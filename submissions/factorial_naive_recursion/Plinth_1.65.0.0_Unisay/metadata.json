@@ -10,7 +10,8 @@
     "flags": [
       "Plinth",
       "BuiltinCasing"
-    ]
+    ],
+    "min_protocol_version": 11
   },
   "contributors": [
     {
