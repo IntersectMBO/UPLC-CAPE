@@ -18,7 +18,8 @@
   "submission": {
     "date": "2026-04-22T00:00:00Z",
     "source_available": true,
-    "source_repository": "https://github.com/IntersectMBO/UPLC-CAPE",
+    "source_repository": "https://github.com/Unisay/plinth-cape-submissions",
+    "source_commit_hash": "b09485c75e3ab6b596b9613320abc2b325087612",
     "implementation_notes": "HTLC validator compiled with Plinth 1.61.0.0 and the `datatypes=BuiltinCasing` plugin flag. Requires plutus-core >= 1.61.0.0, which mainnet has run since the van Rossem hard fork (protocol version 11, 2026-07-18)."
   }
 }
