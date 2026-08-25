@@ -890,7 +890,8 @@ resolveScriptContextReference dataStructures refName =
 {- | Build a Value from a ValueSpec (lovelace + optional assets).
 
 Constructs a multi-asset Value by starting with lovelace and combining
-each resolved asset value using @foldl'@ and @(<>)@.
+each resolved asset value using @foldl'@ and @(<>)@, then re-sorting the
+result into canonical key order (see 'canonicalValue').
 -}
 buildValue ::
   HaskellMap.Map Text DataStructureEntry ->
@@ -902,7 +903,39 @@ buildValue dataStructures ValueSpec {vsLovelace, vsAssets} = do
     [] -> pure adaValue
     assets -> do
       assetValues <- traverse (resolveAsset dataStructures) assets
-      pure $ foldl' (<>) adaValue assetValues
+      pure $ canonicalValue $ foldl' (<>) adaValue assetValues
+
+{- | Re-sort a 'V3.Value' into canonical key order: the outer
+currency-symbol map and each inner token-name map in strictly ascending
+byte-lexicographic order, i.e. ADA's empty currency symbol always first.
+
+The Data-backed 'V3.Value' 'Semigroup' offers no ordering guarantee: it
+is built on @PlutusTx.Data.AssocMap.union@, whose @safeAppend@ inserts
+the left map's unmatched keys *after* the right map's entries. Combining
+@adaValue <> assetValue@ therefore yields the asset's currency symbol
+before ADA's empty one - the reverse of canonical order.
+
+Real ledger-produced @Value@s are always canonically sorted, and
+CIP-0153's @unValueData@ builtin (plutus-core >= 1.65,
+@PlutusCore.Value.buildValueWith@) rejects non-canonical encodings
+outright instead of normalising them. Without this re-sort, any
+submission whose validator decodes a fixture-provided multi-asset value
+with @unValueData@ fails with a machine error even though the validator
+is correct. Sorting here makes fixture values indistinguishable from
+real ledger-constructed ones.
+-}
+canonicalValue :: V3.Value -> V3.Value
+canonicalValue value =
+  case Builtins.builtinDataToData (V3.toBuiltinData value) of
+    PLC.Map outer ->
+      V3.unsafeFromBuiltinData . Builtins.dataToBuiltinData . PLC.Map $
+        sortOn fst (map (second sortInner) outer)
+    -- A Value's Data encoding is always a Map; anything else is left as-is.
+    other -> V3.unsafeFromBuiltinData (Builtins.dataToBuiltinData other)
+  where
+    sortInner :: PLC.Data -> PLC.Data
+    sortInner (PLC.Map inner) = PLC.Map (sortOn fst inner)
+    sortInner other = other
 
 {- | Resolve an AssetSpec into a singleton Value.
 
