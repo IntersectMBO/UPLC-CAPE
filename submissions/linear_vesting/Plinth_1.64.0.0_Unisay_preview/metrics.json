@@ -1,35 +1,35 @@
 {
   "evaluations": [
     {
-      "cpu_units": 88100833,
+      "cpu_units": 90809919,
       "description": "PartialUnlock at time=11 with 900 tokens remaining should succeed (first installment unlocked)",
       "execution_result": "success",
       "included_in_aggregates": true,
-      "memory_units": 322471,
+      "memory_units": 326473,
       "name": "partial_unlock_first_installment"
     },
     {
-      "cpu_units": 91881427,
+      "cpu_units": 94590513,
       "description": "PartialUnlock at time=50 with 500 tokens remaining should succeed (half vested)",
       "execution_result": "success",
       "included_in_aggregates": true,
-      "memory_units": 332224,
+      "memory_units": 336226,
       "name": "partial_unlock_mid_vesting"
     },
     {
-      "cpu_units": 91881427,
+      "cpu_units": 94590513,
       "description": "PartialUnlock at time=91 with 100 tokens remaining should succeed (9 installments unlocked)",
       "execution_result": "success",
       "included_in_aggregates": true,
-      "memory_units": 332224,
+      "memory_units": 336226,
       "name": "partial_unlock_near_end"
     },
     {
-      "cpu_units": 91881427,
+      "cpu_units": 94590513,
       "description": "PartialUnlock at time=25 with 800 tokens remaining should succeed (between installment boundaries)",
       "execution_result": "success",
       "included_in_aggregates": true,
-      "memory_units": 332224,
+      "memory_units": 336226,
       "name": "partial_unlock_between_installments"
     },
     {
@@ -89,99 +89,99 @@
       "name": "redeemer_list"
     },
     {
-      "cpu_units": 73023770,
+      "cpu_units": 75092856,
       "description": "PartialUnlock without beneficiary signature should fail",
       "execution_result": "success",
       "included_in_aggregates": false,
-      "memory_units": 271748,
+      "memory_units": 271750,
       "name": "partial_unlock_missing_signature"
     },
     {
-      "cpu_units": 73072967,
+      "cpu_units": 75142053,
       "description": "PartialUnlock with impostor signature instead of beneficiary should fail",
       "execution_result": "success",
       "included_in_aggregates": false,
-      "memory_units": 271781,
+      "memory_units": 271783,
       "name": "partial_unlock_wrong_signature"
     },
     {
-      "cpu_units": 73023770,
+      "cpu_units": 75092856,
       "description": "PartialUnlock with no signatures at all should fail",
       "execution_result": "success",
       "included_in_aggregates": false,
-      "memory_units": 271748,
+      "memory_units": 271750,
       "name": "partial_unlock_no_signatures"
     },
     {
-      "cpu_units": 73116804,
+      "cpu_units": 75185890,
       "description": "PartialUnlock at time=5 should fail (before firstUnlockPossibleAfter=10)",
       "execution_result": "success",
       "included_in_aggregates": false,
-      "memory_units": 271782,
+      "memory_units": 271784,
       "name": "partial_unlock_before_first_unlock"
     },
     {
-      "cpu_units": 73116804,
+      "cpu_units": 75185890,
       "description": "PartialUnlock at time=10 should fail (at boundary, must be strictly after firstUnlockPossibleAfter)",
       "execution_result": "success",
       "included_in_aggregates": false,
-      "memory_units": 271782,
+      "memory_units": 271784,
       "name": "partial_unlock_at_first_unlock"
     },
     {
-      "cpu_units": 75437235,
+      "cpu_units": 80706321,
       "description": "PartialUnlock with 0 tokens remaining in output should fail (must use FullUnlock instead)",
       "execution_result": "success",
       "included_in_aggregates": false,
-      "memory_units": 272136,
+      "memory_units": 292138,
       "name": "partial_unlock_zero_remaining"
     },
     {
-      "cpu_units": 75481072,
+      "cpu_units": 80750158,
       "description": "PartialUnlock with output tokens equal to input (1000) should fail (no tokens actually withdrawn)",
       "execution_result": "success",
       "included_in_aggregates": false,
-      "memory_units": 272137,
+      "memory_units": 292139,
       "name": "partial_unlock_not_decreasing"
     },
     {
-      "cpu_units": 75533405,
+      "cpu_units": 80802491,
       "description": "PartialUnlock at time=11 with 800 tokens remaining should fail (expected minimum 900)",
       "execution_result": "success",
       "included_in_aggregates": false,
-      "memory_units": 272138,
+      "memory_units": 292140,
       "name": "partial_unlock_wrong_remaining_too_low"
     },
     {
-      "cpu_units": 75533405,
+      "cpu_units": 80802491,
       "description": "PartialUnlock at time=11 with 950 tokens remaining should fail (must withdraw at least 1 installment)",
       "execution_result": "success",
       "included_in_aggregates": false,
-      "memory_units": 272138,
+      "memory_units": 292140,
       "name": "partial_unlock_wrong_remaining_too_high"
     },
     {
-      "cpu_units": 78341083,
+      "cpu_units": 83610169,
       "description": "PartialUnlock with modified datum on continuing output should fail (datum must be preserved)",
       "execution_result": "success",
       "included_in_aggregates": false,
-      "memory_units": 272139,
+      "memory_units": 292141,
       "name": "partial_unlock_datum_modified"
     },
     {
-      "cpu_units": 76540669,
+      "cpu_units": 81809755,
       "description": "PartialUnlock with no datum on continuing output should fail",
       "execution_result": "success",
       "included_in_aggregates": false,
-      "memory_units": 272139,
+      "memory_units": 292141,
       "name": "partial_unlock_datum_missing"
     },
     {
-      "cpu_units": 91184136,
+      "cpu_units": 93253222,
       "description": "PartialUnlock with two script inputs should fail (double satisfaction attack)",
       "execution_result": "success",
       "included_in_aggregates": false,
-      "memory_units": 334451,
+      "memory_units": 334453,
       "name": "partial_unlock_double_satisfaction"
     },
     {
@@ -217,11 +217,11 @@
       "name": "full_unlock_at_period_end"
     },
     {
-      "cpu_units": 68717997,
+      "cpu_units": 73987083,
       "description": "PartialUnlock with no lower bound (-inf) should fail; the lower bound must be finite",
       "execution_result": "success",
       "included_in_aggregates": false,
-      "memory_units": 251607,
+      "memory_units": 271609,
       "name": "partial_unlock_infinite_lower_bound"
     },
     {
@@ -237,42 +237,42 @@
     "evaluator": "PlutusTx.Eval-1.65.0.0"
   },
   "measurements": {
-    "block_cpu_budget_pct": 0.2297035675,
-    "block_memory_budget_pct": 0.5358451612903226,
+    "block_cpu_budget_pct": 0.2364762825,
+    "block_memory_budget_pct": 0.5423,
     "cpu_units": {
-      "maximum": 91881427,
-      "median": 89991130,
+      "maximum": 94590513,
+      "median": 92700216,
       "minimum": 26546666,
-      "sum": 416838446
+      "sum": 427674790
     },
     "excluded": {
       "count": 23,
       "cpu_units": {
-        "maximum": 91184136,
-        "sum": 1103107979
+        "maximum": 93253222,
+        "sum": 1152406097
       },
       "memory_units": {
-        "maximum": 334451,
-        "sum": 4062778
+        "maximum": 334453,
+        "sum": 4202804
       }
     },
-    "execution_fee_lovelace": 118601,
+    "execution_fee_lovelace": 120306,
     "memory_units": {
-      "maximum": 332224,
-      "median": 327347,
+      "maximum": 336226,
+      "median": 331349,
       "minimum": 107725,
-      "sum": 1534593
+      "sum": 1550601
     },
     "reference_script_fee_lovelace": 19560,
     "script_size_bytes": 1304,
-    "scripts_per_block": 186,
-    "scripts_per_tx": 42,
+    "scripts_per_block": 184,
+    "scripts_per_tx": 41,
     "term_size": 1467,
-    "total_fee_lovelace": 138161,
-    "tx_cpu_budget_pct": 0.91881427,
-    "tx_memory_budget_pct": 2.3730285714285713
+    "total_fee_lovelace": 139866,
+    "tx_cpu_budget_pct": 0.94590513,
+    "tx_memory_budget_pct": 2.401614285714286
   },
   "scenario": "linear_vesting",
-  "timestamp": "2026-07-06T12:45:33Z",
+  "timestamp": "2026-08-25T15:45:04Z",
   "version": "2.0.0"
 }

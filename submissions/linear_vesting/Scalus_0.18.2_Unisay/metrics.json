@@ -1,35 +1,35 @@
 {
   "evaluations": [
     {
-      "cpu_units": 66076091,
+      "cpu_units": 71301995,
       "description": "PartialUnlock at time=11 with 900 tokens remaining should succeed (first installment unlocked)",
       "execution_result": "success",
       "included_in_aggregates": true,
-      "memory_units": 189046,
+      "memory_units": 208374,
       "name": "partial_unlock_first_installment"
     },
     {
-      "cpu_units": 69552166,
+      "cpu_units": 74778070,
       "description": "PartialUnlock at time=50 with 500 tokens remaining should succeed (half vested)",
       "execution_result": "success",
       "included_in_aggregates": true,
-      "memory_units": 196532,
+      "memory_units": 215860,
       "name": "partial_unlock_mid_vesting"
     },
     {
-      "cpu_units": 69552166,
+      "cpu_units": 74778070,
       "description": "PartialUnlock at time=91 with 100 tokens remaining should succeed (9 installments unlocked)",
       "execution_result": "success",
       "included_in_aggregates": true,
-      "memory_units": 196532,
+      "memory_units": 215860,
       "name": "partial_unlock_near_end"
     },
     {
-      "cpu_units": 69552166,
+      "cpu_units": 74778070,
       "description": "PartialUnlock at time=25 with 800 tokens remaining should succeed (between installment boundaries)",
       "execution_result": "success",
       "included_in_aggregates": true,
-      "memory_units": 196532,
+      "memory_units": 215860,
       "name": "partial_unlock_between_installments"
     },
     {
@@ -129,51 +129,51 @@
       "name": "partial_unlock_at_first_unlock"
     },
     {
-      "cpu_units": 59234473,
+      "cpu_units": 64652377,
       "description": "PartialUnlock with 0 tokens remaining in output should fail (must use FullUnlock instead)",
       "execution_result": "success",
       "included_in_aggregates": false,
-      "memory_units": 169299,
+      "memory_units": 189827,
       "name": "partial_unlock_zero_remaining"
     },
     {
-      "cpu_units": 59355812,
+      "cpu_units": 64773716,
       "description": "PartialUnlock with output tokens equal to input (1000) should fail (no tokens actually withdrawn)",
       "execution_result": "success",
       "included_in_aggregates": false,
-      "memory_units": 169301,
+      "memory_units": 189829,
       "name": "partial_unlock_not_decreasing"
     },
     {
-      "cpu_units": 65052735,
+      "cpu_units": 70470639,
       "description": "PartialUnlock at time=11 with 800 tokens remaining should fail (expected minimum 900)",
       "execution_result": "success",
       "included_in_aggregates": false,
-      "memory_units": 189836,
+      "memory_units": 210364,
       "name": "partial_unlock_wrong_remaining_too_low"
     },
     {
-      "cpu_units": 65052735,
+      "cpu_units": 70470639,
       "description": "PartialUnlock at time=11 with 950 tokens remaining should fail (must withdraw at least 1 installment)",
       "execution_result": "success",
       "included_in_aggregates": false,
-      "memory_units": 189836,
+      "memory_units": 210364,
       "name": "partial_unlock_wrong_remaining_too_high"
     },
     {
-      "cpu_units": 68512166,
+      "cpu_units": 73930070,
       "description": "PartialUnlock with modified datum on continuing output should fail (datum must be preserved)",
       "execution_result": "success",
       "included_in_aggregates": false,
-      "memory_units": 190032,
+      "memory_units": 210560,
       "name": "partial_unlock_datum_modified"
     },
     {
-      "cpu_units": 65512413,
+      "cpu_units": 70930317,
       "description": "PartialUnlock with no datum on continuing output should fail",
       "execution_result": "success",
       "included_in_aggregates": false,
-      "memory_units": 189966,
+      "memory_units": 210494,
       "name": "partial_unlock_datum_missing"
     },
     {
@@ -237,43 +237,43 @@
     "evaluator": "PlutusTx.Eval-1.45.0.0"
   },
   "measurements": {
-    "block_cpu_budget_pct": 0.173880415,
-    "block_memory_budget_pct": 0.31698709677419357,
+    "block_cpu_budget_pct": 0.18694517500000002,
+    "block_memory_budget_pct": 0.34816129032258064,
     "cpu_units": {
-      "maximum": 69552166,
-      "median": 67814128,
+      "maximum": 74778070,
+      "median": 73040032,
       "minimum": 16359880,
-      "sum": 307452349
+      "sum": 328355965
     },
     "excluded": {
       "count": 23,
       "cpu_units": {
-        "maximum": 68512166,
-        "sum": 552060613
+        "maximum": 73930070,
+        "sum": 584568037
       },
       "memory_units": {
-        "maximum": 190032,
-        "sum": 1549341
+        "maximum": 210560,
+        "sum": 1672509
       }
     },
-    "execution_fee_lovelace": 72574,
+    "execution_fee_lovelace": 78542,
     "memory_units": {
-      "maximum": 196532,
-      "median": 192789,
+      "maximum": 215860,
+      "median": 212117,
       "minimum": 47477,
-      "sum": 873596
+      "sum": 950908
     },
     "reference_script_fee_lovelace": 21045,
     "script_size_bytes": 1403,
-    "scripts_per_block": 315,
-    "scripts_per_tx": 71,
+    "scripts_per_block": 287,
+    "scripts_per_tx": 64,
     "term_size": 1383,
-    "total_fee_lovelace": 93619,
-    "tx_cpu_budget_pct": 0.69552166,
-    "tx_memory_budget_pct": 1.4038
+    "total_fee_lovelace": 99587,
+    "tx_cpu_budget_pct": 0.7477807000000001,
+    "tx_memory_budget_pct": 1.5418571428571428
   },
   "scenario": "linear_vesting",
-  "timestamp": "2026-07-07T17:08:11Z",
+  "timestamp": "2026-08-25T15:42:43Z",
   "version": "2.0.0",
   "notes": "Generated using UPLC-CAPE measure tool"
 }
