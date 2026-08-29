@@ -363,7 +363,9 @@ data PatchOperationSpec
     --     }
     --     @
     AddInputUTXOSpec Text ValueSpec Bool (Maybe AesonTypes.Value)
-  | -- | Set validity range
+  | -- | Set validity range. @from_time@ is the inclusive lower bound and
+    -- @to_time@ the exclusive upper bound, exactly as the ledger translates
+    -- a transaction's validity interval; an omitted bound is infinite.
     --
     --     JSON example:
     --     @
