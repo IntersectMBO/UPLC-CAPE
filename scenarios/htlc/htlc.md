@@ -196,7 +196,7 @@ Both **Claim** and **Refund** sequences are measured for comprehensive performan
 - **Time Check**: Lower bound of valid range must be finite and strictly greater than `timeout`
 - **Single Script Input**: Exactly one input from this script address (prevents double satisfaction)
 
-**Note on time semantics**: For the claim path the validator reads the **upper bound** of `txInfoValidRange`; it must be finite (an infinite upper bound is rejected) and must satisfy `upperBound < timeout` (strict). For the refund path the validator reads the **lower bound**; it must be finite (an infinite lower bound is rejected) and must satisfy `lowerBound > timeout` (strict). For a finite inclusive upper bound `t`, `upperBound = t`; for a finite exclusive upper bound `t`, `upperBound = t − 1`. Symmetrically for the lower bound: inclusive `t` ⇒ `lowerBound = t`; exclusive `t` ⇒ `lowerBound = t + 1`. This is the production-safe convention — using the upper bound for the "before deadline" check guarantees the real block time cannot exceed the deadline even when the transaction specifies an unusually wide validity range. Linear Vesting and Two-Party Escrow currently use a different convention; unification is tracked in a follow-up issue.
+**Note on time semantics**: For the claim path the validator reads the **upper bound** of `txInfoValidRange`; it must be finite (an infinite upper bound is rejected) and must satisfy `upperBound < timeout` (strict). For the refund path the validator reads the **lower bound**; it must be finite (an infinite lower bound is rejected) and must satisfy `lowerBound > timeout` (strict). The ledger fixes the closure of both bounds when it builds the script context (`transValidityInterval` in cardano-ledger): a finite lower bound is always inclusive, `LowerBound (Finite t) True`, and a finite upper bound is always exclusive, `UpperBound (Finite t) False`. So `lowerBound = t` for a finite lower bound `Finite t`, and `upperBound = t − 1` for a finite upper bound `Finite t`. A validator does not need to read the closure flag, and the fixtures never set a closure the ledger would not produce. This is the production-safe convention – using the upper bound for the "before deadline" check guarantees the real block time cannot exceed the deadline even when the transaction specifies an unusually wide validity range. Linear Vesting and Two-Party Escrow follow the same convention (IntersectMBO/UPLC-CAPE#171).
 
 ## Test Constants and Fixed Values
 
@@ -245,7 +245,7 @@ The HTLC tests rely on a consistent set of fixed constants to ensure reproducibl
 
 **Temporal Boundaries:**
 
-Claim fixtures use a point interval `[t, t]` so the upper bound equals `t`; refund fixtures use `[t, +∞)` so the lower bound equals `t`.
+Claim fixtures set `from_time = t` and `to_time = t + 1`, which the test framework encodes as `[t, t + 1)` (exclusive upper bound, as the ledger does), so `upperBound = t`. Refund fixtures set `from_time = t` and no upper bound, `[t, +∞)`, so `lowerBound = t`.
 
 - **Well Before Timeout**: time=50 — Valid for claim (upperBound=50 < 100)
 - **Just Before Timeout**: time=99 — Valid for claim (upperBound=99 < 100)
@@ -321,7 +321,7 @@ The HTLC validator is tested through a comprehensive suite of test cases coverin
 
 - **`refund_at_timeout`** Verifies refund fails at time=100, exactly at the timeout boundary. The check is strictly greater than, so equal is not sufficient.
 
-- **`refund_infinite_lower_bound`** Verifies refund fails when the validity range has no lower bound (`(−∞, 200]`). The validator rejects an infinite lower bound.
+- **`refund_infinite_lower_bound`** Verifies refund fails when the validity range has no lower bound (`(−∞, 201)`). The validator rejects an infinite lower bound.
 
 ### Refund Double Satisfaction Test
 

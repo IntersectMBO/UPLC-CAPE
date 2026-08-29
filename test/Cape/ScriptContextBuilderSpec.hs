@@ -288,7 +288,7 @@ spec = do
             range
               `shouldBe` Interval
                 (LowerBound (Finite fromTime) True)
-                (UpperBound (Finite toTime) True)
+                (UpperBound (Finite toTime) False)
           Left err -> expectationFailure $ "Unexpected error: " <> show err
 
       it "sets validity range with only lower bound" do
@@ -314,7 +314,7 @@ spec = do
             range
               `shouldBe` Interval
                 (LowerBound NegInf True)
-                (UpperBound (Finite toTime) True)
+                (UpperBound (Finite toTime) False)
           Left err -> expectationFailure $ "Unexpected error: " <> show err
 
       it "sets unbounded range when both are Nothing" do
@@ -346,7 +346,7 @@ spec = do
           txInfoValidRange (scriptContextTxInfo ctx)
             `shouldBe` Interval
               (LowerBound (Finite fromTime) True)
-              (UpperBound (Finite toTime) True)
+              (UpperBound (Finite toTime) False)
         Left err -> expectationFailure $ "Unexpected error: " <> show err
 
     it "returns original context when no patches" do
@@ -443,7 +443,7 @@ spec = do
           txInfoValidRange (scriptContextTxInfo ctx)
             `shouldBe` Interval
               (LowerBound (Finite fromTime) True)
-              (UpperBound (Finite toTime) True)
+              (UpperBound (Finite toTime) False)
         Left err -> expectationFailure $ "Unexpected error: " <> show err
 
   describe "buildScriptContext" do
@@ -506,7 +506,7 @@ spec = do
           txInfoValidRange (scriptContextTxInfo ctx)
             `shouldBe` Interval
               (LowerBound (Finite fromTime) True)
-              (UpperBound (Finite toTime) True)
+              (UpperBound (Finite toTime) False)
         Left err -> expectationFailure $ "Unexpected error: " <> show err
 
   describe "BuildError cases" do
