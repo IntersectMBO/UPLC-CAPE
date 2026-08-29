@@ -155,6 +155,12 @@ applyPatch ctx patch =
           updatedInputs = List.cons txIn (txInfoInputs txInfo)
           updatedTxInfo = txInfo {txInfoInputs = updatedInputs}
       pure $ ctx {scriptContextTxInfo = updatedTxInfo}
+    -- Mirror the ledger's translation of a transaction validity interval
+    -- (cardano-ledger, Cardano.Ledger.Conway.TxInfo.transValidityInterval):
+    -- a finite lower bound is closed (PV1.lowerBound), a finite upper bound is
+    -- open (PV1.strictUpperBound), and an omitted bound becomes NegInf/PosInf.
+    -- The ledger never produces a finite inclusive upper bound or a finite
+    -- exclusive lower bound, so this builder cannot express one either.
     SetValidRange fromTime toTime -> do
       let txInfo = scriptContextTxInfo ctx
           newRange =
@@ -166,7 +172,7 @@ applyPatch ctx patch =
               )
               ( maybe
                   (UpperBound PosInf True)
-                  (\t -> UpperBound (Finite t) True)
+                  (\t -> UpperBound (Finite t) False)
                   toTime
               )
           updatedTxInfo = txInfo {txInfoValidRange = newRange}

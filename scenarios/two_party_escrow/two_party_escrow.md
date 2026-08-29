@@ -208,7 +208,7 @@ Both **Accept** and **Refund** sequences are measured for comprehensive performa
 - **State Check**: Valid deposit exists
 - **Timing**: Lower bound of valid range must be finite and strictly greater than `depositTime + 1800`
 
-**Note on time semantics**: The deposit path records `depositTime` as the **upper bound** of the deposit transaction's `txInfoValidRange`; it must be finite (an infinite upper bound is rejected). This is the production-safe convention — recording the latest possible slot for the deposit ensures the refund deadline is computed conservatively: the seller has at least `refundTime` from the deposit's upper bound before the buyer can reclaim funds. The refund path reads the **lower bound** of `txInfoValidRange`; it must be finite (an infinite lower bound is rejected) and must satisfy `lowerBound > depositTime + refundTime` (strict). For a finite inclusive upper bound `t`, `upperBound = t`; for a finite exclusive upper bound `t`, `upperBound = t − 1`. Symmetrically for the lower bound: inclusive `t` ⇒ `lowerBound = t`; exclusive `t` ⇒ `lowerBound = t + 1`. Deposit fixtures use a point interval `[t, t]` so the upper bound equals `t`; refund fixtures use `[t, +∞)` so the lower bound equals `t`.
+**Note on time semantics**: The deposit path records `depositTime` as the **upper bound** of the deposit transaction's `txInfoValidRange`; it must be finite (an infinite upper bound is rejected). This is the production-safe convention – recording the latest possible slot for the deposit ensures the refund deadline is computed conservatively: the seller has at least `refundTime` from the deposit's upper bound before the buyer can reclaim funds. The refund path reads the **lower bound** of `txInfoValidRange`; it must be finite (an infinite lower bound is rejected) and must satisfy `lowerBound > depositTime + refundTime` (strict). The ledger fixes the closure of both bounds when it builds the script context (`transValidityInterval` in cardano-ledger): a finite lower bound is always inclusive, `LowerBound (Finite t) True`, and a finite upper bound is always exclusive, `UpperBound (Finite t) False`. So `lowerBound = t` for a finite lower bound `Finite t`, and `upperBound = t − 1` for a finite upper bound `Finite t`. A validator does not need to read the closure flag, and the fixtures never set a closure the ledger would not produce. Deposit fixtures set `from_time = t` and `to_time = t + 1`, which the test framework encodes as `[t, t + 1)` (exclusive upper bound, as the ledger does), so `upperBound = t` and the recorded `depositTime` is `t`. Refund fixtures set `from_time = t` and no upper bound, `[t, +∞)`, so `lowerBound = t`.
 
 ## Test Constants and Fixed Values
 
@@ -407,7 +407,7 @@ The two-party escrow validator is tested through a comprehensive suite of test c
   Verifies deposit fails when the validity range has no upper bound (`[1000, +∞)`). The validator rejects an infinite upper bound when recording the deposit time.
 
 - **`refund_infinite_lower_bound`**  
-  Verifies refund fails when the validity range has no lower bound (`(−∞, 3000]`). The validator rejects an infinite lower bound.
+  Verifies refund fails when the validity range has no lower bound (`(−∞, 3001)`). The validator rejects an infinite lower bound.
 
 - **`refund_after_accept_should_fail`**  
   Verifies refund fails after seller has already accepted (state validation)

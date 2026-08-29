@@ -369,12 +369,12 @@
             "op": { "const": "set_valid_range" },
             "from_time": {
               "type": "integer",
-              "description": "Start time in POSIX seconds (optional)",
+              "description": "Inclusive lower bound in POSIX seconds (optional). Encoded as the ledger does: LowerBound (Finite t) True. Omitted means NegInf.",
               "minimum": 0
             },
             "to_time": {
               "type": "integer",
-              "description": "End time in POSIX seconds (optional)",
+              "description": "Exclusive upper bound in POSIX seconds (optional). Encoded as the ledger does: UpperBound (Finite t) False. Omitted means PosInf.",
               "minimum": 0
             }
           },
