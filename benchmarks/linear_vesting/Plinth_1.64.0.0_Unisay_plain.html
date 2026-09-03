@@ -183,8 +183,8 @@
                             <div class="eval-desc">PartialUnlock at time=11 with 900 tokens remaining should succeed (first installment unlocked)</div>
                         </td>
                         <td><span class="eval-result">success</span></td>
-                        <td class="num">131,694,726</td>
-                        <td class="num">449,451</td>
+                        <td class="num">88,100,833</td>
+                        <td class="num">322,471</td>
                     </tr>
                     
                     <tr>
@@ -193,8 +193,8 @@
                             <div class="eval-desc">PartialUnlock at time=50 with 500 tokens remaining should succeed (half vested)</div>
                         </td>
                         <td><span class="eval-result">success</span></td>
-                        <td class="num">137,635,819</td>
-                        <td class="num">466,301</td>
+                        <td class="num">91,881,427</td>
+                        <td class="num">332,224</td>
                     </tr>
                     
                     <tr>
@@ -203,8 +203,8 @@
                             <div class="eval-desc">PartialUnlock at time=91 with 100 tokens remaining should succeed (9 installments unlocked)</div>
                         </td>
                         <td><span class="eval-result">success</span></td>
-                        <td class="num">137,635,819</td>
-                        <td class="num">466,301</td>
+                        <td class="num">91,881,427</td>
+                        <td class="num">332,224</td>
                     </tr>
                     
                     <tr>
@@ -213,8 +213,8 @@
                             <div class="eval-desc">PartialUnlock at time=25 with 800 tokens remaining should succeed (between installment boundaries)</div>
                         </td>
                         <td><span class="eval-result">success</span></td>
-                        <td class="num">137,635,819</td>
-                        <td class="num">466,301</td>
+                        <td class="num">91,881,427</td>
+                        <td class="num">332,224</td>
                     </tr>
                     
                     <tr>
@@ -223,8 +223,8 @@
                             <div class="eval-desc">FullUnlock at time=101 (just after vesting period end) should succeed</div>
                         </td>
                         <td><span class="eval-result">success</span></td>
-                        <td class="num">40,081,175</td>
-                        <td class="num">147,383</td>
+                        <td class="num">26,546,666</td>
+                        <td class="num">107,725</td>
                     </tr>
                     
                     <tr>
@@ -233,8 +233,8 @@
                             <div class="eval-desc">FullUnlock at time=200 (well after vesting period end) should succeed</div>
                         </td>
                         <td><span class="eval-result">success</span></td>
-                        <td class="num">40,081,175</td>
-                        <td class="num">147,383</td>
+                        <td class="num">26,546,666</td>
+                        <td class="num">107,725</td>
                     </tr>
                     
                 </tbody>
@@ -313,8 +313,8 @@
                             <div class="eval-desc">PartialUnlock without beneficiary signature should fail</div>
                         </td>
                         <td><span class="eval-result">success</span></td>
-                        <td class="num">108,971,653</td>
-                        <td class="num">375,228</td>
+                        <td class="num">73,023,770</td>
+                        <td class="num">271,748</td>
                     </tr>
                     
                     <tr>
@@ -323,8 +323,8 @@
                             <div class="eval-desc">PartialUnlock with impostor signature instead of beneficiary should fail</div>
                         </td>
                         <td><span class="eval-result">success</span></td>
-                        <td class="num">109,394,706</td>
-                        <td class="num">375,358</td>
+                        <td class="num">73,072,967</td>
+                        <td class="num">271,781</td>
                     </tr>
                     
                     <tr>
@@ -333,8 +333,8 @@
                             <div class="eval-desc">PartialUnlock with no signatures at all should fail</div>
                         </td>
                         <td><span class="eval-result">success</span></td>
-                        <td class="num">108,971,653</td>
-                        <td class="num">375,228</td>
+                        <td class="num">73,023,770</td>
+                        <td class="num">271,748</td>
                     </tr>
                     
                     <tr>
@@ -343,8 +343,8 @@
                             <div class="eval-desc">PartialUnlock at time=5 should fail (before firstUnlockPossibleAfter=10)</div>
                         </td>
                         <td><span class="eval-result">success</span></td>
-                        <td class="num">109,381,598</td>
-                        <td class="num">375,328</td>
+                        <td class="num">73,116,804</td>
+                        <td class="num">271,782</td>
                     </tr>
                     
                     <tr>
@@ -353,8 +353,8 @@
                             <div class="eval-desc">PartialUnlock at time=10 should fail (at boundary, must be strictly after firstUnlockPossibleAfter)</div>
                         </td>
                         <td><span class="eval-result">success</span></td>
-                        <td class="num">109,381,598</td>
-                        <td class="num">375,328</td>
+                        <td class="num">73,116,804</td>
+                        <td class="num">271,782</td>
                     </tr>
                     
                     <tr>
@@ -363,8 +363,8 @@
                             <div class="eval-desc">PartialUnlock with 0 tokens remaining in output should fail (must use FullUnlock instead)</div>
                         </td>
                         <td><span class="eval-result">success</span></td>
-                        <td class="num">116,034,577</td>
-                        <td class="num">395,880</td>
+                        <td class="num">75,437,235</td>
+                        <td class="num">272,136</td>
                     </tr>
                     
                     <tr>
@@ -373,8 +373,8 @@
                             <div class="eval-desc">PartialUnlock with output tokens equal to input (1000) should fail (no tokens actually withdrawn)</div>
                         </td>
                         <td><span class="eval-result">success</span></td>
-                        <td class="num">116,154,463</td>
-                        <td class="num">395,882</td>
+                        <td class="num">75,481,072</td>
+                        <td class="num">272,137</td>
                     </tr>
                     
                     <tr>
@@ -383,8 +383,8 @@
                             <div class="eval-desc">PartialUnlock at time=11 with 800 tokens remaining should fail (expected minimum 900)</div>
                         </td>
                         <td><span class="eval-result">success</span></td>
-                        <td class="num">116,358,894</td>
-                        <td class="num">395,885</td>
+                        <td class="num">75,533,405</td>
+                        <td class="num">272,138</td>
                     </tr>
                     
                     <tr>
@@ -393,8 +393,8 @@
                             <div class="eval-desc">PartialUnlock at time=11 with 950 tokens remaining should fail (must withdraw at least 1 installment)</div>
                         </td>
                         <td><span class="eval-result">success</span></td>
-                        <td class="num">116,358,894</td>
-                        <td class="num">395,885</td>
+                        <td class="num">75,533,405</td>
+                        <td class="num">272,138</td>
                     </tr>
                     
                     <tr>
@@ -403,8 +403,8 @@
                             <div class="eval-desc">PartialUnlock with modified datum on continuing output should fail (datum must be preserved)</div>
                         </td>
                         <td><span class="eval-result">success</span></td>
-                        <td class="num">119,318,670</td>
-                        <td class="num">395,888</td>
+                        <td class="num">78,341,083</td>
+                        <td class="num">272,139</td>
                     </tr>
                     
                     <tr>
@@ -413,8 +413,8 @@
                             <div class="eval-desc">PartialUnlock with no datum on continuing output should fail</div>
                         </td>
                         <td><span class="eval-result">success</span></td>
-                        <td class="num">117,518,256</td>
-                        <td class="num">395,888</td>
+                        <td class="num">76,540,669</td>
+                        <td class="num">272,139</td>
                     </tr>
                     
                     <tr>
@@ -423,8 +423,8 @@
                             <div class="eval-desc">PartialUnlock with two script inputs should fail (double satisfaction attack)</div>
                         </td>
                         <td><span class="eval-result">success</span></td>
-                        <td class="num">136,014,448</td>
-                        <td class="num">458,857</td>
+                        <td class="num">91,184,136</td>
+                        <td class="num">334,451</td>
                     </tr>
                     
                     <tr>
@@ -433,8 +433,8 @@
                             <div class="eval-desc">FullUnlock without beneficiary signature should fail</div>
                         </td>
                         <td><span class="eval-result">success</span></td>
-                        <td class="num">36,311,230</td>
-                        <td class="num">126,283</td>
+                        <td class="num">26,053,632</td>
+                        <td class="num">105,191</td>
                     </tr>
                     
                     <tr>
@@ -443,8 +443,8 @@
                             <div class="eval-desc">FullUnlock with impostor signature instead of beneficiary should fail</div>
                         </td>
                         <td><span class="eval-result">success</span></td>
-                        <td class="num">39,934,283</td>
-                        <td class="num">146,413</td>
+                        <td class="num">26,102,829</td>
+                        <td class="num">105,224</td>
                     </tr>
                     
                     <tr>
@@ -453,8 +453,8 @@
                             <div class="eval-desc">FullUnlock at time=50 should fail (vesting period not yet ended)</div>
                         </td>
                         <td><span class="eval-result">success</span></td>
-                        <td class="num">39,921,175</td>
-                        <td class="num">146,383</td>
+                        <td class="num">26,146,666</td>
+                        <td class="num">105,225</td>
                     </tr>
                     
                     <tr>
@@ -463,8 +463,8 @@
                             <div class="eval-desc">FullUnlock at time=100 should fail (at boundary, must be strictly after vestingPeriodEnd)</div>
                         </td>
                         <td><span class="eval-result">success</span></td>
-                        <td class="num">39,921,175</td>
-                        <td class="num">146,383</td>
+                        <td class="num">26,146,666</td>
+                        <td class="num">105,225</td>
                     </tr>
                     
                     <tr>
@@ -473,8 +473,8 @@
                             <div class="eval-desc">PartialUnlock with no lower bound (-inf) should fail; the lower bound must be finite</div>
                         </td>
                         <td><span class="eval-result">success</span></td>
-                        <td class="num">103,995,952</td>
-                        <td class="num">355,049</td>
+                        <td class="num">68,717,997</td>
+                        <td class="num">251,607</td>
                     </tr>
                     
                     <tr>
@@ -483,8 +483,8 @@
                             <div class="eval-desc">FullUnlock with no lower bound (-inf) should fail; the lower bound must be finite</div>
                         </td>
                         <td><span class="eval-result">success</span></td>
-                        <td class="num">24,402,149</td>
-                        <td class="num">84,316</td>
+                        <td class="num">16,411,629</td>
+                        <td class="num">63,527</td>
                     </tr>
                     
                 </tbody>
@@ -503,7 +503,7 @@
 
     <div class="footer">
         <p>Generated by UPLC-CAPE • <a href="https://github.com/IntersectMBO/UPLC-CAPE">View on GitHub</a></p>
-        <p class="timestamp">Generated on: 2026-09-03 13:10:51 UTC</p>
+        <p class="timestamp">Generated on: 2026-09-03 13:39:49 UTC</p>
     </div>
 </body>
 </html>
