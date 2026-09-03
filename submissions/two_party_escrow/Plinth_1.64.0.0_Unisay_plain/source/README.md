@@ -31,4 +31,4 @@ nix develop
 cabal run --flags=preview plinth-submissions
 ```
 
-The produced UPLC writes to `$CAPE_REPO/submissions/two_party_escrow/Plinth_1.64.0.0_Unisay/two_party_escrow.uplc` and matches the UPLC in this submission.
+The produced UPLC writes to `$CAPE_REPO/submissions/two_party_escrow/Plinth_1.64.0.0_Unisay_builtincasing/two_party_escrow.uplc`, because the generator at this commit names the casing output `_builtincasing`. That file is this submission's artifact, moved into this directory when the preview track was retired, and it matches the UPLC here.

@@ -31,4 +31,4 @@ nix develop
 cabal run --flags=preview plinth-submissions
 ```
 
-The produced UPLC writes to `$CAPE_REPO/submissions/fibonacci_naive_recursion/Plinth_1.65.0.0_Unisay/fibonacci_naive_recursion.uplc` and matches the UPLC in this submission.
+The produced UPLC writes to `$CAPE_REPO/submissions/fibonacci_naive_recursion/Plinth_1.65.0.0_Unisay_preview/fibonacci_naive_recursion.uplc`, because the generator at this commit still names the casing output `_preview`. That file is this submission's artifact, moved into this directory when the preview track was retired, and it matches the UPLC here.

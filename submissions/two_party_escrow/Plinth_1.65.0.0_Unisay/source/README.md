@@ -24,9 +24,11 @@ git checkout d078652f03d31ed728c1fb63f1d9f8824218494c
 export CAPE_REPO="$HOME/src/UPLC-CAPE"
 ```
 
-Then enter the dev shell and run the generatorTrue:
+Then enter the dev shell and run the generator with the casing build flag (the source repo still gates it behind `preview` at this commit):
 
 ```bash
 nix develop
 cabal run --flags=preview plinth-submissions
 ```
+
+The produced UPLC writes to `$CAPE_REPO/submissions/two_party_escrow/Plinth_1.65.0.0_Unisay_preview/two_party_escrow.uplc`, because the generator at this commit still names the casing output `_preview`. That file is this submission's artifact, moved into this directory when the preview track was retired, and it matches the UPLC here.
