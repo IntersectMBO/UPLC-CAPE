@@ -70,7 +70,7 @@ spec = do
     describe "Transaction Budget" $ do
       it "calculates tx memory budget percentage" $ do
         let memUnits = 1_000_000
-            expected = 7.142857142857143 -- 1,000,000 / 14,000,000 * 100
+            expected = 6.0606060606060606 -- 1,000,000 / 16,500,000 * 100
             result = txMemoryBudget memUnits
             tolerance = 1e-10
         abs (result - expected) < tolerance `shouldBe` True
@@ -83,12 +83,12 @@ spec = do
     describe "Block Budget" $ do
       it "calculates block memory budget percentage" $ do
         let memUnits = 1_000_000
-            expected = 1.6129032258064515 -- 1,000,000 / 62,000,000 * 100
+            expected = 1.3888888888888888 -- 1,000,000 / 72,000,000 * 100
         blockMemoryBudget memUnits `shouldBe` expected
 
       it "calculates block CPU budget percentage" $ do
         let cpuSteps = 500_000_000
-            expected = 1.25 -- 500,000,000 / 40,000,000,000 * 100
+            expected = 2.5 -- 500,000,000 / 20,000,000,000 * 100
         blockCpuBudget cpuSteps `shouldBe` expected
 
   describe "Capacity Calculations" $ do
@@ -96,14 +96,14 @@ spec = do
       it "calculates scripts per transaction (memory-limited)" $ do
         let memUnits = 1_000_000
             cpuSteps = 500_000_000
-            expected = 14 -- min(14,000,000 / 1,000,000, 10,000,000,000 / 500,000,000)
+            expected = 16 -- min(16,500,000 / 1,000,000, 10,000,000,000 / 500,000,000)
         scriptsPerTransaction memUnits cpuSteps `shouldBe` expected
 
     describe "scriptsPerBlock" $ do
-      it "calculates scripts per block (memory-limited)" $ do
+      it "calculates scripts per block (CPU-limited)" $ do
         let memUnits = 1_000_000
             cpuSteps = 500_000_000
-            expected = 62 -- min(62,000,000 / 1,000,000, 40,000,000,000 / 500,000,000)
+            expected = 40 -- min(72,000,000 / 1,000,000, 20,000,000,000 / 500,000,000)
         scriptsPerBlock memUnits cpuSteps `shouldBe` expected
 
   describe "Reference Script Fee Tier Boundaries" $ do
@@ -159,6 +159,6 @@ spec = do
       txCpuBudget cpuSteps `shouldBe` expected
 
     it "handles very large memory units" $ do
-      let memUnits = 14_000_000 -- Max transaction memory
+      let memUnits = 16_500_000 -- Max transaction memory
           expected = 100.0 -- 100% of transaction budget
       txMemoryBudget memUnits `shouldBe` expected

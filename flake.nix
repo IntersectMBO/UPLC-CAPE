@@ -95,7 +95,11 @@
         capeLib = project.hsPkgs.cape.components.library;
         measureExe = project.hsPkgs.cape.components.exes.measure;
         prettyUplcExe = project.hsPkgs.cape.components.exes.pretty-uplc;
-        capeTests = project.hsPkgs.cape.components.tests.cape-tests;
+        # The test *component* only builds the suite; haskellLib.check wraps it
+        # in a derivation that runs it. `nix flake check` exercised the former
+        # for a while, so a stale assertion in ParametersSpec stayed green in CI
+        # while `cabal test` failed locally.
+        capeTests = pkgs.haskell-nix.haskellLib.check project.hsPkgs.cape.components.tests.cape-tests;
 
         # Development shell using haskell.nix shellFor with UPLC-CAPE specific tools
         baseShell = project.shellFor {

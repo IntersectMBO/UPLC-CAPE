@@ -90,11 +90,11 @@
     }
   ],
   "execution_environment": {
-    "evaluator": "PlutusTx.Eval-1.45.0.0"
+    "evaluator": "PlutusTx.Eval-1.63.0.0"
   },
   "measurements": {
-    "block_cpu_budget_pct": 0.058617800000000005,
-    "block_memory_budget_pct": 0.15636774193548386,
+    "block_cpu_budget_pct": 0.11723560000000001,
+    "block_memory_budget_pct": 0.13465,
     "cpu_units": {
       "maximum": 23447120,
       "median": 4841080,
@@ -121,15 +121,15 @@
     },
     "reference_script_fee_lovelace": 1095,
     "script_size_bytes": 73,
-    "scripts_per_block": 639,
-    "scripts_per_tx": 144,
+    "scripts_per_block": 742,
+    "scripts_per_tx": 170,
     "term_size": 75,
     "total_fee_lovelace": 27888,
     "tx_cpu_budget_pct": 0.23447120000000002,
-    "tx_memory_budget_pct": 0.6924857142857144
+    "tx_memory_budget_pct": 0.5875636363636363
   },
   "scenario": "fibonacci",
-  "timestamp": "2026-07-06T11:38:00Z",
+  "timestamp": "2026-08-12T10:54:13Z",
   "version": "2.0.0",
   "notes": "<optional notes>"
 }

@@ -90,11 +90,11 @@
     }
   ],
   "execution_environment": {
-    "evaluator": "PlutusTx.Eval-1.45.0.0"
+    "evaluator": "PlutusTx.Eval-1.63.0.0"
   },
   "measurements": {
-    "block_cpu_budget_pct": 485.386118045,
-    "block_memory_budget_pct": 1294.200035483871,
+    "block_cpu_budget_pct": 970.77223609,
+    "block_memory_budget_pct": 1114.4500305555555,
     "cpu_units": {
       "maximum": 194154447218,
       "median": 11763758,
@@ -126,10 +126,10 @@
     "term_size": 49,
     "total_fee_lovelace": 66291455,
     "tx_cpu_budget_pct": 1941.54447218,
-    "tx_memory_budget_pct": 5731.4573
+    "tx_memory_budget_pct": 4863.054678787878
   },
   "scenario": "fibonacci_naive_recursion",
-  "timestamp": "2026-07-06T11:38:03Z",
+  "timestamp": "2026-08-12T10:54:17Z",
   "version": "2.0.0",
   "notes": "Generated using UPLC-CAPE measure tool"
 }

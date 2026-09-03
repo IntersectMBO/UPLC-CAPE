@@ -137,16 +137,19 @@ jobs:
       - name: Check if the preview needs rebuilding
         id: check_changes
         run: |
-          # Deploy a preview when either the report inputs (submission data) or
-          # the report pipeline itself (generator, aggregate, templates) change.
-          # A pipeline-only PR produces no submission diff but can still change
-          # every rendered page, so it must be previewable too.
+          # Deploy a preview when the report inputs (submission data), the report
+          # pipeline itself (generator, aggregate, templates), or the evaluator
+          # (cabal projects, plutus bounds, the current/preview version split)
+          # change. A pipeline-only PR produces no submission diff but can still
+          # change every rendered page, so it must be previewable too; likewise
+          # an evaluator bump reshuffles submissions between tracks and rewrites
+          # every measurement without touching a single .uplc.
           # Fetch the base ref first: fetch-depth:0 does not guarantee a local
           # origin/main, so the diff below would otherwise hit an ambiguous
           # revision (same reason the `changed` job fetches it explicitly).
           git fetch origin main --depth=1
           if git diff --name-only origin/main...HEAD | grep -qE \
-            'submissions/.*(\.uplc|/metadata\.json)$|scripts/cape-subcommands/submission/(report|aggregate)\.sh$|scripts/cape-subcommands/submission/.*\.html\.tmpl$'; then
+            'submissions/.*(\.uplc|/metadata\.json)$|scripts/cape-subcommands/submission/(report|aggregate)\.sh$|scripts/cape-subcommands/submission/.*\.html\.tmpl$|^scripts/lib/cape_versions\.sh$|^cabal\.project(\.preview)?$|^cape\.cabal$'; then
             echo "Report inputs or pipeline changed, proceeding with report generation"
             echo "has_changes=true" >> "$GITHUB_OUTPUT"
           else

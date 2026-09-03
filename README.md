@@ -411,10 +411,10 @@ UPLC-CAPE/
 - GHC: 9.6.7 (provided in Nix shell).
 - Plutus Core target: 1.1.0.
   - Use `plcVersion110` (for Haskell/PlutusTx code).
-- Package baselines (CHaP):
-  - plutus-core >= 1.45.0.0
-  - plutus-tx >= 1.45.0.0
-  - plutus-ledger-api >= 1.45.0.0
+- Package baselines (CHaP), matching the plutus line shipped by `cardano-node` 11.0.1, the release running mainnet since the van Rossem hard fork:
+  - plutus-core ^>= 1.63
+  - plutus-tx ^>= 1.63
+  - plutus-ledger-api ^>= 1.63
 
 Plinth (PlutusTx) source for every benchmark scenario lives in a separate repository, [Unisay/plinth-cape-submissions][plinth-repo]; see [ADR 20260520][adr-plinth-move]. This repository is plugin-free and consumes the produced `.uplc` artefacts together with the accompanying `metadata.json`, `metrics.json`, and `source/README.md` per submission.
 

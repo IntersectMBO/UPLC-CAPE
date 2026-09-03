@@ -13,9 +13,20 @@ index-state:
   -- Using index-state available in haskell.nix binary cache (from nix flake update)
   , hackage.haskell.org 2025-10-17T00:26:22Z
   -- Bump this if you need newer packages from CHaP
-  , cardano-haskell-packages 2025-10-17T15:10:00Z
+  , cardano-haskell-packages 2026-09-01T00:00:00Z
 
 packages:
   ./.
+
+-- The production evaluator must charge what mainnet charges: Cape.PrettyResult
+-- evaluates with defaultCekParametersForTesting and there is no
+-- protocol-version argument, so the linked plutus-core version *is* the cost
+-- model. 1.63 is the line shipped by cardano-node 11.0.1, the release running
+-- mainnet since the van Rossem hard fork (protocol v11, 2026-07-18).
+--
+-- The pin itself lives in cape.cabal (`plutus-core ^>=1.63`, i.e. <1.64), not
+-- here: constraints in an imported project file are cumulative, so a plutus
+-- constraint at this level would intersect with cabal.project.preview's
+-- ^>=1.68 to an empty range and make the preview project unsolvable.
 
 tests: true

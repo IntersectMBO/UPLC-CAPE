@@ -15,9 +15,10 @@ license:       Apache-2.0
 
 flag preview
   description:
-    Build the @measure-preview@ executable for evaluating UPLC programs
-    (e.g. submissions compiled with BuiltinCasing) against a newer
-    @plutus-core@ baseline pinned in @cabal.project.preview@.
+    Build the @measure-preview@ executable, which evaluates UPLC programs
+    against the newer @plutus-core@ baseline pinned in
+    @cabal.project.preview@ instead of the production one. Used for
+    submissions that need a protocol version mainnet has not activated yet.
 
   default:     False
   manual:      True
@@ -29,9 +30,9 @@ common common-deps
     , base               >=4.16
     , bytestring
     , flat
-    , plutus-core        ^>=1.45
-    , plutus-ledger-api  ^>=1.45
-    , plutus-tx          ^>=1.45
+    , plutus-core        ^>=1.63
+    , plutus-ledger-api  ^>=1.63
+    , plutus-tx          ^>=1.63
     , relude             ^>=1.2.2
     , serialise
     , text
@@ -165,7 +166,7 @@ executable pretty-uplc
     , base                  >=4.16
     , mtl
     , optparse-applicative
-    , plutus-core           ^>=1.45
+    , plutus-core           ^>=1.63
     , relude                ^>=1.2.2
     , text
 

@@ -15,6 +15,7 @@ import Data.Text qualified as T
 import Data.Text.IO qualified as Text.IO
 import Options.Applicative qualified as Opts
 import PlutusCore qualified as PLC
+import PlutusCore.Error (ParserErrorBundle)
 import PlutusCore.Pretty qualified as PP
 import System.IO (hPutStrLn)
 import UntypedPlutusCore qualified as UPLC
@@ -58,7 +59,7 @@ formatFile path = do
   src <- Text.IO.readFile path
   case PLC.runQuote (runExceptT (UPLCParser.parseProgram src)) ::
         Either
-          (PLC.Error PLC.DefaultUni PLC.DefaultFun PLC.SrcSpan)
+          ParserErrorBundle
           (UPLC.Program UPLC.Name PLC.DefaultUni PLC.DefaultFun PLC.SrcSpan) of
     Left err -> do
       hPutStrLn stderr (path <> ": " <> show err)

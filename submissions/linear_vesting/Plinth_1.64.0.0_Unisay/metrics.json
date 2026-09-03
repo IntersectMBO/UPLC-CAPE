@@ -1,7 +1,7 @@
 {
   "evaluations": [
     {
-      "cpu_units": 48455728,
+      "cpu_units": 48456961,
       "description": "PartialUnlock at time=11 with 900 tokens remaining should succeed (first installment unlocked)",
       "execution_result": "success",
       "included_in_aggregates": true,
@@ -9,7 +9,7 @@
       "name": "partial_unlock_first_installment"
     },
     {
-      "cpu_units": 48455728,
+      "cpu_units": 48456961,
       "description": "PartialUnlock at time=50 with 500 tokens remaining should succeed (half vested)",
       "execution_result": "success",
       "included_in_aggregates": true,
@@ -17,7 +17,7 @@
       "name": "partial_unlock_mid_vesting"
     },
     {
-      "cpu_units": 48455728,
+      "cpu_units": 48456961,
       "description": "PartialUnlock at time=91 with 100 tokens remaining should succeed (9 installments unlocked)",
       "execution_result": "success",
       "included_in_aggregates": true,
@@ -25,7 +25,7 @@
       "name": "partial_unlock_near_end"
     },
     {
-      "cpu_units": 48455728,
+      "cpu_units": 48456961,
       "description": "PartialUnlock at time=25 with 800 tokens remaining should succeed (between installment boundaries)",
       "execution_result": "success",
       "included_in_aggregates": true,
@@ -137,7 +137,7 @@
       "name": "partial_unlock_zero_remaining"
     },
     {
-      "cpu_units": 41805778,
+      "cpu_units": 41807011,
       "description": "PartialUnlock with output tokens equal to input (1000) should fail (no tokens actually withdrawn)",
       "execution_result": "success",
       "included_in_aggregates": false,
@@ -145,7 +145,7 @@
       "name": "partial_unlock_not_decreasing"
     },
     {
-      "cpu_units": 41934160,
+      "cpu_units": 41935393,
       "description": "PartialUnlock at time=11 with 800 tokens remaining should fail (expected minimum 900)",
       "execution_result": "success",
       "included_in_aggregates": false,
@@ -153,7 +153,7 @@
       "name": "partial_unlock_wrong_remaining_too_low"
     },
     {
-      "cpu_units": 41934160,
+      "cpu_units": 41935393,
       "description": "PartialUnlock at time=11 with 950 tokens remaining should fail (must withdraw at least 1 installment)",
       "execution_result": "success",
       "included_in_aggregates": false,
@@ -177,7 +177,7 @@
       "name": "partial_unlock_datum_missing"
     },
     {
-      "cpu_units": 50952257,
+      "cpu_units": 50953490,
       "description": "PartialUnlock with two script inputs should fail (double satisfaction attack)",
       "execution_result": "success",
       "included_in_aggregates": false,
@@ -234,22 +234,22 @@
     }
   ],
   "execution_environment": {
-    "evaluator": "PlutusTx.Eval-1.45.0.0"
+    "evaluator": "PlutusTx.Eval-1.63.0.0"
   },
   "measurements": {
-    "block_cpu_budget_pct": 0.12113932,
-    "block_memory_budget_pct": 0.20336451612903225,
+    "block_cpu_budget_pct": 0.242284805,
+    "block_memory_budget_pct": 0.17511944444444447,
     "cpu_units": {
-      "maximum": 48455728,
-      "median": 48455728,
+      "maximum": 48456961,
+      "median": 48456961,
       "minimum": 13388065,
-      "sum": 220599042
+      "sum": 220603974
     },
     "excluded": {
       "count": 23,
       "cpu_units": {
-        "maximum": 50952257,
-        "sum": 392707473
+        "maximum": 50953490,
+        "sum": 392712405
       },
       "memory_units": {
         "maximum": 125606,
@@ -265,15 +265,15 @@
     },
     "reference_script_fee_lovelace": 15960,
     "script_size_bytes": 1064,
-    "scripts_per_block": 491,
-    "scripts_per_tx": 111,
+    "scripts_per_block": 412,
+    "scripts_per_tx": 130,
     "term_size": 1149,
     "total_fee_lovelace": 65598,
-    "tx_cpu_budget_pct": 0.48455728,
-    "tx_memory_budget_pct": 0.9006142857142857
+    "tx_cpu_budget_pct": 0.48456961,
+    "tx_memory_budget_pct": 0.7641575757575758
   },
   "scenario": "linear_vesting",
-  "timestamp": "2026-07-08T07:23:47Z",
+  "timestamp": "2026-08-12T10:54:22Z",
   "version": "2.0.0",
   "notes": "Generated using UPLC-CAPE measure tool"
 }
