@@ -1,4 +1,4 @@
-# htlc Plinth 1.64.0.0 (asdata variant) source
+# htlc Plinth 1.64.0.0 (BuiltinCasing) source
 
 **Repository**: <https://github.com/Unisay/plinth-cape-submissions>
 
@@ -8,9 +8,7 @@
 
 **Path**: `lib/HTLC.hs`
 
-This submission compiles `lib/HTLC.hs` from the Plinth source repository with the Plinth (plutus-tx-plugin) 1.64.0.0 line.
-
-Datum and redeemer are decoded via `PlutusTx.AsData.asData`-derived pattern matching (no BuiltinCasing); this was the mainnet default implementation strategy prior to the `monadic` variant (Cont-style decoding DSL) overtaking it on fee/size/CPU/mem. Plugin pragmas live in `plinth-cape-submissions.cabal`; validator modules carry no Plinth-specific options.
+This submission compiles `lib/HTLC.hs` from the Plinth source repository with the Plinth (plutus-tx-plugin) 1.64.0.0 line and the `datatypes=BuiltinCasing` plugin flag. Builtin casing has been a mainnet feature since the van Rossem hard fork (protocol version 11, 2026-07-18).
 
 ## Reproducing the compilation
 
@@ -26,11 +24,11 @@ git checkout fbb37ddd6ba6ea6fd29312494a32a3074ba332b0
 export CAPE_REPO="$HOME/src/UPLC-CAPE"
 ```
 
-Then enter the dev shell and run the generator:
+Then enter the dev shell and run the generator with the casing build flag (the source repo still gates it behind `preview` at this commit):
 
 ```bash
 nix develop
-cabal run plinth-submissions
+cabal run --flags=preview plinth-submissions
 ```
 
-The produced UPLC writes to `$CAPE_REPO/submissions/htlc/Plinth_1.64.0.0_Unisay_asdata/htlc.uplc` and matches the `htlc.uplc` in this submission.
+The produced UPLC writes to `$CAPE_REPO/submissions/htlc/Plinth_1.64.0.0_Unisay_builtincasing/htlc.uplc` and matches the UPLC in this submission.

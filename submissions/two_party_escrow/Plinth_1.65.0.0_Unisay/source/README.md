@@ -1,4 +1,4 @@
-# two_party_escrow Plinth 1.65.0.0 (monadic) source
+# two_party_escrow Plinth 1.65.0.0 (BuiltinCasing + dropList) source
 
 **Repository**: <https://github.com/Unisay/plinth-cape-submissions>
 
@@ -6,9 +6,9 @@
 
 **Commit**: `d078652f03d31ed728c1fb63f1d9f8824218494c`
 
-**Path**: `lib/TwoPartyEscrow.hs` (+ `lib/Plinth/Validator.hs`, `lib/Plinth/Decoder/Named.hs`, `lib/Plinth/Decoder/Named/ScriptContext.hs`, `lib/Plinth/Encoded.hs`)
+**Path**: `lib/TwoPartyEscrow.hs` (+ `lib/Plinth/Decoder.hs`, `lib/Plinth/Decoder/Named.hs`, `lib/Plinth/Encoded.hs`)
 
-The monadic two-party escrow validator; see the submission `metadata.json` for the accept-path optimization list. This is the default artifact for the mainnet 1.65.0.0 line.
+The monadic two-party escrow validator with builtin casing plus the `dropList` decoder step. Both have been mainnet features since the van Rossem hard fork (protocol version 11, 2026-07-18).
 
 ## Reproducing the compilation
 
@@ -24,9 +24,11 @@ git checkout d078652f03d31ed728c1fb63f1d9f8824218494c
 export CAPE_REPO="$HOME/src/UPLC-CAPE"
 ```
 
-Then enter the dev shell and run the generator:
+Then enter the dev shell and run the generator with the casing build flag (the source repo still gates it behind `preview` at this commit):
 
 ```bash
 nix develop
-cabal run plinth-submissions
+cabal run --flags=preview plinth-submissions
 ```
+
+The produced UPLC writes to `$CAPE_REPO/submissions/two_party_escrow/Plinth_1.65.0.0_Unisay_preview/two_party_escrow.uplc`, because the generator at this commit still names the casing output `_preview`. That file is this submission's artifact, moved into this directory when the preview track was retired, and it matches the UPLC here.

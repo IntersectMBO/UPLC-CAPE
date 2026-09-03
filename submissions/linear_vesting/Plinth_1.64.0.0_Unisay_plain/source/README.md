@@ -1,4 +1,4 @@
-# linear_vesting Plinth 1.64.0.0 (plain variant) source
+# linear_vesting Plinth 1.64.0.0 (BuiltinCasing) source
 
 **Repository**: <https://github.com/Unisay/plinth-cape-submissions>
 
@@ -8,9 +8,7 @@
 
 **Path**: `lib/LinearVesting.hs`
 
-This submission compiles `lib/LinearVesting.hs` from the Plinth source repository with the Plinth (plutus-tx-plugin) 1.64.0.0 line.
-
-Production line with Plinth 1.64.0.0 (no BuiltinCasing). Plugin pragmas live in `plinth-cape-submissions.cabal`; validator modules carry no Plinth-specific options.
+This submission compiles `lib/LinearVesting.hs` from the Plinth source repository with the Plinth (plutus-tx-plugin) 1.64.0.0 line and the `datatypes=BuiltinCasing` plugin flag. Builtin casing has been a mainnet feature since the van Rossem hard fork (protocol version 11, 2026-07-18).
 
 ## Reproducing the compilation
 
@@ -26,13 +24,11 @@ git checkout fbb37ddd6ba6ea6fd29312494a32a3074ba332b0
 export CAPE_REPO="$HOME/src/UPLC-CAPE"
 ```
 
-Then enter the dev shell and run the generator:
+Then enter the dev shell and run the generator with the casing build flag (the source repo still gates it behind `preview` at this commit):
 
 ```bash
 nix develop
-cabal run plinth-submissions
+cabal run --flags=preview plinth-submissions
 ```
 
-The produced UPLC writes to `$CAPE_REPO/submissions/linear_vesting/Plinth_1.64.0.0_Unisay_plain/linear_vesting.uplc` and matches the `linear_vesting.uplc` in this submission.
-
-> Retained as the `plain` variant: this was the default implementation for the Plinth 1.64.0.0 line until the monadic decoder became the default (lower fee, size, CPU, and memory).
+The produced UPLC writes to `$CAPE_REPO/submissions/linear_vesting/Plinth_1.64.0.0_Unisay_builtincasing/linear_vesting.uplc` and matches the UPLC in this submission.

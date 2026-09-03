@@ -1,1049 +1,705 @@
 (program
   1.1.0
-  [
+  (lam
+    a-0
     (lam
-      forced-0
-      (lam
-        a-1
-        (lam
-          b-2
-          (force
+      b-1
+      (case
+        [ [ (builtin equalsInteger) (con integer 0) ] b-1 ]
+        [
+          (lam
+            b-2
             (case
-              (constr
-                0
-                [ [ (builtin equalsInteger) (con integer 0) ] b-2 ]
-                (delay
-                  (force
-                    (case
-                      (constr
-                        0
-                        [ [ (builtin lessThanInteger) a-1 ] (con integer 0) ]
-                        (delay
-                          [ [ (builtin subtractInteger) (con integer 0) ] a-1 ]
-                        )
-                        (delay a-1)
-                      )
-                      forced-0
-                    )
-                  )
-                )
-                (delay
-                  [
-                    (lam
-                      b-3
-                      (force
+              [ [ (builtin equalsInteger) (con integer 0) ] b-2 ]
+              [
+                (lam
+                  b-3
+                  (case
+                    [ [ (builtin equalsInteger) (con integer 0) ] b-3 ]
+                    [
+                      (lam
+                        b-4
                         (case
-                          (constr
-                            0
-                            [ [ (builtin equalsInteger) (con integer 0) ] b-3 ]
-                            (delay
-                              (force
-                                (case
-                                  (constr
-                                    0
-                                    [
-                                      [ (builtin lessThanInteger) b-2 ]
-                                      (con integer 0)
-                                    ]
-                                    (delay
+                          [ [ (builtin equalsInteger) (con integer 0) ] b-4 ]
+                          [
+                            (lam
+                              b-5
+                              (case
+                                [
+                                  [ (builtin equalsInteger) (con integer 0) ]
+                                  b-5
+                                ]
+                                [
+                                  (lam
+                                    b-6
+                                    (case
                                       [
                                         [
-                                          (builtin subtractInteger)
+                                          (builtin equalsInteger)
                                           (con integer 0)
                                         ]
-                                        b-2
+                                        b-6
                                       ]
-                                    )
-                                    (delay b-2)
-                                  )
-                                  forced-0
-                                )
-                              )
-                            )
-                            (delay
-                              [
-                                (lam
-                                  b-4
-                                  (force
-                                    (case
-                                      (constr
-                                        0
-                                        [
-                                          [
-                                            (builtin equalsInteger)
-                                            (con integer 0)
-                                          ]
-                                          b-4
-                                        ]
-                                        (delay
-                                          (force
-                                            (case
-                                              (constr
-                                                0
-                                                [
-                                                  [
-                                                    (builtin lessThanInteger)
-                                                    b-3
-                                                  ]
-                                                  (con integer 0)
-                                                ]
-                                                (delay
+                                      [
+                                        (lam
+                                          b-7
+                                          (case
+                                            [
+                                              [
+                                                (builtin equalsInteger)
+                                                (con integer 0)
+                                              ]
+                                              b-7
+                                            ]
+                                            [
+                                              (lam
+                                                b-8
+                                                (case
                                                   [
                                                     [
-                                                      (builtin subtractInteger)
+                                                      (builtin equalsInteger)
                                                       (con integer 0)
                                                     ]
-                                                    b-3
+                                                    b-8
                                                   ]
-                                                )
-                                                (delay b-3)
-                                              )
-                                              forced-0
-                                            )
-                                          )
-                                        )
-                                        (delay
-                                          [
-                                            (lam
-                                              b-5
-                                              (force
-                                                (case
-                                                  (constr
-                                                    0
-                                                    [
-                                                      [
-                                                        (builtin equalsInteger)
-                                                        (con integer 0)
-                                                      ]
-                                                      b-5
-                                                    ]
-                                                    (delay
-                                                      (force
-                                                        (case
-                                                          (constr
-                                                            0
-                                                            [
-                                                              [
-                                                                (builtin
-                                                                  lessThanInteger
-                                                                )
-                                                                b-4
-                                                              ]
-                                                              (con integer 0)
-                                                            ]
-                                                            (delay
+                                                  [
+                                                    (lam
+                                                      b-9
+                                                      (case
+                                                        [
+                                                          [
+                                                            (builtin
+                                                              equalsInteger
+                                                            )
+                                                            (con integer 0)
+                                                          ]
+                                                          b-9
+                                                        ]
+                                                        [
+                                                          (lam
+                                                            b-10
+                                                            (case
                                                               [
                                                                 [
                                                                   (builtin
-                                                                    subtractInteger
+                                                                    equalsInteger
                                                                   )
                                                                   (con
                                                                     integer 0
                                                                   )
                                                                 ]
-                                                                b-4
+                                                                b-10
                                                               ]
-                                                            )
-                                                            (delay b-4)
-                                                          )
-                                                          forced-0
-                                                        )
-                                                      )
-                                                    )
-                                                    (delay
-                                                      [
-                                                        (lam
-                                                          b-6
-                                                          (force
-                                                            (case
-                                                              (constr
-                                                                0
-                                                                [
-                                                                  [
-                                                                    (builtin
-                                                                      equalsInteger
-                                                                    )
-                                                                    (con
-                                                                      integer 0
-                                                                    )
-                                                                  ]
-                                                                  b-6
-                                                                ]
-                                                                (delay
-                                                                  (force
-                                                                    (case
-                                                                      (constr
-                                                                        0
-                                                                        [
-                                                                          [
-                                                                            (builtin
-                                                                              lessThanInteger
-                                                                            )
-                                                                            b-5
-                                                                          ]
-                                                                          (con
-                                                                            integer
-                                                                            0
-                                                                          )
-                                                                        ]
-                                                                        (delay
+                                                              [
+                                                                (lam
+                                                                  b-11
+                                                                  (case
+                                                                    [
+                                                                      [
+                                                                        (builtin
+                                                                          equalsInteger
+                                                                        )
+                                                                        (con
+                                                                          integer
+                                                                          0
+                                                                        )
+                                                                      ]
+                                                                      b-11
+                                                                    ]
+                                                                    [
+                                                                      (lam
+                                                                        b-12
+                                                                        (case
                                                                           [
                                                                             [
                                                                               (builtin
-                                                                                subtractInteger
+                                                                                equalsInteger
                                                                               )
                                                                               (con
                                                                                 integer
                                                                                 0
                                                                               )
                                                                             ]
-                                                                            b-5
+                                                                            b-12
                                                                           ]
-                                                                        )
-                                                                        (delay
-                                                                          b-5
-                                                                        )
-                                                                      )
-                                                                      forced-0
-                                                                    )
-                                                                  )
-                                                                )
-                                                                (delay
-                                                                  [
-                                                                    (lam
-                                                                      b-7
-                                                                      (force
-                                                                        (case
-                                                                          (constr
-                                                                            0
-                                                                            [
-                                                                              [
-                                                                                (builtin
-                                                                                  equalsInteger
-                                                                                )
-                                                                                (con
-                                                                                  integer
-                                                                                  0
-                                                                                )
-                                                                              ]
-                                                                              b-7
-                                                                            ]
-                                                                            (delay
-                                                                              (force
-                                                                                (case
-                                                                                  (constr
-                                                                                    0
-                                                                                    [
-                                                                                      [
-                                                                                        (builtin
-                                                                                          lessThanInteger
-                                                                                        )
-                                                                                        b-6
-                                                                                      ]
-                                                                                      (con
-                                                                                        integer
-                                                                                        0
-                                                                                      )
-                                                                                    ]
-                                                                                    (delay
+                                                                          [
+                                                                            (lam
+                                                                              b-13
+                                                                              (case
+                                                                                [
+                                                                                  [
+                                                                                    (builtin
+                                                                                      equalsInteger
+                                                                                    )
+                                                                                    (con
+                                                                                      integer
+                                                                                      0
+                                                                                    )
+                                                                                  ]
+                                                                                  b-13
+                                                                                ]
+                                                                                [
+                                                                                  (lam
+                                                                                    b-14
+                                                                                    (case
                                                                                       [
                                                                                         [
                                                                                           (builtin
-                                                                                            subtractInteger
+                                                                                            equalsInteger
                                                                                           )
                                                                                           (con
                                                                                             integer
                                                                                             0
                                                                                           )
                                                                                         ]
-                                                                                        b-6
+                                                                                        b-14
                                                                                       ]
-                                                                                    )
-                                                                                    (delay
-                                                                                      b-6
-                                                                                    )
-                                                                                  )
-                                                                                  forced-0
-                                                                                )
-                                                                              )
-                                                                            )
-                                                                            (delay
-                                                                              [
-                                                                                (lam
-                                                                                  b-8
-                                                                                  (force
-                                                                                    (case
-                                                                                      (constr
-                                                                                        0
+                                                                                      [
+                                                                                        (lam
+                                                                                          b-15
+                                                                                          (case
+                                                                                            [
+                                                                                              [
+                                                                                                (builtin
+                                                                                                  equalsInteger
+                                                                                                )
+                                                                                                (con
+                                                                                                  integer
+                                                                                                  0
+                                                                                                )
+                                                                                              ]
+                                                                                              b-15
+                                                                                            ]
+                                                                                            (case
+                                                                                              (constr
+                                                                                                0
+                                                                                                (lam
+                                                                                                  s-16
+                                                                                                  (lam
+                                                                                                    a-17
+                                                                                                    (lam
+                                                                                                      b-18
+                                                                                                      (case
+                                                                                                        [
+                                                                                                          [
+                                                                                                            (builtin
+                                                                                                              equalsInteger
+                                                                                                            )
+                                                                                                            (con
+                                                                                                              integer
+                                                                                                              0
+                                                                                                            )
+                                                                                                          ]
+                                                                                                          b-18
+                                                                                                        ]
+                                                                                                        (case
+                                                                                                          (constr
+                                                                                                            0
+                                                                                                            s-16
+                                                                                                            b-18
+                                                                                                            [
+                                                                                                              [
+                                                                                                                (builtin
+                                                                                                                  modInteger
+                                                                                                                )
+                                                                                                                a-17
+                                                                                                              ]
+                                                                                                              b-18
+                                                                                                            ]
+                                                                                                          )
+                                                                                                          s-16
+                                                                                                        )
+                                                                                                        (case
+                                                                                                          [
+                                                                                                            [
+                                                                                                              (builtin
+                                                                                                                lessThanInteger
+                                                                                                              )
+                                                                                                              a-17
+                                                                                                            ]
+                                                                                                            (con
+                                                                                                              integer
+                                                                                                              0
+                                                                                                            )
+                                                                                                          ]
+                                                                                                          a-17
+                                                                                                          [
+                                                                                                            [
+                                                                                                              (builtin
+                                                                                                                subtractInteger
+                                                                                                              )
+                                                                                                              (con
+                                                                                                                integer
+                                                                                                                0
+                                                                                                              )
+                                                                                                            ]
+                                                                                                            a-17
+                                                                                                          ]
+                                                                                                        )
+                                                                                                      )
+                                                                                                    )
+                                                                                                  )
+                                                                                                )
+                                                                                                b-15
+                                                                                                [
+                                                                                                  [
+                                                                                                    (builtin
+                                                                                                      modInteger
+                                                                                                    )
+                                                                                                    b-14
+                                                                                                  ]
+                                                                                                  b-15
+                                                                                                ]
+                                                                                              )
+                                                                                              (lam
+                                                                                                s-19
+                                                                                                (lam
+                                                                                                  a-20
+                                                                                                  (lam
+                                                                                                    b-21
+                                                                                                    (case
+                                                                                                      [
+                                                                                                        [
+                                                                                                          (builtin
+                                                                                                            equalsInteger
+                                                                                                          )
+                                                                                                          (con
+                                                                                                            integer
+                                                                                                            0
+                                                                                                          )
+                                                                                                        ]
+                                                                                                        b-21
+                                                                                                      ]
+                                                                                                      (case
+                                                                                                        (constr
+                                                                                                          0
+                                                                                                          s-19
+                                                                                                          b-21
+                                                                                                          [
+                                                                                                            [
+                                                                                                              (builtin
+                                                                                                                modInteger
+                                                                                                              )
+                                                                                                              a-20
+                                                                                                            ]
+                                                                                                            b-21
+                                                                                                          ]
+                                                                                                        )
+                                                                                                        s-19
+                                                                                                      )
+                                                                                                      (case
+                                                                                                        [
+                                                                                                          [
+                                                                                                            (builtin
+                                                                                                              lessThanInteger
+                                                                                                            )
+                                                                                                            a-20
+                                                                                                          ]
+                                                                                                          (con
+                                                                                                            integer
+                                                                                                            0
+                                                                                                          )
+                                                                                                        ]
+                                                                                                        a-20
+                                                                                                        [
+                                                                                                          [
+                                                                                                            (builtin
+                                                                                                              subtractInteger
+                                                                                                            )
+                                                                                                            (con
+                                                                                                              integer
+                                                                                                              0
+                                                                                                            )
+                                                                                                          ]
+                                                                                                          a-20
+                                                                                                        ]
+                                                                                                      )
+                                                                                                    )
+                                                                                                  )
+                                                                                                )
+                                                                                              )
+                                                                                            )
+                                                                                            (case
+                                                                                              [
+                                                                                                [
+                                                                                                  (builtin
+                                                                                                    lessThanInteger
+                                                                                                  )
+                                                                                                  b-14
+                                                                                                ]
+                                                                                                (con
+                                                                                                  integer
+                                                                                                  0
+                                                                                                )
+                                                                                              ]
+                                                                                              b-14
+                                                                                              [
+                                                                                                [
+                                                                                                  (builtin
+                                                                                                    subtractInteger
+                                                                                                  )
+                                                                                                  (con
+                                                                                                    integer
+                                                                                                    0
+                                                                                                  )
+                                                                                                ]
+                                                                                                b-14
+                                                                                              ]
+                                                                                            )
+                                                                                          )
+                                                                                        )
                                                                                         [
                                                                                           [
                                                                                             (builtin
-                                                                                              equalsInteger
+                                                                                              modInteger
+                                                                                            )
+                                                                                            b-13
+                                                                                          ]
+                                                                                          b-14
+                                                                                        ]
+                                                                                      ]
+                                                                                      (case
+                                                                                        [
+                                                                                          [
+                                                                                            (builtin
+                                                                                              lessThanInteger
+                                                                                            )
+                                                                                            b-13
+                                                                                          ]
+                                                                                          (con
+                                                                                            integer
+                                                                                            0
+                                                                                          )
+                                                                                        ]
+                                                                                        b-13
+                                                                                        [
+                                                                                          [
+                                                                                            (builtin
+                                                                                              subtractInteger
                                                                                             )
                                                                                             (con
                                                                                               integer
                                                                                               0
                                                                                             )
                                                                                           ]
-                                                                                          b-8
+                                                                                          b-13
                                                                                         ]
-                                                                                        (delay
-                                                                                          (force
-                                                                                            (case
-                                                                                              (constr
-                                                                                                0
-                                                                                                [
-                                                                                                  [
-                                                                                                    (builtin
-                                                                                                      lessThanInteger
-                                                                                                    )
-                                                                                                    b-7
-                                                                                                  ]
-                                                                                                  (con
-                                                                                                    integer
-                                                                                                    0
-                                                                                                  )
-                                                                                                ]
-                                                                                                (delay
-                                                                                                  [
-                                                                                                    [
-                                                                                                      (builtin
-                                                                                                        subtractInteger
-                                                                                                      )
-                                                                                                      (con
-                                                                                                        integer
-                                                                                                        0
-                                                                                                      )
-                                                                                                    ]
-                                                                                                    b-7
-                                                                                                  ]
-                                                                                                )
-                                                                                                (delay
-                                                                                                  b-7
-                                                                                                )
-                                                                                              )
-                                                                                              forced-0
-                                                                                            )
-                                                                                          )
-                                                                                        )
-                                                                                        (delay
-                                                                                          [
-                                                                                            (lam
-                                                                                              b-9
-                                                                                              (force
-                                                                                                (case
-                                                                                                  (constr
-                                                                                                    0
-                                                                                                    [
-                                                                                                      [
-                                                                                                        (builtin
-                                                                                                          equalsInteger
-                                                                                                        )
-                                                                                                        (con
-                                                                                                          integer
-                                                                                                          0
-                                                                                                        )
-                                                                                                      ]
-                                                                                                      b-9
-                                                                                                    ]
-                                                                                                    (delay
-                                                                                                      (force
-                                                                                                        (case
-                                                                                                          (constr
-                                                                                                            0
-                                                                                                            [
-                                                                                                              [
-                                                                                                                (builtin
-                                                                                                                  lessThanInteger
-                                                                                                                )
-                                                                                                                b-8
-                                                                                                              ]
-                                                                                                              (con
-                                                                                                                integer
-                                                                                                                0
-                                                                                                              )
-                                                                                                            ]
-                                                                                                            (delay
-                                                                                                              [
-                                                                                                                [
-                                                                                                                  (builtin
-                                                                                                                    subtractInteger
-                                                                                                                  )
-                                                                                                                  (con
-                                                                                                                    integer
-                                                                                                                    0
-                                                                                                                  )
-                                                                                                                ]
-                                                                                                                b-8
-                                                                                                              ]
-                                                                                                            )
-                                                                                                            (delay
-                                                                                                              b-8
-                                                                                                            )
-                                                                                                          )
-                                                                                                          forced-0
-                                                                                                        )
-                                                                                                      )
-                                                                                                    )
-                                                                                                    (delay
-                                                                                                      [
-                                                                                                        (lam
-                                                                                                          b-10
-                                                                                                          (force
-                                                                                                            (case
-                                                                                                              (constr
-                                                                                                                0
-                                                                                                                [
-                                                                                                                  [
-                                                                                                                    (builtin
-                                                                                                                      equalsInteger
-                                                                                                                    )
-                                                                                                                    (con
-                                                                                                                      integer
-                                                                                                                      0
-                                                                                                                    )
-                                                                                                                  ]
-                                                                                                                  b-10
-                                                                                                                ]
-                                                                                                                (delay
-                                                                                                                  (force
-                                                                                                                    (case
-                                                                                                                      (constr
-                                                                                                                        0
-                                                                                                                        [
-                                                                                                                          [
-                                                                                                                            (builtin
-                                                                                                                              lessThanInteger
-                                                                                                                            )
-                                                                                                                            b-9
-                                                                                                                          ]
-                                                                                                                          (con
-                                                                                                                            integer
-                                                                                                                            0
-                                                                                                                          )
-                                                                                                                        ]
-                                                                                                                        (delay
-                                                                                                                          [
-                                                                                                                            [
-                                                                                                                              (builtin
-                                                                                                                                subtractInteger
-                                                                                                                              )
-                                                                                                                              (con
-                                                                                                                                integer
-                                                                                                                                0
-                                                                                                                              )
-                                                                                                                            ]
-                                                                                                                            b-9
-                                                                                                                          ]
-                                                                                                                        )
-                                                                                                                        (delay
-                                                                                                                          b-9
-                                                                                                                        )
-                                                                                                                      )
-                                                                                                                      forced-0
-                                                                                                                    )
-                                                                                                                  )
-                                                                                                                )
-                                                                                                                (delay
-                                                                                                                  [
-                                                                                                                    (lam
-                                                                                                                      b-11
-                                                                                                                      (force
-                                                                                                                        (case
-                                                                                                                          (constr
-                                                                                                                            0
-                                                                                                                            [
-                                                                                                                              [
-                                                                                                                                (builtin
-                                                                                                                                  equalsInteger
-                                                                                                                                )
-                                                                                                                                (con
-                                                                                                                                  integer
-                                                                                                                                  0
-                                                                                                                                )
-                                                                                                                              ]
-                                                                                                                              b-11
-                                                                                                                            ]
-                                                                                                                            (delay
-                                                                                                                              (force
-                                                                                                                                (case
-                                                                                                                                  (constr
-                                                                                                                                    0
-                                                                                                                                    [
-                                                                                                                                      [
-                                                                                                                                        (builtin
-                                                                                                                                          lessThanInteger
-                                                                                                                                        )
-                                                                                                                                        b-10
-                                                                                                                                      ]
-                                                                                                                                      (con
-                                                                                                                                        integer
-                                                                                                                                        0
-                                                                                                                                      )
-                                                                                                                                    ]
-                                                                                                                                    (delay
-                                                                                                                                      [
-                                                                                                                                        [
-                                                                                                                                          (builtin
-                                                                                                                                            subtractInteger
-                                                                                                                                          )
-                                                                                                                                          (con
-                                                                                                                                            integer
-                                                                                                                                            0
-                                                                                                                                          )
-                                                                                                                                        ]
-                                                                                                                                        b-10
-                                                                                                                                      ]
-                                                                                                                                    )
-                                                                                                                                    (delay
-                                                                                                                                      b-10
-                                                                                                                                    )
-                                                                                                                                  )
-                                                                                                                                  forced-0
-                                                                                                                                )
-                                                                                                                              )
-                                                                                                                            )
-                                                                                                                            (delay
-                                                                                                                              [
-                                                                                                                                (lam
-                                                                                                                                  b-12
-                                                                                                                                  (force
-                                                                                                                                    (case
-                                                                                                                                      (constr
-                                                                                                                                        0
-                                                                                                                                        [
-                                                                                                                                          [
-                                                                                                                                            (builtin
-                                                                                                                                              equalsInteger
-                                                                                                                                            )
-                                                                                                                                            (con
-                                                                                                                                              integer
-                                                                                                                                              0
-                                                                                                                                            )
-                                                                                                                                          ]
-                                                                                                                                          b-12
-                                                                                                                                        ]
-                                                                                                                                        (delay
-                                                                                                                                          (force
-                                                                                                                                            (case
-                                                                                                                                              (constr
-                                                                                                                                                0
-                                                                                                                                                [
-                                                                                                                                                  [
-                                                                                                                                                    (builtin
-                                                                                                                                                      lessThanInteger
-                                                                                                                                                    )
-                                                                                                                                                    b-11
-                                                                                                                                                  ]
-                                                                                                                                                  (con
-                                                                                                                                                    integer
-                                                                                                                                                    0
-                                                                                                                                                  )
-                                                                                                                                                ]
-                                                                                                                                                (delay
-                                                                                                                                                  [
-                                                                                                                                                    [
-                                                                                                                                                      (builtin
-                                                                                                                                                        subtractInteger
-                                                                                                                                                      )
-                                                                                                                                                      (con
-                                                                                                                                                        integer
-                                                                                                                                                        0
-                                                                                                                                                      )
-                                                                                                                                                    ]
-                                                                                                                                                    b-11
-                                                                                                                                                  ]
-                                                                                                                                                )
-                                                                                                                                                (delay
-                                                                                                                                                  b-11
-                                                                                                                                                )
-                                                                                                                                              )
-                                                                                                                                              forced-0
-                                                                                                                                            )
-                                                                                                                                          )
-                                                                                                                                        )
-                                                                                                                                        (delay
-                                                                                                                                          [
-                                                                                                                                            (lam
-                                                                                                                                              b-13
-                                                                                                                                              (force
-                                                                                                                                                (case
-                                                                                                                                                  (constr
-                                                                                                                                                    0
-                                                                                                                                                    [
-                                                                                                                                                      [
-                                                                                                                                                        (builtin
-                                                                                                                                                          equalsInteger
-                                                                                                                                                        )
-                                                                                                                                                        (con
-                                                                                                                                                          integer
-                                                                                                                                                          0
-                                                                                                                                                        )
-                                                                                                                                                      ]
-                                                                                                                                                      b-13
-                                                                                                                                                    ]
-                                                                                                                                                    (delay
-                                                                                                                                                      (force
-                                                                                                                                                        (case
-                                                                                                                                                          (constr
-                                                                                                                                                            0
-                                                                                                                                                            [
-                                                                                                                                                              [
-                                                                                                                                                                (builtin
-                                                                                                                                                                  lessThanInteger
-                                                                                                                                                                )
-                                                                                                                                                                b-12
-                                                                                                                                                              ]
-                                                                                                                                                              (con
-                                                                                                                                                                integer
-                                                                                                                                                                0
-                                                                                                                                                              )
-                                                                                                                                                            ]
-                                                                                                                                                            (delay
-                                                                                                                                                              [
-                                                                                                                                                                [
-                                                                                                                                                                  (builtin
-                                                                                                                                                                    subtractInteger
-                                                                                                                                                                  )
-                                                                                                                                                                  (con
-                                                                                                                                                                    integer
-                                                                                                                                                                    0
-                                                                                                                                                                  )
-                                                                                                                                                                ]
-                                                                                                                                                                b-12
-                                                                                                                                                              ]
-                                                                                                                                                            )
-                                                                                                                                                            (delay
-                                                                                                                                                              b-12
-                                                                                                                                                            )
-                                                                                                                                                          )
-                                                                                                                                                          forced-0
-                                                                                                                                                        )
-                                                                                                                                                      )
-                                                                                                                                                    )
-                                                                                                                                                    (delay
-                                                                                                                                                      [
-                                                                                                                                                        (lam
-                                                                                                                                                          b-14
-                                                                                                                                                          (force
-                                                                                                                                                            (case
-                                                                                                                                                              (constr
-                                                                                                                                                                0
-                                                                                                                                                                [
-                                                                                                                                                                  [
-                                                                                                                                                                    (builtin
-                                                                                                                                                                      equalsInteger
-                                                                                                                                                                    )
-                                                                                                                                                                    (con
-                                                                                                                                                                      integer
-                                                                                                                                                                      0
-                                                                                                                                                                    )
-                                                                                                                                                                  ]
-                                                                                                                                                                  b-14
-                                                                                                                                                                ]
-                                                                                                                                                                (delay
-                                                                                                                                                                  (force
-                                                                                                                                                                    (case
-                                                                                                                                                                      (constr
-                                                                                                                                                                        0
-                                                                                                                                                                        [
-                                                                                                                                                                          [
-                                                                                                                                                                            (builtin
-                                                                                                                                                                              lessThanInteger
-                                                                                                                                                                            )
-                                                                                                                                                                            b-13
-                                                                                                                                                                          ]
-                                                                                                                                                                          (con
-                                                                                                                                                                            integer
-                                                                                                                                                                            0
-                                                                                                                                                                          )
-                                                                                                                                                                        ]
-                                                                                                                                                                        (delay
-                                                                                                                                                                          [
-                                                                                                                                                                            [
-                                                                                                                                                                              (builtin
-                                                                                                                                                                                subtractInteger
-                                                                                                                                                                              )
-                                                                                                                                                                              (con
-                                                                                                                                                                                integer
-                                                                                                                                                                                0
-                                                                                                                                                                              )
-                                                                                                                                                                            ]
-                                                                                                                                                                            b-13
-                                                                                                                                                                          ]
-                                                                                                                                                                        )
-                                                                                                                                                                        (delay
-                                                                                                                                                                          b-13
-                                                                                                                                                                        )
-                                                                                                                                                                      )
-                                                                                                                                                                      forced-0
-                                                                                                                                                                    )
-                                                                                                                                                                  )
-                                                                                                                                                                )
-                                                                                                                                                                (delay
-                                                                                                                                                                  (case
-                                                                                                                                                                    (constr
-                                                                                                                                                                      0
-                                                                                                                                                                      (lam
-                                                                                                                                                                        s-15
-                                                                                                                                                                        (lam
-                                                                                                                                                                          a-16
-                                                                                                                                                                          (lam
-                                                                                                                                                                            b-17
-                                                                                                                                                                            (force
-                                                                                                                                                                              (case
-                                                                                                                                                                                (constr
-                                                                                                                                                                                  0
-                                                                                                                                                                                  [
-                                                                                                                                                                                    [
-                                                                                                                                                                                      (builtin
-                                                                                                                                                                                        equalsInteger
-                                                                                                                                                                                      )
-                                                                                                                                                                                      (con
-                                                                                                                                                                                        integer
-                                                                                                                                                                                        0
-                                                                                                                                                                                      )
-                                                                                                                                                                                    ]
-                                                                                                                                                                                    b-17
-                                                                                                                                                                                  ]
-                                                                                                                                                                                  (delay
-                                                                                                                                                                                    (force
-                                                                                                                                                                                      (case
-                                                                                                                                                                                        (constr
-                                                                                                                                                                                          0
-                                                                                                                                                                                          [
-                                                                                                                                                                                            [
-                                                                                                                                                                                              (builtin
-                                                                                                                                                                                                lessThanInteger
-                                                                                                                                                                                              )
-                                                                                                                                                                                              a-16
-                                                                                                                                                                                            ]
-                                                                                                                                                                                            (con
-                                                                                                                                                                                              integer
-                                                                                                                                                                                              0
-                                                                                                                                                                                            )
-                                                                                                                                                                                          ]
-                                                                                                                                                                                          (delay
-                                                                                                                                                                                            [
-                                                                                                                                                                                              [
-                                                                                                                                                                                                (builtin
-                                                                                                                                                                                                  subtractInteger
-                                                                                                                                                                                                )
-                                                                                                                                                                                                (con
-                                                                                                                                                                                                  integer
-                                                                                                                                                                                                  0
-                                                                                                                                                                                                )
-                                                                                                                                                                                              ]
-                                                                                                                                                                                              a-16
-                                                                                                                                                                                            ]
-                                                                                                                                                                                          )
-                                                                                                                                                                                          (delay
-                                                                                                                                                                                            a-16
-                                                                                                                                                                                          )
-                                                                                                                                                                                        )
-                                                                                                                                                                                        forced-0
-                                                                                                                                                                                      )
-                                                                                                                                                                                    )
-                                                                                                                                                                                  )
-                                                                                                                                                                                  (delay
-                                                                                                                                                                                    (case
-                                                                                                                                                                                      (constr
-                                                                                                                                                                                        0
-                                                                                                                                                                                        s-15
-                                                                                                                                                                                        b-17
-                                                                                                                                                                                        [
-                                                                                                                                                                                          [
-                                                                                                                                                                                            (builtin
-                                                                                                                                                                                              modInteger
-                                                                                                                                                                                            )
-                                                                                                                                                                                            a-16
-                                                                                                                                                                                          ]
-                                                                                                                                                                                          b-17
-                                                                                                                                                                                        ]
-                                                                                                                                                                                      )
-                                                                                                                                                                                      s-15
-                                                                                                                                                                                    )
-                                                                                                                                                                                  )
-                                                                                                                                                                                )
-                                                                                                                                                                                forced-0
-                                                                                                                                                                              )
-                                                                                                                                                                            )
-                                                                                                                                                                          )
-                                                                                                                                                                        )
-                                                                                                                                                                      )
-                                                                                                                                                                      b-14
-                                                                                                                                                                      [
-                                                                                                                                                                        [
-                                                                                                                                                                          (builtin
-                                                                                                                                                                            modInteger
-                                                                                                                                                                          )
-                                                                                                                                                                          b-13
-                                                                                                                                                                        ]
-                                                                                                                                                                        b-14
-                                                                                                                                                                      ]
-                                                                                                                                                                    )
-                                                                                                                                                                    (lam
-                                                                                                                                                                      s-18
-                                                                                                                                                                      (lam
-                                                                                                                                                                        a-19
-                                                                                                                                                                        (lam
-                                                                                                                                                                          b-20
-                                                                                                                                                                          (force
-                                                                                                                                                                            (case
-                                                                                                                                                                              (constr
-                                                                                                                                                                                0
-                                                                                                                                                                                [
-                                                                                                                                                                                  [
-                                                                                                                                                                                    (builtin
-                                                                                                                                                                                      equalsInteger
-                                                                                                                                                                                    )
-                                                                                                                                                                                    (con
-                                                                                                                                                                                      integer
-                                                                                                                                                                                      0
-                                                                                                                                                                                    )
-                                                                                                                                                                                  ]
-                                                                                                                                                                                  b-20
-                                                                                                                                                                                ]
-                                                                                                                                                                                (delay
-                                                                                                                                                                                  (force
-                                                                                                                                                                                    (case
-                                                                                                                                                                                      (constr
-                                                                                                                                                                                        0
-                                                                                                                                                                                        [
-                                                                                                                                                                                          [
-                                                                                                                                                                                            (builtin
-                                                                                                                                                                                              lessThanInteger
-                                                                                                                                                                                            )
-                                                                                                                                                                                            a-19
-                                                                                                                                                                                          ]
-                                                                                                                                                                                          (con
-                                                                                                                                                                                            integer
-                                                                                                                                                                                            0
-                                                                                                                                                                                          )
-                                                                                                                                                                                        ]
-                                                                                                                                                                                        (delay
-                                                                                                                                                                                          [
-                                                                                                                                                                                            [
-                                                                                                                                                                                              (builtin
-                                                                                                                                                                                                subtractInteger
-                                                                                                                                                                                              )
-                                                                                                                                                                                              (con
-                                                                                                                                                                                                integer
-                                                                                                                                                                                                0
-                                                                                                                                                                                              )
-                                                                                                                                                                                            ]
-                                                                                                                                                                                            a-19
-                                                                                                                                                                                          ]
-                                                                                                                                                                                        )
-                                                                                                                                                                                        (delay
-                                                                                                                                                                                          a-19
-                                                                                                                                                                                        )
-                                                                                                                                                                                      )
-                                                                                                                                                                                      forced-0
-                                                                                                                                                                                    )
-                                                                                                                                                                                  )
-                                                                                                                                                                                )
-                                                                                                                                                                                (delay
-                                                                                                                                                                                  (case
-                                                                                                                                                                                    (constr
-                                                                                                                                                                                      0
-                                                                                                                                                                                      s-18
-                                                                                                                                                                                      b-20
-                                                                                                                                                                                      [
-                                                                                                                                                                                        [
-                                                                                                                                                                                          (builtin
-                                                                                                                                                                                            modInteger
-                                                                                                                                                                                          )
-                                                                                                                                                                                          a-19
-                                                                                                                                                                                        ]
-                                                                                                                                                                                        b-20
-                                                                                                                                                                                      ]
-                                                                                                                                                                                    )
-                                                                                                                                                                                    s-18
-                                                                                                                                                                                  )
-                                                                                                                                                                                )
-                                                                                                                                                                              )
-                                                                                                                                                                              forced-0
-                                                                                                                                                                            )
-                                                                                                                                                                          )
-                                                                                                                                                                        )
-                                                                                                                                                                      )
-                                                                                                                                                                    )
-                                                                                                                                                                  )
-                                                                                                                                                                )
-                                                                                                                                                              )
-                                                                                                                                                              forced-0
-                                                                                                                                                            )
-                                                                                                                                                          )
-                                                                                                                                                        )
-                                                                                                                                                        [
-                                                                                                                                                          [
-                                                                                                                                                            (builtin
-                                                                                                                                                              modInteger
-                                                                                                                                                            )
-                                                                                                                                                            b-12
-                                                                                                                                                          ]
-                                                                                                                                                          b-13
-                                                                                                                                                        ]
-                                                                                                                                                      ]
-                                                                                                                                                    )
-                                                                                                                                                  )
-                                                                                                                                                  forced-0
-                                                                                                                                                )
-                                                                                                                                              )
-                                                                                                                                            )
-                                                                                                                                            [
-                                                                                                                                              [
-                                                                                                                                                (builtin
-                                                                                                                                                  modInteger
-                                                                                                                                                )
-                                                                                                                                                b-11
-                                                                                                                                              ]
-                                                                                                                                              b-12
-                                                                                                                                            ]
-                                                                                                                                          ]
-                                                                                                                                        )
-                                                                                                                                      )
-                                                                                                                                      forced-0
-                                                                                                                                    )
-                                                                                                                                  )
-                                                                                                                                )
-                                                                                                                                [
-                                                                                                                                  [
-                                                                                                                                    (builtin
-                                                                                                                                      modInteger
-                                                                                                                                    )
-                                                                                                                                    b-10
-                                                                                                                                  ]
-                                                                                                                                  b-11
-                                                                                                                                ]
-                                                                                                                              ]
-                                                                                                                            )
-                                                                                                                          )
-                                                                                                                          forced-0
-                                                                                                                        )
-                                                                                                                      )
-                                                                                                                    )
-                                                                                                                    [
-                                                                                                                      [
-                                                                                                                        (builtin
-                                                                                                                          modInteger
-                                                                                                                        )
-                                                                                                                        b-9
-                                                                                                                      ]
-                                                                                                                      b-10
-                                                                                                                    ]
-                                                                                                                  ]
-                                                                                                                )
-                                                                                                              )
-                                                                                                              forced-0
-                                                                                                            )
-                                                                                                          )
-                                                                                                        )
-                                                                                                        [
-                                                                                                          [
-                                                                                                            (builtin
-                                                                                                              modInteger
-                                                                                                            )
-                                                                                                            b-8
-                                                                                                          ]
-                                                                                                          b-9
-                                                                                                        ]
-                                                                                                      ]
-                                                                                                    )
-                                                                                                  )
-                                                                                                  forced-0
-                                                                                                )
-                                                                                              )
-                                                                                            )
-                                                                                            [
-                                                                                              [
-                                                                                                (builtin
-                                                                                                  modInteger
-                                                                                                )
-                                                                                                b-7
-                                                                                              ]
-                                                                                              b-8
-                                                                                            ]
-                                                                                          ]
-                                                                                        )
                                                                                       )
-                                                                                      forced-0
                                                                                     )
                                                                                   )
-                                                                                )
-                                                                                [
                                                                                   [
-                                                                                    (builtin
-                                                                                      modInteger
-                                                                                    )
-                                                                                    b-6
+                                                                                    [
+                                                                                      (builtin
+                                                                                        modInteger
+                                                                                      )
+                                                                                      b-12
+                                                                                    ]
+                                                                                    b-13
                                                                                   ]
-                                                                                  b-7
                                                                                 ]
-                                                                              ]
+                                                                                (case
+                                                                                  [
+                                                                                    [
+                                                                                      (builtin
+                                                                                        lessThanInteger
+                                                                                      )
+                                                                                      b-12
+                                                                                    ]
+                                                                                    (con
+                                                                                      integer
+                                                                                      0
+                                                                                    )
+                                                                                  ]
+                                                                                  b-12
+                                                                                  [
+                                                                                    [
+                                                                                      (builtin
+                                                                                        subtractInteger
+                                                                                      )
+                                                                                      (con
+                                                                                        integer
+                                                                                        0
+                                                                                      )
+                                                                                    ]
+                                                                                    b-12
+                                                                                  ]
+                                                                                )
+                                                                              )
                                                                             )
+                                                                            [
+                                                                              [
+                                                                                (builtin
+                                                                                  modInteger
+                                                                                )
+                                                                                b-11
+                                                                              ]
+                                                                              b-12
+                                                                            ]
+                                                                          ]
+                                                                          (case
+                                                                            [
+                                                                              [
+                                                                                (builtin
+                                                                                  lessThanInteger
+                                                                                )
+                                                                                b-11
+                                                                              ]
+                                                                              (con
+                                                                                integer
+                                                                                0
+                                                                              )
+                                                                            ]
+                                                                            b-11
+                                                                            [
+                                                                              [
+                                                                                (builtin
+                                                                                  subtractInteger
+                                                                                )
+                                                                                (con
+                                                                                  integer
+                                                                                  0
+                                                                                )
+                                                                              ]
+                                                                              b-11
+                                                                            ]
                                                                           )
-                                                                          forced-0
                                                                         )
                                                                       )
-                                                                    )
-                                                                    [
                                                                       [
-                                                                        (builtin
-                                                                          modInteger
-                                                                        )
-                                                                        b-5
+                                                                        [
+                                                                          (builtin
+                                                                            modInteger
+                                                                          )
+                                                                          b-10
+                                                                        ]
+                                                                        b-11
                                                                       ]
-                                                                      b-6
                                                                     ]
-                                                                  ]
+                                                                    (case
+                                                                      [
+                                                                        [
+                                                                          (builtin
+                                                                            lessThanInteger
+                                                                          )
+                                                                          b-10
+                                                                        ]
+                                                                        (con
+                                                                          integer
+                                                                          0
+                                                                        )
+                                                                      ]
+                                                                      b-10
+                                                                      [
+                                                                        [
+                                                                          (builtin
+                                                                            subtractInteger
+                                                                          )
+                                                                          (con
+                                                                            integer
+                                                                            0
+                                                                          )
+                                                                        ]
+                                                                        b-10
+                                                                      ]
+                                                                    )
+                                                                  )
                                                                 )
+                                                                [
+                                                                  [
+                                                                    (builtin
+                                                                      modInteger
+                                                                    )
+                                                                    b-9
+                                                                  ]
+                                                                  b-10
+                                                                ]
+                                                              ]
+                                                              (case
+                                                                [
+                                                                  [
+                                                                    (builtin
+                                                                      lessThanInteger
+                                                                    )
+                                                                    b-9
+                                                                  ]
+                                                                  (con
+                                                                    integer 0
+                                                                  )
+                                                                ]
+                                                                b-9
+                                                                [
+                                                                  [
+                                                                    (builtin
+                                                                      subtractInteger
+                                                                    )
+                                                                    (con
+                                                                      integer 0
+                                                                    )
+                                                                  ]
+                                                                  b-9
+                                                                ]
                                                               )
-                                                              forced-0
                                                             )
                                                           )
-                                                        )
-                                                        [
                                                           [
-                                                            (builtin modInteger)
-                                                            b-4
+                                                            [
+                                                              (builtin
+                                                                modInteger
+                                                              )
+                                                              b-8
+                                                            ]
+                                                            b-9
                                                           ]
-                                                          b-5
                                                         ]
-                                                      ]
+                                                        (case
+                                                          [
+                                                            [
+                                                              (builtin
+                                                                lessThanInteger
+                                                              )
+                                                              b-8
+                                                            ]
+                                                            (con integer 0)
+                                                          ]
+                                                          b-8
+                                                          [
+                                                            [
+                                                              (builtin
+                                                                subtractInteger
+                                                              )
+                                                              (con integer 0)
+                                                            ]
+                                                            b-8
+                                                          ]
+                                                        )
+                                                      )
                                                     )
+                                                    [
+                                                      [
+                                                        (builtin modInteger) b-7
+                                                      ]
+                                                      b-8
+                                                    ]
+                                                  ]
+                                                  (case
+                                                    [
+                                                      [
+                                                        (builtin
+                                                          lessThanInteger
+                                                        )
+                                                        b-7
+                                                      ]
+                                                      (con integer 0)
+                                                    ]
+                                                    b-7
+                                                    [
+                                                      [
+                                                        (builtin
+                                                          subtractInteger
+                                                        )
+                                                        (con integer 0)
+                                                      ]
+                                                      b-7
+                                                    ]
                                                   )
-                                                  forced-0
                                                 )
                                               )
+                                              [
+                                                [ (builtin modInteger) b-6 ] b-7
+                                              ]
+                                            ]
+                                            (case
+                                              [
+                                                [
+                                                  (builtin lessThanInteger) b-6
+                                                ]
+                                                (con integer 0)
+                                              ]
+                                              b-6
+                                              [
+                                                [
+                                                  (builtin subtractInteger)
+                                                  (con integer 0)
+                                                ]
+                                                b-6
+                                              ]
                                             )
-                                            [ [ (builtin modInteger) b-3 ] b-4 ]
-                                          ]
+                                          )
                                         )
+                                        [ [ (builtin modInteger) b-5 ] b-6 ]
+                                      ]
+                                      (case
+                                        [
+                                          [ (builtin lessThanInteger) b-5 ]
+                                          (con integer 0)
+                                        ]
+                                        b-5
+                                        [
+                                          [
+                                            (builtin subtractInteger)
+                                            (con integer 0)
+                                          ]
+                                          b-5
+                                        ]
                                       )
-                                      forced-0
                                     )
                                   )
+                                  [ [ (builtin modInteger) b-4 ] b-5 ]
+                                ]
+                                (case
+                                  [
+                                    [ (builtin lessThanInteger) b-4 ]
+                                    (con integer 0)
+                                  ]
+                                  b-4
+                                  [
+                                    [
+                                      (builtin subtractInteger) (con integer 0)
+                                    ]
+                                    b-4
+                                  ]
                                 )
-                                [ [ (builtin modInteger) b-2 ] b-3 ]
-                              ]
+                              )
                             )
+                            [ [ (builtin modInteger) b-3 ] b-4 ]
+                          ]
+                          (case
+                            [
+                              [ (builtin lessThanInteger) b-3 ] (con integer 0)
+                            ]
+                            b-3
+                            [
+                              [ (builtin subtractInteger) (con integer 0) ] b-3
+                            ]
                           )
-                          forced-0
                         )
                       )
+                      [ [ (builtin modInteger) b-2 ] b-3 ]
+                    ]
+                    (case
+                      [ [ (builtin lessThanInteger) b-2 ] (con integer 0) ]
+                      b-2
+                      [ [ (builtin subtractInteger) (con integer 0) ] b-2 ]
                     )
-                    [ [ (builtin modInteger) a-1 ] b-2 ]
-                  ]
+                  )
                 )
+                [ [ (builtin modInteger) b-1 ] b-2 ]
+              ]
+              (case
+                [ [ (builtin lessThanInteger) b-1 ] (con integer 0) ]
+                b-1
+                [ [ (builtin subtractInteger) (con integer 0) ] b-1 ]
               )
-              forced-0
             )
           )
+          [ [ (builtin modInteger) a-0 ] b-1 ]
+        ]
+        (case
+          [ [ (builtin lessThanInteger) a-0 ] (con integer 0) ]
+          a-0
+          [ [ (builtin subtractInteger) (con integer 0) ] a-0 ]
         )
       )
     )
-    (force (builtin ifThenElse))
-  ]
+  )
 )

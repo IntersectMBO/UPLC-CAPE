@@ -8,7 +8,7 @@
 
 - **Compiler**: `Scalus 0.17.0`
 - **Implementation Approach**: `idiomatic @Compile spending validator, Data -> Unit, derived FromData/ToData`
-- **Compilation Flags**: `default`
+- **Compilation Flags**: `Options.release.copy(targetProtocolVersion = MajorProtocolVersion.vanRossemPV)`
 
 ## Performance Results
 
@@ -20,4 +20,4 @@
 
 ## Notes
 
-Scalus spending validator matching the production-safe validity-range convention introduced in #170: claim reads the upper bound of `txInfoValidRange` (finite, strictly `< timeout`); refund reads the lower bound (finite, strictly `> timeout`). Datum and redeemer shapes are identical to the Plinth reference (`HTLCDatum = 0(payer, recipient, secretHash, timeout)`; `Claim(preimage) = 0(preimage)`, `Refund = 1()`). The source is maintained in a separate repository to avoid duplication.
+Same Scalus 0.17.0 HTLC validator source as the current-track `Scalus_0.17.0_Unisay/` submission (production-safe validity-range convention from #170: claim reads upper bound, refund reads lower bound — both finite, strict), recompiled with the van Rossem target protocol version to enable `case-on-builtins` and batch-6 builtins. CPU/MEM measured against a minimal `ScriptContext` harness (`src/htlc/HtlcHarness.scala`) covering both `Claim` and `Refund` redeemers.

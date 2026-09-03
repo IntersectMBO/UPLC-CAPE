@@ -8,7 +8,7 @@
 
 **Path**: `src/fibonacci_prepacked/FibonacciPrepacked.scala`
 
-This submission uses Scalus compiler version 0.18.2. Prepacked Fibonacci implementation: pre-computed `fib(0)`..`fib(25)` packed as 3-byte big-endian entries in a `ByteString`, looked up in O(1) constant time (`Data -> Unit`). Compiled with `Options.release`.
+This submission uses Scalus compiler version 0.18.2. Prepacked Fibonacci implementation: pre-computed `fib(0)`..`fib(25)` packed as 3-byte big-endian entries in a `ByteString`, looked up in O(1) constant time (`Data -> Unit`). Targets the van Rossem protocol version (Cardano protocol version 11), live on mainnet since 2026-07-18. Same source as the pre-fork Scalus_0.18.2_Unisay submission it replaces, recompiled with `Options.release.copy(targetProtocolVersion = MajorProtocolVersion.vanRossemPV)`, which enables `case-on-builtins` and batch-6 builtins (e.g. `dropList`). Measured on `PlutusVM.makePlutusV3VM(MajorProtocolVersion.vanRossemPV)`.
 
 ## Reproducing the Compilation
 
@@ -30,3 +30,5 @@ This submission uses Scalus compiler version 0.18.2. Prepacked Fibonacci impleme
    ```bash
    sbt 'runMain fibonacci_prepacked.compileFibonacciPrepacked'
    ```
+
+   The `@main` writes both the changPV artifact (`fibonacci_prepacked`) and the `-preview.uplc` into `src/fibonacci_prepacked/`; this submission pins the `-preview.uplc` build.

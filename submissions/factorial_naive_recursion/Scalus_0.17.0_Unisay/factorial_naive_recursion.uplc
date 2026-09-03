@@ -12,21 +12,13 @@
       d-3
       (lam
         e-4
-        (force
-          (case
-            (constr
-              0
-              [ [ (builtin lessThanEqualsInteger) e-4 ] (con integer 0) ]
-              (delay (con integer 1))
-              (delay
-                [
-                  [ (builtin multiplyInteger) e-4 ]
-                  [ d-3 [ [ (builtin subtractInteger) e-4 ] (con integer 1) ] ]
-                ]
-              )
-            )
-            (force (builtin ifThenElse))
-          )
+        (case
+          [ [ (builtin lessThanEqualsInteger) e-4 ] (con integer 0) ]
+          [
+            [ (builtin multiplyInteger) e-4 ]
+            [ d-3 [ [ (builtin subtractInteger) e-4 ] (con integer 1) ] ]
+          ]
+          (con integer 1)
         )
       )
     )

@@ -8,7 +8,7 @@
 
 **Path**: `src/htlc/HTLC.scala`
 
-This submission uses Scalus compiler version 0.18.2. HTLC spending validator (`@Compile object HTLCValidator`, `Data -> Unit`) deriving FromData/ToData for `HTLCDatum` and `HTLCRedeemer`. Claim reads the upper bound of `txInfoValidRange` (finite, strictly `< timeout`); refund reads the lower bound (finite, strictly `> timeout`), following the production-safe validity-range convention from IntersectMBO/UPLC-CAPE#170. Compiled with `toUplcOptimized()` (CaseConstrApply + builtin-packing).
+This submission uses Scalus compiler version 0.18.2. HTLC spending validator (`@Compile object HTLCValidator`, `Data -> Unit`) deriving FromData/ToData for `HTLCDatum` and `HTLCRedeemer`. Claim reads the upper bound of `txInfoValidRange` (finite, strictly `< timeout`); refund reads the lower bound (finite, strictly `> timeout`), following the production-safe validity-range convention from IntersectMBO/UPLC-CAPE#170. Targets the van Rossem protocol version (Cardano protocol version 11), live on mainnet since 2026-07-18. Same source as the pre-fork Scalus_0.18.2_Unisay submission it replaces, recompiled with `Options.release.copy(targetProtocolVersion = MajorProtocolVersion.vanRossemPV)`, which enables `case-on-builtins` and batch-6 builtins (e.g. `dropList`). Measured on `PlutusVM.makePlutusV3VM(MajorProtocolVersion.vanRossemPV)`.
 
 ## Reproducing the Compilation
 
@@ -30,3 +30,5 @@ This submission uses Scalus compiler version 0.18.2. HTLC spending validator (`@
    ```bash
    sbt 'runMain htlc.compileHtlc'
    ```
+
+   The `@main` writes both the changPV artifact (`htlc`) and the `-preview.uplc` into `src/htlc/`; this submission pins the `-preview.uplc` build.

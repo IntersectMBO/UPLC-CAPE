@@ -7,7 +7,8 @@
   "compilation_config": {
     "optimization_level": "Plinth",
     "target": "uplc",
-    "flags": ["Plinth"]
+    "flags": ["Plinth"],
+    "min_protocol_version": 11
   },
   "contributors": [
     {
@@ -20,6 +21,6 @@
     "source_available": true,
     "source_repository": "https://github.com/Unisay/plinth-cape-submissions",
     "source_commit_hash": "d078652f03d31ed728c1fb63f1d9f8824218494c",
-    "implementation_notes": "Two-party escrow validator written in `do`-notation on `Plinth.Validator`, a zero-cost early-termination monad, together with the zero-cost typed decoding DSL `Plinth.Decoder.Named` (`V.do`/`N.do` via `QualifiedDo`; `IxDecoder`/`FieldAt` Peano-indexed cursor; `Plinth.Encoded` compare-without-decode). Retains the escrow security hardening: the escrow input is tied to the script's own payment credential, and the incomplete-withdrawal guard compares the payment credential only (ignoring the staking part). This round further cuts the accept path: it compares the compile-time script credential instead of locating the own input by out-ref, fuses the withdrawal scan into the seller-payment fold, shares one `TxInfo` spine walk across inputs/outputs/signatories, reads lovelace positionally with `adaOf` instead of an assetAmount key lookup, and locates the single deposit output with `findUniqueE` in one pass. total_fee 101588 to 73594 lovelace (-27.6%, CAPE changPV measurement). The previous asdata implementation stays as Plinth_1.65.0.0_Unisay_asdata. Source: lib/TwoPartyEscrow.hs (+ `lib/Plinth/Validator.hs`, `lib/Plinth/Decoder/Named.hs`, `lib/Plinth/Decoder/Named/ScriptContext.hs`, `lib/Plinth/Encoded.hs`) in plinth-cape-submissions @ d078652f03d31ed728c1fb63f1d9f8824218494c (branch main)."
+    "implementation_notes": "Compiled with Plinth 1.65.0.0 and the `datatypes=BuiltinCasing` plugin flag. Builtin casing has been a mainnet feature since the van Rossem hard fork (protocol version 11, 2026-07-18); plutus-tx-plugin 1.67 dropped the flag and enables casing under the default `SumsOfProducts`. Emits the batch-6 `dropList` builtin for cursor gaps of three or more fields in the typed decoder (gated behind the same build flag, so the non-casing sibling for this line stays byte-identical). This round further cuts the accept path: it compares the compile-time script credential instead of locating the own input by out-ref, fuses the withdrawal scan into the seller-payment fold, shares one `TxInfo` spine walk across inputs/outputs/signatories, reads lovelace positionally with `adaOf` instead of an assetAmount key lookup, and locates the single deposit output with `findUniqueE` in one pass. total_fee 83342 to 62722 lovelace (-24.7%). Source: lib/TwoPartyEscrow.hs (+ `lib/Plinth/Decoder.hs`, `lib/Plinth/Decoder/Named.hs`, `lib/Plinth/Encoded.hs`) in plinth-cape-submissions @ d078652f03d31ed728c1fb63f1d9f8824218494c."
   }
 }

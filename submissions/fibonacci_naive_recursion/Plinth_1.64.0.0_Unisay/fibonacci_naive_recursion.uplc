@@ -6,36 +6,24 @@
       s-1
       (lam
         n-2
-        (force
-          (case
-            (constr
-              0
-              [ [ (builtin lessThanEqualsInteger) n-2 ] (con integer 1) ]
-              (delay n-2)
-              (delay
+        (case
+          [ [ (builtin lessThanEqualsInteger) n-2 ] (con integer 1) ]
+          [
+            (lam
+              cse-3
+              [
                 [
-                  (lam
-                    cse-3
-                    [
-                      [
-                        (builtin addInteger)
-                        [
-                          cse-3
-                          [ [ (builtin subtractInteger) n-2 ] (con integer 1) ]
-                        ]
-                      ]
-                      [
-                        cse-3
-                        [ [ (builtin subtractInteger) n-2 ] (con integer 2) ]
-                      ]
-                    ]
-                  )
-                  [ s-1 s-1 ]
+                  (builtin addInteger)
+                  [
+                    cse-3 [ [ (builtin subtractInteger) n-2 ] (con integer 1) ]
+                  ]
                 ]
-              )
+                [ cse-3 [ [ (builtin subtractInteger) n-2 ] (con integer 2) ] ]
+              ]
             )
-            (force (builtin ifThenElse))
-          )
+            [ s-1 s-1 ]
+          ]
+          n-2
         )
       )
     )

@@ -8,7 +8,7 @@
 
 - **Compiler**: `Scalus 0.17.0`
 - **Implementation Approach**: `naive recursive`
-- **Compilation Flags**: `default`
+- **Compilation Flags**: `Options.release.copy(targetProtocolVersion = MajorProtocolVersion.vanRossemPV)`
 
 ## Performance Results
 
@@ -20,4 +20,4 @@
 
 ## Notes
 
-This submission implements the fibonacci_naive_recursion scenario using the prescribed naive recursive approach. The source code is maintained in a separate repository to avoid duplication.
+Same naive-recursive Scalus 0.17.0 source as the current-track `Scalus_0.17.0_Unisay/` submission, recompiled with the van Rossem target protocol version to enable `case-on-builtins` and batch-6 builtins.

@@ -1,41 +1,34 @@
-# fibonacci_naive_recursion Plinth 1.65.0.0 source
+# fibonacci_naive_recursion Plinth 1.65.0.0 (BuiltinCasing) source
 
 **Repository**: <https://github.com/Unisay/plinth-cape-submissions>
 
 **Branch**: `main`
 
-**Commit**: `b77cd0c4987779f8f7d70a1ddd564b8765ecc9a3`
+**Commit**: `3efc19ad785a7dcb6aead5a936d18654f0649a2b`
 
 **Path**: `lib/Fibonacci.hs`
 
-This submission compiles `lib/Fibonacci.hs` from the Plinth source
-repository with the Plinth (plutus-tx-plugin) 1.65.0.0 line.
-
-Production line with Plinth 1.65.0.0 (no BuiltinCasing). Plugin pragmas live in `plinth-cape-submissions.cabal`; validator modules carry no Plinth-specific options.
+This submission compiles `lib/Fibonacci.hs` from the Plinth source repository with the Plinth (plutus-tx-plugin) 1.65.0.0 line and the `datatypes=BuiltinCasing` plugin flag. Builtin casing has been a mainnet feature since the van Rossem hard fork (protocol version 11, 2026-07-18).
 
 ## Reproducing the compilation
 
 ```bash
 git clone https://github.com/Unisay/plinth-cape-submissions
 cd plinth-cape-submissions
-git checkout b77cd0c4987779f8f7d70a1ddd564b8765ecc9a3
+git checkout 3efc19ad785a7dcb6aead5a936d18654f0649a2b
 ```
 
-`CAPE_REPO` must point at the sibling UPLC-CAPE checkout; the
-build aborts if the variable is unset. The recommended place is
-`.envrc.local` (gitignored), e.g.:
+`CAPE_REPO` must point at the sibling UPLC-CAPE checkout; the build aborts if the variable is unset. The recommended place is `.envrc.local` (gitignored), e.g.:
 
 ```sh
 export CAPE_REPO="$HOME/src/UPLC-CAPE"
 ```
 
-Then enter the dev shell and run the generator:
+Then enter the dev shell and run the generator with the casing build flag (the source repo still gates it behind `preview` at this commit):
 
 ```bash
 nix develop
-cabal run plinth-submissions
+cabal run --flags=preview plinth-submissions
 ```
 
-The produced UPLC writes to
-`$CAPE_REPO/submissions/fibonacci_naive_recursion/Plinth_1.65.0.0_Unisay/fibonacci_naive_recursion.uplc`
-and matches the `fibonacci_naive_recursion.uplc` in this submission.
+The produced UPLC writes to `$CAPE_REPO/submissions/fibonacci_naive_recursion/Plinth_1.65.0.0_Unisay_preview/fibonacci_naive_recursion.uplc`, because the generator at this commit still names the casing output `_preview`. That file is this submission's artifact, moved into this directory when the preview track was retired, and it matches the UPLC here.

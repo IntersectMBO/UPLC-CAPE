@@ -8,7 +8,7 @@
 
 - **Compiler**: `Scalus 0.18.2`
 - **Implementation Approach**: `prepacked ByteString lookup table (fib 0..25), O(1) constant-time`
-- **Compilation Flags**: `default`
+- **Compilation Flags**: `targetProtocolVersion = vanRossemPV` (Cardano protocol version 11)
 
 ## Performance Results
 

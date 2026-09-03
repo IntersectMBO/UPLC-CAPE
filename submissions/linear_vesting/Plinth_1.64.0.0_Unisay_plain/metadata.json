@@ -7,7 +7,8 @@
   "compilation_config": {
     "optimization_level": "Plinth",
     "target": "uplc",
-    "flags": ["Plinth"]
+    "flags": ["Plinth"],
+    "min_protocol_version": 11
   },
   "contributors": [
     {
@@ -16,10 +17,10 @@
     }
   ],
   "submission": {
-    "date": "2026-05-20T15:31:14Z",
+    "date": "2026-05-20T16:59:24Z",
     "source_available": true,
     "source_repository": "https://github.com/Unisay/plinth-cape-submissions",
     "source_commit_hash": "fbb37ddd6ba6ea6fd29312494a32a3074ba332b0",
-    "implementation_notes": "Linear vesting validator compiled with Plinth 1.64.0.0 (production line; no BuiltinCasing). Source: lib/LinearVesting.hs in plinth-cape-submissions @ fbb37ddd6ba6ea6fd29312494a32a3074ba332b0."
+    "implementation_notes": "Compiled with Plinth 1.64.0.0 and the `datatypes=BuiltinCasing` plugin flag. Builtin casing has been a mainnet feature since the van Rossem hard fork (protocol version 11, 2026-07-18); plutus-tx-plugin 1.67 dropped the flag and enables casing under the default `SumsOfProducts`. Source: lib/LinearVesting.hs in plinth-cape-submissions @ fbb37ddd6ba6ea6fd29312494a32a3074ba332b0."
   }
 }

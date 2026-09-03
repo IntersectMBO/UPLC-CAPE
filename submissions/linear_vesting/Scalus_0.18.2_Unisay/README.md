@@ -8,7 +8,7 @@
 
 - **Compiler**: `Scalus 0.18.2`
 - **Implementation Approach**: `@Compile spending validator, Data -> Unit, installment vesting schedule`
-- **Compilation Flags**: `default`
+- **Compilation Flags**: `targetProtocolVersion = vanRossemPV` (Cardano protocol version 11)
 
 ## Performance Results
 

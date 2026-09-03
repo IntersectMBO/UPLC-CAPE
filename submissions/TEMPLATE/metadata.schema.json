@@ -54,10 +54,16 @@
             ["--no-dead-code-elimination"]
           ]
         },
+        "min_protocol_version": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Cardano protocol version this artifact requires to be accepted on-chain. Set it whenever the program uses a feature gated behind a hard fork: builtin casing and the batch-6 builtins (dropList, expModInteger, BLS12-381 multi-scalar multiplication, arrays, multi-asset values) require protocol version 11 (van Rossem). This is a property of the artifact and does not change when CAPE's evaluator moves. Omit for artifacts that use no gated feature. CAPE does not enforce it during measurement: the evaluator runs with testing machine parameters that enable every builtin regardless of protocol version, so a submission above the current mainnet protocol version still measures successfully. Use min_plutus_version to route such a submission to the preview evaluator.",
+          "examples": [11]
+        },
         "min_plutus_version": {
           "type": "string",
           "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+\\.[0-9]+$",
-          "description": "Minimum plutus-core version required to evaluate this submission, compared against CAPE_CURRENT_PLUTUS_VERSION in scripts/lib/cape_versions.sh. A submission above that threshold is measured with the preview evaluator instead of the production one, and is skipped by 'cape submission verify --all'. Omit for submissions the production evaluator can execute, which is the normal case. Note this drives measurement only: which track a submission is rendered in is decided by its directory-name variant suffix.",
+          "description": "Evaluator-routing knob, not a statement about on-chain requirements (use min_protocol_version for that). Set it only when the production evaluator cannot run the artifact at all, e.g. because its CEK machine predates a language construct the program uses. Compared against CAPE_CURRENT_PLUTUS_VERSION in scripts/lib/cape_versions.sh: a submission above that threshold is measured with the preview evaluator instead of the production one, and is skipped by 'cape submission verify --all'. Omit for submissions the production evaluator can execute, which is the normal case. Which track a submission is rendered in is decided separately, by its directory-name variant suffix.",
           "examples": ["1.63.0.0", "1.68.0.0"]
         }
       },
