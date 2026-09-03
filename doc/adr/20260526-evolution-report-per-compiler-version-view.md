@@ -185,32 +185,32 @@ The van Rossem hard fork activated on mainnet on 2026-07-18 (protocol version 11
 
 Two changes, in this order:
 
-1. The production evaluator moved from `plutus-core` 1.45 to 1.63.0.0, the line shipped by `cardano-node` 11.0.1, and the preview evaluator from 1.65 to 1.67.0.0. `CAPE_CURRENT_PLUTUS_VERSION` and `CAPE_PREVIEW_PLUTUS_VERSION` follow.
-2. All 30 `_preview` submissions were promoted onto the production track: `compilation_config.min_plutus_version` dropped, the `BuiltinCasing` / `vanRossem` entries dropped from `flags`, a new `min_protocol_version: 11` recorded in their place, and each directory renamed onto the non-casing sibling it was built from, which is then retired.
+1. The production evaluator moved from `plutus-core` 1.45 to 1.63.0.0, the line shipped by `cardano-node` 11.0.1, and the preview evaluator from 1.65 to 1.68.0.0. `CAPE_CURRENT_PLUTUS_VERSION` and `CAPE_PREVIEW_PLUTUS_VERSION` follow.
+2. All 30 `_preview` submissions were promoted onto the production track: `compilation_config.min_plutus_version` dropped, the `BuiltinCasing` / `vanRossem` entries dropped from `flags`, a new `min_protocol_version: 11` recorded in their place, and the `_preview` suffix dropped from each directory name. Where a non-casing sibling already held that name it is overwritten and retired. Seven submissions have no such sibling — the whole Plinth 1.61 line, which was only ever published as a preview — so for them the rename is the entire change.
 
-The preview machinery (`cabal.project.preview`, `cape.cabal`'s `preview` flag, `measure-preview`, `cape submission measure --preview`, `aggregate --target`) stays in place, re-aimed at 1.67. `cape submission measure --preview` now reports "No preview submissions found", which is the correct steady state until a submission targets protocol version 12.
+The preview machinery (`cabal.project.preview`, `cape.cabal`'s `preview` flag, `measure-preview`, `cape submission measure --preview`, `aggregate --target`) stays in place, re-aimed at 1.68. `cape submission measure --preview` now reports "No preview submissions found", which is the correct steady state until a submission targets protocol version 12.
 
 ### Promoted onto the matching-pin sibling, not blindly onto `default`
 
 Refinement 3 established that `default` means the best-measured implementation for a version. That rule decides which sibling each casing build replaces, and it is not always `default`.
 
-For 27 of the 30, the casing build shares its source lineage with the version's `default`, and promoting it there improves the headline number by 13% to 32%. For three Plinth 1.64 submissions (`htlc`, `linear_vesting`, `two_party_escrow`) it does not: those casing artifacts share a source commit with the `_plain` / `_asdata` variant, having been built before the monadic decoder landed for that line. Promoting them onto `default` would have replaced the monadic artifacts with ones 111% to 153% more expensive and put a large regression into the 1.64 column that reflects a source revision, not a compiler feature.
+Twenty of the 30 replace a `default` whose source lineage they share, improving the headline fee by 12.6% to 32.0%. Seven replace nothing: Plinth 1.61 has no non-casing sibling, so those renames add a mainnet column rather than displacing one, and there is no baseline to beat. For the last three, all Plinth 1.64 (`htlc`, `linear_vesting`, `two_party_escrow`), `default` is the wrong target: those casing artifacts share a source commit with the `_plain` / `_asdata` variant, having been built before the monadic decoder landed for that line. Promoting them onto `default` would have replaced the monadic artifacts with ones 111% to 153% more expensive and put a large regression into the 1.64 column that reflects a source revision, not a compiler feature.
 
-They were promoted onto `_plain` / `_asdata` instead, where they win by 7.7%, 28.1% and 31.3%, and the monadic `default` for the 1.64 line is untouched. The general rule: a casing build replaces the sibling it was compiled from, decided per submission by source pin, and every promotion must show a measured win over what it replaces.
+They were promoted onto `_plain` / `_asdata` instead, where they win by 7.7%, 28.1% and 31.3%, and the monadic `default` for the 1.64 line is untouched. The general rule: a casing build replaces the sibling it was compiled from, decided per submission by source pin, and any promotion that displaces a sibling must show a measured win over it.
 
 ### Consequences
 
 - The evolution report has no preview teaser column. Every column is a mainnet column, and the Plinth timeline gains a 1.61 point that was previously preview-only.
 - The artifacts' van Rossem requirement is recorded as `min_protocol_version: 11`, a new schema field, rather than left implicit. `min_plutus_version` is now documented as what it always operationally was: an evaluator-routing knob, unset on every submission today.
+- The pre-fork non-casing artifacts for the promoted lines are gone from the working tree. They remain in git history; the surviving `_plain` and `_asdata` variants continue to provide a non-casing comparison where one was already published.
 
 ### Why the requirement is not a `min_plutus_version`
 
 The obvious move when retiring the track was to drop `min_plutus_version` and leave it at that, since none of the promoted artifacts need the preview evaluator any more. That loses a real property of the artifact, so the floor was measured rather than assumed, and the measurement changed the model.
 
-`vanRossemPV` is first defined in `plutus-core` 1.59.0.0, absent in 1.58.0.0, which suggested 1.59 as the floor. Evaluators built at both versions disprove it: 1.58.0.0 executes the casing artifacts *and* the `dropList` ones, all tests passing. The reason is that CAPE evaluates through `defaultCekParametersForTesting`, which enables every builtin regardless of protocol version. A `min_plutus_version` floor therefore measures when `plutus-core`'s CEK gained a capability, an implementation detail, and never measures what mainnet will accept.
+`vanRossemPV` is first defined in `plutus-core` 1.59.0.0, absent in 1.58.0.0, which suggested 1.59 as the floor. Evaluators built at both versions disprove it: 1.58.0.0 executes the casing artifacts _and_ the `dropList` ones, all tests passing. The reason is that CAPE evaluates through `defaultCekParametersForTesting`, which enables every builtin regardless of protocol version. A `min_plutus_version` floor therefore measures when `plutus-core`'s CEK gained a capability, an implementation detail, and never measures what mainnet will accept.
 
 The requirement worth recording is the protocol version, which is what actually gates these builtins on-chain and does not move when CAPE's evaluator does. Hence `min_protocol_version`, documented as not enforced during measurement, with `min_plutus_version` left as the routing override for the separate case where the production evaluator genuinely cannot run an artifact.
-- The pre-fork non-casing artifacts for the promoted lines are gone from the working tree. They remain in git history; the surviving `_plain` and `_asdata` variants continue to provide a non-casing comparison where one was already published.
 
 ## Links
 
