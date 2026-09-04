@@ -1,0 +1,279 @@
+{
+  "evaluations": [
+    {
+      "cpu_units": 50299042,
+      "description": "PartialUnlock at time=11 with 900 tokens remaining should succeed (first installment unlocked)",
+      "execution_result": "success",
+      "included_in_aggregates": true,
+      "memory_units": 233283,
+      "name": "partial_unlock_first_installment"
+    },
+    {
+      "cpu_units": 53313197,
+      "description": "PartialUnlock at time=50 with 500 tokens remaining should succeed (half vested)",
+      "execution_result": "success",
+      "included_in_aggregates": true,
+      "memory_units": 241144,
+      "name": "partial_unlock_mid_vesting"
+    },
+    {
+      "cpu_units": 53313197,
+      "description": "PartialUnlock at time=91 with 100 tokens remaining should succeed (9 installments unlocked)",
+      "execution_result": "success",
+      "included_in_aggregates": true,
+      "memory_units": 241144,
+      "name": "partial_unlock_near_end"
+    },
+    {
+      "cpu_units": 53313197,
+      "description": "PartialUnlock at time=25 with 800 tokens remaining should succeed (between installment boundaries)",
+      "execution_result": "success",
+      "included_in_aggregates": true,
+      "memory_units": 241144,
+      "name": "partial_unlock_between_installments"
+    },
+    {
+      "cpu_units": 14132930,
+      "description": "FullUnlock at time=101 (just after vesting period end) should succeed",
+      "execution_result": "success",
+      "included_in_aggregates": true,
+      "memory_units": 75057,
+      "name": "full_unlock_after_period_end"
+    },
+    {
+      "cpu_units": 14132930,
+      "description": "FullUnlock at time=200 (well after vesting period end) should succeed",
+      "execution_result": "success",
+      "included_in_aggregates": true,
+      "memory_units": 75057,
+      "name": "full_unlock_well_after"
+    },
+    {
+      "cpu_units": 24688,
+      "description": "Validator fails when redeemer is raw integer 0 instead of constructor 0()",
+      "execution_result": "success",
+      "included_in_aggregates": false,
+      "memory_units": 132,
+      "name": "redeemer_integer_0"
+    },
+    {
+      "cpu_units": 24688,
+      "description": "Validator fails when redeemer is raw integer 1 instead of constructor 1()",
+      "execution_result": "success",
+      "included_in_aggregates": false,
+      "memory_units": 132,
+      "name": "redeemer_integer_1"
+    },
+    {
+      "cpu_units": 24688,
+      "description": "Validator fails when redeemer is raw integer 99 (not a valid constructor)",
+      "execution_result": "success",
+      "included_in_aggregates": false,
+      "memory_units": 132,
+      "name": "redeemer_integer_99"
+    },
+    {
+      "cpu_units": 24688,
+      "description": "Validator fails when redeemer is bytestring instead of constructor",
+      "execution_result": "success",
+      "included_in_aggregates": false,
+      "memory_units": 132,
+      "name": "redeemer_bytestring"
+    },
+    {
+      "cpu_units": 24688,
+      "description": "Validator fails when redeemer is list [1 2 3] instead of constructor",
+      "execution_result": "success",
+      "included_in_aggregates": false,
+      "memory_units": 132,
+      "name": "redeemer_list"
+    },
+    {
+      "cpu_units": 38513426,
+      "description": "PartialUnlock without beneficiary signature should fail",
+      "execution_result": "success",
+      "included_in_aggregates": false,
+      "memory_units": 184776,
+      "name": "partial_unlock_missing_signature"
+    },
+    {
+      "cpu_units": 38562623,
+      "description": "PartialUnlock with impostor signature instead of beneficiary should fail",
+      "execution_result": "success",
+      "included_in_aggregates": false,
+      "memory_units": 184809,
+      "name": "partial_unlock_wrong_signature"
+    },
+    {
+      "cpu_units": 38513426,
+      "description": "PartialUnlock with no signatures at all should fail",
+      "execution_result": "success",
+      "included_in_aggregates": false,
+      "memory_units": 184776,
+      "name": "partial_unlock_no_signatures"
+    },
+    {
+      "cpu_units": 38606460,
+      "description": "PartialUnlock at time=5 should fail (before firstUnlockPossibleAfter=10)",
+      "execution_result": "success",
+      "included_in_aggregates": false,
+      "memory_units": 184810,
+      "name": "partial_unlock_before_first_unlock"
+    },
+    {
+      "cpu_units": 38606460,
+      "description": "PartialUnlock at time=10 should fail (at boundary, must be strictly after firstUnlockPossibleAfter)",
+      "execution_result": "success",
+      "included_in_aggregates": false,
+      "memory_units": 184810,
+      "name": "partial_unlock_at_first_unlock"
+    },
+    {
+      "cpu_units": 43632452,
+      "description": "PartialUnlock with 0 tokens remaining in output should fail (must use FullUnlock instead)",
+      "execution_result": "success",
+      "included_in_aggregates": false,
+      "memory_units": 204972,
+      "name": "partial_unlock_zero_remaining"
+    },
+    {
+      "cpu_units": 43676289,
+      "description": "PartialUnlock with output tokens equal to input (1000) should fail (no tokens actually withdrawn)",
+      "execution_result": "success",
+      "included_in_aggregates": false,
+      "memory_units": 204973,
+      "name": "partial_unlock_not_decreasing"
+    },
+    {
+      "cpu_units": 43728622,
+      "description": "PartialUnlock at time=11 with 800 tokens remaining should fail (expected minimum 900)",
+      "execution_result": "success",
+      "included_in_aggregates": false,
+      "memory_units": 204974,
+      "name": "partial_unlock_wrong_remaining_too_low"
+    },
+    {
+      "cpu_units": 43728622,
+      "description": "PartialUnlock at time=11 with 950 tokens remaining should fail (must withdraw at least 1 installment)",
+      "execution_result": "success",
+      "included_in_aggregates": false,
+      "memory_units": 204974,
+      "name": "partial_unlock_wrong_remaining_too_high"
+    },
+    {
+      "cpu_units": 46536300,
+      "description": "PartialUnlock with modified datum on continuing output should fail (datum must be preserved)",
+      "execution_result": "success",
+      "included_in_aggregates": false,
+      "memory_units": 204975,
+      "name": "partial_unlock_datum_modified"
+    },
+    {
+      "cpu_units": 44735886,
+      "description": "PartialUnlock with no datum on continuing output should fail",
+      "execution_result": "success",
+      "included_in_aggregates": false,
+      "memory_units": 204975,
+      "name": "partial_unlock_datum_missing"
+    },
+    {
+      "cpu_units": 49683093,
+      "description": "PartialUnlock with two script inputs should fail (double satisfaction attack)",
+      "execution_result": "success",
+      "included_in_aggregates": false,
+      "memory_units": 226007,
+      "name": "partial_unlock_double_satisfaction"
+    },
+    {
+      "cpu_units": 11975896,
+      "description": "FullUnlock without beneficiary signature should fail",
+      "execution_result": "success",
+      "included_in_aggregates": false,
+      "memory_units": 62123,
+      "name": "full_unlock_missing_signature"
+    },
+    {
+      "cpu_units": 12025093,
+      "description": "FullUnlock with impostor signature instead of beneficiary should fail",
+      "execution_result": "success",
+      "included_in_aggregates": false,
+      "memory_units": 62156,
+      "name": "full_unlock_wrong_signature"
+    },
+    {
+      "cpu_units": 12068930,
+      "description": "FullUnlock at time=50 should fail (vesting period not yet ended)",
+      "execution_result": "success",
+      "included_in_aggregates": false,
+      "memory_units": 62157,
+      "name": "full_unlock_before_period_end"
+    },
+    {
+      "cpu_units": 12068930,
+      "description": "FullUnlock at time=100 should fail (at boundary, must be strictly after vestingPeriodEnd)",
+      "execution_result": "success",
+      "included_in_aggregates": false,
+      "memory_units": 62157,
+      "name": "full_unlock_at_period_end"
+    },
+    {
+      "cpu_units": 37489316,
+      "description": "PartialUnlock with no lower bound (-inf) should fail; the lower bound must be finite",
+      "execution_result": "success",
+      "included_in_aggregates": false,
+      "memory_units": 184667,
+      "name": "partial_unlock_infinite_lower_bound"
+    },
+    {
+      "cpu_units": 8087751,
+      "description": "FullUnlock with no lower bound (-inf) should fail; the lower bound must be finite",
+      "execution_result": "success",
+      "included_in_aggregates": false,
+      "memory_units": 41451,
+      "name": "full_unlock_infinite_lower_bound"
+    }
+  ],
+  "execution_environment": {
+    "evaluator": "PlutusTx.Eval-1.63.0.0"
+  },
+  "measurements": {
+    "block_cpu_budget_pct": 0.266565985,
+    "block_memory_budget_pct": 0.33492222222222223,
+    "cpu_units": {
+      "maximum": 53313197,
+      "median": 51806119,
+      "minimum": 14132930,
+      "sum": 238504493
+    },
+    "excluded": {
+      "count": 23,
+      "cpu_units": {
+        "maximum": 49683093,
+        "sum": 602363015
+      },
+      "memory_units": {
+        "maximum": 226007,
+        "sum": 2855202
+      }
+    },
+    "execution_fee_lovelace": 81061,
+    "memory_units": {
+      "maximum": 241144,
+      "median": 237213,
+      "minimum": 75057,
+      "sum": 1106829
+    },
+    "reference_script_fee_lovelace": 18120,
+    "script_size_bytes": 1208,
+    "scripts_per_block": 298,
+    "scripts_per_tx": 68,
+    "term_size": 1331,
+    "total_fee_lovelace": 99181,
+    "tx_cpu_budget_pct": 0.53313197,
+    "tx_memory_budget_pct": 1.4614787878787878
+  },
+  "scenario": "linear_vesting",
+  "timestamp": "2026-09-04T12:11:15Z",
+  "version": "2.0.0",
+  "notes": "<optional notes>"
+}
