@@ -1,6 +1,6 @@
 {
   "benchmark": "linear_vesting",
-  "generated_at": "2026-09-04T09:41:21Z",
+  "generated_at": "2026-09-04T14:03:09Z",
   "submissions": [
     {
       "timestamp": "2026-08-12T10:54:21Z",
@@ -182,6 +182,58 @@
         "excluded_count": 23,
         "excluded_cpu_sum": 1550068814,
         "excluded_mem_sum": 4976122
+      }
+    },
+    {
+      "timestamp": "2026-09-04T13:27:28Z",
+      "compiler": "Plinth",
+      "version": "1.67.0.0",
+      "user": "Unisay",
+      "variant": "default",
+      "submission_dir": "Plinth_1.67.0.0_Unisay",
+      "metrics": {
+        "cpu_units": 144366932,
+        "memory_units": 447802,
+        "script_size_bytes": 910,
+        "term_size": 920,
+        "execution_fee_lovelace": 36248,
+        "reference_script_fee_lovelace": 13650,
+        "total_fee_lovelace": 49898,
+        "tx_memory_budget_pct": 0.5858242424242425,
+        "tx_cpu_budget_pct": 0.31601848,
+        "block_memory_budget_pct": 0.1342513888888889,
+        "block_cpu_budget_pct": 0.15800924,
+        "scripts_per_tx": 170,
+        "scripts_per_block": 632,
+        "excluded_count": 23,
+        "excluded_cpu_sum": 262003525,
+        "excluded_mem_sum": 741037
+      }
+    },
+    {
+      "timestamp": "2026-09-04T12:11:15Z",
+      "compiler": "Plinth",
+      "version": "1.67.0.0",
+      "user": "Unisay",
+      "variant": "asdata",
+      "submission_dir": "Plinth_1.67.0.0_Unisay_asdata",
+      "metrics": {
+        "cpu_units": 238504493,
+        "memory_units": 1106829,
+        "script_size_bytes": 1208,
+        "term_size": 1331,
+        "execution_fee_lovelace": 81061,
+        "reference_script_fee_lovelace": 18120,
+        "total_fee_lovelace": 99181,
+        "tx_memory_budget_pct": 1.4614787878787878,
+        "tx_cpu_budget_pct": 0.53313197,
+        "block_memory_budget_pct": 0.33492222222222223,
+        "block_cpu_budget_pct": 0.266565985,
+        "scripts_per_tx": 68,
+        "scripts_per_block": 298,
+        "excluded_count": 23,
+        "excluded_cpu_sum": 602363015,
+        "excluded_mem_sum": 2855202
       }
     },
     {
