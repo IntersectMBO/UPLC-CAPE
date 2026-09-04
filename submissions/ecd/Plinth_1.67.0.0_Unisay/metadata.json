@@ -1,0 +1,26 @@
+{
+  "compiler": {
+    "name": "Plinth",
+    "version": "1.67.0.0",
+    "commit_hash": "48e9bf08f439e7223de713b5b71696fcd81cffc3"
+  },
+  "compilation_config": {
+    "optimization_level": "Plinth",
+    "target": "uplc",
+    "flags": ["Plinth"],
+    "min_protocol_version": 11
+  },
+  "contributors": [
+    {
+      "name": "Unisay",
+      "organization": "UPLC-CAPE Project"
+    }
+  ],
+  "submission": {
+    "date": "2026-09-04T15:00:00Z",
+    "source_available": true,
+    "source_repository": "https://github.com/Unisay/plinth-cape-submissions",
+    "source_commit_hash": "bf320db5115145f8d8da18bb771fe769dbc4346d",
+    "implementation_notes": "Compiled with Plinth 1.67.0.0. Builtin casing needs no flag any more: 1.67 removed the plugin's `datatypes=BuiltinCasing` option (IntersectMBO/plutus#7859) and the default `SumsOfProducts` enables casing on its own, so the source repo's `preview` cabal flag, its PREVIEW CPP define and the PREVIEW-gated `dropList` emission are all deleted and one build now yields one artifact per scenario. Requires protocol version 11 (van Rossem), live on mainnet since 2026-07-18. Inliner budgets: no inliner pragma. The 1.65 sibling carried `inline-unconditional-growth=45`, which cost 5116 lovelace against the 1.65 plugin default. This build sets no budget, so the improvement over that sibling is the removal of a budget that should not have been set, not a compiler gain. The compiler is cost-neutral from 1.65 to 1.67 on this code: built from one source at plugin-default inliner budgets, 1.65, 1.66 and 1.67 measure within 0.2% of each other. Any difference against the 1.65 sibling therefore comes from inliner budget values and from validator source vintage, not from the compiler. Source: `lib/Ecd.hs` in plinth-cape-submissions @ bf320db5115145f8d8da18bb771fe769dbc4346d."
+  }
+}
