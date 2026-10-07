@@ -2,7 +2,7 @@
 
 **Repository**: <https://github.com/Unisay/plinth-cape-submissions>
 
-**Branch**: `yura/plutus-1.67`
+**Branch**: `plinth-1.67`
 
 **Commit**: `bf320db5115145f8d8da18bb771fe769dbc4346d`
 
