@@ -407,17 +407,17 @@
       "minimum": 194221,
       "sum": 3464499
     },
-    "reference_script_fee_lovelace": 38370,
-    "script_size_bytes": 2558,
+    "reference_script_fee_lovelace": 38400,
+    "script_size_bytes": 2560,
     "scripts_per_block": 134,
     "scripts_per_tx": 32,
     "term_size": 2188,
-    "total_fee_lovelace": 311042,
+    "total_fee_lovelace": 311072,
     "tx_cpu_budget_pct": 1.48713596,
     "tx_memory_budget_pct": 3.053957575757576
   },
   "scenario": "two_party_escrow",
-  "timestamp": "2026-10-07T11:46:26Z",
+  "timestamp": "2026-10-07T13:33:28Z",
   "version": "2.0.0",
   "notes": "Generated using UPLC-CAPE measure tool"
 }
