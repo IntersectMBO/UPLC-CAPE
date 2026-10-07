@@ -2,9 +2,9 @@
 
 **Repository**: <https://github.com/Unisay/plinth-cape-submissions>
 
-**Branch**: `plinth-1.45`
+**Branch**: `yura/escrow-30min-145-plain`
 
-**Commit**: `90c24bf94e088788af236b7da00a92fa2ce9c05f`
+**Commit**: `a865c024bc1dfd1fddf395f46c0393a4d311fbff`
 
 **Path**: `lib/TwoPartyEscrow.hs`
 
@@ -17,7 +17,7 @@ Production line; mainnet plutus-core baseline.
 ```bash
 git clone https://github.com/Unisay/plinth-cape-submissions
 cd plinth-cape-submissions
-git checkout 90c24bf94e088788af236b7da00a92fa2ce9c05f
+git checkout a865c024bc1dfd1fddf395f46c0393a4d311fbff
 ```
 
 `CAPE_REPO` must point at the sibling UPLC-CAPE checkout; the build aborts if the variable is unset. The recommended place is `.envrc.local` (gitignored), e.g.:
@@ -33,6 +33,6 @@ nix develop
 cabal run plinth-submissions
 ```
 
-The produced UPLC writes to `$CAPE_REPO/submissions/two_party_escrow/Plinth_1.45.0.0_Unisay_plain/two_party_escrow.uplc` and matches the `two_party_escrow.uplc` in this submission.
+The produced UPLC writes to `$CAPE_REPO/submissions/two_party_escrow/Plinth_1.45.0.0_Unisay/two_party_escrow.uplc`, because the generator at this commit does not add the `_plain` suffix. That file matches the `two_party_escrow.uplc` in this submission.
 
 > Retained as the `plain` variant: this was the default implementation for the Plinth 1.45.0.0 line until the monadic decoder became the default (lower fee, size, CPU, and memory).

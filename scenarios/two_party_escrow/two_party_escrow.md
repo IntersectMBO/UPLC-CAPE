@@ -34,7 +34,7 @@ Implement a two-party escrow validator and compile it as a **fully-applied UPLC 
    - **Buyer Address**: `aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa`
    - **Seller Address**: `bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb`
    - **Price**: 75 ADA (75,000,000 lovelace)
-   - **Deadline**: 30 minutes after deposit (1800 seconds)
+   - **Deadline**: 30 minutes after deposit (`1800000`: `POSIXTime` counts milliseconds)
 
 3. **State Transitions**: The validator must enforce proper state transitions and validation rules
 
@@ -206,7 +206,7 @@ Both **Accept** and **Refund** sequences are measured for comprehensive performa
 - **Value Check**: 75 ADA returned to buyer address
 - **Authorization**: Transaction signed by buyer
 - **State Check**: Valid deposit exists
-- **Timing**: Lower bound of valid range must be finite and strictly greater than `depositTime + 1800`
+- **Timing**: Lower bound of valid range must be finite and strictly greater than `depositTime + 1800000`
 
 **Note on time semantics**: The deposit path records `depositTime` as the **upper bound** of the deposit transaction's `txInfoValidRange`; it must be finite (an infinite upper bound is rejected). This is the production-safe convention – recording the latest possible slot for the deposit ensures the refund deadline is computed conservatively: the seller has at least `refundTime` from the deposit's upper bound before the buyer can reclaim funds. The refund path reads the **lower bound** of `txInfoValidRange`; it must be finite (an infinite lower bound is rejected) and must satisfy `lowerBound > depositTime + refundTime` (strict). The ledger fixes the closure of both bounds when it builds the script context (`transValidityInterval` in cardano-ledger): a finite lower bound is always inclusive, `LowerBound (Finite t) True`, and a finite upper bound is always exclusive, `UpperBound (Finite t) False`. So `lowerBound = t` for a finite lower bound `Finite t`, and `upperBound = t − 1` for a finite upper bound `Finite t`. A validator does not need to read the closure flag, and the fixtures never set a closure the ledger would not produce. Deposit fixtures set `from_time = t` and `to_time = t + 1`, which the test framework encodes as `[t, t + 1)` (exclusive upper bound, as the ledger does), so `upperBound = t` and the recorded `depositTime` is `t`. Refund fixtures set `from_time = t` and no upper bound, `[t, +∞)`, so `lowerBound = t`.
 
@@ -223,12 +223,14 @@ The two-party escrow tests (both Haskell specs and `cape-tests.json`) rely on a 
 
 **Timing:**
 
-- **Deadline Duration**: 30 minutes (1800 seconds)
+- **Deadline Duration**: 30 minutes (1,800,000 ms)
   - Time limit for seller to accept before buyer can refund
-- **Test Deposit Time**: 1000 seconds
+- **Test Deposit Time**: 1000 seconds (1,000,000 ms)
   - Fixed timestamp used as baseline in all test scenarios
-- **Refund Valid Time**: 2801+ seconds
-  - Any time strictly after deposit time (1000) + deadline (1800) = 2800
+- **Refund Valid Time**: after 2800 seconds (2,800,000 ms)
+  - Any time strictly after deposit time (1,000,000) + deadline (1,800,000) = 2,800,000
+
+All times are `POSIXTime` values, which count milliseconds, so every fixture time is the value in seconds multiplied by 1000.
 
 ### Address Constants
 
@@ -269,10 +271,10 @@ The two-party escrow tests (both Haskell specs and `cape-tests.json`) rely on a 
 
 **Temporal Boundaries:**
 
-- **Before Deadline**: 900 seconds - Should fail for refund operations
-- **At Deadline**: 2800 seconds (1000 + 1800) - Should fail (must be strictly after)
-- **After Deadline**: 2801+ seconds - Valid for refund operations
-- **Extended Times**: 3000, 3600, 5000 seconds - Used in various success scenarios
+- **Before Deadline**: 900 seconds (900,000 ms) - Should fail for refund operations
+- **At Deadline**: 2800 seconds (2,800,000 ms = 1,000,000 + 1,800,000) - Should fail (must be strictly after)
+- **After Deadline**: 2801 seconds (2,801,000 ms) - Valid for refund operations
+- **Extended Times**: 3000, 3600, 5000 seconds (3,000,000, 3,600,000, 5,000,000 ms) - Used in various success scenarios
 
 These constants ensure that all tests operate with predictable, well-defined scenarios that thoroughly validate the escrow validator's behavior across different conditions and edge cases.
 
@@ -404,10 +406,10 @@ The two-party escrow validator is tested through a comprehensive suite of test c
   Verifies refund fails without valid deposit UTXO (invalid escrow state)
 
 - **`deposit_infinite_upper_bound`**  
-  Verifies deposit fails when the validity range has no upper bound (`[1000, +∞)`). The validator rejects an infinite upper bound when recording the deposit time.
+  Verifies deposit fails when the validity range has no upper bound (`[1000000, +∞)`). The validator rejects an infinite upper bound when recording the deposit time.
 
 - **`refund_infinite_lower_bound`**  
-  Verifies refund fails when the validity range has no lower bound (`(−∞, 3001)`). The validator rejects an infinite lower bound.
+  Verifies refund fails when the validity range has no lower bound (`(−∞, 3000001)`). The validator rejects an infinite lower bound.
 
 - **`refund_after_accept_should_fail`**  
   Verifies refund fails after seller has already accepted (state validation)

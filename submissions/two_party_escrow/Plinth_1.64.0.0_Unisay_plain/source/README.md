@@ -2,9 +2,9 @@
 
 **Repository**: <https://github.com/Unisay/plinth-cape-submissions>
 
-**Branch**: `plinth-1.64`
+**Branch**: `yura/escrow-30min-164-plain`
 
-**Commit**: `63eaf4b8cb94e6d5be4350fcc481152dca94b15f`
+**Commit**: `dc204dd3d5130a25b030af34530236c4a312ee3c`
 
 **Path**: `lib/TwoPartyEscrow.hs`
 
@@ -15,7 +15,7 @@ This submission compiles `lib/TwoPartyEscrow.hs` from the Plinth source reposito
 ```bash
 git clone https://github.com/Unisay/plinth-cape-submissions
 cd plinth-cape-submissions
-git checkout 63eaf4b8cb94e6d5be4350fcc481152dca94b15f
+git checkout dc204dd3d5130a25b030af34530236c4a312ee3c
 ```
 
 `CAPE_REPO` must point at the sibling UPLC-CAPE checkout; the build aborts if the variable is unset. The recommended place is `.envrc.local` (gitignored), e.g.:
