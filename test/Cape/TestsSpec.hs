@@ -8,6 +8,9 @@ import Data.Aeson qualified as Json
 import Data.List ((!!))
 import Data.Map.Strict qualified as Map
 import Data.String.Interpolate (__i)
+import PlutusCore.Data (Data (B, I, Map))
+import PlutusLedgerApi.Data.V3 qualified as V3
+import PlutusTx.Builtins qualified as Builtins
 import Test.Hspec
 
 -- | Helper: a fully populated TestSuite with optional shared data structures.
@@ -30,6 +33,10 @@ emptyInput t =
     , tiFile = Nothing
     , tiScriptContext = Nothing
     }
+
+-- | Helper: the Data encoding of the Value built from a ValueSpec.
+builtValueData :: ValueSpec -> IO Data
+builtValueData = fmap (Builtins.builtinDataToData . V3.toBuiltinData) . buildValue mempty
 
 shouldResolveBuiltinData :: ResolvedInput -> Expectation
 shouldResolveBuiltinData = \case
@@ -343,6 +350,37 @@ spec = do
           }|] of
           Left err -> expectationFailure $ "Failed to parse: " <> err
           Right parsedSpec -> parsedSpec `shouldBe` expected
+
+  describe "buildValue" do
+    let ada lovelace = (B "", Map [(B "", I lovelace)])
+
+    it "puts ADA's empty currency symbol before asset policies" do
+      builtValueData (ValueSpec 2000000 [AssetSpec "B #dddd" "B #76657374" 1000])
+        `shouldReturn` Map [ada 2000000, (B "\xdd\xdd", Map [(B "vest", I 1000)])]
+
+    it "sorts currency symbols and token names in ascending byte order" do
+      builtValueData
+        ( ValueSpec
+            2000000
+            [ AssetSpec "B #ee" "B #02" 1
+            , AssetSpec "B #dd" "B #02" 5
+            , AssetSpec "B #dd" "B #01" 7
+            ]
+        )
+        `shouldReturn` Map
+          [ ada 2000000
+          , (B "\xdd", Map [(B "\x01", I 7), (B "\x02", I 5)])
+          , (B "\xee", Map [(B "\x02", I 1)])
+          ]
+
+    it "sums duplicate coins" do
+      builtValueData
+        (ValueSpec 2000000 [AssetSpec "B #dd" "B #01" 3, AssetSpec "B #dd" "B #01" 4])
+        `shouldReturn` Map [ada 2000000, (B "\xdd", Map [(B "\x01", I 7)])]
+
+    it "drops zero quantities, as the ledger does" do
+      builtValueData (ValueSpec 2000000 [AssetSpec "B #dd" "B #01" 0])
+        `shouldReturn` Map [ada 2000000]
 
   describe "Multiple inputs support" do
     context "JSON parsing with inputs array" do
