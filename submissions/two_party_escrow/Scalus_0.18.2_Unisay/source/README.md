@@ -1,10 +1,10 @@
 # Scalus Two-Party Escrow Implementation
 
-**Source Code**: [TwoPartyEscrow.scala](https://github.com/Unisay/scalus-cape-submissions/blob/ff297d13aedb0ab155962fa4c978501a0bc35e6c/src/two_party_escrow/TwoPartyEscrow.scala)
+**Source Code**: [TwoPartyEscrow.scala](https://github.com/Unisay/scalus-cape-submissions/blob/3ac57b5af61d5a698cf27e159b28639f86180ead/src/two_party_escrow/TwoPartyEscrow.scala)
 
 **Repository**: <https://github.com/Unisay/scalus-cape-submissions>
 
-**Commit**: `ff297d13aedb0ab155962fa4c978501a0bc35e6c`
+**Commit**: `3ac57b5af61d5a698cf27e159b28639f86180ead`
 
 **Path**: `src/two_party_escrow/TwoPartyEscrow.scala`
 
@@ -22,7 +22,7 @@ This submission uses Scalus compiler version 0.18.2. Two-party escrow spending v
 2. Check out the specific commit:
 
    ```bash
-   git checkout ff297d13aedb0ab155962fa4c978501a0bc35e6c
+   git checkout 3ac57b5af61d5a698cf27e159b28639f86180ead
    ```
 
 3. Build the artifact (nix shell `build-scalus`, or per scenario):
