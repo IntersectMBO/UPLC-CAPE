@@ -11,9 +11,9 @@ repository cardano-haskell-packages
 
 index-state:
   -- Using index-state available in haskell.nix binary cache (from nix flake update)
-  , hackage.haskell.org 2025-10-17T00:26:22Z
+  , hackage.haskell.org 2026-10-07T00:00:00Z
   -- Bump this if you need newer packages from CHaP
-  , cardano-haskell-packages 2026-09-01T00:00:00Z
+  , cardano-haskell-packages 2026-10-06T19:41:19Z
 
 packages:
   ./.

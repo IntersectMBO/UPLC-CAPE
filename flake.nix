@@ -126,11 +126,11 @@
             # Formatting tools
             treefmt
             shfmt # Shell script formatter
-            nodePackages.prettier # YAML, Markdown, and more
-            nixfmt-rfc-style
+            prettier # YAML, Markdown, and more
+            nixfmt
 
             # Documentation and ADR tools
-            nodejs_20 # Required for log4brains
+            nodejs_22 # Required for log4brains
 
             # ADR command wrapper
             (writeShellScriptBin "adr" ''
