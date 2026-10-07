@@ -2,9 +2,9 @@
 
 **Repository**: <https://github.com/Unisay/plinth-cape-submissions>
 
-**Branch**: `plinth-1.45`
+**Branch**: `plinth-1.45-escrow-30min`
 
-**Commit**: `b10eb9c4be0745a199c1febe963e00631ca0c3d7`
+**Commit**: `c3c20f9d009857eded13a04adf4875e56ef6efdd`
 
 **Path**: `lib/TwoPartyEscrow/Monadic.hs` (+ `lib/Plinth/Validator.hs`, `lib/Plinth/Decoder/Named.hs`, `lib/Plinth/Decoder/Named/ScriptContext.hs`, `lib/Plinth/Encoded.hs`)
 
@@ -15,7 +15,7 @@ Two-party escrow validator written in `do`-notation on `Plinth.Validator`, a zer
 ```bash
 git clone https://github.com/Unisay/plinth-cape-submissions
 cd plinth-cape-submissions
-git checkout b10eb9c4be0745a199c1febe963e00631ca0c3d7
+git checkout c3c20f9d009857eded13a04adf4875e56ef6efdd
 ```
 
 `CAPE_REPO` must point at the sibling UPLC-CAPE checkout (build aborts if unset); set it in `.envrc.local` (gitignored). Then:

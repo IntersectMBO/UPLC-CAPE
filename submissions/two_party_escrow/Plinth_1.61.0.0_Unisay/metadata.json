@@ -21,6 +21,6 @@
     "source_available": true,
     "source_repository": "https://github.com/Unisay/plinth-cape-submissions",
     "implementation_notes": "Two-party escrow validator compiled with Plinth 1.61.0.0 and the `datatypes=BuiltinCasing` plugin flag. Requires plutus-core >= 1.61.0.0, which mainnet has run since the van Rossem hard fork (protocol version 11, 2026-07-18).",
-    "source_commit_hash": "6046d6f44cf17e040ad88bb1ffba893fae3a1b59"
+    "source_commit_hash": "d0a9d341a4702ef572c16e223f5cb55857d7a622"
   }
 }

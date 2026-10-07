@@ -2,9 +2,9 @@
 
 **Repository**: <https://github.com/Unisay/plinth-cape-submissions>
 
-**Branch**: `main`
+**Branch**: `plinth-1.65-escrow-30min`
 
-**Commit**: `d078652f03d31ed728c1fb63f1d9f8824218494c`
+**Commit**: `593f3953df06a0087b0b07ddf3549b2350401eb9`
 
 **Path**: `lib/TwoPartyEscrow.hs` (+ `lib/Plinth/Decoder.hs`, `lib/Plinth/Decoder/Named.hs`, `lib/Plinth/Encoded.hs`)
 
@@ -15,7 +15,7 @@ The monadic two-party escrow validator with builtin casing plus the `dropList` d
 ```bash
 git clone https://github.com/Unisay/plinth-cape-submissions
 cd plinth-cape-submissions
-git checkout d078652f03d31ed728c1fb63f1d9f8824218494c
+git checkout 593f3953df06a0087b0b07ddf3549b2350401eb9
 ```
 
 `CAPE_REPO` must point at the sibling UPLC-CAPE checkout; the build aborts if the variable is unset. The recommended place is `.envrc.local` (gitignored), e.g.:

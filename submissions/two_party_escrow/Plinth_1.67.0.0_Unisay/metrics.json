@@ -407,17 +407,17 @@
       "minimum": 40803,
       "sum": 486978
     },
-    "reference_script_fee_lovelace": 23550,
-    "script_size_bytes": 1570,
+    "reference_script_fee_lovelace": 23580,
+    "script_size_bytes": 1572,
     "scripts_per_block": 1008,
     "scripts_per_tx": 273,
     "term_size": 1130,
-    "total_fee_lovelace": 63467,
+    "total_fee_lovelace": 63497,
     "tx_cpu_budget_pct": 0.1982467,
     "tx_memory_budget_pct": 0.36508484848484846
   },
   "scenario": "two_party_escrow",
-  "timestamp": "2026-10-07T11:46:26Z",
+  "timestamp": "2026-10-07T13:33:29Z",
   "version": "2.0.0",
   "notes": "<optional notes>"
 }

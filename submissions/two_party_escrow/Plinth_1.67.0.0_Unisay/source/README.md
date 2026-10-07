@@ -2,9 +2,9 @@
 
 **Repository**: <https://github.com/Unisay/plinth-cape-submissions>
 
-**Branch**: `yura/plutus-1.67`
+**Branch**: `plinth-1.67`
 
-**Commit**: `bf320db5115145f8d8da18bb771fe769dbc4346d`
+**Commit**: `f042fed351c510af0dda43daa1b30ce6e9eaf5e3`
 
 **Path**: `lib/TwoPartyEscrow.hs` (fixture: `lib/TwoPartyEscrow/Fixture.hs`; decoder DSL: `lib/Plinth/Validator.hs`, `lib/Plinth/Encoded.hs`, `lib/Plinth/Decoder/Named.hs`, `lib/Plinth/Decoder/Named/ScriptContext.hs`, `lib/Plinth/Decoder/Named/TH.hs`)
 
@@ -15,7 +15,7 @@ This submission compiles `lib/TwoPartyEscrow.hs` from the Plinth source reposito
 ```bash
 git clone https://github.com/Unisay/plinth-cape-submissions
 cd plinth-cape-submissions
-git checkout bf320db5115145f8d8da18bb771fe769dbc4346d
+git checkout f042fed351c510af0dda43daa1b30ce6e9eaf5e3
 ```
 
 `CAPE_REPO` must point at the sibling UPLC-CAPE checkout; the build aborts if the variable is unset. The recommended place is `.envrc.local` (gitignored), e.g.:

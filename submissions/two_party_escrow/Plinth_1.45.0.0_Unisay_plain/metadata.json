@@ -19,7 +19,7 @@
     "date": "2026-07-06T17:43:54Z",
     "source_available": true,
     "source_repository": "https://github.com/Unisay/plinth-cape-submissions",
-    "source_commit_hash": "90c24bf94e088788af236b7da00a92fa2ce9c05f",
+    "source_commit_hash": "a865c024bc1dfd1fddf395f46c0393a4d311fbff",
     "implementation_notes": "Two-party escrow validator using Plinth (PlutusTx) targeting Plutus Core 1.1.0 and Plutus V3. Fully-applied smart contract validator. Downgraded to Plutus 1.45 for mainnet compatibility (cardano-node 10.4.1)."
   }
 }
