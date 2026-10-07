@@ -34,6 +34,7 @@ module Cape.Tests (
   loadTestSuite,
   resolveTestInput,
   resolveExpectedResult,
+  buildValue,
   getTestBaseDir,
   isPendingTest,
   suiteTests,
@@ -52,7 +53,9 @@ import Data.ByteString.Lazy qualified as LBS
 import Data.Map qualified as HaskellMap
 import Data.Text qualified as Text
 import Data.Text.Encoding qualified as TE
+import PlutusCore.Builtin (BuiltinResult (..))
 import PlutusCore.Data qualified as PLC
+import PlutusCore.Value qualified as PV
 import PlutusLedgerApi.Data.V3 qualified as V3
 import PlutusTx.Builtins qualified as Builtins
 import PlutusTx.Builtins.Internal qualified as BI
@@ -889,82 +892,62 @@ resolveScriptContextReference dataStructures refName =
 
 {- | Build a Value from a ValueSpec (lovelace + optional assets).
 
-Constructs a multi-asset Value by starting with lovelace and combining
-each resolved asset value using @foldl'@ and @(<>)@, then re-sorting the
-result into canonical key order (see 'canonicalValue').
+The coins go through @PlutusCore.Value@, the representation behind the
+CIP-0153 value builtins, so the result has the shape of a
+ledger-produced value: currency symbols and token names in strictly
+ascending byte order (ADA's empty currency symbol first), duplicate coins
+summed, zero quantities dropped, keys and quantities bounds-checked.
+
+The Data-backed 'V3.Value' 'Semigroup' can't be used here:
+@PlutusTx.Data.AssocMap.union@ appends the left map's unmatched keys
+after the right map's entries, so @adaValue <> assetValue@ puts ADA
+last. Validators would then reach the asset one step earlier than on
+chain, and @unValueData@ rejects such an encoding outright.
 -}
 buildValue ::
   HaskellMap.Map Text DataStructureEntry ->
   ValueSpec ->
   IO V3.Value
 buildValue dataStructures ValueSpec {vsLovelace, vsAssets} = do
-  let adaValue = V3.singleton V3.adaSymbol V3.adaToken vsLovelace
-  case vsAssets of
-    [] -> pure adaValue
-    assets -> do
-      assetValues <- traverse (resolveAsset dataStructures) assets
-      pure $ canonicalValue $ foldl' (<>) adaValue assetValues
-
-{- | Re-sort a 'V3.Value' into canonical key order: the outer
-currency-symbol map and each inner token-name map in strictly ascending
-byte-lexicographic order, i.e. ADA's empty currency symbol always first.
-
-The Data-backed 'V3.Value' 'Semigroup' offers no ordering guarantee: it
-is built on @PlutusTx.Data.AssocMap.union@, whose @safeAppend@ inserts
-the left map's unmatched keys *after* the right map's entries. Combining
-@adaValue <> assetValue@ therefore yields the asset's currency symbol
-before ADA's empty one - the reverse of canonical order.
-
-Real ledger-produced @Value@s are always canonically sorted, and
-CIP-0153's @unValueData@ builtin (plutus-core >= 1.65,
-@PlutusCore.Value.buildValueWith@) rejects non-canonical encodings
-outright instead of normalising them. Without this re-sort, any
-submission whose validator decodes a fixture-provided multi-asset value
-with @unValueData@ fails with a machine error even though the validator
-is correct. Sorting here makes fixture values indistinguishable from
-real ledger-constructed ones.
--}
-canonicalValue :: V3.Value -> V3.Value
-canonicalValue value =
-  case Builtins.builtinDataToData (V3.toBuiltinData value) of
-    PLC.Map outer ->
-      V3.unsafeFromBuiltinData . Builtins.dataToBuiltinData . PLC.Map $
-        sortOn fst (map (second sortInner) outer)
-    -- A Value's Data encoding is always a Map; anything else is left as-is.
-    other -> V3.unsafeFromBuiltinData (Builtins.dataToBuiltinData other)
+  assets <- traverse (resolveAsset dataStructures) vsAssets
+  entries <- traverse coinEntry ((mempty, mempty, vsLovelace) : assets)
+  case PV.fromList entries >>= PV.valueData of
+    BuiltinSuccess valueData -> pure $ fromData valueData
+    BuiltinSuccessWithLogs _ valueData -> pure $ fromData valueData
+    BuiltinFailure logs _ -> die $ "Invalid value: " <> show (toList logs)
   where
-    sortInner :: PLC.Data -> PLC.Data
-    sortInner (PLC.Map inner) = PLC.Map (sortOn fst inner)
-    sortInner other = other
+    fromData = V3.unsafeFromBuiltinData . Builtins.dataToBuiltinData
+    coinEntry coin@(currency, token, amount) =
+      case (PV.k currency, PV.k token, PV.quantity amount) of
+        (Just c, Just t, Just q) -> pure (c, [(t, q)])
+        _ -> die $ "Invalid coin in value: " <> show coin
 
-{- | Resolve an AssetSpec into a singleton Value.
+{- | Resolve an AssetSpec into a (currency symbol, token name, quantity) coin.
 
 Currency symbol and token name support @references to builtin_data.
 -}
 resolveAsset ::
   HaskellMap.Map Text DataStructureEntry ->
   AssetSpec ->
-  IO V3.Value
+  IO (ByteString, ByteString, Integer)
 resolveAsset dataStructures AssetSpec {asCurrencySymbol, asTokenName, asQuantity} = do
   csBytes <- resolveAsBytes dataStructures asCurrencySymbol
   tnBytes <- resolveAsBytes dataStructures asTokenName
-  let cs = V3.CurrencySymbol csBytes
-      tn = V3.TokenName tnBytes
-  pure $ V3.singleton cs tn asQuantity
+  pure (csBytes, tnBytes, asQuantity)
 
-{- | Resolve a text value to BuiltinByteString.
+{- | Resolve a text value to a ByteString.
 
 Supports @references (resolving to BuiltinData bytestrings)
 and hex-encoded literals (prefixed with #).
 -}
 resolveAsBytes ::
-  HaskellMap.Map Text DataStructureEntry -> Text -> IO V3.BuiltinByteString
+  HaskellMap.Map Text DataStructureEntry -> Text -> IO ByteString
 resolveAsBytes dataStructures text
   | Text.isPrefixOf "@" text && Text.length text > 1 = do
       resolvedBuiltinData <- resolveBuiltinDataReference dataStructures text
       let coreData = Builtins.builtinDataToData resolvedBuiltinData
       case coreData of
-        PLC.B bytestring -> pure $ Builtins.toBuiltin bytestring
+        PLC.B bytestring -> pure bytestring
         _ -> die $ "Expected bytestring data for asset component: " <> toString text
   | otherwise = do
       -- Resolve as text (handles non-reference cases) and parse via the
@@ -974,7 +957,7 @@ resolveAsBytes dataStructures text
         decodeBuiltinDataValue dataStructures "asset component" (Json.String resolved)
       let coreData = Builtins.builtinDataToData resolvedBuiltinData
       case coreData of
-        PLC.B bytestring -> pure $ Builtins.toBuiltin bytestring
+        PLC.B bytestring -> pure bytestring
         _ -> die $ "Expected bytestring for asset component: " <> toString text
 
 -- * Datum Resolution
