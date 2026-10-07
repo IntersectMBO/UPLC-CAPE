@@ -1,11 +1,11 @@
 {
   "evaluations": [
     {
-      "cpu_units": 23496532,
+      "cpu_units": 23661740,
       "description": "Deposit with buyer signature and exactly 75 ADA should succeed",
       "execution_result": "success",
       "included_in_aggregates": true,
-      "memory_units": 118865,
+      "memory_units": 119267,
       "name": "deposit_successful"
     },
     {
@@ -386,8 +386,8 @@
     "cpu_units": {
       "maximum": 66443421,
       "median": 36924387,
-      "minimum": 23496532,
-      "sum": 409399226
+      "minimum": 23661740,
+      "sum": 409564434
     },
     "excluded": {
       "count": 37,
@@ -400,24 +400,24 @@
         "sum": 1521081
       }
     },
-    "execution_fee_lovelace": 147722,
+    "execution_fee_lovelace": 147757,
     "memory_units": {
       "maximum": 307496,
       "median": 190214,
-      "minimum": 118865,
-      "sum": 2048598
+      "minimum": 119267,
+      "sum": 2049000
     },
     "reference_script_fee_lovelace": 32940,
     "script_size_bytes": 2196,
     "scripts_per_block": 234,
     "scripts_per_tx": 53,
     "term_size": 1882,
-    "total_fee_lovelace": 180662,
+    "total_fee_lovelace": 180697,
     "tx_cpu_budget_pct": 0.66443421,
     "tx_memory_budget_pct": 1.863612121212121
   },
   "scenario": "two_party_escrow",
-  "timestamp": "2026-09-04T12:11:16Z",
+  "timestamp": "2026-10-07T11:46:26Z",
   "version": "2.0.0",
   "notes": "<optional notes>"
 }
