@@ -1,11 +1,11 @@
 {
   "evaluations": [
     {
-      "cpu_units": 32626258,
+      "cpu_units": 32791466,
       "description": "Deposit with buyer signature and exactly 75 ADA should succeed",
       "execution_result": "success",
       "included_in_aggregates": true,
-      "memory_units": 108576,
+      "memory_units": 108978,
       "name": "deposit_successful"
     },
     {
@@ -386,8 +386,8 @@
     "cpu_units": {
       "maximum": 57061474,
       "median": 41273710,
-      "minimum": 32626258,
-      "sum": 425273438
+      "minimum": 32791466,
+      "sum": 425438646
     },
     "excluded": {
       "count": 37,
@@ -400,24 +400,24 @@
         "sum": 737076
       }
     },
-    "execution_fee_lovelace": 106987,
+    "execution_fee_lovelace": 107022,
     "memory_units": {
       "maximum": 168988,
       "median": 128749,
-      "minimum": 108576,
-      "sum": 1322778
+      "minimum": 108978,
+      "sum": 1323180
     },
     "reference_script_fee_lovelace": 40965,
     "script_size_bytes": 2731,
     "scripts_per_block": 350,
     "scripts_per_tx": 97,
     "term_size": 1965,
-    "total_fee_lovelace": 147952,
+    "total_fee_lovelace": 147987,
     "tx_cpu_budget_pct": 0.57061474,
     "tx_memory_budget_pct": 1.024169696969697
   },
   "scenario": "two_party_escrow",
-  "timestamp": "2026-08-12T10:54:23Z",
+  "timestamp": "2026-10-07T11:46:24Z",
   "version": "2.0.0",
   "notes": "Generated using UPLC-CAPE measure tool"
 }

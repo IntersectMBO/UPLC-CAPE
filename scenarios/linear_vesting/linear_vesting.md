@@ -226,7 +226,7 @@ Both **PartialUnlock** and **FullUnlock** sequences are measured for comprehensi
 - **Authorization**: Transaction signed by beneficiary's PubKeyHash
 - **Time Check**: Lower bound of valid range must be finite and strictly greater than `vestingPeriodEnd`
 
-**Note on time semantics**: Both PartialUnlock and FullUnlock are "unlock after time X" checks; the validator reads the **lower bound** of `txInfoValidRange`, which must be finite (an infinite lower bound is rejected) and must satisfy `lowerBound > threshold` (strict). For a finite inclusive lower bound `t`, `lowerBound = t`; for a finite exclusive lower bound `t`, `lowerBound = t + 1`. This follows the same production-safe convention as the HTLC refund path — using the lower bound for an "after deadline" check guarantees that the real block time is at least as large as the threshold, even when the transaction specifies an unusually wide validity range.
+**Note on time semantics**: Both PartialUnlock and FullUnlock are "unlock after time X" checks; the validator reads the **lower bound** of `txInfoValidRange`, which must be finite (an infinite lower bound is rejected) and must satisfy `lowerBound > threshold` (strict). The ledger always builds a finite lower bound as inclusive, `LowerBound (Finite t) True` (`transValidityInterval` in cardano-ledger), so `lowerBound = t` and a validator does not need to read the closure flag. Unlock fixtures set `from_time = t` and no upper bound, `[t, +∞)`. This follows the same production-safe convention as the HTLC refund path – using the lower bound for an "after deadline" check guarantees that the real block time is at least as large as the threshold, even when the transaction specifies an unusually wide validity range.
 
 ### Vesting Schedule Reference
 
@@ -361,7 +361,7 @@ The linear vesting validator is tested through a comprehensive suite of test cas
 
 - **`partial_unlock_at_first_unlock`** Verifies partial unlock fails when time=10, exactly at the firstUnlockPossibleAfter boundary. The check is strictly greater than, so equal is not sufficient.
 
-- **`partial_unlock_infinite_lower_bound`** Verifies partial unlock fails when the validity range has no lower bound (`(−∞, 90]`). The validator rejects an infinite lower bound.
+- **`partial_unlock_infinite_lower_bound`** Verifies partial unlock fails when the validity range has no lower bound (`(−∞, 91)`). The validator rejects an infinite lower bound.
 
 ### PartialUnlock Amount Failure Tests
 
@@ -395,7 +395,7 @@ The linear vesting validator is tested through a comprehensive suite of test cas
 
 - **`full_unlock_at_period_end`** Verifies full unlock fails when time=100, exactly at the vestingPeriodEnd boundary. The check is strictly greater than, so equal is not sufficient.
 
-- **`full_unlock_infinite_lower_bound`** Verifies full unlock fails when the validity range has no lower bound (`(−∞, 200]`). The validator rejects an infinite lower bound.
+- **`full_unlock_infinite_lower_bound`** Verifies full unlock fails when the validity range has no lower bound (`(−∞, 201)`). The validator rejects an infinite lower bound.
 
 ### Primary Test Cases for Performance Measurement
 

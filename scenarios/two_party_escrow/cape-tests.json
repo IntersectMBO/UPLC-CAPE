@@ -42,7 +42,7 @@
           {
             "op": "set_valid_range",
             "from_time": 1000,
-            "to_time": 1000
+            "to_time": 1001
           },
           {
             "op": "add_input_utxo",
@@ -1765,7 +1765,7 @@
             "patches": [
               {
                 "op": "set_valid_range",
-                "to_time": 3000
+                "to_time": 3001
               }
             ]
           }

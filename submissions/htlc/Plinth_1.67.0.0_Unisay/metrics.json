@@ -1,19 +1,19 @@
 {
   "evaluations": [
     {
-      "cpu_units": 15871993,
+      "cpu_units": 16037201,
       "description": "Claim at time=50 with correct preimage and recipient signature should succeed",
       "execution_result": "success",
       "included_in_aggregates": true,
-      "memory_units": 46622,
+      "memory_units": 47024,
       "name": "claim_well_before_timeout"
     },
     {
-      "cpu_units": 15871993,
+      "cpu_units": 16037201,
       "description": "Claim at time=99 (just before timeout=100) with correct preimage should succeed",
       "execution_result": "success",
       "included_in_aggregates": true,
-      "memory_units": 46622,
+      "memory_units": 47024,
       "name": "claim_just_before_timeout"
     },
     {
@@ -113,19 +113,19 @@
       "name": "claim_empty_preimage"
     },
     {
-      "cpu_units": 8016316,
+      "cpu_units": 8117524,
       "description": "Claim at time=100 (boundary, must be strictly before timeout) should fail",
       "execution_result": "success",
       "included_in_aggregates": false,
-      "memory_units": 21711,
+      "memory_units": 21713,
       "name": "claim_at_timeout"
     },
     {
-      "cpu_units": 8016316,
+      "cpu_units": 8117524,
       "description": "Claim at time=150 (after timeout) should fail even with correct preimage",
       "execution_result": "success",
       "included_in_aggregates": false,
-      "memory_units": 21711,
+      "memory_units": 21713,
       "name": "claim_after_timeout"
     },
     {
@@ -137,11 +137,11 @@
       "name": "claim_infinite_upper_bound"
     },
     {
-      "cpu_units": 17024690,
+      "cpu_units": 17125898,
       "description": "Claim with two script inputs should fail (double satisfaction attack)",
       "execution_result": "success",
       "included_in_aggregates": false,
-      "memory_units": 42549,
+      "memory_units": 42551,
       "name": "claim_double_satisfaction"
     },
     {
@@ -205,43 +205,43 @@
     "evaluator": "PlutusTx.Eval-1.63.0.0"
   },
   "measurements": {
-    "block_cpu_budget_pct": 0.079359965,
-    "block_memory_budget_pct": 0.06475277777777778,
+    "block_cpu_budget_pct": 0.08018600499999999,
+    "block_memory_budget_pct": 0.06531111111111111,
     "cpu_units": {
-      "maximum": 15871993,
-      "median": 15472888,
+      "maximum": 16037201,
+      "median": 15555492,
       "minimum": 15073784,
-      "sum": 61891554
+      "sum": 62221970
     },
     "excluded": {
       "count": 21,
       "cpu_units": {
-        "maximum": 17024690,
-        "sum": 117562131
+        "maximum": 17125898,
+        "sum": 117865755
       },
       "memory_units": {
-        "maximum": 42549,
-        "sum": 323571
+        "maximum": 42551,
+        "sum": 323577
       }
     },
-    "execution_fee_lovelace": 15031,
+    "execution_fee_lovelace": 15101,
     "memory_units": {
-      "maximum": 46622,
-      "median": 45790,
+      "maximum": 47024,
+      "median": 45991,
       "minimum": 44958,
-      "sum": 183160
+      "sum": 183964
     },
     "reference_script_fee_lovelace": 9345,
     "script_size_bytes": 623,
-    "scripts_per_block": 1260,
-    "scripts_per_tx": 353,
+    "scripts_per_block": 1247,
+    "scripts_per_tx": 350,
     "term_size": 656,
-    "total_fee_lovelace": 24376,
-    "tx_cpu_budget_pct": 0.15871993,
-    "tx_memory_budget_pct": 0.2825575757575758
+    "total_fee_lovelace": 24446,
+    "tx_cpu_budget_pct": 0.16037200999999998,
+    "tx_memory_budget_pct": 0.28499393939393936
   },
   "scenario": "htlc",
-  "timestamp": "2026-09-04T13:27:27Z",
+  "timestamp": "2026-10-07T11:46:22Z",
   "version": "2.0.0",
   "notes": "<optional notes>"
 }
