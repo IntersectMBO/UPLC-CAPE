@@ -374,8 +374,8 @@ data PatchOperationSpec
     --     @
     --     {
     --       "op": "set_valid_range",
-    --       "from_time": 1640995200,
-    --       "to_time": 1641081600
+    --       "from_time": 1640995200000,
+    --       "to_time": 1641081600000
     --     }
     --     @
     SetValidRangeSpec (Maybe Integer) (Maybe Integer)
