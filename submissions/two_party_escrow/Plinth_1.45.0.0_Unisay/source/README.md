@@ -2,7 +2,7 @@
 
 **Repository**: <https://github.com/Unisay/plinth-cape-submissions>
 
-**Branch**: `yura/escrow-30min-145`
+**Branch**: `plinth-1.45-escrow-30min`
 
 **Commit**: `c3c20f9d009857eded13a04adf4875e56ef6efdd`
 
