@@ -1,0 +1,15 @@
+# Benchmark Implementation Notes
+
+**Scenario**: `factorial_naive_recursion`
+
+**Submission ID**: `Scalus_1.3.0_Unisay`
+
+## Implementation Details
+
+- **Compiler**: `Scalus 1.3.0`
+- **Implementation Approach**: `naive recursive @Compile program, Data -> Unit`
+- **Compilation Flags**: `targetProtocolVersion = vanRossemPV` (Cardano protocol version 11)
+
+## Performance Results
+
+- See [metrics.json](metrics.json) for detailed performance measurements
