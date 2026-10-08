@@ -1,0 +1,26 @@
+{
+  "compiler": {
+    "name": "Plinth",
+    "version": "1.71.0.0",
+    "commit_hash": "261766ad1d582bce8c86bad1af7a3b0e5355b21c"
+  },
+  "compilation_config": {
+    "optimization_level": "Plinth",
+    "target": "uplc",
+    "flags": ["Plinth"],
+    "min_protocol_version": 11
+  },
+  "contributors": [
+    {
+      "name": "Unisay",
+      "organization": "UPLC-CAPE Project"
+    }
+  ],
+  "submission": {
+    "date": "2026-10-08T10:00:00Z",
+    "source_available": true,
+    "source_repository": "https://github.com/Unisay/plinth-cape-submissions",
+    "source_commit_hash": "bcb8d73ba0e19b9582e62a3c2ace1b7167a74eb8",
+    "implementation_notes": "Compiled with Plinth 1.71.0.0. The source repo sets `target-version=1.1.0` explicitly, which matters from 1.71 on: the plugin default moved from 1.1.0 to 1.2.0, and mainnet does not accept Plutus Core 1.2.0. Requires protocol version 11 (van Rossem), live on mainnet since 2026-07-18. Inliner budgets: `inline-unconditional-growth=28`, `inline-callsite-growth=16`, re-swept for 1.71 on a grid of both budgets; the pair sits on a 2x2 plateau at uncond 28 to 29 and callsite 15 to 16. The 1.67 pair (16, 21) costs 105952 lovelace under 1.71. At plugin-default budgets the compiler moves this program by -267 lovelace from 1.67 to 1.71: 1.68 turns the Haskell unit into the built-in unit, and 1.69 changes it again for a reason not isolated. The 30-minute deadline is `1800000` POSIX milliseconds. There is no `_asdata` variant at 1.71: the TH-derived `unsafeFromBuiltinData` of a sum type now compiles to a `case` on Data, which needs Plutus Core 1.2.0, and the plugin emits it even under `target-version=1.1.0`, so that build fails on a PV11 evaluator. Source: `lib/TwoPartyEscrow.hs` (+ `lib/TwoPartyEscrow/Fixture.hs` and the decoder DSL under `lib/Plinth/`) in plinth-cape-submissions @ bcb8d73ba0e19b9582e62a3c2ace1b7167a74eb8."
+  }
+}
