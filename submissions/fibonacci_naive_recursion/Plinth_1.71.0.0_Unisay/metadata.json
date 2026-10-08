@@ -1,0 +1,26 @@
+{
+  "compiler": {
+    "name": "Plinth",
+    "version": "1.71.0.0",
+    "commit_hash": "261766ad1d582bce8c86bad1af7a3b0e5355b21c"
+  },
+  "compilation_config": {
+    "optimization_level": "Plinth",
+    "target": "uplc",
+    "flags": ["Plinth"],
+    "min_protocol_version": 11
+  },
+  "contributors": [
+    {
+      "name": "Unisay",
+      "organization": "UPLC-CAPE Project"
+    }
+  ],
+  "submission": {
+    "date": "2026-10-08T10:00:00Z",
+    "source_available": true,
+    "source_repository": "https://github.com/Unisay/plinth-cape-submissions",
+    "source_commit_hash": "bcb8d73ba0e19b9582e62a3c2ace1b7167a74eb8",
+    "implementation_notes": "Compiled with Plinth 1.71.0.0. The source repo sets `target-version=1.1.0` explicitly, which matters from 1.71 on: the plugin default moved from 1.1.0 to 1.2.0, and mainnet does not accept Plutus Core 1.2.0. Requires protocol version 11 (van Rossem), live on mainnet since 2026-07-18. Inliner budgets: no inliner pragma. Byte-identical to the 1.67 sibling: 1.68 through 1.71 do not change this program. Source: `lib/Fibonacci.hs` in plinth-cape-submissions @ bcb8d73ba0e19b9582e62a3c2ace1b7167a74eb8."
+  }
+}

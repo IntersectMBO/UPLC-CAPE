@@ -1,0 +1,26 @@
+{
+  "compiler": {
+    "name": "Plinth",
+    "version": "1.71.0.0",
+    "commit_hash": "261766ad1d582bce8c86bad1af7a3b0e5355b21c"
+  },
+  "compilation_config": {
+    "optimization_level": "Plinth",
+    "target": "uplc",
+    "flags": ["Plinth"],
+    "min_protocol_version": 11
+  },
+  "contributors": [
+    {
+      "name": "Unisay",
+      "organization": "UPLC-CAPE Project"
+    }
+  ],
+  "submission": {
+    "date": "2026-10-08T10:00:00Z",
+    "source_available": true,
+    "source_repository": "https://github.com/Unisay/plinth-cape-submissions",
+    "source_commit_hash": "bcb8d73ba0e19b9582e62a3c2ace1b7167a74eb8",
+    "implementation_notes": "Compiled with Plinth 1.71.0.0. The source repo sets `target-version=1.1.0` explicitly, which matters from 1.71 on: the plugin default moved from 1.1.0 to 1.2.0, and mainnet does not accept Plutus Core 1.2.0. Requires protocol version 11 (van Rossem), live on mainnet since 2026-07-18. Inliner budgets: `inline-unconditional-growth=10`, `inline-callsite-growth=21`, re-swept for 1.71 on a grid of both budgets. Uncond 10 is a one-value dip (9 and 11 cost 128 lovelace more); callsite 19 to 24 is flat. At plugin-default budgets the compiler moves this program by +30 lovelace from 1.67 to 1.71, all of it in 1.68; among other changes not attributed, 1.68 turns the Haskell unit into the built-in unit. There is no `_asdata` variant at 1.71: the TH-derived `unsafeFromBuiltinData` of a sum type now compiles to a `case` on Data, which needs Plutus Core 1.2.0, and the plugin emits it even under `target-version=1.1.0`, so that build fails on a PV11 evaluator. Source: `lib/HTLC.hs` (+ `lib/HTLC/Fixture.hs` and the decoder DSL under `lib/Plinth/`) in plinth-cape-submissions @ bcb8d73ba0e19b9582e62a3c2ace1b7167a74eb8."
+  }
+}
