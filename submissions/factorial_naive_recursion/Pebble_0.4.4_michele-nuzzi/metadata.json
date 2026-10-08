@@ -1,0 +1,27 @@
+{
+  "compiler": {
+    "name": "Pebble",
+    "version": "0.4.4",
+    "commit_hash": "f71f3109385be31cfc99e9afc9e8122bc6b8f6be"
+  },
+  "compilation_config": {
+    "optimization_level": "none",
+    "target": "uplc",
+    "flags": [],
+    "min_protocol_version": 11
+  },
+  "contributors": [
+    {
+      "name": "Michele Nuzzi",
+      "organization": "Harmonic Labs",
+      "contact": "michele@harmoniclabs.tech"
+    }
+  ],
+  "submission": {
+    "date": "2026-10-08T00:00:00Z",
+    "source_available": true,
+    "source_repository": "https://github.com/Unisay/pebble-cape-submissions",
+    "source_commit_hash": "f8fad7650d79203983be6f453104e9acc99e33a5",
+    "implementation_notes": "Naive recursive implementation using Pebble 0.4.4 with default compilation settings. The `.pebble` source is byte-identical to the 0.1.2 submission; only the compiler changed. Pebble 0.4.4 lowers `if` to a `case` on the built-in Bool returned by `lessThanInteger`, where 0.1.2 used `ifThenElse` with delayed branches. Casing on built-in values needs protocol version 11 (van Rossem), live on mainnet since 2026-07-18."
+  }
+}
