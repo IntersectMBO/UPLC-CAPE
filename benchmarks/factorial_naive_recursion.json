@@ -1,6 +1,6 @@
 {
   "benchmark": "factorial_naive_recursion",
-  "generated_at": "2026-10-08T12:54:49Z",
+  "generated_at": "2026-10-08T13:42:36Z",
   "submissions": [
     {
       "timestamp": "2026-08-12T10:54:11Z",
@@ -49,6 +49,32 @@
         "block_cpu_budget_pct": 0.038889695,
         "scripts_per_tx": 623,
         "scripts_per_block": 2571,
+        "excluded_count": 0,
+        "excluded_cpu_sum": 0,
+        "excluded_mem_sum": 0
+      }
+    },
+    {
+      "timestamp": "2026-10-08T12:54:22Z",
+      "compiler": "Pebble",
+      "version": "0.4.4",
+      "user": "Michele Nuzzi",
+      "variant": "default",
+      "submission_dir": "Pebble_0.4.4_michele-nuzzi",
+      "metrics": {
+        "cpu_units": 23031587,
+        "memory_units": 87395,
+        "script_size_bytes": 43,
+        "term_size": 36,
+        "execution_fee_lovelace": 6704,
+        "reference_script_fee_lovelace": 645,
+        "total_fee_lovelace": 7349,
+        "tx_memory_budget_pct": 0.12397575757575757,
+        "tx_cpu_budget_pct": 0.059053510000000003,
+        "block_memory_budget_pct": 0.028411111111111113,
+        "block_cpu_budget_pct": 0.029526755000000002,
+        "scripts_per_tx": 806,
+        "scripts_per_block": 3386,
         "excluded_count": 0,
         "excluded_cpu_sum": 0,
         "excluded_mem_sum": 0
