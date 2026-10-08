@@ -1,6 +1,6 @@
 {
   "benchmark": "fibonacci_naive_recursion",
-  "generated_at": "2026-10-07T14:12:44Z",
+  "generated_at": "2026-10-08T12:43:02Z",
   "submissions": [
     {
       "timestamp": "2026-08-12T10:54:16Z",
@@ -307,6 +307,32 @@
         "tx_cpu_budget_pct": 1049.81960625,
         "block_memory_budget_pct": 602.3249791666666,
         "block_cpu_budget_pct": 524.909803125,
+        "scripts_per_tx": 0,
+        "scripts_per_block": 0,
+        "excluded_count": 0,
+        "excluded_cpu_sum": 0,
+        "excluded_mem_sum": 0
+      }
+    },
+    {
+      "timestamp": "2026-10-08T10:49:46Z",
+      "compiler": "Scalus",
+      "version": "1.3.0",
+      "user": "Unisay",
+      "variant": "default",
+      "submission_dir": "Scalus_1.3.0_Unisay",
+      "metrics": {
+        "cpu_units": 99577801337,
+        "memory_units": 377797973,
+        "script_size_bytes": 52,
+        "term_size": 43,
+        "execution_fee_lovelace": 28978503,
+        "reference_script_fee_lovelace": 780,
+        "total_fee_lovelace": 28979283,
+        "tx_memory_budget_pct": 2082.6962727272726,
+        "tx_cpu_budget_pct": 905.77304625,
+        "block_memory_budget_pct": 477.28456250000005,
+        "block_cpu_budget_pct": 452.886523125,
         "scripts_per_tx": 0,
         "scripts_per_block": 0,
         "excluded_count": 0,
