@@ -2,7 +2,7 @@
 
 **Scenario**: `fibonacci`
 
-**Submission ID**: `opshin_1.0.0_nielstron`
+**Submission ID**: `OpShin_0.26.1_nielstron`
 
 ## Implementation Details
 
@@ -18,3 +18,7 @@
 ### Source Code
 
 [`src/fibonacci/contract.py`](https://github.com/OpShin/opshin-cape-submissions/blob/e9d934532514e956425b16b630a584f060f91250/src/fibonacci/contract.py)
+
+## Notes
+
+The compiler is not a tagged OpShin release. It is built from master at commit `db8a9858d453ec625e2a3ce1be98130cf20abbb2`, 35 commits after the 0.26.1 tag and before 0.27.0. The `pyproject.toml` at that commit still reads 0.26.1, which is the version recorded in `metadata.json`.
