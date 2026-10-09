@@ -8,8 +8,7 @@
 
 **Path**: `lib/Fibonacci.hs`
 
-This submission compiles `lib/Fibonacci.hs` from the Plinth source
-repository with the Plinth (plutus-tx-plugin) 1.45.0.0 line.
+This submission compiles `lib/Fibonacci.hs` from the Plinth source repository with the Plinth (plutus-tx-plugin) 1.45.0.0 line.
 
 Production line; mainnet plutus-core baseline.
 
@@ -21,9 +20,7 @@ cd plinth-cape-submissions
 git checkout b09485c75e3ab6b596b9613320abc2b325087612
 ```
 
-`CAPE_REPO` must point at the sibling UPLC-CAPE checkout; the
-build aborts if the variable is unset. The recommended place is
-`.envrc.local` (gitignored), e.g.:
+`CAPE_REPO` must point at the sibling UPLC-CAPE checkout; the build aborts if the variable is unset. The recommended place is `.envrc.local` (gitignored), e.g.:
 
 ```sh
 export CAPE_REPO="$HOME/src/UPLC-CAPE"
@@ -36,6 +33,4 @@ nix develop
 cabal run plinth-submissions
 ```
 
-The produced UPLC writes to
-`$CAPE_REPO/submissions/fibonacci_naive_recursion/Plinth_1.45.0.0_Unisay/fibonacci_naive_recursion.uplc`
-and matches the `fibonacci_naive_recursion.uplc` in this submission.
+The generator at this commit writes `$CAPE_REPO/submissions/fibonacci_naive_recursion/Plinth_1.45.0.0_Unisay/fibonacci.uplc`. This submission stores that output as `fibonacci_naive_recursion.uplc`, the name the artifact took in [PR #203](https://github.com/IntersectMBO/UPLC-CAPE/pull/203), and the two match.
