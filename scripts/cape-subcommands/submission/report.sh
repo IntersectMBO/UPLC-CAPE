@@ -81,7 +81,7 @@ fi
 # Validate benchmark name pattern when provided (lowercase, underscores only)
 valid_benchmark_name() { [[ $1 =~ ^[a-z][a-z0-9_]*[a-z0-9]$|^[a-z]$ ]]; }
 
-# CSV format: benchmark,timestamp,language,version,user,variant,cpu_units,memory_units,script_size_bytes,term_size,execution_fee_lovelace,reference_script_fee_lovelace,total_fee_lovelace,tx_memory_budget_pct,tx_cpu_budget_pct,block_memory_budget_pct,block_cpu_budget_pct,scripts_per_tx,scripts_per_block,submission_dir,min_plutus_version,excluded_count,excluded_cpu_sum,excluded_mem_sum
+# CSV format: benchmark,timestamp,language,version,user,variant,cpu_units,memory_units,script_size_bytes,term_size,execution_fee_lovelace,reference_script_fee_lovelace,total_fee_lovelace,tx_memory_budget_pct,tx_cpu_budget_pct,block_memory_budget_pct,block_cpu_budget_pct,scripts_per_tx,scripts_per_block,submission_dir,min_protocol_version,excluded_count,excluded_cpu_sum,excluded_mem_sum
 declare -A CSV_COL=(
   [benchmark]=1
   [timestamp]=2
@@ -103,7 +103,7 @@ declare -A CSV_COL=(
   [scripts_per_tx]=18
   [scripts_per_block]=19
   [submission_dir]=20
-  [min_plutus_version]=21
+  [min_protocol_version]=21
   [excluded_count]=22
   [excluded_cpu_sum]=23
   [excluded_mem_sum]=24
@@ -216,7 +216,7 @@ generate_benchmark_data_json() {
     local cpu memory script_size term_size
     local exec_fee ref_fee total_fee
     local tx_mem_pct tx_cpu_pct block_mem_pct block_cpu_pct
-    local spt spb submission_dir
+    local spt spb submission_dir min_protocol_version
     local excluded_count excluded_cpu_sum excluded_mem_sum
 
     timestamp=$(csv_field "$line" "timestamp")
@@ -238,6 +238,7 @@ generate_benchmark_data_json() {
     spt=$(csv_field "$line" "scripts_per_tx")
     spb=$(csv_field "$line" "scripts_per_block")
     submission_dir=$(csv_field "$line" "submission_dir")
+    min_protocol_version=$(csv_field "$line" "min_protocol_version")
     excluded_count=$(csv_field "$line" "excluded_count")
     excluded_cpu_sum=$(csv_field "$line" "excluded_cpu_sum")
     excluded_mem_sum=$(csv_field "$line" "excluded_mem_sum")
@@ -250,6 +251,7 @@ generate_benchmark_data_json() {
       --arg user "$user" \
       --arg variant "$variant" \
       --arg submission_dir "$submission_dir" \
+      --argjson min_protocol_version "${min_protocol_version:-null}" \
       --argjson cpu "${cpu:-null}" \
       --argjson memory "${memory:-null}" \
       --argjson script_size "${script_size:-null}" \
@@ -273,6 +275,7 @@ generate_benchmark_data_json() {
         user: $user,
         variant: $variant,
         submission_dir: $submission_dir,
+        min_protocol_version: $min_protocol_version,
         metrics: {
           cpu_units: $cpu,
           memory_units: $memory,
@@ -362,12 +365,13 @@ generate_submission_detail_pages() {
 
   while IFS= read -r line; do
     [ -n "$line" ] || continue
-    local language version user variant submission_dir
+    local language version user variant submission_dir min_protocol_version
     language=$(csv_field "$line" "language")
     version=$(csv_field "$line" "version")
     user=$(csv_field "$line" "user")
     variant=$(csv_field "$line" "variant")
     submission_dir=$(csv_field "$line" "submission_dir")
+    min_protocol_version=$(csv_field "$line" "min_protocol_version")
 
     [ -n "$submission_dir" ] || continue
     local metrics_path="$PROJECT_ROOT/submissions/$benchmark/$submission_dir/metrics.json"
@@ -395,6 +399,7 @@ generate_submission_detail_pages() {
       --arg variant "$variant" \
       --arg user "$user" \
       --arg source_url "$source_url" \
+      --arg min_protocol_version "$min_protocol_version" \
       --arg timestamp "$ts" \
       '
       def commafy:
@@ -429,6 +434,7 @@ generate_submission_detail_pages() {
           variant: ($variant | esc),
           user: ($user | esc),
           source_url: ($source_url | esc),
+          min_protocol_version: ($min_protocol_version | esc),
           timestamp: ($timestamp | esc),
           measurements: $measurements,
           checks: $checks,

@@ -212,6 +212,10 @@ The obvious move when retiring the track was to drop `min_plutus_version` and le
 
 The requirement worth recording is the protocol version, which is what actually gates these builtins on-chain and does not move when CAPE's evaluator does. Hence `min_protocol_version`, documented as not enforced during measurement, with `min_plutus_version` left as the routing override for the separate case where the production evaluator genuinely cannot run an artifact.
 
+### Follow-up (2026-10-09)
+
+`aggregate.sh` CSV column 21 now carries `min_protocol_version` instead of `min_plutus_version`, which had been empty on every row since this refinement. `aggregate --target` still reads `min_plutus_version` internally for routing. The scenario page tags each row that sets the field with a `PV<n>` badge, and the per-submission page states the requirement, so the 23 artifacts replaced in place under unchanged directory names are identifiable from the report itself.
+
 ## Links
 
 - Issue: [#204 — Redesign preview report as a per-compiler version-evolution view](https://github.com/IntersectMBO/UPLC-CAPE/issues/204)

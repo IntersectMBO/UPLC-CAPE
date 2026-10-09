@@ -11,6 +11,8 @@ Discovers all benchmark submissions and outputs CSV containing a row for each on
 - script_size_bytes: Size of serialized UPLC script in bytes
 - term_size: Number of AST nodes in the UPLC term
 - submission_dir: Directory name of the submission
+- min_protocol_version: Cardano protocol version the artifact needs on-chain
+  (compilation_config.min_protocol_version); empty when it uses no gated feature
 - excluded_count / excluded_cpu_sum / excluded_mem_sum: diagnostic totals for
   evaluations excluded from aggregates (attacks, malformed inputs, defensive
   checks, and pending measurements)

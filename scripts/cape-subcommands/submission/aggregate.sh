@@ -18,7 +18,7 @@ fi
 # Usage: cape submission aggregate
 #
 # Output:
-#   CSV format: benchmark,timestamp,language,version,user,variant,cpu_units,memory_units,script_size_bytes,term_size,execution_fee_lovelace,reference_script_fee_lovelace,total_fee_lovelace,tx_memory_budget_pct,tx_cpu_budget_pct,block_memory_budget_pct,block_cpu_budget_pct,scripts_per_tx,scripts_per_block,submission_dir,min_plutus_version,excluded_count,excluded_cpu_sum,excluded_mem_sum
+#   CSV format: benchmark,timestamp,language,version,user,variant,cpu_units,memory_units,script_size_bytes,term_size,execution_fee_lovelace,reference_script_fee_lovelace,total_fee_lovelace,tx_memory_budget_pct,tx_cpu_budget_pct,block_memory_budget_pct,block_cpu_budget_pct,scripts_per_tx,scripts_per_block,submission_dir,min_protocol_version,excluded_count,excluded_cpu_sum,excluded_mem_sum
 #
 #   cpu_units/memory_units are sums over evaluations included in aggregates
 #   (included_in_aggregates and not pending); excluded_* columns summarise
@@ -63,7 +63,7 @@ if [ ! -d "$PROJECT_ROOT/submissions" ]; then
 fi
 
 # Output CSV header
-echo "benchmark,timestamp,language,version,user,variant,cpu_units,memory_units,script_size_bytes,term_size,execution_fee_lovelace,reference_script_fee_lovelace,total_fee_lovelace,tx_memory_budget_pct,tx_cpu_budget_pct,block_memory_budget_pct,block_cpu_budget_pct,scripts_per_tx,scripts_per_block,submission_dir,min_plutus_version,excluded_count,excluded_cpu_sum,excluded_mem_sum"
+echo "benchmark,timestamp,language,version,user,variant,cpu_units,memory_units,script_size_bytes,term_size,execution_fee_lovelace,reference_script_fee_lovelace,total_fee_lovelace,tx_memory_budget_pct,tx_cpu_budget_pct,block_memory_budget_pct,block_cpu_budget_pct,scripts_per_tx,scripts_per_block,submission_dir,min_protocol_version,excluded_count,excluded_cpu_sum,excluded_mem_sum"
 
 # Process all submissions (NUL-delimited for filename safety)
 while IFS= read -r -d '' metadata_file; do
@@ -117,8 +117,10 @@ while IFS= read -r -d '' metadata_file; do
   excluded_cpu_sum=$(jq -r '.measurements.excluded.cpu_units.sum // 0' "$metrics_file" 2> /dev/null || true)
   excluded_mem_sum=$(jq -r '.measurements.excluded.memory_units.sum // 0' "$metrics_file" 2> /dev/null || true)
 
-  # Extract min_plutus_version from metadata for filtering
+  # min_plutus_version only routes the --target filter below; it is not emitted.
   min_plutus_version=$(jq -r '.compilation_config.min_plutus_version // ""' "$metadata_file" 2> /dev/null || true)
+  # min_protocol_version is the on-chain requirement the report shows per row.
+  min_protocol_version=$(jq -r '.compilation_config.min_protocol_version // ""' "$metadata_file" 2> /dev/null || true)
 
   # Apply --target filtering
   if [ -n "$CAPE_TARGET" ]; then
@@ -147,7 +149,6 @@ while IFS= read -r -d '' metadata_file; do
   contributor_name=$(echo "$contributor_name" | sed 's/,/\\,/g')
   variant=$(echo "$variant" | sed 's/,/\\,/g')
   actual_submission_dir=$(echo "$actual_submission_dir" | sed 's/,/\\,/g')
-  min_plutus_version=$(echo "$min_plutus_version" | sed 's/,/\\,/g')
 
-  echo "$benchmark,$timestamp,$compiler_name,$compiler_version,$contributor_name,$variant,$cpu_units,$memory_units,$script_size_bytes,$term_size,$execution_fee_lovelace,$reference_script_fee_lovelace,$total_fee_lovelace,$tx_memory_budget_pct,$tx_cpu_budget_pct,$block_memory_budget_pct,$block_cpu_budget_pct,$scripts_per_tx,$scripts_per_block,$actual_submission_dir,$min_plutus_version,$excluded_count,$excluded_cpu_sum,$excluded_mem_sum"
+  echo "$benchmark,$timestamp,$compiler_name,$compiler_version,$contributor_name,$variant,$cpu_units,$memory_units,$script_size_bytes,$term_size,$execution_fee_lovelace,$reference_script_fee_lovelace,$total_fee_lovelace,$tx_memory_budget_pct,$tx_cpu_budget_pct,$block_memory_budget_pct,$block_cpu_budget_pct,$scripts_per_tx,$scripts_per_block,$actual_submission_dir,$min_protocol_version,$excluded_count,$excluded_cpu_sum,$excluded_mem_sum"
 done < <(find "$PROJECT_ROOT/submissions" -name "metadata.json" -path "*/[!T]*/*" -print0 | sort -z)

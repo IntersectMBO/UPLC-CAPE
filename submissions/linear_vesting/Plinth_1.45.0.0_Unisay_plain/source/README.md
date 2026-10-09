@@ -33,6 +33,6 @@ nix develop
 cabal run plinth-submissions
 ```
 
-The produced UPLC writes to `$CAPE_REPO/submissions/linear_vesting/Plinth_1.45.0.0_Unisay_plain/linear_vesting.uplc` and matches the `linear_vesting.uplc` in this submission.
+The generator at this commit writes `$CAPE_REPO/submissions/linear_vesting/Plinth_1.45.0.0_Unisay/linear_vesting.uplc`, because the plain implementation was then the default. That output is the `linear_vesting.uplc` in this submission.
 
 > Retained as the `plain` variant: this was the default implementation for the Plinth 1.45.0.0 line until the monadic decoder became the default (lower fee, size, CPU, and memory).

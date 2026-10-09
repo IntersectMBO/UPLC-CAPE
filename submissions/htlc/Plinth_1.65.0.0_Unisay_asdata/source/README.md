@@ -33,4 +33,4 @@ nix develop
 cabal run plinth-submissions
 ```
 
-The produced UPLC writes to `$CAPE_REPO/submissions/htlc/Plinth_1.65.0.0_Unisay_asdata/htlc.uplc` and matches the `htlc.uplc` in this submission.
+The generator at this commit writes `$CAPE_REPO/submissions/htlc/Plinth_1.65.0.0_Unisay/htlc.uplc`, because `asData` was then the default HTLC encoding. That output is the `htlc.uplc` in this submission, which moved to the `asdata` variant when the default changed.
