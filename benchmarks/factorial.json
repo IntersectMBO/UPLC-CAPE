@@ -1,6 +1,6 @@
 {
   "benchmark": "factorial",
-  "generated_at": "2026-10-09T12:42:05Z",
+  "generated_at": "2026-10-09T13:56:39Z",
   "submissions": [
     {
       "timestamp": "2026-08-12T10:54:11Z",
@@ -9,6 +9,7 @@
       "user": "SeungheonOh",
       "variant": "exbudget",
       "submission_dir": "Plutarch_1.11.0_SeungheonOh_exbudget",
+      "min_protocol_version": null,
       "metrics": {
         "cpu_units": 37001975,
         "memory_units": 137290,
@@ -35,6 +36,7 @@
       "user": "SeungheonOh",
       "variant": "size",
       "submission_dir": "Plutarch_1.11.0_SeungheonOh_size",
+      "min_protocol_version": null,
       "metrics": {
         "cpu_units": 37481975,
         "memory_units": 140290,
@@ -61,6 +63,7 @@
       "user": "Unisay",
       "variant": "default",
       "submission_dir": "Scalus_0.12.1_Unisay",
+      "min_protocol_version": null,
       "metrics": {
         "cpu_units": 37481975,
         "memory_units": 140290,
@@ -87,6 +90,7 @@
       "user": "Unisay",
       "variant": "default",
       "submission_dir": "Scalus_0.16.0_Unisay",
+      "min_protocol_version": null,
       "metrics": {
         "cpu_units": 37481975,
         "memory_units": 140290,
@@ -113,6 +117,7 @@
       "user": "Unisay",
       "variant": "default",
       "submission_dir": "Scalus_0.17.0_Unisay",
+      "min_protocol_version": null,
       "metrics": {
         "cpu_units": 37481975,
         "memory_units": 140290,

@@ -1,6 +1,6 @@
 {
   "benchmark": "ecd",
-  "generated_at": "2026-10-09T12:42:05Z",
+  "generated_at": "2026-10-09T13:56:38Z",
   "submissions": [
     {
       "timestamp": "2026-08-12T10:54:10Z",
@@ -9,6 +9,7 @@
       "user": "Unisay",
       "variant": "default",
       "submission_dir": "Plinth_1.45.0.0_Unisay",
+      "min_protocol_version": null,
       "metrics": {
         "cpu_units": 36682561,
         "memory_units": 154557,
@@ -35,6 +36,7 @@
       "user": "Unisay",
       "variant": "default",
       "submission_dir": "Plinth_1.61.0.0_Unisay",
+      "min_protocol_version": 11,
       "metrics": {
         "cpu_units": 22731572,
         "memory_units": 96296,
@@ -61,6 +63,7 @@
       "user": "Unisay",
       "variant": "default",
       "submission_dir": "Plinth_1.64.0.0_Unisay",
+      "min_protocol_version": 11,
       "metrics": {
         "cpu_units": 18747572,
         "memory_units": 71396,
@@ -87,6 +90,7 @@
       "user": "Unisay",
       "variant": "default",
       "submission_dir": "Plinth_1.65.0.0_Unisay",
+      "min_protocol_version": 11,
       "metrics": {
         "cpu_units": 18747572,
         "memory_units": 71396,
@@ -113,6 +117,7 @@
       "user": "Unisay",
       "variant": "default",
       "submission_dir": "Plinth_1.67.0.0_Unisay",
+      "min_protocol_version": 11,
       "metrics": {
         "cpu_units": 22731572,
         "memory_units": 96296,
@@ -139,6 +144,7 @@
       "user": "Unisay",
       "variant": "default",
       "submission_dir": "Plinth_1.71.0.0_Unisay",
+      "min_protocol_version": 11,
       "metrics": {
         "cpu_units": 22731572,
         "memory_units": 96296,

@@ -1,6 +1,6 @@
 {
   "benchmark": "factorial_naive_recursion",
-  "generated_at": "2026-10-09T12:42:07Z",
+  "generated_at": "2026-10-09T13:56:40Z",
   "submissions": [
     {
       "timestamp": "2026-08-12T10:54:11Z",
@@ -9,6 +9,7 @@
       "user": "Niels Mündler",
       "variant": "default",
       "submission_dir": "OpShin_0.26.1_nielstron",
+      "min_protocol_version": null,
       "metrics": {
         "cpu_units": 72921975,
         "memory_units": 361790,
@@ -35,6 +36,7 @@
       "user": "Michele Nuzzi",
       "variant": "default",
       "submission_dir": "Pebble_0.1.2_michele-nuzzi",
+      "min_protocol_version": null,
       "metrics": {
         "cpu_units": 30365890,
         "memory_units": 110942,
@@ -61,6 +63,7 @@
       "user": "Michele Nuzzi",
       "variant": "default",
       "submission_dir": "Pebble_0.4.4_michele-nuzzi",
+      "min_protocol_version": 11,
       "metrics": {
         "cpu_units": 23031587,
         "memory_units": 87395,
@@ -87,6 +90,7 @@
       "user": "Unisay",
       "variant": "default",
       "submission_dir": "Plinth_1.45.0.0_Unisay",
+      "min_protocol_version": null,
       "metrics": {
         "cpu_units": 42281975,
         "memory_units": 170290,
@@ -113,6 +117,7 @@
       "user": "Unisay",
       "variant": "default",
       "submission_dir": "Plinth_1.61.0.0_Unisay",
+      "min_protocol_version": 11,
       "metrics": {
         "cpu_units": 28019280,
         "memory_units": 107235,
@@ -139,6 +144,7 @@
       "user": "Unisay",
       "variant": "default",
       "submission_dir": "Plinth_1.64.0.0_Unisay",
+      "min_protocol_version": 11,
       "metrics": {
         "cpu_units": 28019280,
         "memory_units": 107235,
@@ -165,6 +171,7 @@
       "user": "Unisay",
       "variant": "default",
       "submission_dir": "Plinth_1.65.0.0_Unisay",
+      "min_protocol_version": 11,
       "metrics": {
         "cpu_units": 28019280,
         "memory_units": 107235,
@@ -191,6 +198,7 @@
       "user": "Unisay",
       "variant": "default",
       "submission_dir": "Plinth_1.67.0.0_Unisay",
+      "min_protocol_version": 11,
       "metrics": {
         "cpu_units": 28019280,
         "memory_units": 107235,
@@ -217,6 +225,7 @@
       "user": "Unisay",
       "variant": "default",
       "submission_dir": "Plinth_1.71.0.0_Unisay",
+      "min_protocol_version": 11,
       "metrics": {
         "cpu_units": 28019280,
         "memory_units": 107235,
@@ -243,6 +252,7 @@
       "user": "SeungheonOh",
       "variant": "default",
       "submission_dir": "Plutarch_1.11.0_SeungheonOh",
+      "min_protocol_version": null,
       "metrics": {
         "cpu_units": 42281975,
         "memory_units": 170290,
@@ -269,6 +279,7 @@
       "user": "Unisay",
       "variant": "default",
       "submission_dir": "Scalus_0.12.1_Unisay",
+      "min_protocol_version": null,
       "metrics": {
         "cpu_units": 42521975,
         "memory_units": 171790,
@@ -295,6 +306,7 @@
       "user": "Unisay",
       "variant": "default",
       "submission_dir": "Scalus_0.16.0_Unisay",
+      "min_protocol_version": null,
       "metrics": {
         "cpu_units": 42041975,
         "memory_units": 168790,
@@ -321,6 +333,7 @@
       "user": "Unisay",
       "variant": "default",
       "submission_dir": "Scalus_0.17.0_Unisay",
+      "min_protocol_version": 11,
       "metrics": {
         "cpu_units": 32819280,
         "memory_units": 137235,
@@ -347,6 +360,7 @@
       "user": "Unisay",
       "variant": "default",
       "submission_dir": "Scalus_0.18.2_Unisay",
+      "min_protocol_version": 11,
       "metrics": {
         "cpu_units": 32819280,
         "memory_units": 137235,
@@ -373,6 +387,7 @@
       "user": "Unisay",
       "variant": "default",
       "submission_dir": "Scalus_1.3.0_Unisay",
+      "min_protocol_version": 11,
       "metrics": {
         "cpu_units": 28019280,
         "memory_units": 107235,
