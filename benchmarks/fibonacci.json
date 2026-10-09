@@ -1,11 +1,11 @@
 {
   "benchmark": "fibonacci",
-  "generated_at": "2026-10-08T13:42:38Z",
+  "generated_at": "2026-10-09T12:42:08Z",
   "submissions": [
     {
       "timestamp": "2026-08-12T10:54:13Z",
       "compiler": "Aiken",
-      "version": "v1.1.19",
+      "version": "1.1.19",
       "user": "Matthias Benkort",
       "variant": "prepacked",
       "submission_dir": "Aiken_1.1.19_KtorZ_prepacked",
@@ -31,7 +31,7 @@
     {
       "timestamp": "2026-08-12T10:54:13Z",
       "compiler": "Aiken",
-      "version": "v1.1.19",
+      "version": "1.1.19",
       "user": "Matthias Benkort",
       "variant": "tailrec",
       "submission_dir": "Aiken_1.1.19_KtorZ_tailrec",
@@ -60,7 +60,7 @@
       "version": "0.26.1",
       "user": "Niels Mündler",
       "variant": "default",
-      "submission_dir": "OpShin_1.0.0_nielstron",
+      "submission_dir": "OpShin_0.26.1_nielstron",
       "metrics": {
         "cpu_units": 240131414,
         "memory_units": 1306476,
