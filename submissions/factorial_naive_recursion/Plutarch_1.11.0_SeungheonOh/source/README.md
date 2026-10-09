@@ -10,6 +10,8 @@
 
 This submission uses Plutarch compiler version 1.11.0 (commit 427e49b0cbfd2ff97cdc91522a09e06edd7a7fa6) with naive recursive implementation using `pfix` for recursion.
 
+Plutarch 1.11.0 was never released: upstream tags stop at v1.10.1, and 1.11.0 is the version `plutarch.cabal` declared on master at this commit.
+
 ## Reproducing the Compilation
 
 1. Clone the repository:
