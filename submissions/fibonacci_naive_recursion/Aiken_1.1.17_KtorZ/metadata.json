@@ -18,7 +18,8 @@
   "submission": {
     "date": "2025-07-24T19:35:38.551Z",
     "source_available": true,
-    "source_repository": "https://github.com/cardano-scaling/UPLC-CAPE",
-    "implementation_notes": "Most simple / idiomatic implementation I could think of; no particular attempt at optimizing anything.\n\nUse `aiken export` to obtain the raw UPLC for the function; however, I ended up manually removing the Data wrapping / unwrapping which the `export` command adds by default; since Data is used as the primary interface."
+    "source_repository": "https://github.com/Unisay/aiken-cape-submissions",
+    "implementation_notes": "Most simple / idiomatic implementation I could think of; no particular attempt at optimizing anything.\n\nUse `aiken export` to obtain the raw UPLC for the function; however, I ended up manually removing the Data wrapping / unwrapping which the `export` command adds by default; since Data is used as the primary interface.",
+    "source_commit_hash": "0a4a8789b18b1a075cdcf76411190a9d2083b988"
   }
 }

@@ -11,7 +11,7 @@
   },
   "contributors": [
     {
-      "name": "Matthias Benkort",
+      "name": "KtorZ",
       "organization": "Cardano Foundation",
       "contact": "@KtorZ"
     }
@@ -19,6 +19,8 @@
   "submission": {
     "date": "2025-10-18T12:14:19.225Z",
     "source_available": true,
-    "implementation_notes": "Using pre-packed values with fast dynamic selection. Higher size, but constant (and small) evaluation cost."
+    "implementation_notes": "Using pre-packed values with fast dynamic selection. Higher size, but constant (and small) evaluation cost.",
+    "source_repository": "https://github.com/Unisay/aiken-cape-submissions",
+    "source_commit_hash": "0a4a8789b18b1a075cdcf76411190a9d2083b988"
   }
 }

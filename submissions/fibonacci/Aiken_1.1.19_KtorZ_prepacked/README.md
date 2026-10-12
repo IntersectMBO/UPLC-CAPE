@@ -1,25 +1,15 @@
 # Benchmark Implementation Notes
 
-**Scenario**: `fibonacci` **Submission ID**: `Aiken_1.1.19_KtorZ_prepacked`
+**Scenario**: `fibonacci`
 
-## Implementation Details
+**Submission ID**: `Aiken_1.1.19_KtorZ_prepacked`
 
-- **Compiler**: `Aiken v1.1.9`
-- **Implementation Approach**: `prepacked`
-- **Compilation Flags**: N/A
+**Compiler**: Aiken 1.1.19.
 
-## Performance Results
+**Implementation**: prepacked lookup.
 
-- See [metrics.json](metrics.json) for detailed performance measurements
+**Author**: KtorZ.
 
-## Reproducibility
+See [metrics.json](metrics.json) for measurements and [source/README.md](source/README.md) for the pinned external source and build instructions.
 
-### Source Code
-
-- **Source Available**: `true`
-- **Source Location**: [`source/`](./source/lib/fibonacci.ak) directory in this submission
-- **Build Instructions**: `aiken export --module fibonacci --name fibonacci`
-
-## Notes
-
-Using pre-packed values with fast dynamic selection. Higher size, but constant (and small) evaluation cost.
+Original implementation by KtorZ.

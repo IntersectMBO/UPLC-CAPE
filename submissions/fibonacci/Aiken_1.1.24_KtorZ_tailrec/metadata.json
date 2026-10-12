@@ -1,0 +1,30 @@
+{
+  "compiler": {
+    "name": "Aiken",
+    "version": "1.1.24",
+    "commit_hash": "bacbeb35fbc9f1db93cd2e1e93fb1d93053acb4a"
+  },
+  "compilation_config": {
+    "optimization_level": "Aiken",
+    "target": "uplc",
+    "flags": []
+  },
+  "contributors": [
+    {
+      "name": "KtorZ",
+      "organization": "Cardano Foundation",
+      "contact": "@KtorZ"
+    },
+    {
+      "name": "Yuriy Lazaryev",
+      "contact": "@Unisay"
+    }
+  ],
+  "submission": {
+    "date": "2026-10-12T00:00:00Z",
+    "source_available": true,
+    "implementation_notes": "A less naive implementation accumulating a bit of the final result on each iteration (i.e. tail recursive).\n\nOriginal implementation by KtorZ, rebuilt without source changes on Aiken 1.1.24 by Unisay. The build removes the exported unIData argument conversion to preserve the original builtin-Integer interface.",
+    "source_repository": "https://github.com/Unisay/aiken-cape-submissions",
+    "source_commit_hash": "0a4a8789b18b1a075cdcf76411190a9d2083b988"
+  }
+}
