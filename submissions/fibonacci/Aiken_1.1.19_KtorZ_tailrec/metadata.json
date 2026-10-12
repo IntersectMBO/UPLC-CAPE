@@ -11,7 +11,7 @@
   },
   "contributors": [
     {
-      "name": "Matthias Benkort",
+      "name": "KtorZ",
       "organization": "Cardano Foundation",
       "contact": "@KtorZ"
     }
@@ -19,6 +19,8 @@
   "submission": {
     "date": "2025-10-18T12:14:19.225Z",
     "source_available": true,
-    "implementation_notes": "A less naive implementation accumulating a bit of the final result on each iteration (i.e. tail recursive)."
+    "implementation_notes": "A less naive implementation accumulating a bit of the final result on each iteration (i.e. tail recursive).",
+    "source_repository": "https://github.com/Unisay/aiken-cape-submissions",
+    "source_commit_hash": "0a4a8789b18b1a075cdcf76411190a9d2083b988"
   }
 }

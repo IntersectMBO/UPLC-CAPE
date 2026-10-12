@@ -1,25 +1,23 @@
 # Benchmark Implementation Notes
 
-**Scenario**: `fibonacci` **Submission ID**: `Aiken_1.1.17_KtorZ`
+**Scenario**: `fibonacci_naive_recursion`
+
+**Submission ID**: `Aiken_1.1.17_KtorZ`
 
 ## Implementation Details
 
-- **Compiler**: `Aiken v1.1.17`
-- **Implementation Approach**: `recursive`
+- **Compiler**: `Aiken 1.1.17`
+- **Implementation Approach**: `naive recursion`
 - **Compilation Flags**: N/A
+- **Author**: KtorZ
 
 ## Performance Results
 
-- CPU Units: `155308959218`
-- Memory Units: `559619722`
-- Script Size (bytes): `87`
-- Term Size: `81`
+- See [metrics.json](metrics.json) for detailed performance measurements
 
-## Reproducibility
+## Source Code
 
-- **Source Available**: `true`
-- **Source Repository**: `https://github.com/cardano-scaling/UPLC-CAPE`
-- **Compilation Config**: None
+- See [source/README.md](source/README.md) for the pinned external source and reproducibility instructions
 
 ## Notes
 

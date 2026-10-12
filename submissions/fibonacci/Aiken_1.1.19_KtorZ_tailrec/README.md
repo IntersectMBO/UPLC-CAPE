@@ -2,25 +2,22 @@
 
 **Scenario**: `fibonacci`
 
-**Submission ID**: `Aiken_1.1.19_KtorZ_tailrec` (Format: `Language_Version_GitHubHandle`)
+**Submission ID**: `Aiken_1.1.19_KtorZ_tailrec`
 
 ## Implementation Details
 
-- **Compiler**: `Aiken v1.1.9`
-- **Implementation Approach**: `(tail) recursive`
+- **Compiler**: `Aiken 1.1.19`
+- **Implementation Approach**: `tail recursion`
 - **Compilation Flags**: N/A
+- **Author**: KtorZ
 
 ## Performance Results
 
 - See [metrics.json](metrics.json) for detailed performance measurements
 
-## Reproducibility
+## Source Code
 
-### Source Code
-
-- **Source Available**: `true`
-- **Source Location**: [`source/`](./source/lib/fibonacci.ak) directory in this submission
-- **Build Instructions**: `aiken export --module fibonacci --name fibonacci`
+- See [source/README.md](source/README.md) for the pinned external source and reproducibility instructions
 
 ## Notes
 
