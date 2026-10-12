@@ -4,9 +4,9 @@
 
 **Repository**: <https://github.com/Unisay/aiken-cape-submissions>
 
-**Commit**: `0a4a8789b18b1a075cdcf76411190a9d2083b988`
+**Commit**: `6ed3866d07d9dd100973ae612f3fd29dd5d6f8a8`
 
-**Source**: [benchmarks/fibonacci_prepacked/lib/fibonacci.ak](https://github.com/Unisay/aiken-cape-submissions/blob/0a4a8789b18b1a075cdcf76411190a9d2083b988/benchmarks/fibonacci_prepacked/lib/fibonacci.ak)
+**Source**: [benchmarks/fibonacci_prepacked/lib/fibonacci.ak](https://github.com/Unisay/aiken-cape-submissions/blob/6ed3866d07d9dd100973ae612f3fd29dd5d6f8a8/benchmarks/fibonacci_prepacked/lib/fibonacci.ak)
 
 **Compiler**: Aiken 1.1.24.
 
@@ -15,7 +15,7 @@
 ```sh
 git clone https://github.com/Unisay/aiken-cape-submissions
 cd aiken-cape-submissions
-git checkout 0a4a8789b18b1a075cdcf76411190a9d2083b988
+git checkout 6ed3866d07d9dd100973ae612f3fd29dd5d6f8a8
 nix develop --command build-aiken
 ```
 

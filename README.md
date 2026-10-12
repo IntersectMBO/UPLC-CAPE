@@ -418,9 +418,10 @@ UPLC-CAPE/
 
 Plinth (PlutusTx) source for every benchmark scenario lives in a separate repository, [Unisay/plinth-cape-submissions][plinth-repo]; see [ADR 20260520][adr-plinth-move]. This repository is plugin-free and consumes the produced `.uplc` artefacts together with the accompanying `metadata.json`, `metrics.json`, and `source/README.md` per submission.
 
-The three Aiken Fibonacci implementations contributed by KtorZ live in [Unisay/aiken-cape-submissions](https://github.com/Unisay/aiken-cape-submissions). Their historical artifacts remain here alongside the Aiken 1.1.24 builds; each submission pins its external source commit in `source/README.md`.
+The three Aiken Fibonacci implementations contributed by KtorZ live in [Unisay/aiken-cape-submissions][aiken-repo]. Their historical artifacts remain here alongside the Aiken 1.1.24 builds; each submission pins its external source commit in `source/README.md`.
 
 [plinth-repo]: https://github.com/Unisay/plinth-cape-submissions
+[aiken-repo]: https://github.com/Unisay/aiken-cape-submissions
 [adr-plinth-move]: ./doc/adr/20260520-move-plinth-source-to-separate-repository.md
 
 ---

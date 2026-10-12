@@ -4,12 +4,21 @@
 
 **Submission ID**: `Aiken_1.1.19_KtorZ_prepacked`
 
-**Compiler**: Aiken 1.1.19.
+## Implementation Details
 
-**Implementation**: prepacked lookup.
+- **Compiler**: `Aiken 1.1.19`
+- **Implementation Approach**: `prepacked lookup`
+- **Compilation Flags**: N/A
+- **Author**: KtorZ
 
-**Author**: KtorZ.
+## Performance Results
 
-See [metrics.json](metrics.json) for measurements and [source/README.md](source/README.md) for the pinned external source and build instructions.
+- See [metrics.json](metrics.json) for detailed performance measurements
 
-Original implementation by KtorZ.
+## Source Code
+
+- See [source/README.md](source/README.md) for the pinned external source and reproducibility instructions
+
+## Notes
+
+Using pre-packed values with fast dynamic selection. Higher size, but constant (and small) evaluation cost.
