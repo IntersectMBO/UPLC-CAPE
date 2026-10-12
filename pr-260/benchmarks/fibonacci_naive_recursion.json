@@ -1,6 +1,6 @@
 {
   "benchmark": "fibonacci_naive_recursion",
-  "generated_at": "2026-10-12T16:19:39Z",
+  "generated_at": "2026-10-12T16:48:21Z",
   "submissions": [
     {
       "timestamp": "2026-08-12T10:54:16Z",
@@ -33,7 +33,7 @@
       "timestamp": "2026-10-12T15:54:18Z",
       "compiler": "Aiken",
       "version": "1.1.24",
-      "user": "Yuriy Lazaryev",
+      "user": "Unisay",
       "variant": "default",
       "submission_dir": "Aiken_1.1.24_KtorZ",
       "min_protocol_version": null,
