@@ -26,7 +26,7 @@
               )
             ]
           )
-          [ (builtin lessThanInteger) (con integer 1) ]
+          [ (builtin lessThanInteger) (con integer 0) ]
         ]
       )
     )
