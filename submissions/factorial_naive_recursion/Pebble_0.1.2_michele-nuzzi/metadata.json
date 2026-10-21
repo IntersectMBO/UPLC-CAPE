@@ -19,8 +19,8 @@
   "submission": {
     "date": "2025-11-25T00:00:00Z",
     "source_available": true,
-    "source_repository": "https://github.com/Unisay/pebble-cape-submissions",
-    "source_commit_hash": "ebb35dbe7538a0e95006e0b91dfff1eec022f1ca",
+    "source_repository": "https://github.com/nau/pebble-cape-submissions",
+    "source_commit_hash": "a906d905aef2c8a58cae8dc4818f65aaf6236f93",
     "implementation_notes": "Naive recursive implementation using Pebble 0.1.2 with default compilation settings"
   }
 }

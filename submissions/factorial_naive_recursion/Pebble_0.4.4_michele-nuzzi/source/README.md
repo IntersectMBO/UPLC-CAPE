@@ -1,12 +1,12 @@
 # Pebble Factorial Naive Recursion Implementation
 
-**Source Code**: [factorial_naive_recursion.pebble](https://github.com/Unisay/pebble-cape-submissions/blob/f8fad7650d79203983be6f453104e9acc99e33a5/benchmarks/factorial_naive_recursion/factorial_naive_recursion.pebble)
+**Source Code**: [factorial_naive_recursion.pebble](https://github.com/nau/pebble-cape-submissions/blob/22089ad12d919e40aa5d86f6de0d7273daaedd9e/benchmarks/factorial_naive_recursion/factorial_naive_recursion.pebble)
 
-**Repository**: <https://github.com/Unisay/pebble-cape-submissions>
+**Repository**: <https://github.com/nau/pebble-cape-submissions>
 
-**Branch**: `main`
+**Branch**: `fix/factorial-base-case`
 
-**Commit**: `f8fad7650d79203983be6f453104e9acc99e33a5`
+**Commit**: `22089ad12d919e40aa5d86f6de0d7273daaedd9e`
 
 **Path**: `benchmarks/factorial_naive_recursion/factorial_naive_recursion.pebble`
 
@@ -17,14 +17,14 @@ This submission uses Pebble compiler version 0.4.4 (`@harmoniclabs/pebble-cli` p
 1. Clone the repository:
 
    ```bash
-   git clone https://github.com/Unisay/pebble-cape-submissions
+   git clone https://github.com/nau/pebble-cape-submissions
    cd pebble-cape-submissions
    ```
 
 2. Check out the specific commit:
 
    ```bash
-   git checkout f8fad7650d79203983be6f453104e9acc99e33a5
+   git checkout 22089ad12d919e40aa5d86f6de0d7273daaedd9e
    ```
 
 3. Enter the Nix development environment:
