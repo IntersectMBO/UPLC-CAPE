@@ -1,10 +1,12 @@
 # Pebble Factorial Naive Recursion Implementation
 
-**Source Code**: [factorial_naive_recursion.pebble](https://github.com/Unisay/pebble-cape-submissions/blob/ebb35dbe7538a0e95006e0b91dfff1eec022f1ca/benchmarks/factorial_naive_recursion/factorial_naive_recursion.pebble)
+**Source Code**: [factorial_naive_recursion.pebble](https://github.com/Unisay/pebble-cape-submissions/blob/a906d905aef2c8a58cae8dc4818f65aaf6236f93/benchmarks/factorial_naive_recursion/factorial_naive_recursion.pebble)
 
 **Repository**: <https://github.com/Unisay/pebble-cape-submissions>
 
-**Commit**: `ebb35dbe7538a0e95006e0b91dfff1eec022f1ca`
+**Branch**: `pebble-0.1.2`
+
+**Commit**: `a906d905aef2c8a58cae8dc4818f65aaf6236f93`
 
 **Path**: `benchmarks/factorial_naive_recursion/factorial_naive_recursion.pebble`
 
@@ -22,7 +24,7 @@ This submission uses Pebble compiler version 0.1.2 with naive recursive implemen
 2. Check out the specific commit:
 
    ```bash
-   git checkout ebb35dbe7538a0e95006e0b91dfff1eec022f1ca
+   git checkout a906d905aef2c8a58cae8dc4818f65aaf6236f93
    ```
 
 3. Enter the Nix development environment:

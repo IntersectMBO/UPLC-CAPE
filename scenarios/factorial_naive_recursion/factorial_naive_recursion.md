@@ -16,7 +16,7 @@ Implement the prescribed naive recursive Factorial function and compile it as a 
 
 ### Prescribed Algorithm
 
-All submissions MUST implement this exact algorithm:
+All submissions MUST translate this algorithm into their source language, preserving its base case and recursive step:
 
 ```haskell
 factorial :: Integer -> Integer
@@ -29,10 +29,11 @@ factorial n
 
 - Naive recursive implementation matching the mathematical definition above
 - Proper edge case handling (n ≤ 0 returns 1)
-- No tail-call optimization or accumulator patterns
-- No iterative loops
-- No algorithmic optimizations beyond compiler's automatic optimizations
+- No hand-written tail-recursive or accumulator-based rewrites
+- No hand-written iterative loops or other algorithmic shortcuts
 - Direct translation of the specified algorithm into your compiler's source language
+
+These requirements apply to the submitted source. General-purpose automatic compiler optimizations that preserve its input/output behavior are allowed, including base-case simplification and recursion elimination. General-purpose compiler options may enable these transformations. Record command-line options in `compilation_config.flags`; options set in source pragmas or annotations are covered by the pinned source. The generated UPLC may have a different structure.
 
 ### Test Suite
 
@@ -55,8 +56,9 @@ Your implementation must pass all test cases in `cape-tests.json`:
 Submissions are reviewed during PR process to verify algorithm compliance:
 
 - Submission README must explain how the implementation matches the prescribed algorithm
-- Reviewers verify source code (if available) follows the naive recursive pattern
-- No deviations from the specified algorithm are permitted (e.g., no tail-recursion, no iterative loops)
+- Source code and compilation instructions are required, either inline or through a pinned external source reference as described in the [Submission Guide](../../doc/submission-guide.md#source-code-reproducibility)
+- Reviewers verify that, for every input, the source selects the same algorithmic branch and makes the same recursive calls with the same arguments as the definition above
+- Conditions equivalent over all integer inputs, such as `n < 1` for `n <= 0`, are allowed; stopping at `n <= 1` is a deviation even though results are identical
 - Compiler-specific syntax and idioms are acceptable as long as the algorithm structure is preserved
 
 ---

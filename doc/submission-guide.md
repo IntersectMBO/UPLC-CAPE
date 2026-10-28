@@ -6,6 +6,7 @@ This guide provides common information for all UPLC-CAPE benchmark submissions, 
 
 - [Metrics Explained](#metrics-explained)
 - [Acceptance Criteria](#acceptance-criteria)
+  - [Fixed and Open Scenarios](#fixed-and-open-scenarios)
 - [Submission Requirements](#submission-requirements)
 - [Source Code Reproducibility](#source-code-reproducibility)
 - [File Structure](#file-structure)
@@ -54,6 +55,19 @@ Your submission passes if it meets ALL of the following criteria:
 - ✅ **Self-Contained**: No external dependencies or runtime parameters (unless scenario specifically allows parameterized programs)
 - ✅ **File Format**: Valid UPLC program that can be executed by the CEK evaluator
 - ✅ **Schema Compliance**: All JSON files validate against provided schemas
+- ✅ **Algorithm Compliance** (fixed scenarios): Source follows the [prescribed algorithm](#fixed-and-open-scenarios)
+
+### Fixed and Open Scenarios
+
+For `fixed` scenarios, translate the prescribed algorithm into your source language. For every input, the source must select the same algorithmic branch and make the same recursive calls with the same arguments as the prescribed definition. Conditions equivalent over all integer inputs, such as `n < 1` for `n <= 0`, language-specific syntax, and recursion encodings are allowed. Changing factorial's base case to `n <= 1`, or adding a Fibonacci base case for `n == 2`, changes the work being benchmarked even though the results are the same.
+
+A recursion encoding expresses recursive calls using the language's mechanisms, such as `pfix` or `letrec`. In an embedded DSL, host-language code that unrolls or specializes the prescribed recursion is a hand-written algorithmic transformation.
+
+General-purpose automatic compiler optimizations that preserve the algorithm's input/output behavior are allowed, including base-case simplification, unrolling, and recursion elimination. General-purpose compiler options may enable these transformations. Record command-line options in `compilation_config.flags`; options set in source pragmas or annotations are covered by the pinned source. The generated UPLC does not have to retain the source algorithm's structure.
+
+Source code and compilation instructions are required for fixed submissions, either inline or through a pinned external source reference as described in [Source Code Reproducibility](#source-code-reproducibility). Passing `cape-tests.json` alone does not establish algorithm compliance. Review the source and compilation instructions; the generated UPLC alone cannot distinguish an automatic optimization from a hand-written shortcut.
+
+For `open` scenarios, any source algorithm is allowed within the scenario's other requirements.
 
 ---
 
@@ -87,12 +101,13 @@ Each submission must include:
    - Algorithmic choices made
    - Any compiler-specific optimizations used
    - Known limitations or caveats
-   - For prescribed algorithm scenarios: Explanation of how your implementation matches the required algorithm
+   - For fixed scenarios: Explanation of how your implementation matches the required algorithm
 
-5. **`source/`** (Optional) - Source code directory
-   - Include if source code is publicly shareable
+5. **Source code or external source reference** (Required for fixed scenarios; optional for open scenarios)
+   - For example, `source/` can hold inline source or a README pointing to an external repository
    - Helps reviewers verify correctness and algorithm compliance
-   - Not required if proprietary or confidential
+   - For fixed scenarios, provide source and compilation instructions as described in [Source Code Reproducibility](#source-code-reproducibility)
+   - For open scenarios, source is not required if proprietary or confidential
 
 ### Directory Naming Convention
 
@@ -226,6 +241,8 @@ Your `metadata.json` should include these fields in the `submission` object:
 - **`source_available`** (boolean, required): Whether source code is publicly available
 - **`source_repository`** (string, optional): URL to source code repository
 - **`source_commit_hash`** (string, optional): Full 40-character git commit hash
+
+For fixed scenarios, `source_available` must be `true`. External references must also set `source_repository` and `source_commit_hash`.
 
 **Example:**
 
@@ -428,7 +445,7 @@ Edit `README.md` in your submission directory to explain:
 - Algorithmic choices
 - Compiler-specific optimizations used
 - Known limitations or caveats
-- For prescribed algorithm scenarios: How your implementation matches the required algorithm
+- For fixed scenarios: How your implementation matches the required algorithm
 
 ---
 
@@ -443,9 +460,9 @@ Before submitting your implementation:
 - [ ] **Metadata**: `metadata.json` validates against schema
 - [ ] **Metrics**: `metrics.json` generated and validates against schema
 - [ ] **README**: Implementation approach documented
-- [ ] **Source Code** (if available): Included in `source/` directory
+- [ ] **Source Code** (required for fixed scenarios): Source and compilation instructions are provided inline or through a pinned external reference
 - [ ] **Verification**: `cape submission verify` passes
-- [ ] **Algorithm Compliance** (for prescribed scenarios): Implementation matches required algorithm
+- [ ] **Algorithm Compliance** (fixed scenarios): Implementation matches required algorithm
 
 ### Testing Commands
 
