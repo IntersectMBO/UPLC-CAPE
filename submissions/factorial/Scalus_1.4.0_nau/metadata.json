@@ -1,0 +1,29 @@
+{
+  "compiler": {
+    "name": "Scalus",
+    "version": "1.4.0",
+    "commit_hash": "b836856a5b4e54cd40fe0aa5947922478e8f1237"
+  },
+  "compilation_config": {
+    "optimization_level": "release",
+    "target": "uplc",
+    "flags": [
+      "Options.release"
+    ],
+    "min_protocol_version": 11
+  },
+  "contributors": [
+    {
+      "name": "Alexander Nemish",
+      "organization": "Lantr",
+      "contact": "@nau"
+    }
+  ],
+  "submission": {
+    "date": "2026-10-28T19:41:17.001104Z",
+    "source_available": true,
+    "source_repository": "https://github.com/scalus3/scalus",
+    "source_commit_hash": "f1fa4a721ae7a97d78b57ce651550be0846a792e",
+    "implementation_notes": "Hand-crafted UPLC: memoized base case + computed fallback, correct for every integer input. x < 0 -> 1; 0 <= x <= 12 -> O(1) lookup via PV11 case-on-builtin-integer (0!..12! baked in as direct case branches, no bytestring decode step); x >= 13 -> genuine self-application recursion (x * factorial(x - 1)) bottoming out on the table. A PV9-compatible sliceByteString/byteStringToInteger encoding of the table was also measured and lost decisively (109 vs 91 bytes; 18.4M vs 4.5M summed steps across the 10 fixture cases) -- see FactorialOpen.scala."
+  }
+}
