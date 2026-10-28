@@ -1,0 +1,25 @@
+{
+  "compiler": {
+    "name": "Scalus",
+    "version": "0.16.0",
+    "commit_hash": "bc4614a71ab491622da8c173920705348d516cf1"
+  },
+  "compilation_config": {
+    "optimization_level": "Scalus",
+    "target": "uplc",
+    "flags": ["Scalus"]
+  },
+  "contributors": [
+    {
+      "name": "Unisay",
+      "organization": "Intersect MBO"
+    }
+  ],
+  "submission": {
+    "date": "2026-04-21T12:00:00Z",
+    "source_available": true,
+    "source_repository": "https://github.com/Unisay/scalus-cape-submissions",
+    "source_commit_hash": "6c0871c587cfc491f3d09dc50204ee3def132e06",
+    "implementation_notes": "Scalus with Options.release (naive recursive implementation, no optimization; removeTraces=true and generateErrorTraces=false have no visible effect here since the source has no fail()/require() calls to strip). AST-level alpha-rename pass applied: all generated identifiers rewritten to short purely-alphabetic names before serialisation."
+  }
+}
