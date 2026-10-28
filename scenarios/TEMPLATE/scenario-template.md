@@ -32,6 +32,8 @@ The `category` attribute in the YAML frontmatter determines how this scenario is
 - **`fixed`**: Fixed algorithm scenarios prescribe a specific implementation that all submissions must follow. Use this when:
   - You want pure compiler-to-compiler comparison
   - The goal is isolating compiler optimization effectiveness from algorithmic choices
+  - Constraints apply to the source algorithm, including its base cases and recursive steps; general-purpose automatic compiler optimizations that preserve input/output behavior are allowed
+  - See [Fixed and Open Scenarios](../../doc/submission-guide.md#fixed-and-open-scenarios) for the compliance rules
   - Example: "All submissions must implement the naive recursive algorithm shown below"
 
 - **`open`**: Open optimization scenarios allow any implementation approach. Use this when:

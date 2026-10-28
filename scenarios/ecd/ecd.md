@@ -16,7 +16,7 @@ Implement the prescribed naive recursive Euclidean algorithm and compile it as a
 
 ### Prescribed Algorithm
 
-All submissions MUST implement this exact algorithm:
+All submissions MUST translate this algorithm into their source language, preserving its base case and recursive step:
 
 ```haskell
 ecd :: Integer -> Integer -> Integer
@@ -29,10 +29,10 @@ ecd a b
 
 - Naive recursive implementation matching the classical Euclidean algorithm above
 - Proper edge case handling (when b = 0, return abs a)
-- No tail-call optimization or accumulator patterns
-- No iterative loops
-- No algorithmic optimizations beyond compiler's automatic optimizations
+- No hand-written iterative loops or alternative algorithms (e.g., Stein's algorithm)
 - Direct translation of the specified algorithm into your compiler's source language
+
+These requirements apply to the submitted source. General-purpose automatic compiler optimizations that preserve its input/output behavior are allowed, including tail-call optimization and recursion elimination. General-purpose compiler options may enable these transformations. Record command-line options in `compilation_config.flags`; options set in source pragmas or annotations are covered by the pinned source. The generated UPLC may have a different structure.
 
 ### Test Suite
 
@@ -58,8 +58,9 @@ Your implementation must pass all test cases in `cape-tests.json`:
 Submissions are reviewed during PR process to verify algorithm compliance:
 
 - Submission README must explain how the implementation matches the prescribed algorithm
-- Reviewers verify source code (if available) follows the naive recursive pattern
-- No deviations from the specified algorithm are permitted (e.g., no tail-recursion, no iterative loops, no Stein's algorithm)
+- Source code and compilation instructions are required, either inline or through a pinned external source reference as described in the [Submission Guide](../../doc/submission-guide.md#source-code-reproducibility)
+- Reviewers verify that, for every input, the source selects the same algorithmic branch and makes the same recursive calls with the same arguments as the definition above
+- Preserve the `b == 0` base case and the recursive arguments `b` and `a mod b`; replacing `mod` with `rem` changes the recursive arguments for negative inputs
 - Compiler-specific syntax and idioms are acceptable as long as the algorithm structure is preserved
 
 ---

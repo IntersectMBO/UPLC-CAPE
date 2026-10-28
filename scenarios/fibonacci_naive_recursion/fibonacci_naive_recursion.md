@@ -16,7 +16,7 @@ Implement the prescribed naive recursive Fibonacci function and compile it as a 
 
 ### Prescribed Algorithm
 
-All submissions MUST implement this exact algorithm:
+All submissions MUST translate this algorithm into their source language, preserving its base case and recursive step:
 
 ```haskell
 fibonacci :: Integer -> Integer
@@ -28,10 +28,11 @@ fibonacci n
 **Requirements:**
 
 - Naive recursive implementation matching the mathematical definition above
-- No memoization or dynamic programming
-- No iterative loops or accumulator patterns
-- No algorithmic optimizations beyond compiler's automatic optimizations
+- No hand-written memoization or dynamic programming
+- No hand-written iterative loops, accumulator patterns, or other algorithmic shortcuts
 - Direct translation of the specified algorithm into your compiler's source language
+
+These requirements apply to the submitted source. General-purpose automatic compiler optimizations that preserve its input/output behavior are allowed, including unrolling and recursion elimination. General-purpose compiler options may enable these transformations. Record command-line options in `compilation_config.flags`; options set in source pragmas or annotations are covered by the pinned source. The generated UPLC may have a different structure.
 
 ### Test Suite
 
@@ -55,9 +56,10 @@ Your implementation must pass all test cases in `cape-tests.json`:
 Submissions are reviewed during PR process to verify algorithm compliance:
 
 - Submission README must explain how the implementation matches the prescribed algorithm
-- Reviewers verify source code (if available) follows the naive recursive pattern
-- No deviations from the specified algorithm are permitted
-- Compiler-specific syntax and idioms are acceptable as long as the algorithm structure is preserved
+- Source code and compilation instructions are required, either inline or through a pinned external source reference as described in the [Submission Guide](../../doc/submission-guide.md#source-code-reproducibility)
+- Reviewers verify that, for every input, the source selects the same algorithmic branch and makes the same recursive calls with the same arguments as the definition above
+- Additional hand-written base cases such as `n == 2` are deviations even though results are identical
+- Compiler-specific syntax and idioms, including either order of the two recursive calls, are acceptable as long as the algorithm structure is preserved
 
 ---
 
