@@ -1,8 +1,10 @@
 # Pebble Factorial Naive Recursion Implementation
 
-**Source Code**: [factorial_naive_recursion.pebble](https://github.com/nau/pebble-cape-submissions/blob/a906d905aef2c8a58cae8dc4818f65aaf6236f93/benchmarks/factorial_naive_recursion/factorial_naive_recursion.pebble)
+**Source Code**: [factorial_naive_recursion.pebble](https://github.com/Unisay/pebble-cape-submissions/blob/a906d905aef2c8a58cae8dc4818f65aaf6236f93/benchmarks/factorial_naive_recursion/factorial_naive_recursion.pebble)
 
-**Repository**: <https://github.com/nau/pebble-cape-submissions>
+**Repository**: <https://github.com/Unisay/pebble-cape-submissions>
+
+**Branch**: `pebble-0.1.2`
 
 **Commit**: `a906d905aef2c8a58cae8dc4818f65aaf6236f93`
 
@@ -15,7 +17,7 @@ This submission uses Pebble compiler version 0.1.2 with naive recursive implemen
 1. Clone the repository:
 
    ```bash
-   git clone https://github.com/nau/pebble-cape-submissions
+   git clone https://github.com/Unisay/pebble-cape-submissions
    cd pebble-cape-submissions
    ```
 
