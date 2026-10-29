@@ -1,6 +1,6 @@
 {
   "benchmark": "factorial_naive_recursion",
-  "generated_at": "2026-10-29T10:43:09Z",
+  "generated_at": "2026-10-29T10:54:59Z",
   "submissions": [
     {
       "timestamp": "2026-08-12T10:54:11Z",
@@ -63,6 +63,33 @@
       "user": "Michele Nuzzi",
       "variant": "default",
       "submission_dir": "Pebble_0.4.4_michele-nuzzi",
+      "min_protocol_version": 11,
+      "metrics": {
+        "cpu_units": 26979195,
+        "memory_units": 100235,
+        "script_size_bytes": 43,
+        "term_size": 36,
+        "execution_fee_lovelace": 7729,
+        "reference_script_fee_lovelace": 645,
+        "total_fee_lovelace": 8374,
+        "tx_memory_budget_pct": 0.1337030303030303,
+        "tx_cpu_budget_pct": 0.06398801999999999,
+        "block_memory_budget_pct": 0.030640277777777777,
+        "block_cpu_budget_pct": 0.031994009999999996,
+        "scripts_per_tx": 747,
+        "scripts_per_block": 3125,
+        "excluded_count": 0,
+        "excluded_cpu_sum": 0,
+        "excluded_mem_sum": 0
+      }
+    },
+    {
+      "timestamp": "2026-10-21T13:29:47Z",
+      "compiler": "Pebble",
+      "version": "0.5.0",
+      "user": "Michele Nuzzi",
+      "variant": "default",
+      "submission_dir": "Pebble_0.5.0_michele-nuzzi",
       "min_protocol_version": 11,
       "metrics": {
         "cpu_units": 26979195,
