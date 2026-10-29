@@ -4,7 +4,7 @@
 
 **Repository**: <https://github.com/Unisay/pebble-cape-submissions>
 
-**Branch**: `main`
+**Branch**: `pebble-0.4.4`
 
 **Commit**: `f8fad7650d79203983be6f453104e9acc99e33a5`
 

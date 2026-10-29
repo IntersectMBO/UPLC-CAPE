@@ -4,6 +4,8 @@
 
 **Repository**: <https://github.com/Unisay/pebble-cape-submissions>
 
+**Branch**: `pebble-0.1.2`
+
 **Commit**: `ebb35dbe7538a0e95006e0b91dfff1eec022f1ca`
 
 **Path**: `benchmarks/fibonacci_naive_recursion/fibonacci_naive_recursion.pebble`
