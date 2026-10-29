@@ -635,7 +635,9 @@ categorize_scenario() {
   echo "$category"
 }
 
-# Returns JSON with winners for each of the four headline metrics (handles ties).
+# Returns JSON with winners for each headline metric (handles ties). The total
+# fee (execution fee plus reference-script fee) leads: it is what a transaction
+# pays, and it weighs CPU, memory and size the way the ledger does.
 find_winners() {
   local benchmark_csv="$1"
 
@@ -680,13 +682,14 @@ find_winners() {
     echo -n "]}"
   }
 
-  local cpu_json memory_json script_json term_json
+  local fee_json cpu_json memory_json script_json term_json
+  fee_json=$(build_winners_json "${CSV_COL[total_fee_lovelace]}" "total_fee")
   cpu_json=$(build_winners_json "${CSV_COL[cpu_units]}" "cpu")
   memory_json=$(build_winners_json "${CSV_COL[memory_units]}" "memory")
   script_json=$(build_winners_json "${CSV_COL[script_size_bytes]}" "script_size")
   term_json=$(build_winners_json "${CSV_COL[term_size]}" "term_size")
 
-  echo "{\"cpu\":$cpu_json,\"memory\":$memory_json,\"script_size\":$script_json,\"term_size\":$term_json}"
+  echo "{\"total_fee\":$fee_json,\"cpu\":$cpu_json,\"memory\":$memory_json,\"script_size\":$script_json,\"term_size\":$term_json}"
 }
 
 generate_index_report() {

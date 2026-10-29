@@ -253,6 +253,19 @@
 
                 {{if gt .submission_count 0}}
                 <div class="winners">
+                    {{if .winners.total_fee}}
+                    <div class="winner-item">
+                        <div class="winner-label"><span class="medal">💰</span> Lowest Fee</div>
+                        <div class="winner-value">{{.winners.total_fee.formatted}} lovelace</div>
+                        {{range $idx, $sub := .winners.total_fee.submissions}}{{if lt $idx 3}}
+                        <div class="winner-submission">{{$sub.compiler}}_{{$sub.version}}_{{$sub.author}}{{if ne $sub.variant "default"}}_{{$sub.variant}}{{end}}</div>
+                        {{end}}{{end}}
+                        {{if gt .winners.total_fee.total 3}}
+                        <div class="winner-more">(+{{sub .winners.total_fee.total 3}} more)</div>
+                        {{end}}
+                    </div>
+                    {{end}}
+
                     {{if .winners.cpu}}
                     <div class="winner-item">
                         <div class="winner-label"><span class="medal">🥇</span> Best CPU</div>
@@ -334,6 +347,19 @@
 
                 {{if gt .submission_count 0}}
                 <div class="winners">
+                    {{if .winners.total_fee}}
+                    <div class="winner-item">
+                        <div class="winner-label"><span class="medal">💰</span> Lowest Fee</div>
+                        <div class="winner-value">{{.winners.total_fee.formatted}} lovelace</div>
+                        {{range $idx, $sub := .winners.total_fee.submissions}}{{if lt $idx 3}}
+                        <div class="winner-submission">{{$sub.compiler}}_{{$sub.version}}_{{$sub.author}}{{if ne $sub.variant "default"}}_{{$sub.variant}}{{end}}</div>
+                        {{end}}{{end}}
+                        {{if gt .winners.total_fee.total 3}}
+                        <div class="winner-more">(+{{sub .winners.total_fee.total 3}} more)</div>
+                        {{end}}
+                    </div>
+                    {{end}}
+
                     {{if .winners.cpu}}
                     <div class="winner-item">
                         <div class="winner-label"><span class="medal">🥇</span> Best CPU</div>
