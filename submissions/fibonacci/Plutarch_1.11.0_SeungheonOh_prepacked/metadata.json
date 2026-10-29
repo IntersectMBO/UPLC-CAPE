@@ -5,9 +5,8 @@
     "commit_hash": "427e49b0cbfd2ff97cdc91522a09e06edd7a7fa6"
   },
   "compilation_config": {
-    "optimization_level": "Plutarch",
     "target": "uplc",
-    "flags": ["Plutarch"]
+    "flags": []
   },
   "contributors": [
     {

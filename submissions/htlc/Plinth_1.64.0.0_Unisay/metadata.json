@@ -5,9 +5,8 @@
     "commit_hash": "61b1eedf082050d89cde8db89d73aae65bc95a65"
   },
   "compilation_config": {
-    "optimization_level": "Plinth",
     "target": "uplc",
-    "flags": ["Plinth"]
+    "flags": []
   },
   "contributors": [{ "name": "Unisay", "organization": "UPLC-CAPE Project" }],
   "submission": {

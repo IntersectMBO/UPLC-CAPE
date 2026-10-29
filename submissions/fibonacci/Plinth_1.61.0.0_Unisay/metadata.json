@@ -5,9 +5,8 @@
     "commit_hash": "d4c877e0b4b2ba38a90584c0e93368f72792ab51"
   },
   "compilation_config": {
-    "optimization_level": "Plinth",
     "target": "uplc",
-    "flags": ["Plinth"],
+    "flags": [],
     "min_protocol_version": 11
   },
   "contributors": [

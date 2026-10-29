@@ -5,7 +5,6 @@
     "commit_hash": "bacbeb35fbc9f1db93cd2e1e93fb1d93053acb4a"
   },
   "compilation_config": {
-    "optimization_level": "Aiken",
     "target": "uplc",
     "flags": []
   },

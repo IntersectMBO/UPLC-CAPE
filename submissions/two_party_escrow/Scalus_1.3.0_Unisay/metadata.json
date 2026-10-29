@@ -5,9 +5,8 @@
     "commit_hash": "31531c14d4e556fb38c984d702ee60dd82b6453f"
   },
   "compilation_config": {
-    "optimization_level": "Scalus",
     "target": "uplc",
-    "flags": ["Scalus"],
+    "flags": [],
     "min_protocol_version": 11
   },
   "contributors": [

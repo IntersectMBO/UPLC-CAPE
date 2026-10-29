@@ -1,13 +1,12 @@
 {
   "compiler": {
-    "name": "<string>",
-    "version": "<string>",
+    "name": "<compiler>",
+    "version": "<version>",
     "commit_hash": "<string>"
   },
   "compilation_config": {
-    "optimization_level": "<string>",
     "target": "uplc",
-    "flags": ["<string>"],
+    "flags": [],
     "environment": {
       "dependencies": {
         "<package>": "<version>"

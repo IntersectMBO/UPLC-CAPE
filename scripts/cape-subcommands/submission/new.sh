@@ -170,7 +170,7 @@ sed "s/<scenario>/$SCENARIO/g" \
   "$PROJECT_ROOT/submissions/TEMPLATE/metrics-template.json" > "$SUBMISSION_PATH/metrics.json"
 
 # Create metadata.json from template with language info
-sed -e "s/<string>/$LANGUAGE/g" \
+sed -e "s/<compiler>/$LANGUAGE/g" \
   -e "s/<version>/$VERSION/g" \
   "$PROJECT_ROOT/submissions/TEMPLATE/metadata-template.json" > "$SUBMISSION_PATH/metadata.json"
 
