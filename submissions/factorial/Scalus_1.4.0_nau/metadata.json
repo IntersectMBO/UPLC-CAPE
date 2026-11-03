@@ -1,0 +1,29 @@
+{
+  "compiler": {
+    "name": "Scalus",
+    "version": "1.4.0",
+    "commit_hash": "b836856a5b4e54cd40fe0aa5947922478e8f1237"
+  },
+  "compilation_config": {
+    "optimization_level": "release",
+    "target": "uplc",
+    "flags": [
+      "Options.release"
+    ],
+    "min_protocol_version": 11
+  },
+  "contributors": [
+    {
+      "name": "Alexander Nemish",
+      "organization": "Lantr",
+      "contact": "@nau"
+    }
+  ],
+  "submission": {
+    "date": "2026-11-03T15:57:55.587610Z",
+    "source_available": true,
+    "source_repository": "https://github.com/scalus3/scalus",
+    "source_commit_hash": "9b26ab007d6b8790eb55da55cef3dd788c350a93",
+    "implementation_notes": "Compiled from Scala 3 (@Compile, Options.releaseUntagged). Computes every result at run time, with the recursion unrolled four times: factorial(n) = n(n-1)(n-2)(n-3) * factorial(n - 4) for n >= 4, n(n-1) for n = 2 and 3, and 1 for every n <= 1, negatives included. No values are precomputed. factorial(12) takes three recursive calls instead of eleven."
+  }
+}

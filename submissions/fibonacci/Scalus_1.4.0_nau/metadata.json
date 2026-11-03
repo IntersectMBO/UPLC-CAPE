@@ -1,0 +1,29 @@
+{
+  "compiler": {
+    "name": "Scalus",
+    "version": "1.4.0",
+    "commit_hash": "b836856a5b4e54cd40fe0aa5947922478e8f1237"
+  },
+  "compilation_config": {
+    "optimization_level": "release",
+    "target": "uplc",
+    "flags": [
+      "Options.release"
+    ],
+    "min_protocol_version": 11
+  },
+  "contributors": [
+    {
+      "name": "Alexander Nemish",
+      "organization": "Lantr",
+      "contact": "@nau"
+    }
+  ],
+  "submission": {
+    "date": "2026-10-28T19:41:17.001104Z",
+    "source_available": true,
+    "source_repository": "https://github.com/scalus3/scalus",
+    "source_commit_hash": "f1fa4a721ae7a97d78b57ce651550be0846a792e",
+    "implementation_notes": "Hand-crafted UPLC: memoized base case + computed fallback, correct for every integer input. n < 0 -> n; 0 <= n <= 25 -> O(1) lookup via PV11 case-on-builtin-integer (fib(0)..fib(25) baked in as direct case branches, no bytestring decode step); n >= 26 -> a linear accumulator loop (go(k, a, b) = if k <= 0 then b else go(k - 1, b, a + b), seeded from fib(24)/fib(25)) bottoming out on the table -- O(n), not the O(2^n) naive double recursion the scenario warns against."
+  }
+}
