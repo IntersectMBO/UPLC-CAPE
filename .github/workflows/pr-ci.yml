@@ -92,6 +92,9 @@ jobs:
     needs: build-measure
     runs-on: ubuntu-latest
     steps:
+      - name: Nothing but Nix - Optimize disk space
+        uses: wimpysworld/nothing-but-nix@687c797a730352432950c707ab493fcc951818d7 # v10
+
       - name: Checkout
         uses: actions/checkout@v6
 
@@ -157,6 +160,10 @@ jobs:
             echo "has_changes=false" >> "$GITHUB_OUTPUT"
           fi
 
+      - name: Nothing but Nix - Optimize disk space
+        if: steps.check_changes.outputs.has_changes == 'true'
+        uses: wimpysworld/nothing-but-nix@687c797a730352432950c707ab493fcc951818d7 # v10
+
       - name: Install Nix
         if: steps.check_changes.outputs.has_changes == 'true'
         uses: cachix/install-nix-action@v31
@@ -202,8 +209,12 @@ jobs:
         run: |
           nix develop --accept-flake-config --command bash -c "export PATH=\"\$PWD/result/bin:\$PATH\" && cape submission report --all"
 
+      # A pull request from a fork gets a read-only GITHUB_TOKEN whatever the
+      # workflow's permissions say, so the gh-pages push and the PR comment
+      # would fail with 403. Such a PR still builds the report, which checks
+      # the pipeline, but deploys nothing.
       - name: Deploy to GitHub Pages
-        if: steps.check_changes.outputs.has_changes == 'true'
+        if: steps.check_changes.outputs.has_changes == 'true' && github.event.pull_request.head.repo.full_name == github.repository
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
@@ -212,7 +223,7 @@ jobs:
           keep_files: true
 
       - name: Post preview link comment
-        if: steps.check_changes.outputs.has_changes == 'true'
+        if: steps.check_changes.outputs.has_changes == 'true' && github.event.pull_request.head.repo.full_name == github.repository
         uses: marocchino/sticky-pull-request-comment@v2
         with:
           header: pr-preview
@@ -222,6 +233,11 @@ jobs:
             Preview URL: https://intersectmbo.github.io/UPLC-CAPE/pr-${{ github.event.pull_request.number }}/
 
             The preview site is automatically updated on every push to this PR and will be removed when the PR is closed.
+
+      - name: Fork message
+        if: steps.check_changes.outputs.has_changes == 'true' && github.event.pull_request.head.repo.full_name != github.repository
+        run: |
+          echo "ℹ️  Pull request from a fork: the report was built but not deployed (read-only GITHUB_TOKEN)."
 
       - name: Skip message
         if: steps.check_changes.outputs.has_changes == 'false'
