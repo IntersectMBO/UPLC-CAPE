@@ -1,6 +1,6 @@
 {
   "benchmark": "fibonacci",
-  "generated_at": "2026-11-04T12:14:12Z",
+  "generated_at": "2026-11-04T13:10:18Z",
   "submissions": [
     {
       "timestamp": "2026-08-12T10:54:13Z",
@@ -564,6 +564,33 @@
         "block_cpu_budget_pct": 0.007866409999999999,
         "scripts_per_tx": 6356,
         "scripts_per_block": 12712,
+        "excluded_count": 0,
+        "excluded_cpu_sum": 0,
+        "excluded_mem_sum": 0
+      }
+    },
+    {
+      "timestamp": "2026-10-28T19:43:35Z",
+      "compiler": "Scalus",
+      "version": "1.4.0",
+      "user": "Alexander Nemish",
+      "variant": "default",
+      "submission_dir": "Scalus_1.4.0_nau",
+      "min_protocol_version": 11,
+      "metrics": {
+        "cpu_units": 3961677,
+        "memory_units": 20121,
+        "script_size_bytes": 156,
+        "term_size": 81,
+        "execution_fee_lovelace": 1447,
+        "reference_script_fee_lovelace": 2340,
+        "total_fee_lovelace": 3787,
+        "tx_memory_budget_pct": 0.011527272727272728,
+        "tx_cpu_budget_pct": 0.00375774,
+        "block_memory_budget_pct": 0.0026416666666666667,
+        "block_cpu_budget_pct": 0.00187887,
+        "scripts_per_tx": 8675,
+        "scripts_per_block": 37854,
         "excluded_count": 0,
         "excluded_cpu_sum": 0,
         "excluded_mem_sum": 0

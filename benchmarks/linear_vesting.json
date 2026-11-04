@@ -1,6 +1,6 @@
 {
   "benchmark": "linear_vesting",
-  "generated_at": "2026-11-04T12:14:18Z",
+  "generated_at": "2026-11-04T13:10:26Z",
   "submissions": [
     {
       "timestamp": "2026-10-07T11:30:57Z",
@@ -324,6 +324,33 @@
         "excluded_count": 23,
         "excluded_cpu_sum": 298296055,
         "excluded_mem_sum": 670292
+      }
+    },
+    {
+      "timestamp": "2026-10-28T19:45:00Z",
+      "compiler": "Scalus",
+      "version": "1.4.0",
+      "user": "Alexander Nemish",
+      "variant": "default",
+      "submission_dir": "Scalus_1.4.0_nau",
+      "min_protocol_version": 11,
+      "metrics": {
+        "cpu_units": 142593776,
+        "memory_units": 297796,
+        "script_size_bytes": 652,
+        "term_size": 668,
+        "execution_fee_lovelace": 27464,
+        "reference_script_fee_lovelace": 9780,
+        "total_fee_lovelace": 37244,
+        "tx_memory_budget_pct": 0.38113939393939394,
+        "tx_cpu_budget_pct": 0.31180571,
+        "block_memory_budget_pct": 0.08734444444444445,
+        "block_cpu_budget_pct": 0.155902855,
+        "scripts_per_tx": 262,
+        "scripts_per_block": 641,
+        "excluded_count": 23,
+        "excluded_cpu_sum": 225203156,
+        "excluded_mem_sum": 380656
       }
     }
   ]
