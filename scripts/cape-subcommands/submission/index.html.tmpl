@@ -112,6 +112,23 @@
             padding: 12px 15px;
             border-radius: 4px;
         }
+        .winner-item.headline {
+            border-left-color: #28a745;
+            background: #eef9f1;
+        }
+        .metric-legend {
+            max-width: 900px;
+            margin: 20px auto 0;
+            padding: 12px 18px;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 8px;
+            color: #333;
+            font-size: 0.9em;
+            text-align: left;
+        }
+        .metric-legend p {
+            margin: 4px 0;
+        }
         .winner-label {
             font-size: 0.85em;
             color: #6c757d;
@@ -223,6 +240,12 @@
         </div>
     </div>
 
+    <div class="metric-legend">
+        <p><strong>💰 Lowest Fee</strong>: what one execution costs on Cardano mainnet. It is the execution fee for CPU and memory plus the reference-script fee for the script size, at the ledger's prices.</p>
+        <p><strong>📦 Most per Transaction</strong>: how many executions of the most expensive measured case fit in one transaction's budget. No fee raises this limit.</p>
+        <p>The CPU, memory and size medals show the raw measurements behind both.</p>
+    </div>
+
     <!-- Fixed Algorithm Scenarios -->
     <div class="category-section">
         <div class="category-header">
@@ -253,6 +276,39 @@
 
                 {{if gt .submission_count 0}}
                 <div class="winners">
+                    {{if .winners.total_fee}}
+                    <div class="winner-item headline">
+                        <div class="winner-label"><span class="medal">💰</span> Lowest Fee</div>
+                        <div class="winner-value">{{.winners.total_fee.formatted}} lovelace</div>
+                        {{range $idx, $sub := .winners.total_fee.submissions}}{{if lt $idx 3}}
+                        <div class="winner-submission">{{$sub.compiler}}_{{$sub.version}}_{{$sub.author}}{{if ne $sub.variant "default"}}_{{$sub.variant}}{{end}}</div>
+                        {{end}}{{end}}
+                        {{if gt .winners.total_fee.total 3}}
+                        <div class="winner-more">(+{{sub .winners.total_fee.total 3}} more)</div>
+                        {{end}}
+                    </div>
+                    {{end}}
+
+                    {{if .winners.scripts_per_tx}}
+                    <div class="winner-item headline">
+                        <div class="winner-label"><span class="medal">📦</span> Most per Transaction</div>
+                        {{if gt .winners.scripts_per_tx.value 0}}
+                        <div class="winner-value">{{.winners.scripts_per_tx.formatted}} scripts</div>
+                        {{range $idx, $sub := .winners.scripts_per_tx.submissions}}{{if lt $idx 3}}
+                        <div class="winner-submission">{{$sub.compiler}}_{{$sub.version}}_{{$sub.author}}{{if ne $sub.variant "default"}}_{{$sub.variant}}{{end}}</div>
+                        {{end}}{{end}}
+                        {{if gt .winners.scripts_per_tx.total 3}}
+                        <div class="winner-more">(+{{sub .winners.scripts_per_tx.total 3}} more)</div>
+                        {{end}}
+                        {{else}}
+                        <div class="winner-value">None fit</div>
+                        <div class="winner-more">The most expensive case exceeds one transaction's budget for every submission.</div>
+                        {{end}}
+                    </div>
+                    {{end}}
+                </div>
+                <div class="winners">
+
                     {{if .winners.cpu}}
                     <div class="winner-item">
                         <div class="winner-label"><span class="medal">🥇</span> Best CPU</div>
@@ -334,6 +390,39 @@
 
                 {{if gt .submission_count 0}}
                 <div class="winners">
+                    {{if .winners.total_fee}}
+                    <div class="winner-item headline">
+                        <div class="winner-label"><span class="medal">💰</span> Lowest Fee</div>
+                        <div class="winner-value">{{.winners.total_fee.formatted}} lovelace</div>
+                        {{range $idx, $sub := .winners.total_fee.submissions}}{{if lt $idx 3}}
+                        <div class="winner-submission">{{$sub.compiler}}_{{$sub.version}}_{{$sub.author}}{{if ne $sub.variant "default"}}_{{$sub.variant}}{{end}}</div>
+                        {{end}}{{end}}
+                        {{if gt .winners.total_fee.total 3}}
+                        <div class="winner-more">(+{{sub .winners.total_fee.total 3}} more)</div>
+                        {{end}}
+                    </div>
+                    {{end}}
+
+                    {{if .winners.scripts_per_tx}}
+                    <div class="winner-item headline">
+                        <div class="winner-label"><span class="medal">📦</span> Most per Transaction</div>
+                        {{if gt .winners.scripts_per_tx.value 0}}
+                        <div class="winner-value">{{.winners.scripts_per_tx.formatted}} scripts</div>
+                        {{range $idx, $sub := .winners.scripts_per_tx.submissions}}{{if lt $idx 3}}
+                        <div class="winner-submission">{{$sub.compiler}}_{{$sub.version}}_{{$sub.author}}{{if ne $sub.variant "default"}}_{{$sub.variant}}{{end}}</div>
+                        {{end}}{{end}}
+                        {{if gt .winners.scripts_per_tx.total 3}}
+                        <div class="winner-more">(+{{sub .winners.scripts_per_tx.total 3}} more)</div>
+                        {{end}}
+                        {{else}}
+                        <div class="winner-value">None fit</div>
+                        <div class="winner-more">The most expensive case exceeds one transaction's budget for every submission.</div>
+                        {{end}}
+                    </div>
+                    {{end}}
+                </div>
+                <div class="winners">
+
                     {{if .winners.cpu}}
                     <div class="winner-item">
                         <div class="winner-label"><span class="medal">🥇</span> Best CPU</div>
