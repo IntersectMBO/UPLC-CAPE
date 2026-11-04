@@ -1,0 +1,29 @@
+{
+  "compiler": {
+    "name": "Scalus",
+    "version": "1.4.0",
+    "commit_hash": "b836856a5b4e54cd40fe0aa5947922478e8f1237"
+  },
+  "compilation_config": {
+    "optimization_level": "release",
+    "target": "uplc",
+    "flags": [
+      "Options.release"
+    ],
+    "min_protocol_version": 11
+  },
+  "contributors": [
+    {
+      "name": "Alexander Nemish",
+      "organization": "Lantr",
+      "contact": "@nau"
+    }
+  ],
+  "submission": {
+    "date": "2026-10-28T19:41:17.001104Z",
+    "source_available": true,
+    "source_repository": "https://github.com/scalus3/scalus",
+    "source_commit_hash": "f1fa4a721ae7a97d78b57ce651550be0846a792e",
+    "implementation_notes": "Compiled from Scala 3 with the Scalus compiler plugin, Options.release (PV11/vanRossem target: flexible case, batch-6 builtins), no traces. Value.quantityOf lowers to the CIP-0153 lookupCoin/unValueData builtins (Options.valueBuiltins, the PV11 default)."
+  }
+}
