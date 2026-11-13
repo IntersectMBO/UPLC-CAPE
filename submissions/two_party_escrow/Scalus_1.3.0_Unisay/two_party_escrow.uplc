@@ -37,9 +37,9 @@
                                 [
                                   (lam
                                     k-10
-                                    [
-                                      (lam
-                                        l-11
+                                    (lam
+                                      l-11
+                                      [
                                         (lam
                                           m-12
                                           [
@@ -52,8 +52,7 @@
                                                     (lam
                                                       p-15
                                                       (case
-                                                        [ b-1 p-15 ]
-                                                        (error)
+                                                        [ b-1 o-14 ]
                                                         [
                                                           (lam
                                                             q-16
@@ -62,6 +61,73 @@
                                                                 q-16
                                                                 (con integer 0)
                                                               ]
+                                                              (case
+                                                                (case
+                                                                  [
+                                                                    q-16
+                                                                    (con
+                                                                      integer 1
+                                                                    )
+                                                                  ]
+                                                                  [
+                                                                    q-16
+                                                                    (con
+                                                                      integer 2
+                                                                    )
+                                                                  ]
+                                                                  (con
+                                                                    bool True
+                                                                  )
+                                                                )
+                                                                (error)
+                                                                (case
+                                                                  (case
+                                                                    (constr
+                                                                      0
+                                                                      [
+                                                                        c-2
+                                                                        [
+                                                                          [
+                                                                            a-0
+                                                                            (con
+                                                                              integer
+                                                                              4
+                                                                            )
+                                                                          ]
+                                                                          [
+                                                                            e-4
+                                                                            [
+                                                                              (builtin
+                                                                                unConstrData
+                                                                              )
+                                                                              [
+                                                                                c-2
+                                                                                m-12
+                                                                              ]
+                                                                            ]
+                                                                          ]
+                                                                        ]
+                                                                      ]
+                                                                      [
+                                                                        (builtin
+                                                                          unBData
+                                                                        )
+                                                                        [
+                                                                          c-2
+                                                                          p-15
+                                                                        ]
+                                                                      ]
+                                                                      (con
+                                                                        integer
+                                                                        -1
+                                                                      )
+                                                                    )
+                                                                    h-7
+                                                                  )
+                                                                  (error)
+                                                                  (con unit ())
+                                                                )
+                                                              )
                                                               [
                                                                 (lam
                                                                   r-17
@@ -71,355 +137,70 @@
                                                                       [
                                                                         (lam
                                                                           t-19
-                                                                          (case
-                                                                            [
-                                                                              q-16
-                                                                              (con
-                                                                                integer
-                                                                                1
-                                                                              )
-                                                                            ]
-                                                                            (case
-                                                                              [
-                                                                                q-16
-                                                                                (con
-                                                                                  integer
-                                                                                  2
-                                                                                )
-                                                                              ]
-                                                                              (error
-
-                                                                              )
+                                                                          [
+                                                                            (lam
+                                                                              u-20
                                                                               [
                                                                                 (lam
-                                                                                  u-20
+                                                                                  v-21
                                                                                   [
                                                                                     (lam
-                                                                                      v-21
+                                                                                      w-22
                                                                                       [
                                                                                         (lam
-                                                                                          w-22
+                                                                                          x-23
                                                                                           [
                                                                                             (lam
-                                                                                              x-23
+                                                                                              y-24
                                                                                               [
                                                                                                 (lam
-                                                                                                  y-24
+                                                                                                  z-25
                                                                                                   [
                                                                                                     (lam
-                                                                                                      z-25
+                                                                                                      aa-26
                                                                                                       [
                                                                                                         (lam
-                                                                                                          aa-26
+                                                                                                          ab-27
                                                                                                           [
                                                                                                             (lam
-                                                                                                              ab-27
-                                                                                                              (case
-                                                                                                                [
-                                                                                                                  l-11
-                                                                                                                  [
-                                                                                                                    (builtin
-                                                                                                                      unListData
-                                                                                                                    )
-                                                                                                                    [
-                                                                                                                      [
-                                                                                                                        h-7
-                                                                                                                        aa-26
-                                                                                                                      ]
-                                                                                                                      z-25
-                                                                                                                    ]
-                                                                                                                  ]
-                                                                                                                ]
-                                                                                                                (error
-
-                                                                                                                )
-                                                                                                                (con
-                                                                                                                  unit
-                                                                                                                  ()
-                                                                                                                )
-                                                                                                              )
-                                                                                                            )
-                                                                                                            (case
-                                                                                                              [
-                                                                                                                [
-                                                                                                                  (builtin
-                                                                                                                    equalsInteger
-                                                                                                                  )
-                                                                                                                  [
-                                                                                                                    (builtin
-                                                                                                                      unIData
-                                                                                                                    )
-                                                                                                                    (case
-                                                                                                                      (constr
-                                                                                                                        0
-                                                                                                                        aa-26
-                                                                                                                        (con
-                                                                                                                          data
-                                                                                                                          (I 0)
-                                                                                                                        )
-                                                                                                                        (lam
-                                                                                                                          ac-28
-                                                                                                                          [
-                                                                                                                            (lam
-                                                                                                                              ad-29
-                                                                                                                              (lam
-                                                                                                                                ae-30
-                                                                                                                                [
-                                                                                                                                  (builtin
-                                                                                                                                    iData
-                                                                                                                                  )
-                                                                                                                                  [
-                                                                                                                                    (lam
-                                                                                                                                      af-31
-                                                                                                                                      (case
-                                                                                                                                        [
-                                                                                                                                          [
-                                                                                                                                            (builtin
-                                                                                                                                              equalsData
-                                                                                                                                            )
-                                                                                                                                            [
-                                                                                                                                              c-2
-                                                                                                                                              [
-                                                                                                                                                e-4
-                                                                                                                                                [
-                                                                                                                                                  (builtin
-                                                                                                                                                    unConstrData
-                                                                                                                                                  )
-                                                                                                                                                  [
-                                                                                                                                                    c-2
-                                                                                                                                                    af-31
-                                                                                                                                                  ]
-                                                                                                                                                ]
-                                                                                                                                              ]
-                                                                                                                                            ]
-                                                                                                                                          ]
-                                                                                                                                          (con
-                                                                                                                                            data
-                                                                                                                                            (Constr 0
-                                                                                                                                               [ B #aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa ])
-                                                                                                                                          )
-                                                                                                                                        ]
-                                                                                                                                        ad-29
-                                                                                                                                        [
-                                                                                                                                          [
-                                                                                                                                            (builtin
-                                                                                                                                              addInteger
-                                                                                                                                            )
-                                                                                                                                            ad-29
-                                                                                                                                          ]
-                                                                                                                                          [
-                                                                                                                                            (builtin
-                                                                                                                                              unIData
-                                                                                                                                            )
-                                                                                                                                            [
-                                                                                                                                              k-10
-                                                                                                                                              [
-                                                                                                                                                c-2
-                                                                                                                                                [
-                                                                                                                                                  f-5
-                                                                                                                                                  af-31
-                                                                                                                                                ]
-                                                                                                                                              ]
-                                                                                                                                            ]
-                                                                                                                                          ]
-                                                                                                                                        ]
-                                                                                                                                      )
-                                                                                                                                    )
-                                                                                                                                    [
-                                                                                                                                      e-4
-                                                                                                                                      [
-                                                                                                                                        (builtin
-                                                                                                                                          unConstrData
-                                                                                                                                        )
-                                                                                                                                        ae-30
-                                                                                                                                      ]
-                                                                                                                                    ]
-                                                                                                                                  ]
-                                                                                                                                ]
-                                                                                                                              )
-                                                                                                                            )
-                                                                                                                            [
-                                                                                                                              (builtin
-                                                                                                                                unIData
-                                                                                                                              )
-                                                                                                                              ac-28
-                                                                                                                            ]
-                                                                                                                          ]
-                                                                                                                        )
-                                                                                                                      )
-                                                                                                                      j-9
-                                                                                                                    )
-                                                                                                                  ]
-                                                                                                                ]
-                                                                                                                (con
-                                                                                                                  integer
-                                                                                                                  75000000
-                                                                                                                )
-                                                                                                              ]
-                                                                                                              (error
-
-                                                                                                              )
-                                                                                                              (con
-                                                                                                                unit
-                                                                                                                ()
-                                                                                                              )
-                                                                                                            )
-                                                                                                          ]
-                                                                                                        )
-                                                                                                        [
-                                                                                                          (builtin
-                                                                                                            unListData
-                                                                                                          )
-                                                                                                          [
-                                                                                                            c-2
-                                                                                                            [
-                                                                                                              o-14
-                                                                                                              w-22
-                                                                                                            ]
-                                                                                                          ]
-                                                                                                        ]
-                                                                                                      ]
-                                                                                                    )
-                                                                                                    [
-                                                                                                      c-2
-                                                                                                      [
-                                                                                                        e-4
-                                                                                                        [
-                                                                                                          (builtin
-                                                                                                            unConstrData
-                                                                                                          )
-                                                                                                          [
-                                                                                                            c-2
-                                                                                                            [
-                                                                                                              e-4
-                                                                                                              [
-                                                                                                                (builtin
-                                                                                                                  unConstrData
-                                                                                                                )
-                                                                                                                [
-                                                                                                                  c-2
-                                                                                                                  [
-                                                                                                                    f-5
-                                                                                                                    [
-                                                                                                                      [
-                                                                                                                        i-8
-                                                                                                                        [
-                                                                                                                          (builtin
-                                                                                                                            unListData
-                                                                                                                          )
-                                                                                                                          [
-                                                                                                                            c-2
-                                                                                                                            w-22
-                                                                                                                          ]
-                                                                                                                        ]
-                                                                                                                      ]
-                                                                                                                      s-18
-                                                                                                                    ]
-                                                                                                                  ]
-                                                                                                                ]
-                                                                                                              ]
-                                                                                                            ]
-                                                                                                          ]
-                                                                                                        ]
-                                                                                                      ]
-                                                                                                    ]
-                                                                                                  ]
-                                                                                                )
-                                                                                                (case
-                                                                                                  [
-                                                                                                    [
-                                                                                                      (lam
-                                                                                                        ag-32
-                                                                                                        (lam
-                                                                                                          ah-33
-                                                                                                          [
-                                                                                                            (lam
-                                                                                                              ai-34
+                                                                                                              ac-28
                                                                                                               [
                                                                                                                 (lam
-                                                                                                                  aj-35
+                                                                                                                  ad-29
                                                                                                                   (case
                                                                                                                     [
                                                                                                                       b-1
-                                                                                                                      aj-35
+                                                                                                                      ad-29
                                                                                                                     ]
-                                                                                                                    (con
-                                                                                                                      bool
-                                                                                                                      False
+                                                                                                                    (error
+
                                                                                                                     )
-                                                                                                                    [
-                                                                                                                      (lam
-                                                                                                                        ak-36
-                                                                                                                        (case
-                                                                                                                          (case
-                                                                                                                            [
-                                                                                                                              b-1
-                                                                                                                              [
-                                                                                                                                (builtin
-                                                                                                                                  unConstrData
-                                                                                                                                )
-                                                                                                                                [
-                                                                                                                                  c-2
-                                                                                                                                  [
-                                                                                                                                    f-5
-                                                                                                                                    ai-34
-                                                                                                                                  ]
-                                                                                                                                ]
-                                                                                                                              ]
-                                                                                                                            ]
-                                                                                                                            (con
-                                                                                                                              bool
-                                                                                                                              False
-                                                                                                                            )
-                                                                                                                            (con
-                                                                                                                              bool
-                                                                                                                              True
-                                                                                                                            )
+                                                                                                                    (error
+
+                                                                                                                    )
+                                                                                                                    (case
+                                                                                                                      [
+                                                                                                                        [
+                                                                                                                          (builtin
+                                                                                                                            equalsData
                                                                                                                           )
                                                                                                                           [
+                                                                                                                            c-2
                                                                                                                             [
-                                                                                                                              (builtin
-                                                                                                                                lessThanEqualsInteger
-                                                                                                                              )
-                                                                                                                              ah-33
-                                                                                                                            ]
-                                                                                                                            [
-                                                                                                                              (builtin
-                                                                                                                                unIData
-                                                                                                                              )
-                                                                                                                              [
-                                                                                                                                c-2
-                                                                                                                                ak-36
-                                                                                                                              ]
+                                                                                                                              e-4
+                                                                                                                              ad-29
                                                                                                                             ]
                                                                                                                           ]
-                                                                                                                          [
-                                                                                                                            [
-                                                                                                                              (builtin
-                                                                                                                                lessThanInteger
-                                                                                                                              )
-                                                                                                                              ah-33
-                                                                                                                            ]
-                                                                                                                            [
-                                                                                                                              (builtin
-                                                                                                                                unIData
-                                                                                                                              )
-                                                                                                                              [
-                                                                                                                                c-2
-                                                                                                                                ak-36
-                                                                                                                              ]
-                                                                                                                            ]
-                                                                                                                          ]
-                                                                                                                        )
-                                                                                                                      )
-                                                                                                                      [
-                                                                                                                        e-4
-                                                                                                                        aj-35
+                                                                                                                        ]
+                                                                                                                        ac-28
                                                                                                                       ]
-                                                                                                                    ]
-                                                                                                                    (con
-                                                                                                                      bool
-                                                                                                                      False
+                                                                                                                      (error
+
+                                                                                                                      )
+                                                                                                                      (con
+                                                                                                                        unit
+                                                                                                                        ()
+                                                                                                                      )
                                                                                                                     )
                                                                                                                   )
                                                                                                                 )
@@ -429,215 +210,103 @@
                                                                                                                   )
                                                                                                                   [
                                                                                                                     c-2
-                                                                                                                    ai-34
+                                                                                                                    [
+                                                                                                                      n-13
+                                                                                                                      y-24
+                                                                                                                    ]
                                                                                                                   ]
                                                                                                                 ]
                                                                                                               ]
                                                                                                             )
                                                                                                             [
-                                                                                                              e-4
                                                                                                               [
                                                                                                                 (builtin
-                                                                                                                  unConstrData
+                                                                                                                  constrData
                                                                                                                 )
-                                                                                                                [
-                                                                                                                  c-2
-                                                                                                                  ag-32
-                                                                                                                ]
-                                                                                                              ]
-                                                                                                            ]
-                                                                                                          ]
-                                                                                                        )
-                                                                                                      )
-                                                                                                      [
-                                                                                                        e-4
-                                                                                                        [
-                                                                                                          (builtin
-                                                                                                            unConstrData
-                                                                                                          )
-                                                                                                          [
-                                                                                                            c-2
-                                                                                                            [
-                                                                                                              [
-                                                                                                                a-0
                                                                                                                 (con
                                                                                                                   integer
-                                                                                                                  7
+                                                                                                                  0
                                                                                                                 )
                                                                                                               ]
-                                                                                                              w-22
+                                                                                                              [
+                                                                                                                [
+                                                                                                                  d-3
+                                                                                                                  [
+                                                                                                                    (builtin
+                                                                                                                      iData
+                                                                                                                    )
+                                                                                                                    t-19
+                                                                                                                  ]
+                                                                                                                ]
+                                                                                                                (con
+                                                                                                                  (list data)
+                                                                                                                  [  ]
+                                                                                                                )
+                                                                                                              ]
                                                                                                             ]
                                                                                                           ]
-                                                                                                        ]
-                                                                                                      ]
-                                                                                                    ]
-                                                                                                    [
-                                                                                                      [
-                                                                                                        (builtin
-                                                                                                          addInteger
                                                                                                         )
-                                                                                                        [
-                                                                                                          (builtin
-                                                                                                            unIData
-                                                                                                          )
+                                                                                                        (case
                                                                                                           [
-                                                                                                            c-2
                                                                                                             [
-                                                                                                              f-5
-                                                                                                              u-20
+                                                                                                              (builtin
+                                                                                                                equalsInteger
+                                                                                                              )
+                                                                                                              (case
+                                                                                                                (constr
+                                                                                                                  0
+                                                                                                                  v-21
+                                                                                                                  (con
+                                                                                                                    bytestring
+                                                                                                                    #657363726f77
+                                                                                                                  )
+                                                                                                                  [
+                                                                                                                    (builtin
+                                                                                                                      unValueData
+                                                                                                                    )
+                                                                                                                    z-25
+                                                                                                                  ]
+                                                                                                                )
+                                                                                                                (builtin
+                                                                                                                  lookupCoin
+                                                                                                                )
+                                                                                                              )
                                                                                                             ]
+                                                                                                            (con
+                                                                                                              integer
+                                                                                                              1
+                                                                                                            )
                                                                                                           ]
-                                                                                                        ]
-                                                                                                      ]
-                                                                                                      (con
-                                                                                                        integer
-                                                                                                        1800000
-                                                                                                      )
-                                                                                                    ]
-                                                                                                  ]
-                                                                                                  (error
+                                                                                                          (error
 
-                                                                                                  )
-                                                                                                  (con
-                                                                                                    unit
-                                                                                                    ()
-                                                                                                  )
-                                                                                                )
-                                                                                              ]
-                                                                                            )
-                                                                                            (case
-                                                                                              (constr
-                                                                                                0
-                                                                                                [
-                                                                                                  (builtin
-                                                                                                    unListData
-                                                                                                  )
-                                                                                                  [
-                                                                                                    c-2
-                                                                                                    [
-                                                                                                      [
-                                                                                                        a-0
-                                                                                                        (con
-                                                                                                          integer
-                                                                                                          8
+                                                                                                          )
+                                                                                                          (con
+                                                                                                            unit
+                                                                                                            ()
+                                                                                                          )
                                                                                                         )
                                                                                                       ]
-                                                                                                      w-22
-                                                                                                    ]
-                                                                                                  ]
-                                                                                                ]
-                                                                                                (con
-                                                                                                  bytestring
-                                                                                                  #aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-                                                                                                )
-                                                                                                (con
-                                                                                                  string
-                                                                                                  "Buyer must sign refund"
-                                                                                                )
-                                                                                              )
-                                                                                              g-6
-                                                                                            )
-                                                                                          ]
-                                                                                        )
-                                                                                        [
-                                                                                          e-4
-                                                                                          [
-                                                                                            (builtin
-                                                                                              unConstrData
-                                                                                            )
-                                                                                            [
-                                                                                              c-2
-                                                                                              n-13
-                                                                                            ]
-                                                                                          ]
-                                                                                        ]
-                                                                                      ]
-                                                                                    )
-                                                                                    (case
-                                                                                      [
-                                                                                        b-1
-                                                                                        [
-                                                                                          (builtin
-                                                                                            unConstrData
-                                                                                          )
-                                                                                          [
-                                                                                            c-2
-                                                                                            u-20
-                                                                                          ]
-                                                                                        ]
-                                                                                      ]
-                                                                                      (con
-                                                                                        unit
-                                                                                        ()
-                                                                                      )
-                                                                                      (error
-
-                                                                                      )
-                                                                                      (error
-
-                                                                                      )
-                                                                                    )
-                                                                                  ]
-                                                                                )
-                                                                                [
-                                                                                  e-4
-                                                                                  [
-                                                                                    (builtin
-                                                                                      unConstrData
-                                                                                    )
-                                                                                    (case
-                                                                                      [
-                                                                                        b-1
-                                                                                        t-19
-                                                                                      ]
-                                                                                      [
-                                                                                        c-2
-                                                                                        [
-                                                                                          e-4
-                                                                                          t-19
-                                                                                        ]
-                                                                                      ]
-                                                                                      (error
-
-                                                                                      )
-                                                                                    )
-                                                                                  ]
-                                                                                ]
-                                                                              ]
-                                                                            )
-                                                                            [
-                                                                              (lam
-                                                                                al-37
-                                                                                [
-                                                                                  (lam
-                                                                                    am-38
-                                                                                    [
-                                                                                      (lam
-                                                                                        an-39
-                                                                                        [
-                                                                                          (lam
-                                                                                            ao-40
-                                                                                            [
-                                                                                              (lam
-                                                                                                ap-41
-                                                                                                [
-                                                                                                  (lam
-                                                                                                    aq-42
+                                                                                                    )
                                                                                                     (case
                                                                                                       [
-                                                                                                        l-11
                                                                                                         [
                                                                                                           (builtin
-                                                                                                            unListData
+                                                                                                            equalsInteger
                                                                                                           )
                                                                                                           [
+                                                                                                            (builtin
+                                                                                                              unIData
+                                                                                                            )
                                                                                                             [
-                                                                                                              h-7
-                                                                                                              ap-41
+                                                                                                              i-8
+                                                                                                              z-25
                                                                                                             ]
-                                                                                                            ao-40
                                                                                                           ]
                                                                                                         ]
+                                                                                                        (con
+                                                                                                          integer
+                                                                                                          75000000
+                                                                                                        )
                                                                                                       ]
                                                                                                       (error
 
@@ -647,554 +316,120 @@
                                                                                                         ()
                                                                                                       )
                                                                                                     )
-                                                                                                  )
-                                                                                                  (case
-                                                                                                    [
-                                                                                                      [
-                                                                                                        (builtin
-                                                                                                          equalsInteger
-                                                                                                        )
+                                                                                                  ]
+                                                                                                )
+                                                                                                [
+                                                                                                  c-2
+                                                                                                  [
+                                                                                                    f-5
+                                                                                                    y-24
+                                                                                                  ]
+                                                                                                ]
+                                                                                              ]
+                                                                                            )
+                                                                                            (case
+                                                                                              [
+                                                                                                (builtin
+                                                                                                  unListData
+                                                                                                )
+                                                                                                [
+                                                                                                  [
+                                                                                                    (lam
+                                                                                                      ae-30
+                                                                                                      (lam
+                                                                                                        af-31
                                                                                                         [
-                                                                                                          (builtin
-                                                                                                            unIData
-                                                                                                          )
-                                                                                                          (case
-                                                                                                            (constr
-                                                                                                              0
-                                                                                                              ap-41
-                                                                                                              (con
-                                                                                                                data
-                                                                                                                (I 0)
-                                                                                                              )
+                                                                                                          [
+                                                                                                            (lam
+                                                                                                              ag-32
+                                                                                                              [
+                                                                                                                ag-32
+                                                                                                                ag-32
+                                                                                                              ]
+                                                                                                            )
+                                                                                                            (lam
+                                                                                                              ah-33
                                                                                                               (lam
-                                                                                                                ar-43
-                                                                                                                [
+                                                                                                                ai-34
+                                                                                                                (case
+                                                                                                                  ai-34
                                                                                                                   (lam
-                                                                                                                    as-44
+                                                                                                                    aj-35
                                                                                                                     (lam
-                                                                                                                      at-45
+                                                                                                                      ak-36
                                                                                                                       [
                                                                                                                         (builtin
-                                                                                                                          iData
+                                                                                                                          listData
                                                                                                                         )
                                                                                                                         [
                                                                                                                           (lam
-                                                                                                                            au-46
+                                                                                                                            al-37
                                                                                                                             (case
                                                                                                                               [
-                                                                                                                                [
-                                                                                                                                  (builtin
-                                                                                                                                    equalsData
-                                                                                                                                  )
-                                                                                                                                  [
-                                                                                                                                    c-2
-                                                                                                                                    [
-                                                                                                                                      e-4
-                                                                                                                                      [
-                                                                                                                                        (builtin
-                                                                                                                                          unConstrData
-                                                                                                                                        )
-                                                                                                                                        [
-                                                                                                                                          c-2
-                                                                                                                                          au-46
-                                                                                                                                        ]
-                                                                                                                                      ]
-                                                                                                                                    ]
-                                                                                                                                  ]
-                                                                                                                                ]
-                                                                                                                                (con
-                                                                                                                                  data
-                                                                                                                                  (Constr 0
-                                                                                                                                     [ B #bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb ])
-                                                                                                                                )
+                                                                                                                                af-31
+                                                                                                                                aj-35
                                                                                                                               ]
-                                                                                                                              as-44
+                                                                                                                              al-37
                                                                                                                               [
                                                                                                                                 [
-                                                                                                                                  (builtin
-                                                                                                                                    addInteger
-                                                                                                                                  )
-                                                                                                                                  as-44
+                                                                                                                                  d-3
+                                                                                                                                  aj-35
                                                                                                                                 ]
-                                                                                                                                [
-                                                                                                                                  (builtin
-                                                                                                                                    unIData
-                                                                                                                                  )
-                                                                                                                                  [
-                                                                                                                                    k-10
-                                                                                                                                    [
-                                                                                                                                      c-2
-                                                                                                                                      [
-                                                                                                                                        f-5
-                                                                                                                                        au-46
-                                                                                                                                      ]
-                                                                                                                                    ]
-                                                                                                                                  ]
-                                                                                                                                ]
+                                                                                                                                al-37
                                                                                                                               ]
                                                                                                                             )
                                                                                                                           )
                                                                                                                           [
-                                                                                                                            e-4
+                                                                                                                            (builtin
+                                                                                                                              unListData
+                                                                                                                            )
                                                                                                                             [
-                                                                                                                              (builtin
-                                                                                                                                unConstrData
-                                                                                                                              )
-                                                                                                                              at-45
+                                                                                                                              [
+                                                                                                                                ah-33
+                                                                                                                                ah-33
+                                                                                                                              ]
+                                                                                                                              ak-36
                                                                                                                             ]
                                                                                                                           ]
                                                                                                                         ]
                                                                                                                       ]
                                                                                                                     )
                                                                                                                   )
-                                                                                                                  [
-                                                                                                                    (builtin
-                                                                                                                      unIData
-                                                                                                                    )
-                                                                                                                    ar-43
-                                                                                                                  ]
-                                                                                                                ]
+                                                                                                                  (con
+                                                                                                                    data
+                                                                                                                    (List
+                                                                                                                       [  ])
+                                                                                                                  )
+                                                                                                                )
                                                                                                               )
                                                                                                             )
-                                                                                                            j-9
-                                                                                                          )
+                                                                                                          ]
+                                                                                                          ae-30
                                                                                                         ]
-                                                                                                      ]
-                                                                                                      (con
-                                                                                                        integer
-                                                                                                        75000000
                                                                                                       )
-                                                                                                    ]
-                                                                                                    (error
-
                                                                                                     )
-                                                                                                    (con
-                                                                                                      unit
-                                                                                                      ()
-                                                                                                    )
-                                                                                                  )
-                                                                                                ]
-                                                                                              )
-                                                                                              [
-                                                                                                (builtin
-                                                                                                  unListData
-                                                                                                )
-                                                                                                [
-                                                                                                  c-2
-                                                                                                  [
-                                                                                                    o-14
-                                                                                                    am-38
-                                                                                                  ]
-                                                                                                ]
-                                                                                              ]
-                                                                                            ]
-                                                                                          )
-                                                                                          [
-                                                                                            c-2
-                                                                                            [
-                                                                                              e-4
-                                                                                              [
-                                                                                                (builtin
-                                                                                                  unConstrData
-                                                                                                )
-                                                                                                [
-                                                                                                  c-2
-                                                                                                  [
-                                                                                                    e-4
                                                                                                     [
                                                                                                       (builtin
-                                                                                                        unConstrData
+                                                                                                        unListData
                                                                                                       )
                                                                                                       [
                                                                                                         c-2
                                                                                                         [
-                                                                                                          f-5
-                                                                                                          [
-                                                                                                            [
-                                                                                                              i-8
-                                                                                                              [
-                                                                                                                (builtin
-                                                                                                                  unListData
-                                                                                                                )
-                                                                                                                [
-                                                                                                                  c-2
-                                                                                                                  am-38
-                                                                                                                ]
-                                                                                                              ]
-                                                                                                            ]
-                                                                                                            s-18
-                                                                                                          ]
+                                                                                                          n-13
+                                                                                                          r-17
                                                                                                         ]
                                                                                                       ]
                                                                                                     ]
                                                                                                   ]
-                                                                                                ]
-                                                                                              ]
-                                                                                            ]
-                                                                                          ]
-                                                                                        ]
-                                                                                      )
-                                                                                      (case
-                                                                                        (constr
-                                                                                          0
-                                                                                          [
-                                                                                            (builtin
-                                                                                              unListData
-                                                                                            )
-                                                                                            [
-                                                                                              c-2
-                                                                                              [
-                                                                                                [
-                                                                                                  a-0
-                                                                                                  (con
-                                                                                                    integer
-                                                                                                    8
-                                                                                                  )
-                                                                                                ]
-                                                                                                am-38
-                                                                                              ]
-                                                                                            ]
-                                                                                          ]
-                                                                                          (con
-                                                                                            bytestring
-                                                                                            #bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
-                                                                                          )
-                                                                                          (con
-                                                                                            string
-                                                                                            "Seller must sign accept"
-                                                                                          )
-                                                                                        )
-                                                                                        g-6
-                                                                                      )
-                                                                                    ]
-                                                                                  )
-                                                                                  [
-                                                                                    e-4
-                                                                                    [
-                                                                                      (builtin
-                                                                                        unConstrData
-                                                                                      )
-                                                                                      [
-                                                                                        c-2
-                                                                                        n-13
-                                                                                      ]
-                                                                                    ]
-                                                                                  ]
-                                                                                ]
-                                                                              )
-                                                                              (case
-                                                                                [
-                                                                                  b-1
-                                                                                  [
-                                                                                    (builtin
-                                                                                      unConstrData
-                                                                                    )
-                                                                                    [
-                                                                                      c-2
-                                                                                      [
-                                                                                        e-4
-                                                                                        [
-                                                                                          (builtin
-                                                                                            unConstrData
-                                                                                          )
-                                                                                          (case
-                                                                                            [
-                                                                                              b-1
-                                                                                              t-19
-                                                                                            ]
-                                                                                            [
-                                                                                              c-2
-                                                                                              [
-                                                                                                e-4
-                                                                                                t-19
-                                                                                              ]
-                                                                                            ]
-                                                                                            (error
-
-                                                                                            )
-                                                                                          )
-                                                                                        ]
-                                                                                      ]
-                                                                                    ]
-                                                                                  ]
-                                                                                ]
-                                                                                (con
-                                                                                  unit
-                                                                                  ()
-                                                                                )
-                                                                                (error
-
-                                                                                )
-                                                                                (error
-
-                                                                                )
-                                                                              )
-                                                                            ]
-                                                                          )
-                                                                        )
-                                                                        [
-                                                                          (builtin
-                                                                            unConstrData
-                                                                          )
-                                                                          [
-                                                                            c-2
-                                                                            [
-                                                                              f-5
-                                                                              r-17
-                                                                            ]
-                                                                          ]
-                                                                        ]
-                                                                      ]
-                                                                    )
-                                                                    [
-                                                                      e-4
-                                                                      [
-                                                                        (builtin
-                                                                          unConstrData
-                                                                        )
-                                                                        [
-                                                                          c-2
-                                                                          r-17
-                                                                        ]
-                                                                      ]
-                                                                    ]
-                                                                  ]
-                                                                )
-                                                                [ e-4 p-15 ]
-                                                              ]
-                                                              [
-                                                                (lam
-                                                                  av-47
-                                                                  [
-                                                                    (lam
-                                                                      aw-48
-                                                                      (case
-                                                                        [
-                                                                          (lam
-                                                                            ax-49
-                                                                            [
-                                                                              [
-                                                                                (builtin
-                                                                                  equalsData
-                                                                                )
-                                                                                [
-                                                                                  ax-49
-                                                                                  (case
-                                                                                    [
-                                                                                      (builtin
-                                                                                        unListData
-                                                                                      )
-                                                                                      [
-                                                                                        [
-                                                                                          h-7
-                                                                                          [
-                                                                                            (builtin
-                                                                                              unListData
-                                                                                            )
-                                                                                            [
-                                                                                              c-2
-                                                                                              [
-                                                                                                o-14
-                                                                                                av-47
-                                                                                              ]
-                                                                                            ]
-                                                                                          ]
-                                                                                        ]
-                                                                                        (con
-                                                                                          data
-                                                                                          (Constr 1
-                                                                                             [ B #31313131313131313131313131313131313131313131313131313131313131313131313131313131313131313131313131313131313131313131 ])
-                                                                                        )
-                                                                                      ]
-                                                                                    ]
-                                                                                    (lam
-                                                                                      ay-50
-                                                                                      (lam
-                                                                                        az-51
-                                                                                        (case
-                                                                                          az-51
-                                                                                          (lam
-                                                                                            ba-52
-                                                                                            (lam
-                                                                                              bb-53
-                                                                                              (error
-
-                                                                                              )
-                                                                                            )
-                                                                                          )
-                                                                                          [
-                                                                                            e-4
-                                                                                            [
-                                                                                              (builtin
-                                                                                                unConstrData
-                                                                                              )
-                                                                                              ay-50
-                                                                                            ]
-                                                                                          ]
-                                                                                        )
-                                                                                      )
-                                                                                    )
-                                                                                    (error
-
-                                                                                    )
-                                                                                  )
-                                                                                ]
-                                                                              ]
-                                                                              [
-                                                                                ax-49
-                                                                                [
-                                                                                  [
-                                                                                    d-3
-                                                                                    (con
-                                                                                      data
-                                                                                      (Constr 0
-                                                                                         [ Constr 1
-                                                                                             [ B #31313131313131313131313131313131313131313131313131313131313131313131313131313131313131313131313131313131313131313131 ]
-                                                                                         , Constr 1
-                                                                                             [  ] ])
-                                                                                    )
-                                                                                  ]
-                                                                                  [
-                                                                                    [
-                                                                                      d-3
-                                                                                      (con
-                                                                                        data
-                                                                                        (Map
-                                                                                           [ ( B #
-                                                                                           , Map
-                                                                                               [ ( B #
-                                                                                               , I 75000000 ) ] ) ])
-                                                                                      )
-                                                                                    ]
-                                                                                    [
-                                                                                      [
-                                                                                        d-3
-                                                                                        [
-                                                                                          [
-                                                                                            (builtin
-                                                                                              constrData
-                                                                                            )
-                                                                                            (con
-                                                                                              integer
-                                                                                              2
-                                                                                            )
-                                                                                          ]
-                                                                                          [
-                                                                                            [
-                                                                                              d-3
-                                                                                              [
-                                                                                                ax-49
-                                                                                                [
-                                                                                                  [
-                                                                                                    d-3
-                                                                                                    (con
-                                                                                                      data
-                                                                                                      (Constr 0
-                                                                                                         [  ])
-                                                                                                    )
-                                                                                                  ]
-                                                                                                  [
+                                                                                                  (lam
+                                                                                                    am-38
                                                                                                     [
-                                                                                                      d-3
                                                                                                       [
                                                                                                         (builtin
-                                                                                                          iData
+                                                                                                          equalsData
                                                                                                         )
                                                                                                         [
-                                                                                                          (lam
-                                                                                                            bc-54
-                                                                                                            [
-                                                                                                              (lam
-                                                                                                                bd-55
-                                                                                                                (case
-                                                                                                                  [
-                                                                                                                    b-1
-                                                                                                                    bd-55
-                                                                                                                  ]
-                                                                                                                  (error
-
-                                                                                                                  )
-                                                                                                                  [
-                                                                                                                    (lam
-                                                                                                                      be-56
-                                                                                                                      (case
-                                                                                                                        (case
-                                                                                                                          [
-                                                                                                                            b-1
-                                                                                                                            [
-                                                                                                                              (builtin
-                                                                                                                                unConstrData
-                                                                                                                              )
-                                                                                                                              [
-                                                                                                                                c-2
-                                                                                                                                [
-                                                                                                                                  f-5
-                                                                                                                                  bc-54
-                                                                                                                                ]
-                                                                                                                              ]
-                                                                                                                            ]
-                                                                                                                          ]
-                                                                                                                          (con
-                                                                                                                            bool
-                                                                                                                            False
-                                                                                                                          )
-                                                                                                                          (con
-                                                                                                                            bool
-                                                                                                                            True
-                                                                                                                          )
-                                                                                                                        )
-                                                                                                                        [
-                                                                                                                          [
-                                                                                                                            (builtin
-                                                                                                                              subtractInteger
-                                                                                                                            )
-                                                                                                                            [
-                                                                                                                              (builtin
-                                                                                                                                unIData
-                                                                                                                              )
-                                                                                                                              [
-                                                                                                                                c-2
-                                                                                                                                be-56
-                                                                                                                              ]
-                                                                                                                            ]
-                                                                                                                          ]
-                                                                                                                          (con
-                                                                                                                            integer
-                                                                                                                            1
-                                                                                                                          )
-                                                                                                                        ]
-                                                                                                                        [
-                                                                                                                          (builtin
-                                                                                                                            unIData
-                                                                                                                          )
-                                                                                                                          [
-                                                                                                                            c-2
-                                                                                                                            be-56
-                                                                                                                          ]
-                                                                                                                        ]
-                                                                                                                      )
-                                                                                                                    )
-                                                                                                                    [
-                                                                                                                      e-4
-                                                                                                                      bd-55
-                                                                                                                    ]
-                                                                                                                  ]
-                                                                                                                  (error
-
-                                                                                                                  )
-                                                                                                                )
-                                                                                                              )
-                                                                                                              [
-                                                                                                                (builtin
-                                                                                                                  unConstrData
-                                                                                                                )
-                                                                                                                [
-                                                                                                                  c-2
-                                                                                                                  bc-54
-                                                                                                                ]
-                                                                                                              ]
-                                                                                                            ]
-                                                                                                          )
+                                                                                                          c-2
                                                                                                           [
                                                                                                             e-4
                                                                                                             [
@@ -1204,27 +439,12 @@
                                                                                                               [
                                                                                                                 c-2
                                                                                                                 [
-                                                                                                                  f-5
+                                                                                                                  e-4
                                                                                                                   [
-                                                                                                                    e-4
-                                                                                                                    [
-                                                                                                                      (builtin
-                                                                                                                        unConstrData
-                                                                                                                      )
-                                                                                                                      [
-                                                                                                                        c-2
-                                                                                                                        [
-                                                                                                                          [
-                                                                                                                            a-0
-                                                                                                                            (con
-                                                                                                                              integer
-                                                                                                                              7
-                                                                                                                            )
-                                                                                                                          ]
-                                                                                                                          av-47
-                                                                                                                        ]
-                                                                                                                      ]
-                                                                                                                    ]
+                                                                                                                    (builtin
+                                                                                                                      unConstrData
+                                                                                                                    )
+                                                                                                                    am-38
                                                                                                                   ]
                                                                                                                 ]
                                                                                                               ]
@@ -1232,14 +452,58 @@
                                                                                                           ]
                                                                                                         ]
                                                                                                       ]
+                                                                                                      x-23
                                                                                                     ]
-                                                                                                    (con
-                                                                                                      (list data)
-                                                                                                      [  ]
-                                                                                                    )
-                                                                                                  ]
+                                                                                                  )
                                                                                                 ]
                                                                                               ]
+                                                                                              (lam
+                                                                                                an-39
+                                                                                                (lam
+                                                                                                  ao-40
+                                                                                                  (case
+                                                                                                    ao-40
+                                                                                                    (lam
+                                                                                                      ap-41
+                                                                                                      (lam
+                                                                                                        aq-42
+                                                                                                        (error
+
+                                                                                                        )
+                                                                                                      )
+                                                                                                    )
+                                                                                                    [
+                                                                                                      e-4
+                                                                                                      [
+                                                                                                        (builtin
+                                                                                                          unConstrData
+                                                                                                        )
+                                                                                                        an-39
+                                                                                                      ]
+                                                                                                    ]
+                                                                                                  )
+                                                                                                )
+                                                                                              )
+                                                                                              (error
+
+                                                                                              )
+                                                                                            )
+                                                                                          ]
+                                                                                        )
+                                                                                        [
+                                                                                          [
+                                                                                            (builtin
+                                                                                              constrData
+                                                                                            )
+                                                                                            (con
+                                                                                              integer
+                                                                                              1
+                                                                                            )
+                                                                                          ]
+                                                                                          [
+                                                                                            [
+                                                                                              d-3
+                                                                                              u-20
                                                                                             ]
                                                                                             (con
                                                                                               (list data)
@@ -1248,33 +512,140 @@
                                                                                           ]
                                                                                         ]
                                                                                       ]
-                                                                                      (con
-                                                                                        (list data)
-                                                                                        [ Constr 1
-                                                                                            [  ] ]
+                                                                                    )
+                                                                                    (case
+                                                                                      (case
+                                                                                        (constr
+                                                                                          0
+                                                                                          [
+                                                                                            c-2
+                                                                                            [
+                                                                                              [
+                                                                                                a-0
+                                                                                                (con
+                                                                                                  integer
+                                                                                                  4
+                                                                                                )
+                                                                                              ]
+                                                                                              r-17
+                                                                                            ]
+                                                                                          ]
+                                                                                          v-21
+                                                                                          (con
+                                                                                            integer
+                                                                                            1
+                                                                                          )
+                                                                                        )
+                                                                                        h-7
                                                                                       )
+                                                                                      (error
+
+                                                                                      )
+                                                                                      (con
+                                                                                        unit
+                                                                                        ()
+                                                                                      )
+                                                                                    )
+                                                                                  ]
+                                                                                )
+                                                                                [
+                                                                                  (builtin
+                                                                                    unBData
+                                                                                  )
+                                                                                  u-20
+                                                                                ]
+                                                                              ]
+                                                                            )
+                                                                            [
+                                                                              c-2
+                                                                              p-15
+                                                                            ]
+                                                                          ]
+                                                                        )
+                                                                        [
+                                                                          (lam
+                                                                            ar-43
+                                                                            (case
+                                                                              [
+                                                                                b-1
+                                                                                ar-43
+                                                                              ]
+                                                                              (error
+
+                                                                              )
+                                                                              [
+                                                                                [
+                                                                                  (builtin
+                                                                                    subtractInteger
+                                                                                  )
+                                                                                  [
+                                                                                    (builtin
+                                                                                      unIData
+                                                                                    )
+                                                                                    [
+                                                                                      c-2
+                                                                                      [
+                                                                                        e-4
+                                                                                        ar-43
+                                                                                      ]
+                                                                                    ]
+                                                                                  ]
+                                                                                ]
+                                                                                (con
+                                                                                  integer
+                                                                                  1
+                                                                                )
+                                                                              ]
+                                                                              (error
+
+                                                                              )
+                                                                            )
+                                                                          )
+                                                                          [
+                                                                            (builtin
+                                                                              unConstrData
+                                                                            )
+                                                                            [
+                                                                              c-2
+                                                                              [
+                                                                                e-4
+                                                                                [
+                                                                                  (builtin
+                                                                                    unConstrData
+                                                                                  )
+                                                                                  [
+                                                                                    c-2
+                                                                                    [
+                                                                                      f-5
+                                                                                      [
+                                                                                        e-4
+                                                                                        [
+                                                                                          (builtin
+                                                                                            unConstrData
+                                                                                          )
+                                                                                          [
+                                                                                            c-2
+                                                                                            [
+                                                                                              [
+                                                                                                a-0
+                                                                                                (con
+                                                                                                  integer
+                                                                                                  7
+                                                                                                )
+                                                                                              ]
+                                                                                              r-17
+                                                                                            ]
+                                                                                          ]
+                                                                                        ]
+                                                                                      ]
                                                                                     ]
                                                                                   ]
                                                                                 ]
                                                                               ]
                                                                             ]
-                                                                          )
-                                                                          [
-                                                                            (builtin
-                                                                              constrData
-                                                                            )
-                                                                            (con
-                                                                              integer
-                                                                              0
-                                                                            )
                                                                           ]
                                                                         ]
-                                                                        (error)
-                                                                        (con
-                                                                          unit
-                                                                          ()
-                                                                        )
-                                                                      )
+                                                                      ]
                                                                     )
                                                                     (case
                                                                       (constr
@@ -1293,17 +664,17 @@
                                                                                   8
                                                                                 )
                                                                               ]
-                                                                              av-47
+                                                                              r-17
                                                                             ]
                                                                           ]
                                                                         ]
                                                                         (con
                                                                           bytestring
-                                                                          #aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+                                                                          #aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
                                                                         )
                                                                         (con
                                                                           string
-                                                                          "Buyer must sign deposit"
+                                                                          "D1: buyer signature"
                                                                         )
                                                                       )
                                                                       g-6
@@ -1316,7 +687,7 @@
                                                                     (builtin
                                                                       unConstrData
                                                                     )
-                                                                    [ c-2 n-13 ]
+                                                                    [ c-2 m-12 ]
                                                                   ]
                                                                 ]
                                                               ]
@@ -1329,7 +700,800 @@
                                                             [
                                                               (builtin unIData)
                                                               [
-                                                                c-2 [ f-5 n-13 ]
+                                                                c-2 [ f-5 m-12 ]
+                                                              ]
+                                                            ]
+                                                          ]
+                                                        ]
+                                                        [
+                                                          (lam
+                                                            as-44
+                                                            [
+                                                              (lam
+                                                                at-45
+                                                                [
+                                                                  (lam
+                                                                    au-46
+                                                                    [
+                                                                      (lam
+                                                                        av-47
+                                                                        [
+                                                                          (lam
+                                                                            aw-48
+                                                                            [
+                                                                              (lam
+                                                                                ax-49
+                                                                                [
+                                                                                  (lam
+                                                                                    ay-50
+                                                                                    [
+                                                                                      (lam
+                                                                                        az-51
+                                                                                        [
+                                                                                          (lam
+                                                                                            ba-52
+                                                                                            (case
+                                                                                              at-45
+                                                                                              [
+                                                                                                (lam
+                                                                                                  bb-53
+                                                                                                  [
+                                                                                                    (lam
+                                                                                                      bc-54
+                                                                                                      [
+                                                                                                        (lam
+                                                                                                          bd-55
+                                                                                                          (case
+                                                                                                            [
+                                                                                                              [
+                                                                                                                (builtin
+                                                                                                                  lessThanEqualsInteger
+                                                                                                                )
+                                                                                                                (con
+                                                                                                                  integer
+                                                                                                                  75000000
+                                                                                                                )
+                                                                                                              ]
+                                                                                                              [
+                                                                                                                (builtin
+                                                                                                                  unIData
+                                                                                                                )
+                                                                                                                [
+                                                                                                                  [
+                                                                                                                    k-10
+                                                                                                                    [
+                                                                                                                      (builtin
+                                                                                                                        unListData
+                                                                                                                      )
+                                                                                                                      [
+                                                                                                                        c-2
+                                                                                                                        [
+                                                                                                                          n-13
+                                                                                                                          av-47
+                                                                                                                        ]
+                                                                                                                      ]
+                                                                                                                    ]
+                                                                                                                  ]
+                                                                                                                  bb-53
+                                                                                                                ]
+                                                                                                              ]
+                                                                                                            ]
+                                                                                                            (error
+
+                                                                                                            )
+                                                                                                            (con
+                                                                                                              unit
+                                                                                                              ()
+                                                                                                            )
+                                                                                                          )
+                                                                                                        )
+                                                                                                        (case
+                                                                                                          [
+                                                                                                            [
+                                                                                                              (builtin
+                                                                                                                lessThanInteger
+                                                                                                              )
+                                                                                                              [
+                                                                                                                [
+                                                                                                                  (builtin
+                                                                                                                    addInteger
+                                                                                                                  )
+                                                                                                                  [
+                                                                                                                    (builtin
+                                                                                                                      unIData
+                                                                                                                    )
+                                                                                                                    [
+                                                                                                                      c-2
+                                                                                                                      [
+                                                                                                                        e-4
+                                                                                                                        [
+                                                                                                                          (builtin
+                                                                                                                            unConstrData
+                                                                                                                          )
+                                                                                                                          [
+                                                                                                                            (lam
+                                                                                                                              be-56
+                                                                                                                              (case
+                                                                                                                                [
+                                                                                                                                  b-1
+                                                                                                                                  be-56
+                                                                                                                                ]
+                                                                                                                                [
+                                                                                                                                  c-2
+                                                                                                                                  [
+                                                                                                                                    e-4
+                                                                                                                                    be-56
+                                                                                                                                  ]
+                                                                                                                                ]
+                                                                                                                                (error
+
+                                                                                                                                )
+                                                                                                                              )
+                                                                                                                            )
+                                                                                                                            [
+                                                                                                                              (builtin
+                                                                                                                                unConstrData
+                                                                                                                              )
+                                                                                                                              [
+                                                                                                                                c-2
+                                                                                                                                [
+                                                                                                                                  f-5
+                                                                                                                                  p-15
+                                                                                                                                ]
+                                                                                                                              ]
+                                                                                                                            ]
+                                                                                                                          ]
+                                                                                                                        ]
+                                                                                                                      ]
+                                                                                                                    ]
+                                                                                                                  ]
+                                                                                                                ]
+                                                                                                                (con
+                                                                                                                  integer
+                                                                                                                  1800000
+                                                                                                                )
+                                                                                                              ]
+                                                                                                            ]
+                                                                                                            [
+                                                                                                              (lam
+                                                                                                                bf-57
+                                                                                                                (case
+                                                                                                                  [
+                                                                                                                    b-1
+                                                                                                                    bf-57
+                                                                                                                  ]
+                                                                                                                  (error
+
+                                                                                                                  )
+                                                                                                                  [
+                                                                                                                    (builtin
+                                                                                                                      unIData
+                                                                                                                    )
+                                                                                                                    [
+                                                                                                                      c-2
+                                                                                                                      [
+                                                                                                                        e-4
+                                                                                                                        bf-57
+                                                                                                                      ]
+                                                                                                                    ]
+                                                                                                                  ]
+                                                                                                                  (error
+
+                                                                                                                  )
+                                                                                                                )
+                                                                                                              )
+                                                                                                              [
+                                                                                                                (builtin
+                                                                                                                  unConstrData
+                                                                                                                )
+                                                                                                                [
+                                                                                                                  c-2
+                                                                                                                  [
+                                                                                                                    e-4
+                                                                                                                    [
+                                                                                                                      (builtin
+                                                                                                                        unConstrData
+                                                                                                                      )
+                                                                                                                      [
+                                                                                                                        c-2
+                                                                                                                        [
+                                                                                                                          e-4
+                                                                                                                          [
+                                                                                                                            (builtin
+                                                                                                                              unConstrData
+                                                                                                                            )
+                                                                                                                            [
+                                                                                                                              c-2
+                                                                                                                              [
+                                                                                                                                [
+                                                                                                                                  a-0
+                                                                                                                                  (con
+                                                                                                                                    integer
+                                                                                                                                    7
+                                                                                                                                  )
+                                                                                                                                ]
+                                                                                                                                av-47
+                                                                                                                              ]
+                                                                                                                            ]
+                                                                                                                          ]
+                                                                                                                        ]
+                                                                                                                      ]
+                                                                                                                    ]
+                                                                                                                  ]
+                                                                                                                ]
+                                                                                                              ]
+                                                                                                            ]
+                                                                                                          ]
+                                                                                                          (error
+
+                                                                                                          )
+                                                                                                          (con
+                                                                                                            unit
+                                                                                                            ()
+                                                                                                          )
+                                                                                                        )
+                                                                                                      ]
+                                                                                                    )
+                                                                                                    (case
+                                                                                                      (constr
+                                                                                                        0
+                                                                                                        [
+                                                                                                          (builtin
+                                                                                                            unListData
+                                                                                                          )
+                                                                                                          [
+                                                                                                            c-2
+                                                                                                            [
+                                                                                                              [
+                                                                                                                a-0
+                                                                                                                (con
+                                                                                                                  integer
+                                                                                                                  8
+                                                                                                                )
+                                                                                                              ]
+                                                                                                              av-47
+                                                                                                            ]
+                                                                                                          ]
+                                                                                                        ]
+                                                                                                        bb-53
+                                                                                                        (con
+                                                                                                          string
+                                                                                                          "R1: buyer signature"
+                                                                                                        )
+                                                                                                      )
+                                                                                                      g-6
+                                                                                                    )
+                                                                                                  ]
+                                                                                                )
+                                                                                                (con
+                                                                                                  bytestring
+                                                                                                  #aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+                                                                                                )
+                                                                                              ]
+                                                                                              [
+                                                                                                (lam
+                                                                                                  bg-58
+                                                                                                  [
+                                                                                                    (lam
+                                                                                                      bh-59
+                                                                                                      (case
+                                                                                                        [
+                                                                                                          [
+                                                                                                            (builtin
+                                                                                                              lessThanEqualsInteger
+                                                                                                            )
+                                                                                                            (con
+                                                                                                              integer
+                                                                                                              75000000
+                                                                                                            )
+                                                                                                          ]
+                                                                                                          [
+                                                                                                            (builtin
+                                                                                                              unIData
+                                                                                                            )
+                                                                                                            [
+                                                                                                              [
+                                                                                                                k-10
+                                                                                                                [
+                                                                                                                  (builtin
+                                                                                                                    unListData
+                                                                                                                  )
+                                                                                                                  [
+                                                                                                                    c-2
+                                                                                                                    [
+                                                                                                                      n-13
+                                                                                                                      av-47
+                                                                                                                    ]
+                                                                                                                  ]
+                                                                                                                ]
+                                                                                                              ]
+                                                                                                              bg-58
+                                                                                                            ]
+                                                                                                          ]
+                                                                                                        ]
+                                                                                                        (error
+
+                                                                                                        )
+                                                                                                        (con
+                                                                                                          unit
+                                                                                                          ()
+                                                                                                        )
+                                                                                                      )
+                                                                                                    )
+                                                                                                    (case
+                                                                                                      (constr
+                                                                                                        0
+                                                                                                        [
+                                                                                                          (builtin
+                                                                                                            unListData
+                                                                                                          )
+                                                                                                          [
+                                                                                                            c-2
+                                                                                                            [
+                                                                                                              [
+                                                                                                                a-0
+                                                                                                                (con
+                                                                                                                  integer
+                                                                                                                  8
+                                                                                                                )
+                                                                                                              ]
+                                                                                                              av-47
+                                                                                                            ]
+                                                                                                          ]
+                                                                                                        ]
+                                                                                                        bg-58
+                                                                                                        (con
+                                                                                                          string
+                                                                                                          "A1: seller signature"
+                                                                                                        )
+                                                                                                      )
+                                                                                                      g-6
+                                                                                                    )
+                                                                                                  ]
+                                                                                                )
+                                                                                                (con
+                                                                                                  bytestring
+                                                                                                  #bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
+                                                                                                )
+                                                                                              ]
+                                                                                            )
+                                                                                          )
+                                                                                          (case
+                                                                                            [
+                                                                                              [
+                                                                                                (builtin
+                                                                                                  equalsInteger
+                                                                                                )
+                                                                                                (case
+                                                                                                  (constr
+                                                                                                    0
+                                                                                                    ax-49
+                                                                                                    (con
+                                                                                                      bytestring
+                                                                                                      #657363726f77
+                                                                                                    )
+                                                                                                    [
+                                                                                                      (builtin
+                                                                                                        unValueData
+                                                                                                      )
+                                                                                                      [
+                                                                                                        c-2
+                                                                                                        [
+                                                                                                          [
+                                                                                                            a-0
+                                                                                                            (con
+                                                                                                              integer
+                                                                                                              4
+                                                                                                            )
+                                                                                                          ]
+                                                                                                          av-47
+                                                                                                        ]
+                                                                                                      ]
+                                                                                                    ]
+                                                                                                  )
+                                                                                                  (builtin
+                                                                                                    lookupCoin
+                                                                                                  )
+                                                                                                )
+                                                                                              ]
+                                                                                              (con
+                                                                                                integer
+                                                                                                -1
+                                                                                              )
+                                                                                            ]
+                                                                                            (error
+
+                                                                                            )
+                                                                                            (con
+                                                                                              unit
+                                                                                              ()
+                                                                                            )
+                                                                                          )
+                                                                                        ]
+                                                                                      )
+                                                                                      (case
+                                                                                        [
+                                                                                          [
+                                                                                            (builtin
+                                                                                              equalsInteger
+                                                                                            )
+                                                                                            [
+                                                                                              (builtin
+                                                                                                unIData
+                                                                                              )
+                                                                                              (case
+                                                                                                (constr
+                                                                                                  0
+                                                                                                  aw-48
+                                                                                                  (con
+                                                                                                    data
+                                                                                                    (I 0)
+                                                                                                  )
+                                                                                                  (lam
+                                                                                                    bi-60
+                                                                                                    [
+                                                                                                      (lam
+                                                                                                        bj-61
+                                                                                                        (lam
+                                                                                                          bk-62
+                                                                                                          [
+                                                                                                            (builtin
+                                                                                                              iData
+                                                                                                            )
+                                                                                                            (case
+                                                                                                              [
+                                                                                                                [
+                                                                                                                  (builtin
+                                                                                                                    equalsData
+                                                                                                                  )
+                                                                                                                  [
+                                                                                                                    c-2
+                                                                                                                    [
+                                                                                                                      e-4
+                                                                                                                      [
+                                                                                                                        (builtin
+                                                                                                                          unConstrData
+                                                                                                                        )
+                                                                                                                        [
+                                                                                                                          c-2
+                                                                                                                          [
+                                                                                                                            e-4
+                                                                                                                            [
+                                                                                                                              (builtin
+                                                                                                                                unConstrData
+                                                                                                                              )
+                                                                                                                              [
+                                                                                                                                c-2
+                                                                                                                                [
+                                                                                                                                  f-5
+                                                                                                                                  [
+                                                                                                                                    e-4
+                                                                                                                                    [
+                                                                                                                                      (builtin
+                                                                                                                                        unConstrData
+                                                                                                                                      )
+                                                                                                                                      bk-62
+                                                                                                                                    ]
+                                                                                                                                  ]
+                                                                                                                                ]
+                                                                                                                              ]
+                                                                                                                            ]
+                                                                                                                          ]
+                                                                                                                        ]
+                                                                                                                      ]
+                                                                                                                    ]
+                                                                                                                  ]
+                                                                                                                ]
+                                                                                                                ay-50
+                                                                                                              ]
+                                                                                                              bj-61
+                                                                                                              [
+                                                                                                                [
+                                                                                                                  (builtin
+                                                                                                                    addInteger
+                                                                                                                  )
+                                                                                                                  bj-61
+                                                                                                                ]
+                                                                                                                (con
+                                                                                                                  integer
+                                                                                                                  1
+                                                                                                                )
+                                                                                                              ]
+                                                                                                            )
+                                                                                                          ]
+                                                                                                        )
+                                                                                                      )
+                                                                                                      [
+                                                                                                        (builtin
+                                                                                                          unIData
+                                                                                                        )
+                                                                                                        bi-60
+                                                                                                      ]
+                                                                                                    ]
+                                                                                                  )
+                                                                                                )
+                                                                                                j-9
+                                                                                              )
+                                                                                            ]
+                                                                                          ]
+                                                                                          (con
+                                                                                            integer
+                                                                                            1
+                                                                                          )
+                                                                                        ]
+                                                                                        (error
+
+                                                                                        )
+                                                                                        (con
+                                                                                          unit
+                                                                                          ()
+                                                                                        )
+                                                                                      )
+                                                                                    ]
+                                                                                  )
+                                                                                  [
+                                                                                    [
+                                                                                      (builtin
+                                                                                        constrData
+                                                                                      )
+                                                                                      (con
+                                                                                        integer
+                                                                                        1
+                                                                                      )
+                                                                                    ]
+                                                                                    [
+                                                                                      [
+                                                                                        d-3
+                                                                                        [
+                                                                                          (builtin
+                                                                                            bData
+                                                                                          )
+                                                                                          ax-49
+                                                                                        ]
+                                                                                      ]
+                                                                                      (con
+                                                                                        (list data)
+                                                                                        [  ]
+                                                                                      )
+                                                                                    ]
+                                                                                  ]
+                                                                                ]
+                                                                              )
+                                                                              [
+                                                                                (lam
+                                                                                  bl-63
+                                                                                  (case
+                                                                                    [
+                                                                                      b-1
+                                                                                      bl-63
+                                                                                    ]
+                                                                                    (error
+
+                                                                                    )
+                                                                                    [
+                                                                                      (builtin
+                                                                                        unBData
+                                                                                      )
+                                                                                      [
+                                                                                        c-2
+                                                                                        [
+                                                                                          e-4
+                                                                                          bl-63
+                                                                                        ]
+                                                                                      ]
+                                                                                    ]
+                                                                                  )
+                                                                                )
+                                                                                [
+                                                                                  (builtin
+                                                                                    unConstrData
+                                                                                  )
+                                                                                  [
+                                                                                    c-2
+                                                                                    [
+                                                                                      e-4
+                                                                                      [
+                                                                                        (builtin
+                                                                                          unConstrData
+                                                                                        )
+                                                                                        [
+                                                                                          c-2
+                                                                                          [
+                                                                                            e-4
+                                                                                            [
+                                                                                              (builtin
+                                                                                                unConstrData
+                                                                                              )
+                                                                                              [
+                                                                                                c-2
+                                                                                                [
+                                                                                                  f-5
+                                                                                                  [
+                                                                                                    (lam
+                                                                                                      bm-64
+                                                                                                      [
+                                                                                                        [
+                                                                                                          (lam
+                                                                                                            bn-65
+                                                                                                            [
+                                                                                                              bn-65
+                                                                                                              bn-65
+                                                                                                            ]
+                                                                                                          )
+                                                                                                          (lam
+                                                                                                            bo-66
+                                                                                                            [
+                                                                                                              (lam
+                                                                                                                bp-67
+                                                                                                                (lam
+                                                                                                                  bq-68
+                                                                                                                  (case
+                                                                                                                    bq-68
+                                                                                                                    (lam
+                                                                                                                      br-69
+                                                                                                                      (lam
+                                                                                                                        bs-70
+                                                                                                                        [
+                                                                                                                          e-4
+                                                                                                                          [
+                                                                                                                            (builtin
+                                                                                                                              unConstrData
+                                                                                                                            )
+                                                                                                                            (case
+                                                                                                                              [
+                                                                                                                                [
+                                                                                                                                  (builtin
+                                                                                                                                    equalsData
+                                                                                                                                  )
+                                                                                                                                  [
+                                                                                                                                    c-2
+                                                                                                                                    [
+                                                                                                                                      e-4
+                                                                                                                                      [
+                                                                                                                                        (builtin
+                                                                                                                                          unConstrData
+                                                                                                                                        )
+                                                                                                                                        br-69
+                                                                                                                                      ]
+                                                                                                                                    ]
+                                                                                                                                  ]
+                                                                                                                                ]
+                                                                                                                                bp-67
+                                                                                                                              ]
+                                                                                                                              [
+                                                                                                                                [
+                                                                                                                                  (builtin
+                                                                                                                                    constrData
+                                                                                                                                  )
+                                                                                                                                  (con
+                                                                                                                                    integer
+                                                                                                                                    0
+                                                                                                                                  )
+                                                                                                                                ]
+                                                                                                                                [
+                                                                                                                                  [
+                                                                                                                                    bo-66
+                                                                                                                                    bo-66
+                                                                                                                                  ]
+                                                                                                                                  bs-70
+                                                                                                                                ]
+                                                                                                                              ]
+                                                                                                                              br-69
+                                                                                                                            )
+                                                                                                                          ]
+                                                                                                                        ]
+                                                                                                                      )
+                                                                                                                    )
+                                                                                                                    (error
+
+                                                                                                                    )
+                                                                                                                  )
+                                                                                                                )
+                                                                                                              )
+                                                                                                              [
+                                                                                                                [
+                                                                                                                  (builtin
+                                                                                                                    constrData
+                                                                                                                  )
+                                                                                                                  (con
+                                                                                                                    integer
+                                                                                                                    0
+                                                                                                                  )
+                                                                                                                ]
+                                                                                                                bm-64
+                                                                                                              ]
+                                                                                                            ]
+                                                                                                          )
+                                                                                                        ]
+                                                                                                        aw-48
+                                                                                                      ]
+                                                                                                    )
+                                                                                                    [
+                                                                                                      e-4
+                                                                                                      [
+                                                                                                        (builtin
+                                                                                                          unConstrData
+                                                                                                        )
+                                                                                                        [
+                                                                                                          c-2
+                                                                                                          p-15
+                                                                                                        ]
+                                                                                                      ]
+                                                                                                    ]
+                                                                                                  ]
+                                                                                                ]
+                                                                                              ]
+                                                                                            ]
+                                                                                          ]
+                                                                                        ]
+                                                                                      ]
+                                                                                    ]
+                                                                                  ]
+                                                                                ]
+                                                                              ]
+                                                                            ]
+                                                                          )
+                                                                          [
+                                                                            (builtin
+                                                                              unListData
+                                                                            )
+                                                                            [
+                                                                              c-2
+                                                                              av-47
+                                                                            ]
+                                                                          ]
+                                                                        ]
+                                                                      )
+                                                                      [
+                                                                        e-4
+                                                                        [
+                                                                          (builtin
+                                                                            unConstrData
+                                                                          )
+                                                                          [
+                                                                            c-2
+                                                                            m-12
+                                                                          ]
+                                                                        ]
+                                                                      ]
+                                                                    ]
+                                                                  )
+                                                                  (case
+                                                                    (case
+                                                                      at-45
+                                                                      [
+                                                                        as-44
+                                                                        (con
+                                                                          integer
+                                                                          2
+                                                                        )
+                                                                      ]
+                                                                      (con
+                                                                        bool
+                                                                        True
+                                                                      )
+                                                                    )
+                                                                    (error)
+                                                                    (con
+                                                                      unit ()
+                                                                    )
+                                                                  )
+                                                                ]
+                                                              )
+                                                              [
+                                                                as-44
+                                                                (con integer 1)
+                                                              ]
+                                                            ]
+                                                          )
+                                                          [
+                                                            (builtin
+                                                              equalsInteger
+                                                            )
+                                                            [
+                                                              (builtin unIData)
+                                                              [
+                                                                c-2 [ f-5 m-12 ]
                                                               ]
                                                             ]
                                                           ]
@@ -1340,137 +1504,173 @@
                                                         (error)
                                                       )
                                                     )
-                                                    [
-                                                      (builtin unConstrData)
-                                                      [ c-2 [ o-14 n-13 ] ]
-                                                    ]
+                                                    [ e-4 o-14 ]
                                                   ]
                                                 )
-                                                [ a-0 (con integer 2) ]
+                                                [
+                                                  (builtin unConstrData)
+                                                  [ c-2 [ n-13 m-12 ] ]
+                                                ]
                                               ]
                                             )
-                                            [
-                                              e-4
-                                              [ (builtin unConstrData) m-12 ]
-                                            ]
+                                            [ a-0 (con integer 2) ]
                                           ]
                                         )
-                                      )
-                                      (lam
-                                        bf-57
-                                        (case
-                                          bf-57
-                                          (lam
-                                            bg-58 (lam bh-59 (con bool False))
-                                          )
-                                          (con bool True)
-                                        )
-                                      )
-                                    ]
+                                        [ e-4 [ (builtin unConstrData) l-11 ] ]
+                                      ]
+                                    )
                                   )
                                   (lam
-                                    bi-60
-                                    [
-                                      c-2
+                                    bt-71
+                                    (lam
+                                      bu-72
                                       [
-                                        f-5
-                                        (case
-                                          [
-                                            c-2
-                                            [
-                                              (builtin unMapData)
-                                              [
-                                                c-2
+                                        (lam
+                                          bv-73
+                                          (case
+                                            (constr
+                                              0
+                                              bt-71
+                                              (con data (I 0))
+                                              (lam
+                                                bw-74
                                                 [
-                                                  f-5
-                                                  (case
-                                                    [
-                                                      c-2
-                                                      [
-                                                        (builtin unMapData)
-                                                        bi-60
-                                                      ]
-                                                    ]
+                                                  (lam
+                                                    bx-75
                                                     (lam
-                                                      bj-61
-                                                      (lam
-                                                        bk-62
+                                                      by-76
+                                                      [
+                                                        (builtin iData)
                                                         [
-                                                          [ d-3 bj-61 ]
+                                                          (lam
+                                                            bz-77
+                                                            (case
+                                                              [
+                                                                [
+                                                                  (builtin
+                                                                    equalsData
+                                                                  )
+                                                                  [
+                                                                    c-2
+                                                                    [
+                                                                      e-4
+                                                                      [
+                                                                        (builtin
+                                                                          unConstrData
+                                                                        )
+                                                                        [
+                                                                          c-2
+                                                                          bz-77
+                                                                        ]
+                                                                      ]
+                                                                    ]
+                                                                  ]
+                                                                ]
+                                                                bv-73
+                                                              ]
+                                                              bx-75
+                                                              [
+                                                                [
+                                                                  (builtin
+                                                                    addInteger
+                                                                  )
+                                                                  bx-75
+                                                                ]
+                                                                [
+                                                                  (builtin
+                                                                    unIData
+                                                                  )
+                                                                  [
+                                                                    i-8
+                                                                    [
+                                                                      c-2
+                                                                      [
+                                                                        f-5
+                                                                        bz-77
+                                                                      ]
+                                                                    ]
+                                                                  ]
+                                                                ]
+                                                              ]
+                                                            )
+                                                          )
                                                           [
-                                                            [ d-3 bk-62 ]
-                                                            (con (list data) [])
+                                                            e-4
+                                                            [
+                                                              (builtin
+                                                                unConstrData
+                                                              )
+                                                              by-76
+                                                            ]
                                                           ]
                                                         ]
-                                                      )
+                                                      ]
                                                     )
                                                   )
+                                                  [ (builtin unIData) bw-74 ]
                                                 ]
-                                              ]
-                                            ]
-                                          ]
-                                          (lam
-                                            bl-63
-                                            (lam
-                                              bm-64
-                                              [
-                                                [ d-3 bl-63 ]
-                                                [
-                                                  [ d-3 bm-64 ]
-                                                  (con (list data) [])
-                                                ]
-                                              ]
+                                              )
                                             )
+                                            j-9
                                           )
                                         )
+                                        [
+                                          [
+                                            (builtin constrData) (con integer 0)
+                                          ]
+                                          [
+                                            [ d-3 [ (builtin bData) bu-72 ] ]
+                                            (con (list data) [])
+                                          ]
+                                        ]
                                       ]
-                                    ]
+                                    )
                                   )
                                 ]
                               )
                               (lam
-                                bn-65
+                                ca-78
                                 (lam
-                                  bo-66
+                                  cb-79
                                   (lam
-                                    bp-67
+                                    cc-80
                                     (case
                                       (constr
                                         0
                                         (lam
-                                          bq-68
+                                          cd-81
                                           (lam
-                                            br-69
+                                            ce-82
                                             (lam
-                                              bs-70
+                                              cf-83
                                               (case
-                                                br-69
+                                                ce-82
                                                 (lam
-                                                  bt-71
+                                                  cg-84
                                                   (lam
-                                                    bu-72
+                                                    ch-85
                                                     (case
                                                       (constr
                                                         0
-                                                        bq-68
-                                                        bu-72
+                                                        cd-81
+                                                        ch-85
                                                         [
-                                                          [ bp-67 bs-70 ] bt-71
+                                                          [ cc-80 cf-83 ] cg-84
                                                         ]
                                                       )
-                                                      bq-68
+                                                      cd-81
                                                     )
                                                   )
                                                 )
-                                                bs-70
+                                                cf-83
                                               )
                                             )
                                           )
                                         )
-                                        bn-65
-                                        bo-66
+                                        ca-78
+                                        cb-79
                                       )
-                                      (lam bv-73 [ bv-73 bv-73 ])
+                                      (lam ci-86 [ ci-86 ci-86 ])
                                     )
                                   )
                                 )
@@ -1478,181 +1678,348 @@
                             ]
                           )
                           (lam
-                            bw-74
-                            (lam
-                              bx-75
+                            cj-87
+                            [
+                              c-2
                               [
-                                [
-                                  (lam by-76 [ by-76 by-76 ])
-                                  (lam
-                                    bz-77
+                                f-5
+                                (case
+                                  [
+                                    c-2
                                     [
-                                      (lam
-                                        ca-78
-                                        (lam
-                                          cb-79
+                                      (builtin unMapData)
+                                      [
+                                        c-2
+                                        [
+                                          f-5
                                           (case
-                                            cb-79
+                                            [
+                                              c-2 [ (builtin unMapData) cj-87 ]
+                                            ]
                                             (lam
-                                              cc-80
+                                              ck-88
                                               (lam
-                                                cd-81
+                                                cl-89
                                                 [
-                                                  e-4
+                                                  [ d-3 ck-88 ]
                                                   [
-                                                    (builtin unConstrData)
-                                                    (case
-                                                      [
-                                                        [
-                                                          (builtin equalsData)
-                                                          [
-                                                            c-2
-                                                            [
-                                                              e-4
-                                                              [
-                                                                (builtin
-                                                                  unConstrData
-                                                                )
-                                                                cc-80
-                                                              ]
-                                                            ]
-                                                          ]
-                                                        ]
-                                                        ca-78
-                                                      ]
-                                                      [
-                                                        [
-                                                          (builtin constrData)
-                                                          (con integer 0)
-                                                        ]
-                                                        [
-                                                          [ bz-77 bz-77 ] cd-81
-                                                        ]
-                                                      ]
-                                                      cc-80
-                                                    )
+                                                    [ d-3 cl-89 ]
+                                                    (con (list data) [])
                                                   ]
                                                 ]
                                               )
                                             )
-                                            (error)
                                           )
-                                        )
-                                      )
-                                      [
-                                        [ (builtin constrData) (con integer 0) ]
-                                        bx-75
+                                        ]
                                       ]
                                     ]
+                                  ]
+                                  (lam
+                                    cm-90
+                                    (lam
+                                      cn-91
+                                      [
+                                        [ d-3 cm-90 ]
+                                        [ [ d-3 cn-91 ] (con (list data) []) ]
+                                      ]
+                                    )
                                   )
-                                ]
-                                bw-74
+                                )
                               ]
-                            )
+                            ]
                           )
                         ]
                       )
                       (lam
-                        ce-82
+                        co-92
                         (lam
-                          cf-83
+                          cp-93
                           [
-                            [
-                              (lam cg-84 [ cg-84 cg-84 ])
+                            (lam
+                              cq-94
                               (lam
-                                ch-85
-                                (lam
-                                  ci-86
-                                  (case
-                                    ci-86
-                                    (lam
-                                      cj-87
-                                      (lam
-                                        ck-88
+                                cr-95
+                                [
+                                  (lam
+                                    cs-96
+                                    (case
+                                      [ b-1 cs-96 ]
+                                      (case
                                         [
-                                          (builtin listData)
                                           [
+                                            (lam ct-97 [ ct-97 ct-97 ])
                                             (lam
-                                              cl-89
-                                              (case
-                                                [
-                                                  [
-                                                    (builtin equalsData)
-                                                    [
-                                                      c-2
+                                              cu-98
+                                              (lam
+                                                cv-99
+                                                (case
+                                                  cv-99
+                                                  (lam
+                                                    cw-100
+                                                    (lam
+                                                      cx-101
                                                       [
-                                                        e-4
                                                         [
-                                                          (builtin unConstrData)
+                                                          d-3
                                                           [
-                                                            c-2
                                                             [
-                                                              e-4
-                                                              [
-                                                                (builtin
-                                                                  unConstrData
-                                                                )
-                                                                cj-87
-                                                              ]
+                                                              (builtin
+                                                                constrData
+                                                              )
+                                                              (con integer 0)
                                                             ]
+                                                            (case
+                                                              cw-100
+                                                              (lam
+                                                                cy-102
+                                                                (lam
+                                                                  cz-103
+                                                                  [
+                                                                    [
+                                                                      d-3 cy-102
+                                                                    ]
+                                                                    [
+                                                                      [
+                                                                        d-3
+                                                                        cz-103
+                                                                      ]
+                                                                      (con
+                                                                        (list data)
+                                                                        []
+                                                                      )
+                                                                    ]
+                                                                  ]
+                                                                )
+                                                              )
+                                                            )
                                                           ]
                                                         ]
+                                                        [
+                                                          [ cu-98 cu-98 ] cx-101
+                                                        ]
                                                       ]
-                                                    ]
-                                                  ]
-                                                  cf-83
-                                                ]
-                                                cl-89
-                                                [ [ d-3 cj-87 ] cl-89 ]
+                                                    )
+                                                  )
+                                                  (con (list data) [])
+                                                )
                                               )
                                             )
-                                            [
-                                              (builtin unListData)
-                                              [ [ ch-85 ch-85 ] ck-88 ]
-                                            ]
+                                          ]
+                                          [
+                                            (builtin unMapData)
+                                            [ c-2 [ e-4 cs-96 ] ]
                                           ]
                                         ]
+                                        (lam
+                                          da-104
+                                          (lam
+                                            db-105
+                                            (case
+                                              db-105
+                                              (lam
+                                                dc-106
+                                                (lam dd-107 (con bool False))
+                                              )
+                                              [
+                                                (lam
+                                                  de-108
+                                                  (case
+                                                    [
+                                                      [
+                                                        (builtin
+                                                          equalsByteString
+                                                        )
+                                                        [
+                                                          (builtin unBData)
+                                                          [ c-2 de-108 ]
+                                                        ]
+                                                      ]
+                                                      (con
+                                                        bytestring #657363726f77
+                                                      )
+                                                    ]
+                                                    (con bool False)
+                                                    [
+                                                      [
+                                                        (builtin equalsInteger)
+                                                        [
+                                                          (builtin unIData)
+                                                          [ c-2 [ f-5 de-108 ] ]
+                                                        ]
+                                                      ]
+                                                      cr-95
+                                                    ]
+                                                  )
+                                                )
+                                                [
+                                                  e-4
+                                                  [
+                                                    (builtin unConstrData)
+                                                    da-104
+                                                  ]
+                                                ]
+                                              ]
+                                            )
+                                          )
+                                        )
+                                        (con bool False)
                                       )
+                                      (con bool False)
                                     )
-                                    (con data (List []))
                                   )
-                                )
+                                  [
+                                    (builtin unConstrData)
+                                    [
+                                      [
+                                        (lam df-109 [ df-109 df-109 ])
+                                        (lam
+                                          dg-110
+                                          (lam
+                                            dh-111
+                                            (case
+                                              dh-111
+                                              (lam
+                                                di-112
+                                                (lam
+                                                  dj-113
+                                                  (case
+                                                    di-112
+                                                    (lam
+                                                      dk-114
+                                                      (lam
+                                                        dl-115
+                                                        (case
+                                                          [
+                                                            [
+                                                              (lam
+                                                                dm-116
+                                                                (lam
+                                                                  dn-117
+                                                                  [
+                                                                    (lam
+                                                                      do-118
+                                                                      (case
+                                                                        [
+                                                                          [
+                                                                            (builtin
+                                                                              lessThanByteString
+                                                                            )
+                                                                            dm-116
+                                                                          ]
+                                                                          do-118
+                                                                        ]
+                                                                        (case
+                                                                          [
+                                                                            [
+                                                                              (builtin
+                                                                                equalsByteString
+                                                                              )
+                                                                              dm-116
+                                                                            ]
+                                                                            do-118
+                                                                          ]
+                                                                          (constr
+                                                                            2
+                                                                          )
+                                                                          (constr
+                                                                            1
+                                                                          )
+                                                                        )
+                                                                        (constr
+                                                                          0
+                                                                        )
+                                                                      )
+                                                                    )
+                                                                    [
+                                                                      (builtin
+                                                                        unBData
+                                                                      )
+                                                                      dn-117
+                                                                    ]
+                                                                  ]
+                                                                )
+                                                              )
+                                                              [
+                                                                (builtin
+                                                                  unBData
+                                                                )
+                                                                cq-94
+                                                              ]
+                                                            ]
+                                                            dk-114
+                                                          ]
+                                                          (con
+                                                            data (Constr 1 [])
+                                                          )
+                                                          [
+                                                            [
+                                                              (builtin
+                                                                constrData
+                                                              )
+                                                              (con integer 0)
+                                                            ]
+                                                            [
+                                                              [ d-3 dl-115 ]
+                                                              (con
+                                                                (list data) []
+                                                              )
+                                                            ]
+                                                          ]
+                                                          [
+                                                            [ dg-110 dg-110 ]
+                                                            dj-113
+                                                          ]
+                                                        )
+                                                      )
+                                                    )
+                                                  )
+                                                )
+                                              )
+                                              (con data (Constr 1 []))
+                                            )
+                                          )
+                                        )
+                                      ]
+                                      [ (builtin unMapData) co-92 ]
+                                    ]
+                                  ]
+                                ]
                               )
-                            ]
-                            ce-82
+                            )
+                            [ (builtin bData) cp-93 ]
                           ]
                         )
                       )
                     ]
                   )
                   (lam
-                    cm-90
+                    dp-119
                     (lam
-                      cn-91
+                      dq-120
                       [
                         (lam
-                          co-92
+                          dr-121
                           (lam
-                            cp-93
+                            ds-122
                             [
                               [
-                                (lam cq-94 [ cq-94 cq-94 ])
+                                (lam dt-123 [ dt-123 dt-123 ])
                                 (lam
-                                  cr-95
+                                  du-124
                                   (lam
-                                    cs-96
+                                    dv-125
                                     (case
-                                      cs-96
+                                      dv-125
                                       (lam
-                                        ct-97
+                                        dw-126
                                         (lam
-                                          cu-98
+                                          dx-127
                                           (case
                                             [
-                                              [ (builtin equalsData) ct-97 ]
-                                              co-92
+                                              [ (builtin equalsData) dw-126 ]
+                                              dr-121
                                             ]
-                                            [ [ cr-95 cr-95 ] cu-98 ]
+                                            [ [ du-124 du-124 ] dx-127 ]
                                             (con unit ())
                                           )
                                         )
@@ -1662,11 +2029,11 @@
                                   )
                                 )
                               ]
-                              cm-90
+                              dp-119
                             ]
                           )
                         )
-                        [ (builtin bData) cn-91 ]
+                        [ (builtin bData) dq-120 ]
                       ]
                     )
                   )
