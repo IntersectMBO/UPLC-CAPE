@@ -4,542 +4,437 @@ category: open
 
 # Two-Party Escrow Benchmark Scenario
 
+> **Revision 2: thread token.** Revision 1 measured `Deposit` as a spending action. A deposit transaction only creates the escrow UTXO, so on chain no script ran for it ([#272](https://github.com/IntersectMBO/UPLC-CAPE/issues/272)). Revision 2 makes the deposit a minting action of the same script. The rules, the datum and every fixture changed, so results measured under revision 1 cannot be compared with results under revision 2.
+
 ## Overview
 
-The Two-Party Escrow benchmark is a **real-world smart contract scenario** designed to measure the performance characteristics of validator implementations as UPLC programs. This benchmark tests a compiler's ability to optimize conditional logic, data structure access, cryptographic operations, and state transitions in a practical escrow contract.
+The Two-Party Escrow benchmark is a **real-world smart contract scenario**. A buyer locks 75 ADA for a seller. The seller can take the payment for as long as it is locked. Thirty minutes after the deposit the buyer can take the money back.
+
+One script serves two purposes. As a **minting policy** it creates and destroys a _thread token_: a marker that an escrow UTXO was created under the rules of the script. As a **spending validator** it guards the locked funds. The scenario measures how a compiler handles the dispatch on purpose and redeemer, lookups in values and in the mint field, signature and time checks, and the construction of a datum.
 
 ## TL;DR
 
-Implement a two-party escrow validator that handles deposit, accept, and refund operations and compile it as a fully-applied UPLC program.
+Implement one Plutus V3 script that validates the deposit, the accept and the refund of the escrow, and compile it as a fully-applied UPLC program.
 
 **Required Files**: Submit `two_party_escrow.uplc`, `metadata.json`, `metrics.json` to `submissions/two_party_escrow/{Compiler}_{Version}_{Handle}/`
 
-**Target**: Both Accept and Refund sequences → Expected result: `() (unit)`  
+**Target**: the five script executions of the escrow lifecycle → Expected result: `() (unit)`  
 **Metrics**: CPU units, Memory units, Script size (bytes), Term size  
-**Constraints**: Plutus Core 1.1.0, Plutus V3 recommended, CEK machine budget limits  
-**Implementation**: Handle deposit, accept, and refund with proper validation
+**Constraints**: Plutus Core 1.1.0, Plutus V3, CEK machine budget limits  
+**Implementation**: one script of type `BuiltinData -> BuiltinUnit` with a minting and a spending purpose
 
 ## Exact Task
 
-Implement a two-party escrow validator and compile it as a **fully-applied UPLC program** that processes escrow transactions through deposit, accept, and refund operations.
+Implement the escrow as **one script** and compile it as a **fully-applied UPLC program** of type `BuiltinData -> BuiltinUnit`. Its one argument is the Plutus V3 `ScriptContext`. The script returns unit when the rules of this document hold, and fails in every other case.
 
-### Core Requirements
+### Fixed Parameters
 
-1. **Validator Implementation**: Create a validator with signature `BuiltinData -> BuiltinUnit` that handles three redeemer types:
-   - `Deposit` (redeemer = 0): Allow buyer to deposit funds into escrow
-   - `Accept` (redeemer = 1): Allow seller to accept and complete the escrow
-   - `Refund` (redeemer = 2): Allow buyer to reclaim funds after deadline
+These values are baked into the UPLC program:
 
-2. **Fixed Parameters**: The following parameters must be baked into the UPLC program:
-   - **Buyer Address**: `aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa`
-   - **Seller Address**: `bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb`
-   - **Price**: 75 ADA (75,000,000 lovelace)
-   - **Deadline**: 30 minutes after deposit (`1800000`: `POSIXTime` counts milliseconds)
+| Parameter | Value |
+| --- | --- |
+| Buyer key hash | `aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa` (28 bytes) |
+| Seller key hash | `bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb` (28 bytes) |
+| Price | 75 ADA (`75000000` lovelace) |
+| Refund delay | 30 minutes (`1800000`: `POSIXTime` counts milliseconds) |
+| Token name | `escrow` (bytes `657363726f77`) |
 
-3. **State Transitions**: The validator must enforce proper state transitions and validation rules
+The hash of the script is **not** a parameter. A program cannot contain its own hash, because the hash is computed from the program. The script reads the hash from the context instead: under the minting purpose it is the policy id, and under the spending purpose it is the script hash in the address of the input that the script spends. This document calls that hash `H`.
 
-### Redeemer Encoding
+### Purposes and Redeemers
+
+The redeemer is a Plutus Data integer. The purpose and the redeemer together select the action:
+
+| Purpose | Redeemer | Action |
+| --- | --- | --- |
+| Minting | `0` | **Deposit**: the buyer mints the thread token into a new escrow UTXO |
+| Minting | `1` or `2` | **Burn**: the thread token is destroyed, in the transaction that accepts or refunds |
+| Spending | `1` | **Accept**: the seller takes the payment |
+| Spending | `2` | **Refund**: the buyer takes the money back after the deadline |
+
+Every other combination fails. A deposit transaction runs the script once. An accept or a refund transaction runs it twice: once for the escrow input and once for the burn.
+
+### Datum Encoding
+
+The escrow UTXO carries an inline datum with one field:
 
 ```text
-Deposit = 0  -- Buyer deposits 75 ADA into escrow
-Accept  = 1  -- Seller accepts and receives payment
-Refund  = 2  -- Buyer reclaims funds after deadline
+EscrowDatum = Constr 0 [I depositTime]
 ```
 
-### Test Context Assumptions
+`depositTime` is the last millisecond at which the deposit transaction was valid. The datum has no state field: the escrow UTXO exists while the deposit is open, and the accept or the refund consumes it.
 
-When testing this validator, the test framework uses generic dummy constants for script context setup:
+### Thread Token
 
-**Script Input (UTXO Being Spent):**
-
-- **Script Hash**: `1111111111111111111111111111111111111111111111111111111111` (generic test identifier)
-- **Transaction ID**: `0000000000000000000000000000000000000000000000000000000000000000`
-- **Output Index**: `0`
-
-**Transaction Context:**
-
-- The validator is spending from a script address with the above dummy script hash
-- Transaction outputs to the same script address represent continuing escrow UTXOs
-- Deposit validation requires checking that exactly 75 ADA is sent to the script address
-
-**Test Framework Behavior:**
-
-- The baseline ScriptContext starts minimal with empty inputs and outputs lists
-- Test patches add specific transaction inputs/outputs as needed for each test case
-- Deposit validation tests use patches to add outputs with 75 ADA to the script address
-- All script contexts use the above dummy transaction reference for spending operations
+The policy id of the thread token is `H`, the hash of the script itself, and its name is `escrow`. Deposit mints one token into the escrow UTXO. Accept and Refund burn it. A UTXO at the script address is an escrow only if it holds the token: anybody can send ADA with any datum to the script address, but only Deposit can put the token there.
 
 ## View 1: State Lifecycle View
 
-The Two-Party Escrow validator operates as a **state machine validator**:
-
 ```mermaid
 flowchart LR
-  Initial -->|Deposit 0| DepositValid
-  DepositValid -->|Accept 1| AcceptComplete
-  DepositValid -->|Refund 2| RefundComplete
+  None -->|"Deposit: mint +1"| Open
+  Open -->|"Accept: burn 1"| Paid
+  Open -->|"Refund after deadline: burn 1"| Refunded
 ```
 
-| Current State | Event | Condition | Next State |
-| --- | --- | --- | --- |
-| **Initial** | `Deposit(0)` | Buyer deposits 75 ADA | **DepositValid** |
-| **DepositValid** | `Accept(1)` | Seller accepts, funds to seller | **AcceptComplete** |
-| **DepositValid** | `Refund(2)` | Past deadline, funds to buyer | **RefundComplete** |
-| **AcceptComplete** | - | Escrow completed successfully | **Final** |
-| **RefundComplete** | - | Escrow refunded | **Final** |
+| Current State | Action  | Script runs                    | Next State   |
+| ------------- | ------- | ------------------------------ | ------------ |
+| **None**      | Deposit | Minting `0`                    | **Open**     |
+| **Open**      | Accept  | Spending `1`, Minting `1 or 2` | **Paid**     |
+| **Open**      | Refund  | Spending `2`, Minting `1 or 2` | **Refunded** |
 
-**State Descriptions**:
-
-- **Initial**: No funds deposited, waiting for buyer deposit
-- **DepositValid**: Buyer has deposited 75 ADA, awaiting seller acceptance or deadline
-- **AcceptComplete**: Seller has accepted payment, escrow complete
-- **RefundComplete**: Buyer has reclaimed funds after deadline
-- **Final**: Terminal state, no further transactions
-
-**Note**: Each state transition must validate appropriate signatures, values, and timing constraints
+- **None**: no escrow UTXO exists.
+- **Open**: an escrow UTXO with 75 ADA, the thread token and the datum sits at the script address.
+- **Paid**, **Refunded**: the escrow UTXO is spent and the token is burned. Both states are final.
 
 ## View 2: Transaction Sequence View
 
-### UTXO Flow Diagram
-
 ```mermaid
-graph
-    %% Initial UTXO owned by Buyer
-    UTXO1["fa:fa-wallet UTXO #1<br/>Owner: Buyer<br/>Value: 75 ADA"]:::utxo
+graph TD
+    W1["Buyer wallet UTXO<br/>100 ADA"]:::utxo
+    TX1("Deposit transaction<br/>signed by buyer<br/>mint: +1 escrow<br/>validity: [from, to)"):::transaction
+    E["Escrow UTXO at script H<br/>75 ADA + 1 escrow token<br/>datum: Constr 0 [I (to - 1)]"]:::escrowUtxo
+    C1["Buyer change"]:::utxo
+    W2["Seller wallet UTXO"]:::utxo
+    W3["Buyer wallet UTXO"]:::utxo
+    TX2A("Accept transaction<br/>signed by seller<br/>mint: -1 escrow"):::acceptTx
+    TX2B("Refund transaction<br/>signed by buyer<br/>mint: -1 escrow<br/>validity starts after the deadline"):::refundTx
+    S["Seller<br/>at least 75 ADA"]:::successUtxo
+    B["Buyer<br/>at least 75 ADA"]:::refundedUtxo
 
-    %% Transaction 1: Deposit to Escrow
-    TX1("fa:fa-exchange Transaction 1<br/>━━━━━━━━━━━━━━━<br/><b>Deposit to Escrow</b><br/><br/>fa:fa-pen Signatures: Buyer<br/>fa:fa-clock Validity: slot 1000-2000"):::transaction
+    W1 --> TX1
+    TX1 ==> E
+    TX1 ==> C1
+    E --> TX2A
+    W2 --> TX2A
+    TX2A ==> S
+    E --> TX2B
+    W3 --> TX2B
+    TX2B ==> B
 
-    %% Escrow UTXO with lock icon
-    UTXO2["fa:fa-lock UTXO #2<br/><b>Owner: Escrow Script</b><br/>Value: 75 ADA<br/>Datum: {buyer, seller, deadline}"]:::escrowUtxo
-
-    %% Branch indicator
-    CHOICE{{"fa:fa-code-branch<br/>Script Logic<br/>━━━━━━━━━<br/>Either/Or"}}:::choice
-
-    %% Transaction 2a: Seller Accepts
-    TX2A("fa:fa-handshake Transaction 2a<br/>━━━━━━━━━━━━━━━<br/><b>Seller Accepts</b><br/><br/>fa:fa-key Redeemer: Accept<br/>fa:fa-pen Signatures: Seller<br/>fa:fa-clock Validity: before deadline"):::acceptTx
-
-    %% Transaction 2b: Buyer Refund
-    TX2B("fa:fa-undo Transaction 2b<br/>━━━━━━━━━━━━━━━<br/><b>Buyer Refund</b><br/><br/>fa:fa-key Redeemer: Refund<br/>fa:fa-pen Signatures: Buyer<br/>fa:fa-clock Validity: after deadline"):::refundTx
-
-    %% Final UTXOs
-    UTXO3["fa:fa-check-circle UTXO #3<br/>Owner: Seller<br/>Value: 75 ADA<br/><i>Payment Complete</i>"]:::successUtxo
-    UTXO4["fa:fa-rotate-left UTXO #4<br/>Owner: Buyer<br/>Value: 75 ADA<br/><i>Funds Returned</i>"]:::refundedUtxo
-
-    %% Connections with proper flow
-    UTXO1 -.->|consumed| TX1
-    TX1 ==>|creates| UTXO2
-    UTXO2 --> CHOICE
-    CHOICE -.->|"fa:fa-thumbs-up Accept"| TX2A
-    CHOICE -.->|"fa:fa-hourglass-end Timeout"| TX2B
-    TX2A ==>|creates| UTXO3
-    TX2B ==>|creates| UTXO4
-
-    %% Define styles with modern colors
-    classDef utxo fill:#fef3e2,stroke:#f39c12,stroke-width:2px,color:#000,font-weight:bold
+    classDef utxo fill:#fef3e2,stroke:#f39c12,stroke-width:2px,color:#000
     classDef transaction fill:#e3f2fd,stroke:#1976d2,stroke-width:2px,color:#000
-    classDef escrowUtxo fill:#f3e5f5,stroke:#7b1fa2,stroke-width:3px,color:#000,font-weight:bold
-    classDef choice fill:#ffebee,stroke:#c62828,stroke-width:2px,stroke-dasharray:5 5,color:#000
+    classDef escrowUtxo fill:#f3e5f5,stroke:#7b1fa2,stroke-width:3px,color:#000
     classDef acceptTx fill:#e8f5e9,stroke:#388e3c,stroke-width:2px,color:#000
     classDef refundTx fill:#fff3e0,stroke:#f57c00,stroke-width:2px,color:#000
-    classDef successUtxo fill:#c8e6c9,stroke:#2e7d32,stroke-width:2px,color:#000,font-weight:bold
-    classDef refundedUtxo fill:#ffe0b2,stroke:#ef6c00,stroke-width:2px,color:#000,font-weight:bold
-
-    %% Apply classes
-    class UTXO1 utxo
-    class TX1 transaction
-    class UTXO2 escrowUtxo
-    class CHOICE choice
-    class TX2A acceptTx
-    class TX2B refundTx
-    class UTXO3 successUtxo
-    class UTXO4 refundedUtxo
+    classDef successUtxo fill:#c8e6c9,stroke:#2e7d32,stroke-width:2px,color:#000
+    classDef refundedUtxo fill:#ffe0b2,stroke:#ef6c00,stroke-width:2px,color:#000
 ```
 
-### Performance Measurement Sequences (Happy Paths)
+Accept and Refund are two alternative endings of one deposit. Each of them spends the escrow UTXO and a wallet UTXO that pays the fee.
 
-Both **Accept** and **Refund** sequences are measured for comprehensive performance benchmarking:
+## Validation Rules
 
-**Complete Transaction Flow**:
+Each rule has a name. The tests refer to the rules by these names.
 
-1. **Initial → DepositValid**: Buyer deposits 75 ADA (shared operation)
-2. **DepositValid → AcceptComplete**: Seller accepts payment (Accept path)
-3. **DepositValid → RefundComplete**: Buyer reclaims funds after deadline (Refund path)
+Three terms are used throughout:
 
-**Performance Measurement**: Sum of CPU/Memory units across all unique operations (Deposit + Accept + Refund)
+- The **payment credential** of an address is its first component: a key hash or a script hash. Every rule that looks at an address compares the payment credential only. The staking credential of an address is never restricted.
+- The **own-policy mint entry** is what the mint field of the transaction holds for the policy `H`: token names with quantities.
+- A rule that says **exactly** leaves no room: `{escrow: 1}` means one token name with quantity 1 and no other token name.
 
-**Extended Negative Test Sequences**:
+### Deposit (Minting, redeemer `0`)
 
-- Authorization violations (wrong signatures)
-- Temporal violations (refund before deadline)
-- Value violations (incorrect amounts)
-- State transition violations (invalid sequences)
+`H` is the policy id of the minting purpose.
 
-## Implementation Requirements
+| Rule | Requirement |
+| --- | --- |
+| **D1** | The buyer's key hash is among the signatories of the transaction. |
+| **D2** | The upper bound of the validity range is finite: `Finite t`. Then `depositTime = t - 1`. |
+| **D3** | The own-policy mint entry is exactly `{escrow: 1}`. |
+| **D4** | Exactly one output of the transaction has the payment credential `ScriptCredential H`. All outputs count, whatever their staking credential. |
+| **D5** | That output holds exactly `75000000` lovelace. |
+| **D6** | That output holds quantity 1 of the token `(H, escrow)`. |
+| **D7** | That output has an inline datum, and the datum is the Data value `Constr 0 [I depositTime]`: no other constructor, no other field. An output with a datum hash or with no datum fails. |
 
-### Technical Constraints
+Deposit does not restrict the inputs, the other outputs, the mint entries of other policies, or the other assets, the reference script and the staking credential of the escrow output.
 
-1. **Execution Budget**: Each transaction step must complete within CEK machine limits
-2. **Determinism**: Results must be identical across multiple executions
-3. **Self-Contained**: All parameters (addresses, price, deadline) baked into UPLC program
-4. **Correctness**: Must enforce all validation rules correctly
-5. **Signature**: Validator function type `BuiltinData -> BuiltinUnit`
+### Burn (Minting, redeemer `1` or `2`)
 
-### Validation Rules
+| Rule   | Requirement                                          |
+| ------ | ---------------------------------------------------- |
+| **B1** | The own-policy mint entry is exactly `{escrow: -1}`. |
 
-#### Deposit Operation (Redeemer = 0)
+Both redeemers have the same rule. Burn does not repeat the rules of Accept and Refund: in the same transaction the ledger also runs the script for the escrow input.
 
-- **Value Check**: Exactly 75 ADA deposited to script address
-- **Authorization**: Transaction signed by buyer
-- **State Check**: No existing deposit (initial state)
-- **Deposit Time Recording**: Upper bound of valid range must be finite and is recorded as `depositTime` in the datum
+### Accept and Refund: shared rules (Spending)
 
-#### Accept Operation (Redeemer = 1)
+| Rule | Requirement |
+| --- | --- |
+| **S1** | The script finds its own input: the input whose reference equals the reference of the spending purpose. `H` is the script hash in its payment credential. |
+| **S2** | Exactly one input of the transaction has the payment credential `ScriptCredential H`. All inputs count, whatever their staking credential and whatever they hold. Reference inputs do not count. |
+| **S3** | The mint field holds quantity -1 of the token `(H, escrow)`. |
 
-- **Value Check**: 75 ADA paid to seller address
-- **Authorization**: Transaction signed by seller
-- **State Check**: Valid deposit exists
-- **Timing**: No deadline restriction for acceptance
+### Accept (Spending, redeemer `1`)
 
-#### Refund Operation (Redeemer = 2)
+| Rule | Requirement |
+| --- | --- |
+| **A1** | The seller's key hash is among the signatories. |
+| **A2** | The outputs whose payment credential is the seller's key hash hold at least `75000000` lovelace in total. |
 
-- **Value Check**: 75 ADA returned to buyer address
-- **Authorization**: Transaction signed by buyer
-- **State Check**: Valid deposit exists
-- **Timing**: Lower bound of valid range must be finite and strictly greater than `depositTime + 1800000`
+Accept has no time rule: the seller can accept for as long as the escrow UTXO exists.
 
-**Note on time semantics**: The deposit path records `depositTime` as the **upper bound** of the deposit transaction's `txInfoValidRange`; it must be finite (an infinite upper bound is rejected). This is the production-safe convention – recording the latest possible slot for the deposit ensures the refund deadline is computed conservatively: the seller has at least `refundTime` from the deposit's upper bound before the buyer can reclaim funds. The refund path reads the **lower bound** of `txInfoValidRange`; it must be finite (an infinite lower bound is rejected) and must satisfy `lowerBound > depositTime + refundTime` (strict). The ledger fixes the closure of both bounds when it builds the script context (`transValidityInterval` in cardano-ledger): a finite lower bound is always inclusive, `LowerBound (Finite t) True`, and a finite upper bound is always exclusive, `UpperBound (Finite t) False`. So `lowerBound = t` for a finite lower bound `Finite t`, and `upperBound = t − 1` for a finite upper bound `Finite t`. A validator does not need to read the closure flag, and the fixtures never set a closure the ledger would not produce. Deposit fixtures set `from_time = t` and `to_time = t + 1`, which the test framework encodes as `[t, t + 1)` (exclusive upper bound, as the ledger does), so `upperBound = t` and the recorded `depositTime` is `t`. Refund fixtures set `from_time = t` and no upper bound, `[t, +∞)`, so `lowerBound = t`.
+### Refund (Spending, redeemer `2`)
 
-## Test Constants and Fixed Values
+| Rule | Requirement |
+| --- | --- |
+| **R1** | The buyer's key hash is among the signatories. |
+| **R2** | The lower bound of the validity range is finite, `Finite l`, and `l > depositTime + 1800000`. `depositTime` is the field of the datum that the spending purpose carries, which is the inline datum of the own input. |
+| **R3** | The outputs whose payment credential is the buyer's key hash hold at least `75000000` lovelace in total. |
 
-The two-party escrow tests (both Haskell specs and `cape-tests.json`) rely on a consistent set of fixed constants to ensure reproducible and predictable test scenarios.
+### Everything else
 
-### Core Escrow Parameters
+| Rule | Requirement |
+| --- | --- |
+| **X1** | Under the minting and the spending purpose every redeemer that the table of actions does not list fails. This includes redeemer `0` under Spending and every redeemer that is not an integer. |
+| **X2** | Every other purpose fails. |
+| **X3** | The script may assume that its argument is a V3 `ScriptContext` as the ledger builds it. It does not have to validate the shape of the context. The suite passes one other argument, the integer 0, and that run must fail. |
 
-**Amount:**
+### Why these rules are enough
 
-- **Escrow Price**: 75 ADA (75,000,000 lovelace)
-  - Used in all deposit, accept, and refund validations
+**The script does not check that its own input holds the token.** S3 demands a burn, and the ledger conserves value, so the burned token comes from an input. Tokens exist only in escrow outputs: Deposit mints exactly one (D3) into the one output at `H` (D4, D6), and a transaction cannot deposit and spend an escrow at once, because D3 and S3 read the same mint entry and disagree. S2 allows one input at `H`, so the burned token comes from the script's own input. A UTXO that somebody sent to the script address without a deposit holds no token and can never be spent: nothing can be burned for it.
 
-**Timing:**
+**One escrow per transaction.** S2 rules out a transaction that spends two escrow UTXOs and pays once.
 
-- **Deadline Duration**: 30 minutes (1,800,000 ms)
-  - Time limit for seller to accept before buyer can refund
-- **Test Deposit Time**: 1000 seconds (1,000,000 ms)
-  - Fixed timestamp used as baseline in all test scenarios
-- **Refund Valid Time**: after 2800 seconds (2,800,000 ms)
-  - Any time strictly after deposit time (1,000,000) + deadline (1,800,000) = 2,800,000
+**The payment is a sum.** A2 and R3 add up all outputs of the receiver. The receiver signs the transaction and pays its fee, so the payment and the change of the receiver's wallet can sit in one output or in several.
 
-All times are `POSIXTime` values, which count milliseconds, so every fixture time is the value in seconds multiplied by 1000.
+**Value left at the script is not restricted.** After the burn, an output at the script address is outside the protocol. Like any UTXO at `H` without a token, it can never be spent.
 
-### Address Constants
+**Time.** The ledger turns a validity interval into `txInfoValidRange` in one way only (`transValidityInterval` in cardano-ledger): a finite lower bound is inclusive, `LowerBound (Finite l) True`, and a finite upper bound is exclusive, `UpperBound (Finite t) False`. A script does not need to read the closure flags. Slots are one second long, so `l` and `t` are multiples of 1000 and `depositTime = t - 1` ends in 999. R2 is strict, so the first lower bound that passes is `t + 1800000`: the seller has 30 full minutes after the last moment at which the deposit could enter the chain. Deposit rejects an infinite upper bound, and Refund rejects an infinite lower bound.
 
-**Public Key Hashes:**
+### Implementation Freedom
 
-- **Buyer KeyHash**: `aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa`
-  - Used for buyer signature validation and refund destination
-- **Seller KeyHash**: `bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb`
-  - Used for seller signature validation and accept payment destination
-- **Test KeyHash**: `cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc`
-  - Used in wrong address test scenarios
+The order of the checks, the way the context is decoded and every optimization are up to the implementation. The observable behaviour is fixed: every test of the suite must give the expected result. Two places leave room on purpose:
 
-**Script Hash:**
+- S3 names one quantity. Whether the spending purpose also rejects other token names in the own-policy mint entry is not tested: B1 rejects them in the same transaction.
+- D6 names one quantity for the same reason: D3 already rules out other token names of the policy.
+- Refund reads a datum that Deposit wrote, so its shape is known (D7). What Refund does with a datum of another shape is not tested.
+- The ledger builds the context, so its shape is known too. What the script does with a context of another shape, for example another outer constructor or an extra field, is not tested: a shape guard costs budget in every run and protects nothing on chain.
 
-- **Test Script Hash**: `1111111111111111111111111111111111111111111111111111111111`
-  - Standard script address used across all escrow operations
+## Test Fixtures
 
-### Transaction References
+`cape-tests.json` holds the tests. `test/Cape/TwoPartyEscrowFixturesSpec.hs` holds the rule tables above as a plain Haskell function and checks every test against it. It also lists conditions that the rules do not demand, such as "no staking credential on the escrow output", and checks that a successful test breaks each one: a validator that demands more than the rules fails the suite.
 
-**UTXO References:**
+### Values
 
-- **Primary TxId**: `3333333333333333333333333333333333333333333333333333333333333333`
-  - Used for deposit operations and various test scenarios
-- **Secondary TxId**: `4444444444444444444444444444444444444444444444444444444444444444`
-  - Used for accept/refund operations (spending escrow UTXOs)
-- **Generic TxId**: `0000000000000000000000000000000000000000000000000000000000000000`
-  - Used in test framework baseline configurations
+| Value | In the fixtures |
+| --- | --- |
+| Script hash `H` | `79b6440c81175f9417e9cc32203d2af3bb7c453854452f9f668ce1dd` in most tests, `9e9aea4c5ef25dfe52a1f5b46be13202475a7933adecdddf192ffb42` in the `*_other_hash` tests |
+| Deposit validity range | `[1767225600000, 1767226200000)`, that is 2026-01-01 00:00 to 00:10 UTC |
+| `depositTime` | `1767226199999` |
+| Deadline | `1767227999999` |
+| First valid refund bound | `1767228000000` |
+| Third party ("impostor") | key hash `df0d3d5541f94352eeca5c4fde3a6c93839db2c4775a8b8b4203a9c0` |
 
-### Redeemer Values
+The lifecycle runs under two script hashes. A validator that compares against a constant instead of reading `H` from the context fails under at least one of them.
 
-**Operation Codes:**
+### Shape of the contexts
 
-- **Deposit**: `0` (integer) - Buyer deposits funds into escrow
-- **Accept**: `1` (integer) - Seller accepts and receives payment
-- **Refund**: `2` (integer) - Buyer reclaims funds after deadline
+Every context has the shape that the ledger gives a transaction:
 
-### Test-Specific Values
+- Key hashes, script hashes and policy ids are 28 bytes long. Transaction ids are 32 bytes long.
+- Inputs are in ledger order, by transaction id and then by index. Signatories are in ascending order.
+- Values and the mint field are sorted, and the mint field has no ADA entry.
+- Value is conserved: inputs plus mint equal outputs plus fee, for ADA and for every asset. The fee is not zero, and every output holds at least 1 ADA.
+- The spending purpose refers to an input of the transaction, and its datum is the inline datum of that input.
+- `txInfoRedeemers` has one entry for every run of the escrow script: one for each input at `H`, then one for the policy `H` if the transaction mints or burns under it.
+- Finite bounds of the validity range are multiples of 1000.
+- A successful Accept or Refund has a wallet input and a change output next to the escrow input and the payment.
 
-**Temporal Boundaries:**
+A rejected test is a successful transaction with one change, and its description names the rule that the change breaks, for example `(rule D4)`. Where one change breaks several rules, the description names all of them, and the script may fail on any of them.
 
-- **Before Deadline**: 900 seconds (900,000 ms) - Should fail for refund operations
-- **At Deadline**: 2800 seconds (2,800,000 ms = 1,000,000 + 1,800,000) - Should fail (must be strictly after)
-- **After Deadline**: 2801 seconds (2,801,000 ms) - Valid for refund operations
-- **Extended Times**: 3000, 3600, 5000 seconds (3,000,000, 3,600,000, 5,000,000 ms) - Used in various success scenarios
+The burn tests run on the transaction of the matching spending test: `accept_burn` evaluates the transaction of `accept_successful` under the minting purpose.
 
-These constants ensure that all tests operate with predictable, well-defined scenarios that thoroughly validate the escrow validator's behavior across different conditions and edge cases.
+A test expects a result from one run of the script, not from the transaction. `accept_without_seller_signature` fails under the spending purpose. The minting purpose of that transaction would pass, and the ledger would still reject the transaction.
+
+### Limits
+
+These tests are synthetic, each in one declared way:
+
+- `refund_at_exact_deadline` starts its validity range at `depositTime + 1800000`, which is not a multiple of 1000. It pins the strict comparison of R2.
+- The three `rewarding_purpose_redeemer_*` tests switch the purpose to rewarding and leave the withdrawals and the redeemers of the transaction as they are.
+- `not_a_script_context` passes the integer 0 instead of a context.
+
+The test format cannot express some shapes, so they are not tested:
+
+- An output with a datum hash instead of an inline datum.
+- Withdrawals, certificates, votes, proposals and reference inputs: these fields are empty in every context.
+- Redeemers of other scripts. Where a test has an input or a policy of another script, that script counts as a native script, which has no redeemer.
+
+The suite proves behaviour on the CEK machine and the shape of the contexts. It does not submit transactions to a ledger.
 
 ## Test Cases
 
-The two-party escrow validator is tested through a comprehensive suite of test cases covering all operations, edge cases, and failure scenarios. Each test case validates specific aspects of the validator logic.
+The table lists every test with the purpose and redeemer it runs under, the expected result and the rule it breaks. `cape-tests.json` has a description for each test.
 
-- **`redeemer_integer_3`**  
-  Tests that validator fails when redeemer is invalid integer 3
-
-- **`redeemer_integer_4`**  
-  Tests that validator fails when redeemer is invalid integer 4
-
-- **`redeemer_integer_99`**  
-  Tests that validator fails when redeemer is invalid integer 99
-
-- **`redeemer_integer_negative_1`**  
-  Tests that validator fails when redeemer is invalid negative integer -1
-
-- **`redeemer_constructor_0`**  
-  Tests that validator fails when redeemer is constructor instead of integer
-
-- **`redeemer_bytestring`**  
-  Tests that validator fails when redeemer is bytestring instead of integer
-
-- **`redeemer_list_with_integers`**  
-  Tests that validator fails when redeemer is list instead of integer
-
-- **`redeemer_map_with_data`**  
-  Tests that validator fails when redeemer is map instead of integer
-
-- **`simple_builtin_data_redeemer_0`**  
-  Tests redeemer 0 with simple builtin_data (not script_context) fails
-
-- **`deposit_successful`**  
-  Verifies successful deposit with buyer signature and exactly 75 ADA
-
-- **`deposit_without_buyer_signature`**  
-  Verifies deposit fails without buyer signature
-
-- **`deposit_with_incorrect_amount`**  
-  Verifies deposit fails with wrong amount (50 ADA instead of 75 ADA)
-
-- **`deposit_to_wrong_address`**  
-  Verifies deposit fails when ADA goes to pubkey address instead of script
-
-- **`accept_successful`**  
-  Verifies successful accept with seller signature and 75 ADA to seller
-
-- **`accept_without_seller_signature`**  
-  Verifies accept fails when seller signature is missing
-
-- **`accept_with_incorrect_payment_amount`**  
-  Verifies accept fails with wrong payment amount (50 ADA instead of 75 ADA)
-
-- **`accept_with_payment_to_wrong_address`**  
-  Verifies accept fails when payment goes to impostor address instead of seller
-
-- **`accept_without_prior_deposit`**  
-  Verifies accept fails without valid deposit UTXO (invalid escrow state)
-
-- **`accept_with_multiple_inputs`**  
-  Verifies accept succeeds with multiple script inputs (ambiguous state)
-
-- **`accept_with_partial_payment_to_seller`**  
-  Verifies accept fails with only 50 ADA payment to seller (insufficient)
-
-- **`accept_with_excess_payment_to_seller`**  
-  Verifies accept fails with 100 ADA payment to seller (excess amount)
-
-- **`accept_with_datum_attached`**  
-  Verifies accept succeeds with datum attached to seller's payment
-
-- **`accept_with_multiple_outputs_to_seller`**  
-  Verifies accept succeeds with payment split across two outputs (50+25 ADA)
-
-- **`accept_with_remaining_script_output`**  
-  Verifies accept fails while leaving funds in script (incomplete withdrawal)
-
-- **`refund_successful`**  
-  Verifies successful refund after deadline with buyer signature
-
-- **`refund_after_exact_deadline`**  
-  Verifies refund succeeds exactly 1 second after deadline expiry
-
-- **`refund_with_multiple_inputs`**  
-  Verifies refund succeeds with multiple script inputs (no single input validation)
-
-- **`refund_with_datum_attached`**  
-  Verifies refund succeeds with datum attached to buyer's output
-
-- **`refund_with_multiple_outputs_to_buyer`**  
-  Verifies refund succeeds split across two outputs to buyer (50+25 ADA)
-
-- **`refund_without_buyer_signature`**  
-  Verifies refund fails without buyer signature
-
-- **`refund_with_seller_signature_only`**  
-  Verifies refund fails with seller signature instead of buyer
-
-- **`refund_with_impostor_signature`**  
-  Verifies refund fails with impostor signature
-
-- **`refund_before_deadline`**  
-  Verifies refund fails before deadline expiry
-
-- **`refund_at_exact_deadline`**  
-  Verifies refund fails exactly at deadline (must be strictly after)
-
-- **`refund_with_no_time_range`**  
-  Verifies refund fails without time range (missing temporal context)
-
-- **`refund_with_incorrect_amount`**  
-  Verifies refund fails with wrong total amount (80 ADA instead of 75)
-
-- **`refund_with_partial_refund`**  
-  Verifies refund fails with partial refund (50 ADA to buyer)
-
-- **`refund_with_excess_refund`**  
-  Verifies refund fails with excess refund (100 ADA to buyer)
-
-- **`refund_to_wrong_address`**  
-  Verifies refund fails to wrong address (seller instead of buyer)
-
-- **`refund_with_remaining_script_output`**  
-  Verifies refund fails leaving funds in script (incomplete withdrawal)
-
-- **`refund_without_prior_deposit`**  
-  Verifies refund fails without valid deposit UTXO (invalid escrow state)
-
-- **`deposit_infinite_upper_bound`**  
-  Verifies deposit fails when the validity range has no upper bound (`[1000000, +∞)`). The validator rejects an infinite upper bound when recording the deposit time.
-
-- **`refund_infinite_lower_bound`**  
-  Verifies refund fails when the validity range has no lower bound (`(−∞, 3000001)`). The validator rejects an infinite lower bound.
-
-- **`refund_after_accept_should_fail`**  
-  Verifies refund fails after seller has already accepted (state validation)
-
-- **`accept_after_refund_should_fail`**  
-  Verifies accept fails after buyer has already refunded (state validation)
-
-- **`double_refund_should_fail`**  
-  Verifies multiple refund attempts fail (double spending prevention)
-
-- **`double_accept_should_fail`**  
-  Verifies multiple accept attempts fail (double spending prevention)
-
-### Primary Test Cases for Performance Measurement
-
-The core performance measurement focuses on the successful operation sequences:
-
-- **Accept Sequence**: `deposit_successful` → `accept_successful`
-- **Refund Sequence**: `deposit_successful` → `refund_successful`
-
-These test cases provide the baseline performance metrics for measuring CPU units, memory units, script size, and execution efficiency across different validator implementations.
+| Test | Purpose, redeemer | Expected | Rule |
+| --- | --- | --- | --- |
+| `deposit_successful` | Minting, 0 | unit | - |
+| `deposit_without_buyer_signature` | Minting, 0 | error | D1 |
+| `deposit_signed_by_seller_only` | Minting, 0 | error | D1 |
+| `deposit_with_second_signature` | Minting, 0 | unit | - |
+| `deposit_infinite_upper_bound` | Minting, 0 | error | D2 |
+| `deposit_infinite_lower_bound` | Minting, 0 | unit | - |
+| `deposit_mints_two_tokens` | Minting, 0 | error | D3 |
+| `deposit_mints_second_token_name` | Minting, 0 | error | D3 |
+| `deposit_mints_wrong_token_name` | Minting, 0 | error | D3, D6 |
+| `deposit_with_unrelated_mint` | Minting, 0 | unit | - |
+| `deposit_to_pubkey_address` | Minting, 0 | error | D4 |
+| `deposit_to_other_script` | Minting, 0 | error | D4 |
+| `deposit_with_second_script_output` | Minting, 0 | error | D4 |
+| `deposit_with_second_script_output_staked` | Minting, 0 | error | D4 |
+| `deposit_split_across_script_outputs` | Minting, 0 | error | D4 |
+| `deposit_one_lovelace_short` | Minting, 0 | error | D5 |
+| `deposit_one_lovelace_over` | Minting, 0 | error | D5 |
+| `deposit_token_to_buyer` | Minting, 0 | error | D6 |
+| `deposit_without_datum` | Minting, 0 | error | D7 |
+| `deposit_datum_records_upper_bound` | Minting, 0 | error | D7 |
+| `deposit_datum_one_millisecond_early` | Minting, 0 | error | D7 |
+| `deposit_datum_records_lower_bound` | Minting, 0 | error | D7 |
+| `deposit_datum_with_extra_field` | Minting, 0 | error | D7 |
+| `deposit_datum_with_state_field` | Minting, 0 | error | D7 |
+| `deposit_datum_wrong_constructor` | Minting, 0 | error | D7 |
+| `deposit_datum_bare_integer` | Minting, 0 | error | D7 |
+| `deposit_change_before_escrow_output` | Minting, 0 | unit | - |
+| `deposit_to_staked_script_address` | Minting, 0 | unit | - |
+| `deposit_with_reference_script` | Minting, 0 | unit | - |
+| `deposit_with_output_to_unrelated_script` | Minting, 0 | unit | - |
+| `deposit_with_unrelated_script_input` | Minting, 0 | unit | - |
+| `deposit_with_foreign_assets` | Minting, 0 | unit | - |
+| `accept_successful` | Spending, 1 | unit | - |
+| `accept_burn` | Minting, 1 | unit | - |
+| `refund_successful` | Spending, 2 | unit | - |
+| `refund_burn` | Minting, 2 | unit | - |
+| `accept_without_seller_signature` | Spending, 1 | error | A1 |
+| `accept_signed_by_buyer_only` | Spending, 1 | error | A1 |
+| `accept_one_lovelace_short` | Spending, 1 | error | A2 |
+| `accept_exact_payment` | Spending, 1 | unit | - |
+| `accept_payment_to_impostor` | Spending, 1 | error | A2 |
+| `accept_payment_to_buyer` | Spending, 1 | error | A2 |
+| `accept_payment_in_one_output` | Spending, 1 | unit | - |
+| `accept_payment_split` | Spending, 1 | unit | - |
+| `accept_payment_to_staked_address` | Spending, 1 | unit | - |
+| `accept_payment_with_datum` | Spending, 1 | unit | - |
+| `accept_payment_with_reference_script` | Spending, 1 | unit | - |
+| `accept_leftover_at_script` | Spending, 1 | unit | - |
+| `accept_two_escrow_inputs` | Spending, 1 | error | S2 |
+| `accept_two_escrow_inputs_one_staked` | Spending, 1 | error | S2 |
+| `accept_two_escrow_inputs_burn_both` | Spending, 1 | error | S2, S3 |
+| `accept_with_tokenless_script_input` | Spending, 1 | error | S2 |
+| `accept_with_unrelated_script_input` | Spending, 1 | unit | - |
+| `accept_without_burn` | Spending, 1 | error | S3 |
+| `accept_with_mint_instead_of_burn` | Spending, 1 | error | S3 |
+| `accept_burns_token_of_other_policy` | Spending, 1 | error | S3 |
+| `accept_with_unrelated_mint` | Spending, 1 | unit | - |
+| `accept_escrow_at_staked_address` | Spending, 1 | unit | - |
+| `accept_escrow_with_reference_script` | Spending, 1 | unit | - |
+| `accept_escrow_with_foreign_assets` | Spending, 1 | unit | - |
+| `accept_with_second_signature` | Spending, 1 | unit | - |
+| `accept_escrow_input_first` | Spending, 1 | unit | - |
+| `refund_without_buyer_signature` | Spending, 2 | error | R1 |
+| `refund_signed_by_seller_only` | Spending, 2 | error | R1 |
+| `refund_one_lovelace_short` | Spending, 2 | error | R3 |
+| `refund_exact_payment` | Spending, 2 | unit | - |
+| `refund_payment_to_impostor` | Spending, 2 | error | R3 |
+| `refund_payment_to_seller` | Spending, 2 | error | R3 |
+| `refund_payment_in_one_output` | Spending, 2 | unit | - |
+| `refund_payment_split` | Spending, 2 | unit | - |
+| `refund_payment_to_staked_address` | Spending, 2 | unit | - |
+| `refund_payment_with_datum` | Spending, 2 | unit | - |
+| `refund_payment_with_reference_script` | Spending, 2 | unit | - |
+| `refund_leftover_at_script` | Spending, 2 | unit | - |
+| `refund_two_escrow_inputs` | Spending, 2 | error | S2 |
+| `refund_two_escrow_inputs_one_staked` | Spending, 2 | error | S2 |
+| `refund_two_escrow_inputs_burn_both` | Spending, 2 | error | S2, S3 |
+| `refund_with_tokenless_script_input` | Spending, 2 | error | S2 |
+| `refund_with_unrelated_script_input` | Spending, 2 | unit | - |
+| `refund_without_burn` | Spending, 2 | error | S3 |
+| `refund_with_mint_instead_of_burn` | Spending, 2 | error | S3 |
+| `refund_burns_token_of_other_policy` | Spending, 2 | error | S3 |
+| `refund_with_unrelated_mint` | Spending, 2 | unit | - |
+| `refund_escrow_at_staked_address` | Spending, 2 | unit | - |
+| `refund_escrow_with_reference_script` | Spending, 2 | unit | - |
+| `refund_escrow_with_foreign_assets` | Spending, 2 | unit | - |
+| `refund_with_second_signature` | Spending, 2 | unit | - |
+| `refund_escrow_input_last` | Spending, 2 | unit | - |
+| `accept_after_refund_deadline` | Spending, 1 | unit | - |
+| `accept_without_validity_range` | Spending, 1 | unit | - |
+| `refund_one_slot_before_deadline` | Spending, 2 | error | R2 |
+| `refund_at_first_valid_slot` | Spending, 2 | unit | - |
+| `refund_at_exact_deadline` | Spending, 2 | error | R2 |
+| `refund_right_after_deposit` | Spending, 2 | error | R2 |
+| `refund_infinite_lower_bound` | Spending, 2 | error | R2 |
+| `refund_infinite_upper_bound` | Spending, 2 | unit | - |
+| `refund_forged_utxo_without_token` | Spending, 2 | error | S3 |
+| `accept_burn_with_other_burn_redeemer` | Minting, 2 | unit | - |
+| `accept_with_other_burn_redeemer` | Spending, 1 | unit | - |
+| `accept_burn_two_tokens` | Minting, 1 | error | B1 |
+| `accept_burn_with_second_token_name` | Minting, 1 | error | B1 |
+| `accept_burn_with_second_signature` | Minting, 1 | unit | - |
+| `accept_burn_with_unrelated_mint` | Minting, 1 | unit | - |
+| `burn_redeemer_1_on_deposit` | Minting, 1 | error | B1 |
+| `refund_burn_with_other_burn_redeemer` | Minting, 1 | unit | - |
+| `refund_with_other_burn_redeemer` | Spending, 2 | unit | - |
+| `refund_burn_two_tokens` | Minting, 2 | error | B1 |
+| `refund_burn_with_second_token_name` | Minting, 2 | error | B1 |
+| `refund_burn_with_second_signature` | Minting, 2 | unit | - |
+| `refund_burn_with_unrelated_mint` | Minting, 2 | unit | - |
+| `burn_redeemer_2_on_deposit` | Minting, 2 | error | B1 |
+| `deposit_redeemer_on_burn` | Minting, 0 | error | D1, D3, D4 |
+| `deposit_successful_other_hash` | Minting, 0 | unit | - |
+| `accept_successful_other_hash` | Spending, 1 | unit | - |
+| `accept_burn_other_hash` | Minting, 1 | unit | - |
+| `refund_successful_other_hash` | Spending, 2 | unit | - |
+| `refund_burn_other_hash` | Minting, 2 | unit | - |
+| `spending_with_deposit_redeemer` | Spending, 0 | error | X1 |
+| `spending_redeemer_integer_3` | Spending, I 3 | error | X1 |
+| `minting_redeemer_integer_3` | Minting, I 3 | error | X1 |
+| `spending_redeemer_integer_negative_1` | Spending, I -1 | error | X1 |
+| `minting_redeemer_integer_negative_1` | Minting, I -1 | error | X1 |
+| `spending_redeemer_constructor_0` | Spending, Constr 0 [] | error | X1 |
+| `minting_redeemer_constructor_0` | Minting, Constr 0 [] | error | X1 |
+| `spending_redeemer_constructor_1` | Spending, Constr 1 [] | error | X1 |
+| `minting_redeemer_constructor_1` | Minting, Constr 1 [] | error | X1 |
+| `spending_redeemer_bytestring` | Spending, B #01 | error | X1 |
+| `minting_redeemer_bytestring` | Minting, B #01 | error | X1 |
+| `spending_redeemer_list` | Spending, List [I 1] | error | X1 |
+| `minting_redeemer_list` | Minting, List [I 1] | error | X1 |
+| `spending_redeemer_map` | Spending, Map [(I 1, I 1)] | error | X1 |
+| `minting_redeemer_map` | Minting, Map [(I 1, I 1)] | error | X1 |
+| `rewarding_purpose_redeemer_0` | Rewarding, 0 | error | X2 |
+| `rewarding_purpose_redeemer_1` | Rewarding, 1 | error | X2 |
+| `rewarding_purpose_redeemer_2` | Rewarding, 2 | error | X2 |
+| `not_a_script_context` | - | error | X3 |
 
 ## Measurement Guidelines
 
+### Measured executions
+
+The aggregated metrics cover the five script executions of the lifecycle. These are the `measurements` of `cape-tests.json`:
+
+| Measurement          | Purpose, redeemer | Transaction |
+| -------------------- | ----------------- | ----------- |
+| `deposit_successful` | Minting, 0        | Deposit     |
+| `accept_successful`  | Spending, 1       | Accept      |
+| `accept_burn`        | Minting, 1        | Accept      |
+| `refund_successful`  | Spending, 2       | Refund      |
+| `refund_burn`        | Minting, 2        | Refund      |
+
+The sum is the cost of one deposit and of both endings. An accept transaction pays for `accept_successful` and `accept_burn` together, a refund transaction for `refund_successful` and `refund_burn`.
+
+All other tests are `checks`. A check verifies correctness: its budget is recorded in `metrics.json` under `evaluations`, and it does not feed the aggregates. This holds for the rejected transactions and also for the successful variants of a transaction shape, such as a payment split over two outputs. See [ADR: exclude failure-path evaluations from aggregated metrics](../../doc/adr/20260706-exclude-failure-path-evaluations-from-aggregated-metrics.md).
+
 ### Required Metrics
 
-All submissions must include measurements for **both Accept and Refund Sequences**:
+1. **CPU Units** and **Memory Units**: sum, maximum, minimum and median over the five measurements
+2. **Script Size**: size of the compiled script in bytes
+3. **Term Size**: number of AST nodes of the UPLC term
 
-1. **CPU Units**: Total computational cost (sum of all unique operations: Deposit + Accept + Refund)
-2. **Memory Units**: Peak memory consumption across all operations
-3. **Script Size**: Size of the compiled UPLC validator script in bytes
-4. **Term Size**: Size of the UPLC term representation
+`cape submission measure` produces `metrics.json` in the format of `submissions/TEMPLATE/metrics.schema.json`. [`doc/metrics.md`](../../doc/metrics.md) defines each metric.
 
-### Measurement Method
+## Revision History
 
-**Complete Happy Paths Measurement**:
-
-1. Execute Deposit operation (redeemer = 0), record CPU/Memory
-2. Execute Accept operation (redeemer = 1), record CPU/Memory
-3. Execute Refund operation (redeemer = 2), record CPU/Memory
-
-**Total Performance**: Sum all three unique operations (Deposit counted once)
-
-### Reporting Format
-
-Use the standard metrics schema as defined in `submissions/TEMPLATE/metrics.schema.json`:
-
-```json
-{
-  "scenario": "two_party_escrow",
-  "version": "2.0.0",
-  "measurements": {
-    "cpu_units": {
-      "maximum": 137218582,
-      "sum": 1162842794,
-      "minimum": 24688,
-      "median": 48391310
-    },
-    "memory_units": {
-      "maximum": 511363,
-      "sum": 4329175,
-      "minimum": 132,
-      "median": 178493
-    },
-    "script_size_bytes": 2392,
-    "term_size": 2221,
-    "excluded": {
-      "count": 0,
-      "cpu_units": { "sum": 0, "maximum": 0 },
-      "memory_units": { "sum": 0, "maximum": 0 }
-    }
-  },
-  "evaluations": [
-    {
-      "name": "deposit_successful",
-      "description": "Deposit with buyer signature and exactly 75 ADA should succeed",
-      "cpu_units": 56261599,
-      "memory_units": 207514,
-      "execution_result": "success",
-      "included_in_aggregates": true
-    },
-    {
-      "name": "accept_successful",
-      "description": "Accept with seller signature and 75 ADA to seller should succeed",
-      "cpu_units": 96881280,
-      "memory_units": 365535,
-      "execution_result": "success",
-      "included_in_aggregates": true
-    },
-    {
-      "name": "refund_successful",
-      "description": "Refund after deadline with buyer signature should succeed",
-      "cpu_units": 78453623,
-      "memory_units": 294717,
-      "execution_result": "success",
-      "included_in_aggregates": true
-    }
-  ],
-  "execution_environment": {
-    "evaluator": "PlutusTx.Eval-1.52.0.0"
-  },
-  "timestamp": "2025-01-15T10:30:00Z",
-  "notes": "Measured all happy paths: Deposit + Accept + Refund operations plus comprehensive negative test cases"
-}
-```
-
-**Field Explanations:**
-
-**Measurements Object**: Contains performance metrics across the scenario's `measurements` tests (those not `pending`); `checks` tests are recorded in `evaluations` but excluded from aggregates:
-
-- **cpu_units/memory_units objects**: Multiple aggregation strategies for comprehensive analysis:
-  - `maximum`: Peak resource usage (worst-case performance)
-  - `sum`: Total resources across included evaluations (overall computational work)
-  - `minimum`: Best-case resource usage (optimal performance)
-  - `median`: Typical resource usage (normal performance)
-
-- **script_size_bytes**: Size of the compiled UPLC validator script in bytes
-- **term_size**: Number of AST nodes in the UPLC term representation
-- **excluded**: Diagnostic totals for evaluations excluded from aggregates (attacks, malformed inputs, defensive checks, pending tests)
-
-**Evaluations Array**: Individual test case measurements showing per-evaluation performance data. Each evaluation includes:
-
-- `name`: Test case identifier
-- `description`: What the test validates
-- `cpu_units/memory_units`: Resources consumed for this specific test
-- `execution_result`: "success" for validation pass, "error" for validation failure
-- `included_in_aggregates`: Whether this evaluation feeds the aggregated metrics
-
-**Environment Info**:
-
-- `evaluator`: Tool/version used for UPLC evaluation
-- `timestamp`: ISO-8601 timestamp when measurements were taken
-- `notes`: Optional implementation details or measurement context
+| Revision | Change |
+| --- | --- |
+| 2 | Thread token ([#272](https://github.com/IntersectMBO/UPLC-CAPE/issues/272)). Deposit is a minting action. The datum loses its state field. The script reads its own hash from the context. Key hashes are 28 bytes long. The payment is at least 75 ADA instead of exactly 75 ADA, and value left at the script is no longer rejected. Five measurements instead of ten. |
+| 1 | Deposit, Accept and Refund as spending actions of a script at a fixed placeholder address. |

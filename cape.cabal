@@ -182,6 +182,7 @@ test-suite cape-tests
     Cape.Protocol.ParametersSpec
     Cape.ScriptContextBuilderSpec
     Cape.TestsSpec
+    Cape.TwoPartyEscrowFixturesSpec
 
   build-depends:
     , aeson
@@ -191,6 +192,7 @@ test-suite cape-tests
     , hspec
     , megaparsec
     , mtl
+    , plutus-core
     , plutus-ledger-api
     , plutus-tx
     , plutus-tx:plutus-tx-testlib
