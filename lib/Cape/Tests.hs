@@ -31,6 +31,8 @@ module Cape.Tests (
   AddressSpec (..),
   CredentialSpec (..),
   ScriptInfoSpec (..),
+  PurposeSpec (..),
+  RedeemerSpec (..),
   DataStructureEntry (..),
   ResolvedInput (..),
   loadTestSuite,
@@ -378,7 +380,8 @@ data PatchOperationSpec
     --       "address": {"type": "script", "script_hash": "@escrow_script_hash"},
     --       "value": {"lovelace": 75000000},
     --       "is_own_input": true,
-    --       "datum": "@escrow_datum"
+    --       "datum": "@escrow_datum",
+    --       "reference_script": "@other_script_hash"
     --     }
     --     @
     AddInputUTXOSpec
@@ -387,6 +390,7 @@ data PatchOperationSpec
       ValueSpec
       Bool
       (Maybe AesonTypes.Value)
+      (Maybe Text)
   | -- | Set validity range. @from_time@ is the inclusive lower bound and
     -- @to_time@ the exclusive upper bound, exactly as the ledger translates
     -- a transaction's validity interval; an omitted bound is infinite.
@@ -415,6 +419,19 @@ data PatchOperationSpec
     --     {"op": "add_output_utxo", "address": {"type": "script"}, "value": {"lovelace": 75000000}, "datum": "@datum"}
     --     @
     AddOutputUTXOWithDatumSpec AddressSpec ValueSpec AesonTypes.Value
+  | -- | Add output UTXO that carries a reference script, with or without
+    -- a datum. The reference script is its hash, either a
+    -- @\"\@reference\"@ to a bytestring or a @\"B #hex\"@ literal.
+    --
+    --     JSON example:
+    --     @
+    --     {"op": "add_output_utxo", "address": {"type": "script", "script_hash": "@escrow_script_hash"}, "value": {"lovelace": 75000000}, "datum": "@datum", "reference_script": "@other_script_hash"}
+    --     @
+    AddOutputUTXOWithReferenceScriptSpec
+      AddressSpec
+      ValueSpec
+      (Maybe AesonTypes.Value)
+      Text
   | -- | Remove output UTXO by index
     --
     --     JSON example:
@@ -447,6 +464,56 @@ data PatchOperationSpec
     --     {"op": "set_mint", "assets": [{"currency_symbol": "@escrow_script_hash", "token_name": "@token_name", "quantity": -1}]}
     --     @
     SetMintSpec [AssetSpec]
+  | -- | Set the transaction fee in lovelace
+    --
+    --     JSON example:
+    --     @
+    --     {"op": "set_fee", "lovelace": 214561}
+    --     @
+    SetFeeSpec Integer
+  | -- | Set the transaction id, in the two forms of the id in @utxo_ref@
+    --
+    --     JSON example:
+    --     @
+    --     {"op": "set_tx_id", "tx_id": "#8a7f...03d2"}
+    --     @
+    SetTxIdSpec Text
+  | -- | Replace the redeemers of the transaction: the map that every
+    -- script of the transaction sees, in the given order. It is
+    -- independent of @set_redeemer@, the redeemer of the script under test.
+    --
+    --     JSON example:
+    --     @
+    --     {
+    --       "op": "set_redeemers",
+    --       "redeemers": [
+    --         {"purpose": {"type": "spending", "utxo_ref": "#5e1f...c0a1:0"}, "redeemer": "I 1"},
+    --         {"purpose": {"type": "minting", "policy_id": "@escrow_script_hash"}, "redeemer": "I 1"}
+    --       ]
+    --     }
+    --     @
+    SetRedeemersSpec [RedeemerSpec]
+  deriving stock (Show, Eq)
+
+-- | One entry of the @set_redeemers@ patch.
+data RedeemerSpec = RedeemerSpec
+  { rsPurpose :: PurposeSpec
+  -- ^ The purpose the redeemer belongs to
+  , rsRedeemer :: AesonTypes.Value
+  -- ^ The redeemer, as any BuiltinData value
+  }
+  deriving stock (Show, Eq)
+
+-- | Script purpose of an entry of the @set_redeemers@ patch.
+data PurposeSpec
+  = {- | Spending purpose with the reference of the spent UTXO, in the
+    @utxo_ref@ format
+    -}
+    SpendingPurposeSpec Text
+  | -- | Minting purpose with the policy id
+    MintingPurposeSpec Text
+  | -- | Rewarding purpose with the withdrawing credential
+    RewardingPurposeSpec CredentialSpec
   deriving stock (Show, Eq)
 
 -- | Script purpose specification for the @set_script_info@ patch.
@@ -566,14 +633,19 @@ parseTxOutRef :: Text -> Either String V3.TxOutRef
 parseTxOutRef ref = case Text.splitOn ":" ref of
   [txIdText, indexText] -> do
     index <- Read.readEither (toString indexText)
-    txIdBytes <- case Text.stripPrefix "#" txIdText of
-      Just hex ->
-        first
-          (const $ "Invalid hex transaction id: " <> toString hex)
-          (Base16.decode (TE.encodeUtf8 hex))
-      Nothing -> Right (TE.encodeUtf8 txIdText)
-    pure $ V3.TxOutRef (V3.TxId (Builtins.toBuiltin txIdBytes)) index
+    txId <- parseTxId txIdText
+    pure $ V3.TxOutRef txId index
   _ -> Left "Invalid TxOutRef format, expected 'txid:index'"
+
+-- | Parse a transaction id in the two forms 'parseTxOutRef' describes.
+parseTxId :: Text -> Either String V3.TxId
+parseTxId txIdText =
+  V3.TxId . Builtins.toBuiltin <$> case Text.stripPrefix "#" txIdText of
+    Just hex ->
+      first
+        (const $ "Invalid hex transaction id: " <> toString hex)
+        (Base16.decode (TE.encodeUtf8 hex))
+    Nothing -> Right (TE.encodeUtf8 txIdText)
 
 -- * JSON Parsing Instances
 
@@ -664,6 +736,7 @@ instance FromJSON PatchOperationSpec where
           <*> o .: "value"
           <*> o .: "is_own_input"
           <*> o .:? "datum"
+          <*> o .:? "reference_script"
       "set_valid_range" ->
         SetValidRangeSpec
           <$> o .:? "from_time"
@@ -672,14 +745,39 @@ instance FromJSON PatchOperationSpec where
         address <- o .: "address"
         valueSpec <- o .: "value"
         mDatum <- o .:? "datum"
-        case mDatum of
-          Just datum -> pure $ AddOutputUTXOWithDatumSpec address valueSpec datum
-          Nothing -> pure $ AddOutputUTXOSpec address valueSpec
+        mReferenceScript <- o .:? "reference_script"
+        pure $ case (mReferenceScript, mDatum) of
+          (Just referenceScript, _) ->
+            AddOutputUTXOWithReferenceScriptSpec
+              address
+              valueSpec
+              mDatum
+              referenceScript
+          (Nothing, Just datum) -> AddOutputUTXOWithDatumSpec address valueSpec datum
+          (Nothing, Nothing) -> AddOutputUTXOSpec address valueSpec
       "remove_output_utxo" -> RemoveOutputUTXOSpec <$> o .: "index"
       "set_script_datum" -> SetScriptDatumSpec <$> o .: "datum"
       "set_script_info" -> SetScriptInfoSpec <$> o .: "script_info"
       "set_mint" -> SetMintSpec <$> o .: "assets"
+      "set_fee" -> SetFeeSpec <$> o .: "lovelace"
+      "set_tx_id" -> SetTxIdSpec <$> o .: "tx_id"
+      "set_redeemers" -> SetRedeemersSpec <$> o .: "redeemers"
       _ -> fail $ "Unknown patch operation: " <> toString op
+
+instance FromJSON RedeemerSpec where
+  parseJSON = withObject "RedeemerSpec" \o ->
+    RedeemerSpec
+      <$> o .: "purpose"
+      <*> o .: "redeemer"
+
+instance FromJSON PurposeSpec where
+  parseJSON = withObject "PurposeSpec" \o -> do
+    purpose :: Text <- o .: "type"
+    case purpose of
+      "spending" -> SpendingPurposeSpec <$> o .: "utxo_ref"
+      "minting" -> MintingPurposeSpec <$> o .: "policy_id"
+      "rewarding" -> RewardingPurposeSpec <$> o .: "credential"
+      _ -> fail $ "Unknown purpose type: " <> toString purpose
 
 instance FromJSON ValueSpec where
   parseJSON = withObject "ValueSpec" \o ->
@@ -1223,16 +1321,21 @@ convertPatchOperation dataStructures spec =
     SetRedeemerSpec redeemerValue -> do
       builtinData <- decodeBuiltinDataValue dataStructures "redeemer" redeemerValue
       pure $ SetRedeemer (V3.Redeemer builtinData)
-    AddInputUTXOSpec utxoRefText mAddressSpec valueSpec isOwnInput mDatumValue -> do
-      let resolvedUtxoRef = resolveTextReference dataStructures utxoRefText
-      case parseTxOutRef resolvedUtxoRef of
-        Left parseErr ->
-          die ("Failed to parse UTXO reference: " <> show parseErr)
-        Right txOutRef -> do
-          address <- traverse (parseAddressSpec dataStructures) mAddressSpec
-          value <- buildValue dataStructures valueSpec
-          outputDatum <- resolveOutputDatum dataStructures "input datum" mDatumValue
-          pure $ AddInputUTXO txOutRef address value isOwnInput outputDatum
+    AddInputUTXOSpec
+      utxoRefText
+      mAddressSpec
+      valueSpec
+      isOwnInput
+      mDatumValue
+      mReferenceScript -> do
+        txOutRef <- resolveTxOutRef dataStructures utxoRefText
+        address <- traverse (parseAddressSpec dataStructures) mAddressSpec
+        value <- buildValue dataStructures valueSpec
+        outputDatum <- resolveOutputDatum dataStructures "input datum" mDatumValue
+        referenceScript <-
+          traverse (resolveReferenceScript dataStructures) mReferenceScript
+        pure $
+          AddInputUTXO txOutRef address value isOwnInput outputDatum referenceScript
     SetValidRangeSpec fromTime toTime -> do
       let fromPosix = fmap V3.POSIXTime fromTime
           toPosix = fmap V3.POSIXTime toTime
@@ -1246,6 +1349,17 @@ convertPatchOperation dataStructures spec =
       address <- parseAddressSpec dataStructures addressSpec
       datum <- resolveDatumValue dataStructures "output datum" datumValue
       pure $ AddOutputUTXOWithDatum address value datum
+    AddOutputUTXOWithReferenceScriptSpec
+      addressSpec
+      valueSpec
+      mDatumValue
+      referenceScriptText -> do
+        value <- buildValue dataStructures valueSpec
+        address <- parseAddressSpec dataStructures addressSpec
+        outputDatum <- resolveOutputDatum dataStructures "output datum" mDatumValue
+        referenceScript <- resolveReferenceScript dataStructures referenceScriptText
+        pure . AddOutputUTXORaw $
+          V3.TxOut address value outputDatum (Just referenceScript)
     RemoveOutputUTXOSpec index -> do
       pure $ RemoveOutputUTXO index
     SetScriptDatumSpec datumValue -> do
@@ -1258,6 +1372,44 @@ convertPatchOperation dataStructures spec =
       SetRewardingScript <$> resolveCredential dataStructures credentialSpec
     SetMintSpec assetSpecs ->
       SetMint <$> buildMintValue dataStructures assetSpecs
+    SetFeeSpec lovelace -> pure $ SetFee (V3.Lovelace lovelace)
+    SetTxIdSpec txIdText ->
+      either (die . ("Failed to parse transaction id: " <>)) (pure . SetTxId) $
+        parseTxId txIdText
+    SetRedeemersSpec redeemerSpecs ->
+      SetRedeemers <$> forM redeemerSpecs \RedeemerSpec {rsPurpose, rsRedeemer} ->
+        (,)
+          <$> resolvePurpose dataStructures rsPurpose
+          <*> ( V3.Redeemer
+                  <$> decodeBuiltinDataValue dataStructures "redeemer" rsRedeemer
+              )
+
+-- | Resolve a @utxo_ref@ value, which can be a reference to its text.
+resolveTxOutRef ::
+  HaskellMap.Map Text DataStructureEntry -> Text -> IO V3.TxOutRef
+resolveTxOutRef dataStructures utxoRefText =
+  case parseTxOutRef (resolveTextReference dataStructures utxoRefText) of
+    Left parseErr -> die ("Failed to parse UTXO reference: " <> show parseErr)
+    Right txOutRef -> pure txOutRef
+
+-- | Resolve the hash of a reference script: a bytes reference or literal.
+resolveReferenceScript ::
+  HaskellMap.Map Text DataStructureEntry -> Text -> IO V3.ScriptHash
+resolveReferenceScript dataStructures text =
+  V3.ScriptHash . Builtins.toBuiltin
+    <$> resolveAsBytes dataStructures "reference script" text
+
+-- | Resolve the purpose of a @set_redeemers@ entry.
+resolvePurpose ::
+  HaskellMap.Map Text DataStructureEntry -> PurposeSpec -> IO Purpose
+resolvePurpose dataStructures = \case
+  SpendingPurposeSpec utxoRefText ->
+    SpendingPurpose <$> resolveTxOutRef dataStructures utxoRefText
+  MintingPurposeSpec policyIdText ->
+    MintingPurpose . V3.CurrencySymbol . Builtins.toBuiltin
+      <$> resolveAsBytes dataStructures "policy id" policyIdText
+  RewardingPurposeSpec credentialSpec ->
+    RewardingPurpose <$> resolveCredential dataStructures credentialSpec
 
 {- | Parse AddressSpec into Address with reference resolution.
 

@@ -2,6 +2,7 @@ module Cape.ScriptContextBuilder (
   ScriptContextBuilder (..),
   BaselineType (..),
   PatchOperation (..),
+  Purpose (..),
   BuildError (..),
   buildScriptContext,
   applyPatches,
@@ -30,9 +31,15 @@ data PatchOperation
   | SetRedeemer Redeemer
   | {- | Add an input. Without an address the input sits at the placeholder
     script address when it is the script's own input, and at an empty
-    public key hash otherwise.
+    public key hash otherwise. The last field is its reference script.
     -}
-    AddInputUTXO TxOutRef (Maybe Address) Value Bool OutputDatum
+    AddInputUTXO
+      TxOutRef
+      (Maybe Address)
+      Value
+      Bool
+      OutputDatum
+      (Maybe ScriptHash)
   | AddInputUTXORaw TxInInfo
   | SetValidRange (Maybe POSIXTime) (Maybe POSIXTime)
   | SetValidRangeRaw POSIXTimeRange
@@ -40,6 +47,8 @@ data PatchOperation
   | RemoveOutputUTXO Int
   | SetScriptDatum Datum
   | AddOutputUTXOWithDatum Address Value Datum
+  | -- | Add an output exactly as given, reference script included.
+    AddOutputUTXORaw TxOut
   | {- | Switch the script purpose to minting under the given policy,
     keeping the transaction as it is.
     -}
@@ -50,6 +59,22 @@ data PatchOperation
     SetRewardingScript Credential
   | -- | Replace the whole mint field of the transaction.
     SetMint MintValue
+  | -- | Set the transaction fee.
+    SetFee Lovelace
+  | -- | Set the transaction id.
+    SetTxId TxId
+  | {- | Replace the redeemers of the transaction, keeping the given order.
+    This is the map every script of the transaction sees; it is
+    independent of 'SetRedeemer', the redeemer of the script under test.
+    -}
+    SetRedeemers [(Purpose, Redeemer)]
+  deriving stock (Show, Eq, Generic)
+
+-- | The script purposes a redeemer can be recorded for.
+data Purpose
+  = SpendingPurpose TxOutRef
+  | MintingPurpose CurrencySymbol
+  | RewardingPurpose Credential
   deriving stock (Show, Eq, Generic)
 
 -- | Builder specification combining baseline and patches
@@ -136,7 +161,7 @@ applyPatch ctx patch =
       pure $ ctx {scriptContextTxInfo = updatedTxInfo}
     SetRedeemer redeemer -> do
       pure $ ctx {scriptContextRedeemer = redeemer}
-    AddInputUTXO txOutRef explicitAddr value isOwnInput outputDatum -> do
+    AddInputUTXO txOutRef explicitAddr value isOwnInput outputDatum referenceScript -> do
       let txInfo = scriptContextTxInfo ctx
           -- Use script address for script inputs, dummy address for regular inputs
           defaultAddr =
@@ -149,7 +174,8 @@ applyPatch ctx patch =
                   Nothing
               else Address (PubKeyCredential (PubKeyHash "")) Nothing
           inputAddr = fromMaybe defaultAddr explicitAddr
-          newTxIn = TxInInfo txOutRef (TxOut inputAddr value outputDatum Nothing)
+          newTxIn =
+            TxInInfo txOutRef (TxOut inputAddr value outputDatum referenceScript)
           updatedInputs = List.cons newTxIn (txInfoInputs txInfo)
           updatedTxInfo = txInfo {txInfoInputs = updatedInputs}
           updatedCtx = ctx {scriptContextTxInfo = updatedTxInfo}
@@ -226,6 +252,10 @@ applyPatch ctx patch =
           updatedOutputs = List.cons newTxOut (txInfoOutputs txInfo)
           updatedTxInfo = txInfo {txInfoOutputs = updatedOutputs}
       pure $ ctx {scriptContextTxInfo = updatedTxInfo}
+    AddOutputUTXORaw txOut -> do
+      let txInfo = scriptContextTxInfo ctx
+          updatedOutputs = List.cons txOut (txInfoOutputs txInfo)
+      pure $ ctx {scriptContextTxInfo = txInfo {txInfoOutputs = updatedOutputs}}
     SetMintingScript policyId ->
       pure $ ctx {scriptContextScriptInfo = MintingScript policyId}
     SetRewardingScript credential ->
@@ -233,6 +263,26 @@ applyPatch ctx patch =
     SetMint mint -> do
       let txInfo = scriptContextTxInfo ctx
       pure $ ctx {scriptContextTxInfo = txInfo {txInfoMint = mint}}
+    SetFee fee -> do
+      let txInfo = scriptContextTxInfo ctx
+      pure $ ctx {scriptContextTxInfo = txInfo {txInfoFee = fee}}
+    SetTxId txId -> do
+      let txInfo = scriptContextTxInfo ctx
+      pure $ ctx {scriptContextTxInfo = txInfo {txInfoId = txId}}
+    SetRedeemers redeemers -> do
+      let txInfo = scriptContextTxInfo ctx
+          entries =
+            [(scriptPurpose purpose, redeemer) | (purpose, redeemer) <- redeemers]
+      pure $
+        ctx
+          { scriptContextTxInfo =
+              txInfo {txInfoRedeemers = Map.unsafeFromSOPList entries}
+          }
+  where
+    scriptPurpose = \case
+      SpendingPurpose txOutRef -> Spending txOutRef
+      MintingPurpose policyId -> Minting policyId
+      RewardingPurpose credential -> Rewarding credential
 
 -- JSON instances
 instance FromJSON BaselineType where

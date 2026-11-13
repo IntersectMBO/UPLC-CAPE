@@ -207,7 +207,10 @@ spec = do
               txId = TxId "3333333333333333333333333333333333333333333333333333333333333333"
               txOutRef = TxOutRef txId 5
               value = singleton adaSymbol adaToken 50000000
-              result = applyPatch baseline (AddInputUTXO txOutRef Nothing value False NoOutputDatum)
+              result =
+                applyPatch
+                  baseline
+                  (AddInputUTXO txOutRef Nothing value False NoOutputDatum Nothing)
           case result of
             Right ctx -> do
               -- Should add input to transaction
@@ -225,7 +228,10 @@ spec = do
             txId = TxId "3333333333333333333333333333333333333333333333333333333333333333"
             txOutRef = TxOutRef txId 5
             value = singleton adaSymbol adaToken 75000000
-            result = applyPatch baseline (AddInputUTXO txOutRef Nothing value True NoOutputDatum)
+            result =
+              applyPatch
+                baseline
+                (AddInputUTXO txOutRef Nothing value True NoOutputDatum Nothing)
         case result of
           Right ctx -> do
             -- Should add input to transaction
@@ -243,7 +249,10 @@ spec = do
             txId = TxId "4444444444444444444444444444444444444444444444444444444444444444"
             txOutRef = TxOutRef txId 2
             value = singleton adaSymbol adaToken 100000000
-            result = applyPatch baseline (AddInputUTXO txOutRef Nothing value True NoOutputDatum)
+            result =
+              applyPatch
+                baseline
+                (AddInputUTXO txOutRef Nothing value True NoOutputDatum Nothing)
         case result of
           Right ctx -> case scriptContextScriptInfo ctx of
             SpendingScript _ maybeDatum ->
@@ -260,8 +269,8 @@ spec = do
             value1 = singleton adaSymbol adaToken 25000000
             value2 = singleton adaSymbol adaToken 50000000
             patches =
-              [ AddInputUTXO txOutRef1 Nothing value1 False NoOutputDatum
-              , AddInputUTXO txOutRef2 Nothing value2 True NoOutputDatum
+              [ AddInputUTXO txOutRef1 Nothing value1 False NoOutputDatum Nothing
+              , AddInputUTXO txOutRef2 Nothing value2 True NoOutputDatum Nothing
               ]
             result = applyPatches patches baseline
         case result of
@@ -289,7 +298,7 @@ spec = do
               inputAddresses
                 <$> applyPatch
                   baseline
-                  (AddInputUTXO txOutRef Nothing value isOwnInput NoOutputDatum)
+                  (AddInputUTXO txOutRef Nothing value isOwnInput NoOutputDatum Nothing)
             placeholderScriptHash =
               ScriptHash "1111111111111111111111111111111111111111111111111111111111"
         inputAddress True
@@ -308,7 +317,7 @@ spec = do
             result =
               applyPatch
                 baseline
-                (AddInputUTXO txOutRef (Just address) value True NoOutputDatum)
+                (AddInputUTXO txOutRef (Just address) value True NoOutputDatum Nothing)
         case result of
           Right ctx -> do
             fmap
@@ -332,6 +341,7 @@ spec = do
                     (singleton adaSymbol adaToken 75000000)
                     True
                     NoOutputDatum
+                    Nothing
                 ]
                 (createBaseline SpendingBaseline)
         case (spending, spending >>= (`applyPatch` SetMintingScript policyId)) of
@@ -354,6 +364,7 @@ spec = do
                   (singleton adaSymbol adaToken 75000000)
                   True
                   NoOutputDatum
+                  Nothing
               ]
         applyPatches patches (createBaseline SpendingBaseline)
           `shouldSatisfy` isLeft
@@ -605,6 +616,7 @@ spec = do
                   (singleton adaSymbol adaToken 75000000)
                   True
                   NoOutputDatum
+                  Nothing
               , SetValidRange (Just fromTime) (Just toTime)
               ]
           result = buildScriptContext builder

@@ -328,6 +328,9 @@
             },
             "datum": {
               "$ref": "#/$defs/builtin_data_value"
+            },
+            "reference_script": {
+              "$ref": "#/$defs/reference_script"
             }
           },
           "required": ["op", "utxo_ref", "value", "is_own_input"],
@@ -346,6 +349,9 @@
             },
             "datum": {
               "$ref": "#/$defs/builtin_data_value"
+            },
+            "reference_script": {
+              "$ref": "#/$defs/reference_script"
             }
           },
           "required": ["op", "address", "value"],
@@ -422,6 +428,59 @@
             }
           },
           "required": ["op", "assets"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "description": "Set the transaction fee",
+          "properties": {
+            "op": { "const": "set_fee" },
+            "lovelace": {
+              "type": "integer",
+              "description": "Fee in lovelace",
+              "minimum": 0
+            }
+          },
+          "required": ["op", "lovelace"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "description": "Set the transaction id",
+          "properties": {
+            "op": { "const": "set_tx_id" },
+            "tx_id": {
+              "type": "string",
+              "description": "Transaction id, in the two forms of the txid part of utxo_ref: '#' followed by hex gives the decoded bytes, otherwise the characters themselves are the id",
+              "pattern": "^(#([0-9a-fA-F]{2})+|[^#:][^:]*)$"
+            }
+          },
+          "required": ["op", "tx_id"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "description": "Replace the redeemers of the transaction: the map that every script of the transaction sees, in the given order. Independent of set_redeemer, which sets the redeemer of the script under test.",
+          "properties": {
+            "op": { "const": "set_redeemers" },
+            "redeemers": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "purpose": {
+                    "$ref": "#/$defs/purpose_spec"
+                  },
+                  "redeemer": {
+                    "$ref": "#/$defs/builtin_data_value"
+                  }
+                },
+                "required": ["purpose", "redeemer"],
+                "additionalProperties": false
+              }
+            }
+          },
+          "required": ["op", "redeemers"],
           "additionalProperties": false
         }
       ]
@@ -538,6 +597,56 @@
     "pubkey_hash": {
       "type": "string",
       "description": "Public key hash: an @reference to a bytestring gives those bytes; a literal is taken as its raw ASCII bytes, not as hex"
+    },
+    "reference_script": {
+      "type": "string",
+      "description": "Hash of the reference script the UTXO carries: an @reference to a bytestring or a UPLC text Data literal such as 'B #dddd'"
+    },
+    "purpose_spec": {
+      "type": "object",
+      "description": "Script purpose of a set_redeemers entry",
+      "discriminator": {
+        "propertyName": "type"
+      },
+      "oneOf": [
+        {
+          "type": "object",
+          "description": "Spending purpose",
+          "properties": {
+            "type": { "const": "spending" },
+            "utxo_ref": {
+              "$ref": "#/$defs/utxo_ref"
+            }
+          },
+          "required": ["type", "utxo_ref"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "description": "Minting purpose",
+          "properties": {
+            "type": { "const": "minting" },
+            "policy_id": {
+              "type": "string",
+              "description": "Policy id: an @reference to a bytestring or a UPLC text Data literal such as 'B #dddd'"
+            }
+          },
+          "required": ["type", "policy_id"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "description": "Rewarding purpose",
+          "properties": {
+            "type": { "const": "rewarding" },
+            "credential": {
+              "$ref": "#/$defs/credential_spec"
+            }
+          },
+          "required": ["type", "credential"],
+          "additionalProperties": false
+        }
+      ]
     },
     "script_info_spec": {
       "type": "object",

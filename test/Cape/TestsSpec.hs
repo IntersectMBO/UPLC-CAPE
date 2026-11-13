@@ -12,6 +12,7 @@ import Data.Text qualified as Text
 import PlutusCore.Data (Data (B, I, Map))
 import PlutusLedgerApi.Data.V3 qualified as V3
 import PlutusTx.Builtins qualified as Builtins
+import PlutusTx.Data.AssocMap qualified as DataMap
 import PlutusTx.Data.List qualified as DataList
 import System.Exit (ExitCode (..))
 import Test.Hspec
@@ -306,7 +307,7 @@ spec = do
                   },
                   "is_own_input": true
                 }|]
-                (AddInputUTXOSpec "txid:0" Nothing (ValueSpec 1000000 []) True Nothing)
+                (AddInputUTXOSpec "txid:0" Nothing (ValueSpec 1000000 []) True Nothing Nothing)
             SetValidRangeSpec _ _ ->
               testJSONRoundTrip
                 "{\"op\": \"set_valid_range\", \"from_time\": 1000, \"to_time\": 2000}"
@@ -371,13 +372,79 @@ spec = do
                   }]
                 }|]
                 (SetMintSpec [AssetSpec "@policy" "@token" (-1)])
+            AddOutputUTXOWithReferenceScriptSpec {} ->
+              testJSONRoundTrip
+                [__i|{
+                  "op": "add_output_utxo",
+                  "address": {
+                    "type": "pubkey",
+                    "pubkey_hash": "deadbeef"
+                  },
+                  "value": {
+                    "lovelace": 500000
+                  },
+                  "reference_script": "@script"
+                }|]
+                ( AddOutputUTXOWithReferenceScriptSpec
+                    (pubkeyAddress "deadbeef")
+                    (ValueSpec 500000 [])
+                    Nothing
+                    "@script"
+                )
+            SetFeeSpec _ ->
+              testJSONRoundTrip
+                "{\"op\": \"set_fee\", \"lovelace\": 214561}"
+                (SetFeeSpec 214561)
+            SetTxIdSpec _ ->
+              testJSONRoundTrip
+                "{\"op\": \"set_tx_id\", \"tx_id\": \"#8a7f\"}"
+                (SetTxIdSpec "#8a7f")
+            SetRedeemersSpec _ ->
+              testJSONRoundTrip
+                [__i|{
+                  "op": "set_redeemers",
+                  "redeemers": [
+                    {
+                      "purpose": {
+                        "type": "spending",
+                        "utxo_ref": "\#33:0"
+                      },
+                      "redeemer": "I 1"
+                    },
+                    {
+                      "purpose": {
+                        "type": "minting",
+                        "policy_id": "@policy"
+                      },
+                      "redeemer": "I 1"
+                    },
+                    {
+                      "purpose": {
+                        "type": "rewarding",
+                        "credential": {
+                          "type": "script",
+                          "script_hash": "@policy"
+                        }
+                      },
+                      "redeemer": "I 2"
+                    }
+                  ]
+                }|]
+                ( SetRedeemersSpec
+                    [ RedeemerSpec (SpendingPurposeSpec "#33:0") (Json.String "I 1")
+                    , RedeemerSpec (MintingPurposeSpec "@policy") (Json.String "I 1")
+                    , RedeemerSpec
+                        (RewardingPurposeSpec (ScriptCredentialSpec "@policy"))
+                        (Json.String "I 2")
+                    ]
+                )
 
       mapM_
         testAllConstructors
         [ AddSignatureSpec "test"
         , RemoveSignatureSpec "test"
         , SetRedeemerSpec (Json.String "I 42")
-        , AddInputUTXOSpec "test:0" Nothing (ValueSpec 1000000 []) True Nothing
+        , AddInputUTXOSpec "test:0" Nothing (ValueSpec 1000000 []) True Nothing Nothing
         , SetValidRangeSpec (Just 100) (Just 200)
         , AddOutputUTXOSpec (pubkeyAddress "test") (ValueSpec 1000000 [])
         , RemoveOutputUTXOSpec 0
@@ -388,6 +455,14 @@ spec = do
             (Json.String "I 42")
         , SetScriptInfoSpec (MintingScriptInfoSpec "@policy")
         , SetMintSpec []
+        , AddOutputUTXOWithReferenceScriptSpec
+            (pubkeyAddress "test")
+            (ValueSpec 1000000 [])
+            Nothing
+            "@script"
+        , SetFeeSpec 0
+        , SetTxIdSpec "#00"
+        , SetRedeemersSpec []
         ]
 
     context "value with assets and datum" do
@@ -400,6 +475,7 @@ spec = do
                 (ValueSpec 2000000 [AssetSpec "@cs" "@tn" 1000])
                 True
                 (Just (Json.String "I 42"))
+                Nothing
         case Json.eitherDecode
           [__i|{
             "op": "add_input_utxo",
@@ -464,6 +540,7 @@ spec = do
                 (Just (AddressSpec (ScriptCredentialSpec "@escrow_script_hash") Nothing))
                 (ValueSpec 75000000 [])
                 True
+                Nothing
                 Nothing
             )
 
@@ -673,6 +750,135 @@ spec = do
         V3.RewardingScript credential ->
           credential `shouldBe` V3.ScriptCredential escrowScriptHash
         _ -> expectationFailure "Expected RewardingScript"
+
+  describe "transaction-level fields" do
+    it "sets the fee" do
+      ctx <- patchedContext mempty [__i|[{"op": "set_fee", "lovelace": 214561}]|]
+      V3.txInfoFee (V3.scriptContextTxInfo ctx) `shouldBe` V3.Lovelace 214561
+
+    it "sets a 32-byte transaction id from hex" do
+      let txIdHex = Text.replicate 32 "8a"
+      ctx <-
+        patchedContext mempty [__i|[{"op": "set_tx_id", "tx_id": "\##{txIdHex}"}]|]
+      V3.txInfoId (V3.scriptContextTxInfo ctx)
+        `shouldBe` V3.TxId (Builtins.toBuiltin @ByteString (fromString (replicate 32 '\x8a')))
+
+    it "records the redeemers of the transaction in the given order" do
+      ctx <-
+        patchedContext
+          hashes
+          [__i|[
+            {
+              "op": "set_redeemer",
+              "redeemer": "I 1"
+            },
+            {
+              "op": "set_redeemers",
+              "redeemers": [
+                {
+                  "purpose": {
+                    "type": "spending",
+                    "utxo_ref": "\#33:0"
+                  },
+                  "redeemer": "I 1"
+                },
+                {
+                  "purpose": {
+                    "type": "minting",
+                    "policy_id": "@escrow_script_hash"
+                  },
+                  "redeemer": "I 2"
+                }
+              ]
+            }
+          ]|]
+      let txInfo = V3.scriptContextTxInfo ctx
+          policyId = V3.CurrencySymbol (V3.getScriptHash escrowScriptHash)
+          spentRef = V3.TxOutRef (V3.TxId (Builtins.toBuiltin @ByteString "\x33")) 0
+      V3.toBuiltinData (V3.txInfoRedeemers txInfo)
+        `shouldBe` V3.toBuiltinData
+          ( DataMap.unsafeFromSOPList
+              [ (V3.Spending spentRef, V3.Redeemer (V3.toBuiltinData (1 :: Integer)))
+              , (V3.Minting policyId, V3.Redeemer (V3.toBuiltinData (2 :: Integer)))
+              ]
+          )
+      V3.scriptContextRedeemer ctx
+        `shouldBe` V3.Redeemer (V3.toBuiltinData (1 :: Integer))
+
+  describe "reference scripts" do
+    it "attaches a reference script to an output, with and without a datum" do
+      ctx <-
+        patchedContext
+          hashes
+          [__i|[
+            {
+              "op": "add_output_utxo",
+              "address": {
+                "type": "script",
+                "script_hash": "@escrow_script_hash"
+              },
+              "value": {
+                "lovelace": 75000000
+              },
+              "datum": "I 42",
+              "reference_script": "@escrow_script_hash"
+            },
+            {
+              "op": "add_output_utxo",
+              "address": {
+                "type": "script",
+                "script_hash": "@escrow_script_hash"
+              },
+              "value": {
+                "lovelace": 75000000
+              },
+              "reference_script": "B \#cafe"
+            }
+          ]|]
+      fmap
+        (\out -> (V3.txOutDatum out, V3.txOutReferenceScript out))
+        (contextOutputs ctx)
+        `shouldBe` [
+                     ( V3.NoOutputDatum
+                     , Just (V3.ScriptHash (Builtins.toBuiltin @ByteString "\xca\xfe"))
+                     )
+                   ,
+                     ( V3.OutputDatum (V3.Datum (V3.toBuiltinData (42 :: Integer)))
+                     , Just escrowScriptHash
+                     )
+                   ]
+
+    it "attaches a reference script to an input" do
+      ctx <-
+        patchedContext
+          hashes
+          [__i|[{
+            "op": "add_input_utxo",
+            "utxo_ref": "\#33:0",
+            "value": {
+              "lovelace": 75000000
+            },
+            "is_own_input": true,
+            "reference_script": "@escrow_script_hash"
+          }]|]
+      fmap (V3.txOutReferenceScript . V3.txInInfoResolved) (contextInputs ctx)
+        `shouldBe` [Just escrowScriptHash]
+
+    it "leaves the reference script empty when the field is absent" do
+      ctx <-
+        patchedContext
+          hashes
+          [__i|[{
+            "op": "add_output_utxo",
+            "address": {
+              "type": "script",
+              "script_hash": "@escrow_script_hash"
+            },
+            "value": {
+              "lovelace": 75000000
+            }
+          }]|]
+      fmap V3.txOutReferenceScript (contextOutputs ctx) `shouldBe` [Nothing]
 
   describe "buildMintValue" do
     it "mints and burns with signed quantities and no ADA entry" do
