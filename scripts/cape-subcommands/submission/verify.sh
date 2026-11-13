@@ -60,6 +60,29 @@ resolve_tests_for_scenario() {
   fi
 }
 
+# Scenarios whose cape-tests.json already passed schema validation in this run.
+declare -A TESTS_SCHEMA_OK=()
+
+# Validate a scenario's cape-tests.json against schemas/cape-tests.schema.json.
+# Runs once per scenario: with --all every submission of a scenario shares it.
+validate_tests_schema() {
+  local scenario="$1" tests_file="$2"
+  if [[ -n "${TESTS_SCHEMA_OK[$scenario]:-}" ]]; then
+    return 0
+  fi
+  local schema_tests="$PROJECT_ROOT/schemas/cape-tests.schema.json"
+  local result status
+  result=$(check-jsonschema --output-format json --schemafile "$schema_tests" "$tests_file" 2> /dev/null) || true
+  status=$(echo "$result" | jq -r '.status')
+  if [[ "$status" != "ok" ]]; then
+    cape_error "✗ $(cape_relpath "$tests_file") does not conform to $(basename "$schema_tests")"
+    echo "$result" | jq -r '.errors[]? | "  - \(.path): \(.message)"' >&2 || true
+    return 1
+  fi
+  TESTS_SCHEMA_OK[$scenario]=1
+  cape_debug "$(cape_relpath "$tests_file") conforms to $(basename "$schema_tests")"
+}
+
 verify_submission_dir() {
   local submission_dir="$1"
   local rel_dir
@@ -101,6 +124,7 @@ verify_submission_dir() {
     return 1
   fi
   cape_debug "Using scenario tests: $(cape_relpath "$tests_file")"
+  validate_tests_schema "$scenario" "$tests_file" || return 1
   local tests_flag=("-t" "$tests_file")
 
   local tmp_metrics tmp_stdout

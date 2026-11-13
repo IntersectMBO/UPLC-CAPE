@@ -241,8 +241,8 @@
           "oneOf": [
             {
               "type": "string",
-              "enum": ["spending", "minting", "rewarding", "certifying"],
-              "description": "Direct baseline type"
+              "enum": ["spending"],
+              "description": "Direct baseline type. Other purposes are reached with the set_script_info patch."
             },
             {
               "type": "string",
@@ -276,7 +276,7 @@
             "op": { "const": "add_signature" },
             "pubkey_hash": {
               "type": "string",
-              "description": "PubKey hash as hex string or @reference"
+              "description": "PubKey hash: an @reference to a bytestring gives those bytes; a literal is taken as its raw ASCII bytes, not as hex"
             }
           },
           "required": ["op", "pubkey_hash"],
@@ -289,7 +289,7 @@
             "op": { "const": "remove_signature" },
             "pubkey_hash": {
               "type": "string",
-              "description": "PubKey hash as hex string or @reference"
+              "description": "PubKey hash: an @reference to a bytestring gives those bytes; a literal is taken as its raw ASCII bytes, not as hex"
             }
           },
           "required": ["op", "pubkey_hash"],
@@ -313,15 +313,18 @@
           "properties": {
             "op": { "const": "add_input_utxo" },
             "utxo_ref": {
-              "type": "string",
-              "description": "UTXO reference as 'txid:index'"
+              "$ref": "#/$defs/utxo_ref"
+            },
+            "address": {
+              "$ref": "#/$defs/address_spec",
+              "description": "Address of the input. Omitted: the placeholder script address when is_own_input is true, an empty public key hash otherwise."
             },
             "value": {
               "$ref": "#/$defs/value_spec"
             },
             "is_own_input": {
               "type": "boolean",
-              "description": "Whether this is the UTXO being spent by the script"
+              "description": "Whether this is the UTXO being spent by the script. True also makes it the reference of the spending purpose."
             },
             "datum": {
               "$ref": "#/$defs/builtin_data_value"
@@ -392,6 +395,34 @@
           },
           "required": ["op", "datum"],
           "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "description": "Replace the script purpose and keep the transaction as it is, so one transaction can be evaluated under each purpose it triggers",
+          "properties": {
+            "op": { "const": "set_script_info" },
+            "script_info": {
+              "$ref": "#/$defs/script_info_spec"
+            }
+          },
+          "required": ["op", "script_info"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "description": "Replace the mint field of the transaction. The result has the ledger's shape: policies and token names in ascending byte order, duplicates summed, zero quantities dropped, no ADA entry.",
+          "properties": {
+            "op": { "const": "set_mint" },
+            "assets": {
+              "type": "array",
+              "description": "Minted and burned assets; an empty array gives an empty mint field",
+              "items": {
+                "$ref": "#/$defs/asset_spec"
+              }
+            }
+          },
+          "required": ["op", "assets"],
+          "additionalProperties": false
         }
       ]
     },
@@ -408,68 +439,136 @@
           "type": "array",
           "description": "Native assets included in the value",
           "items": {
-            "type": "object",
-            "properties": {
-              "currency_symbol": {
-                "type": "string",
-                "description": "Policy id as hex string or @reference"
-              },
-              "token_name": {
-                "type": "string",
-                "description": "Token name as hex string or @reference"
-              },
-              "quantity": {
-                "type": "integer",
-                "description": "Asset quantity"
-              }
-            },
-            "required": ["currency_symbol", "token_name", "quantity"],
-            "additionalProperties": false
+            "$ref": "#/$defs/asset_spec"
           }
         }
       },
       "required": ["lovelace"],
       "additionalProperties": false
     },
+    "asset_spec": {
+      "type": "object",
+      "description": "A native asset: policy id, token name and quantity",
+      "properties": {
+        "currency_symbol": {
+          "type": "string",
+          "description": "Policy id: an @reference to a bytestring or a UPLC text Data literal such as 'B #dddd'"
+        },
+        "token_name": {
+          "type": "string",
+          "description": "Token name: an @reference to a bytestring or a UPLC text Data literal such as 'B #7465'"
+        },
+        "quantity": {
+          "type": "integer",
+          "description": "Asset quantity. In set_mint a negative quantity burns."
+        }
+      },
+      "required": ["currency_symbol", "token_name", "quantity"],
+      "additionalProperties": false
+    },
+    "utxo_ref": {
+      "type": "string",
+      "description": "UTXO reference as 'txid:index', or an @reference to a builtin_data string that holds one. A txid with a leading '#' is hex and gives the decoded bytes (64 hex digits make the 32-byte id the ledger produces). Without the prefix the characters themselves are the id (legacy form).",
+      "pattern": "^(@[a-zA-Z_][a-zA-Z0-9_]*|#([0-9a-fA-F]{2})+:[0-9]+|[^#@:][^:]*:[0-9]+)$"
+    },
     "address_spec": {
       "type": "object",
-      "description": "Cardano address specification with structural format",
+      "description": "Cardano address: a payment credential, given by type and its hash field, and an optional staking credential",
       "discriminator": {
         "propertyName": "type"
       },
       "oneOf": [
         {
           "type": "object",
-          "description": "Script address with script hash",
+          "description": "Script address",
           "properties": {
             "type": { "const": "script" },
-            "script_hash": {
-              "type": "string",
-              "description": "Script hash as hex string or 'standard' for all-1s hash",
-              "oneOf": [
-                {
-                  "pattern": "^[0-9a-fA-F]+$"
-                },
-                {
-                  "const": "standard"
-                }
-              ]
-            }
+            "script_hash": { "$ref": "#/$defs/script_hash" },
+            "staking": { "$ref": "#/$defs/credential_spec" }
           },
           "required": ["type", "script_hash"],
           "additionalProperties": false
         },
         {
           "type": "object",
-          "description": "Public key address with pubkey hash",
+          "description": "Public key address",
           "properties": {
             "type": { "const": "pubkey" },
-            "pubkey_hash": {
-              "type": "string",
-              "description": "Public key hash as 64-character hex string or @reference"
-            }
+            "pubkey_hash": { "$ref": "#/$defs/pubkey_hash" },
+            "staking": { "$ref": "#/$defs/credential_spec" }
           },
           "required": ["type", "pubkey_hash"],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "credential_spec": {
+      "type": "object",
+      "description": "Payment or staking credential",
+      "discriminator": {
+        "propertyName": "type"
+      },
+      "oneOf": [
+        {
+          "type": "object",
+          "description": "Script credential",
+          "properties": {
+            "type": { "const": "script" },
+            "script_hash": { "$ref": "#/$defs/script_hash" }
+          },
+          "required": ["type", "script_hash"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "description": "Public key credential",
+          "properties": {
+            "type": { "const": "pubkey" },
+            "pubkey_hash": { "$ref": "#/$defs/pubkey_hash" }
+          },
+          "required": ["type", "pubkey_hash"],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "script_hash": {
+      "type": "string",
+      "description": "Script hash: an @reference to a bytestring gives those bytes; a literal is taken as its raw ASCII bytes, not as hex"
+    },
+    "pubkey_hash": {
+      "type": "string",
+      "description": "Public key hash: an @reference to a bytestring gives those bytes; a literal is taken as its raw ASCII bytes, not as hex"
+    },
+    "script_info_spec": {
+      "type": "object",
+      "description": "Script purpose for the set_script_info patch",
+      "discriminator": {
+        "propertyName": "type"
+      },
+      "oneOf": [
+        {
+          "type": "object",
+          "description": "Minting purpose",
+          "properties": {
+            "type": { "const": "minting" },
+            "policy_id": {
+              "type": "string",
+              "description": "Policy id: an @reference to a bytestring or a UPLC text Data literal such as 'B #dddd'"
+            }
+          },
+          "required": ["type", "policy_id"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "description": "Rewarding purpose",
+          "properties": {
+            "type": { "const": "rewarding" },
+            "credential": {
+              "$ref": "#/$defs/credential_spec"
+            }
+          },
+          "required": ["type", "credential"],
           "additionalProperties": false
         }
       ]

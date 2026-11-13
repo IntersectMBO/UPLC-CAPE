@@ -28,7 +28,11 @@ data PatchOperation
   = AddSignature PubKeyHash
   | RemoveSignature PubKeyHash
   | SetRedeemer Redeemer
-  | AddInputUTXO TxOutRef Value Bool OutputDatum
+  | {- | Add an input. Without an address the input sits at the placeholder
+    script address when it is the script's own input, and at an empty
+    public key hash otherwise.
+    -}
+    AddInputUTXO TxOutRef (Maybe Address) Value Bool OutputDatum
   | AddInputUTXORaw TxInInfo
   | SetValidRange (Maybe POSIXTime) (Maybe POSIXTime)
   | SetValidRangeRaw POSIXTimeRange
@@ -36,6 +40,16 @@ data PatchOperation
   | RemoveOutputUTXO Int
   | SetScriptDatum Datum
   | AddOutputUTXOWithDatum Address Value Datum
+  | {- | Switch the script purpose to minting under the given policy,
+    keeping the transaction as it is.
+    -}
+    SetMintingScript CurrencySymbol
+  | {- | Switch the script purpose to rewarding for the given credential,
+    keeping the transaction as it is.
+    -}
+    SetRewardingScript Credential
+  | -- | Replace the whole mint field of the transaction.
+    SetMint MintValue
   deriving stock (Show, Eq, Generic)
 
 -- | Builder specification combining baseline and patches
@@ -122,10 +136,10 @@ applyPatch ctx patch =
       pure $ ctx {scriptContextTxInfo = updatedTxInfo}
     SetRedeemer redeemer -> do
       pure $ ctx {scriptContextRedeemer = redeemer}
-    AddInputUTXO txOutRef value isOwnInput outputDatum -> do
+    AddInputUTXO txOutRef explicitAddr value isOwnInput outputDatum -> do
       let txInfo = scriptContextTxInfo ctx
           -- Use script address for script inputs, dummy address for regular inputs
-          inputAddr =
+          defaultAddr =
             if isOwnInput
               then
                 Address
@@ -134,6 +148,7 @@ applyPatch ctx patch =
                   )
                   Nothing
               else Address (PubKeyCredential (PubKeyHash "")) Nothing
+          inputAddr = fromMaybe defaultAddr explicitAddr
           newTxIn = TxInInfo txOutRef (TxOut inputAddr value outputDatum Nothing)
           updatedInputs = List.cons newTxIn (txInfoInputs txInfo)
           updatedTxInfo = txInfo {txInfoInputs = updatedInputs}
@@ -211,6 +226,13 @@ applyPatch ctx patch =
           updatedOutputs = List.cons newTxOut (txInfoOutputs txInfo)
           updatedTxInfo = txInfo {txInfoOutputs = updatedOutputs}
       pure $ ctx {scriptContextTxInfo = updatedTxInfo}
+    SetMintingScript policyId ->
+      pure $ ctx {scriptContextScriptInfo = MintingScript policyId}
+    SetRewardingScript credential ->
+      pure $ ctx {scriptContextScriptInfo = RewardingScript credential}
+    SetMint mint -> do
+      let txInfo = scriptContextTxInfo ctx
+      pure $ ctx {scriptContextTxInfo = txInfo {txInfoMint = mint}}
 
 -- JSON instances
 instance FromJSON BaselineType where
