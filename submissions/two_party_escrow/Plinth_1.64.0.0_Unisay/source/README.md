@@ -2,20 +2,20 @@
 
 **Repository**: <https://github.com/Unisay/plinth-cape-submissions>
 
-**Branch**: `plinth-1.64-escrow-30min`
+**Branch**: `plinth-1.64-escrow-thread-token`
 
-**Commit**: `1523b5333557c714ad48307e3ba11d3bf222a04e`
+**Commit**: `7844aef5541c7bfafba535c16a5ee2edd267b552`
 
 **Path**: `lib/TwoPartyEscrow/Monadic.hs` (+ `lib/Plinth/Validator.hs`, `lib/Plinth/Decoder/Named.hs`, `lib/Plinth/Decoder/Named/ScriptContext.hs`, `lib/Plinth/Encoded.hs`)
 
-Two-party escrow validator written in `do`-notation on `Plinth.Validator`, a zero-cost early-termination monad, together with the zero-cost typed decoding DSL `Plinth.Decoder.Named`. `QualifiedDo` keeps `V.do` (decode-or-abort stages) beside `N.do` (Named walk regions); `IxDecoder` tracks the walk cursor in the type via a Peano-indexed fundep class (`FieldAt`), so each `ScriptContext`/datum field is decoded with a single `Constr` walk, and a value that is only compared is never structurally decoded (`Plinth.Encoded`). Retains the escrow security hardening: the escrow input is tied to the script's own payment credential, and the incomplete-withdrawal guard compares the payment credential only (ignoring the staking part). Re-optimised for CAPE metrics schema 2.0.0 (happy-path aggregates only): total_fee 343225 to 111735 lovelace (-67.4%), promoted to the default for this line.
+Revision 2 of the scenario (thread token): one script that runs as a minting policy for the token and as a spending validator for the funds, and reads its own hash from the script context. Written in `do`-notation on `Plinth.Validator`, an early-termination monad, together with the typed decoding DSL `Plinth.Decoder.Named`: each `ScriptContext` field is decoded with a single `Constr` walk, and a value that is only compared is never structurally decoded (`Plinth.Encoded`). The validator finds the escrow output with a module-local unique lookup and reads ADA with `assetAmount`. Inliner budget: `inline-unconditional-growth=28`, kept from revision 1 and not swept again.
 
 ## Reproducing the compilation
 
 ```bash
 git clone https://github.com/Unisay/plinth-cape-submissions
 cd plinth-cape-submissions
-git checkout 1523b5333557c714ad48307e3ba11d3bf222a04e
+git checkout 7844aef5541c7bfafba535c16a5ee2edd267b552
 ```
 
 `CAPE_REPO` must point at the sibling UPLC-CAPE checkout (build aborts if unset); set it in `.envrc.local` (gitignored). Then:

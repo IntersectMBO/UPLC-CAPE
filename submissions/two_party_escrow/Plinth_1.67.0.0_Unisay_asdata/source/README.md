@@ -2,20 +2,22 @@
 
 **Repository**: <https://github.com/Unisay/plinth-cape-submissions>
 
-**Branch**: `plinth-1.67`
+**Branch**: `plinth-1.67-escrow-thread-token`
 
-**Commit**: `f042fed351c510af0dda43daa1b30ce6e9eaf5e3`
+**Commit**: `814c7fc0f262e86ea7fd6a45e9e5b3c54d42374f`
 
 **Path**: `lib/TwoPartyEscrow/AsData.hs` (fixture: `lib/TwoPartyEscrow/Fixture.hs`)
 
-This submission compiles `lib/TwoPartyEscrow/AsData.hs` from the Plinth source repository with the Plinth (plutus-tx-plugin) 1.67.0.0 line. There is no casing build flag to pass: 1.67 removed the plugin's `datatypes=BuiltinCasing` option and the default `SumsOfProducts` enables casing on its own, so the source repo's `preview` flag and its PREVIEW CPP define are gone and one build produces one artifact per scenario. The program needs protocol version 11 (van Rossem) to be accepted on-chain.
+This submission compiles `lib/TwoPartyEscrow/AsData.hs` from the Plinth source repository with the Plinth (plutus-tx-plugin) 1.67.0.0 line. There is no casing build flag to pass: 1.67 removed the plugin's `datatypes=BuiltinCasing` option and the default `SumsOfProducts` enables casing on its own, so the source repo's `preview` flag and its PREVIEW CPP define are gone and there is no separate casing build. The program needs protocol version 11 (van Rossem) to be accepted on-chain.
+
+In revision 2 this module has the validator text of the plain family (`lib/TwoPartyEscrow.hs` of the 1.45 plain line).
 
 ## Reproducing the compilation
 
 ```bash
 git clone https://github.com/Unisay/plinth-cape-submissions
 cd plinth-cape-submissions
-git checkout f042fed351c510af0dda43daa1b30ce6e9eaf5e3
+git checkout 814c7fc0f262e86ea7fd6a45e9e5b3c54d42374f
 ```
 
 `CAPE_REPO` must point at the sibling UPLC-CAPE checkout; the build aborts if the variable is unset. The recommended place is `.envrc.local` (gitignored), e.g.:

@@ -2,22 +2,22 @@
 
 **Repository**: <https://github.com/Unisay/plinth-cape-submissions>
 
-**Branch**: `plinth-1.61-escrow-30min`
+**Branch**: `plinth-1.61-escrow-thread-token`
 
-**Commit**: `d0a9d341a4702ef572c16e223f5cb55857d7a622`
+**Commit**: `e1f91b9a999d1357bbcccebaa15aa61cfb35444f`
 
 **Path**: `lib/TwoPartyEscrow.hs`
 
 This submission compiles `lib/TwoPartyEscrow.hs` from the Plinth source repository with the Plinth (plutus-tx-plugin) 1.61.0.0 line.
 
-The `plinth-1.61` branch builds against a newer plutus-core / plutus-tx-plugin line (BuiltinCasing-aware) than the mainnet baseline.
+The reproduction below uses the preview project file of the source repository, a name kept from the time before the van Rossem hard fork. The artifact runs on the production track: builtin casing has been a mainnet feature since protocol version 11 (2026-07-18).
 
 ## Reproducing the compilation
 
 ```bash
 git clone https://github.com/Unisay/plinth-cape-submissions
 cd plinth-cape-submissions
-git checkout d0a9d341a4702ef572c16e223f5cb55857d7a622
+git checkout e1f91b9a999d1357bbcccebaa15aa61cfb35444f
 ```
 
 `CAPE_REPO` must point at the sibling UPLC-CAPE checkout; the build aborts if the variable is unset. The recommended place is `.envrc.local` (gitignored), e.g.:

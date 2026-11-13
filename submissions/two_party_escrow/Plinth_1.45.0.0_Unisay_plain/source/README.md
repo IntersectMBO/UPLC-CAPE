@@ -2,9 +2,9 @@
 
 **Repository**: <https://github.com/Unisay/plinth-cape-submissions>
 
-**Branch**: `plinth-1.45-plain-escrow-30min`
+**Branch**: `plinth-1.45-plain-escrow-thread-token`
 
-**Commit**: `a865c024bc1dfd1fddf395f46c0393a4d311fbff`
+**Commit**: `0c5402976e192975505a179609725531251b49cc`
 
 **Path**: `lib/TwoPartyEscrow.hs`
 
@@ -17,7 +17,7 @@ Production line; mainnet plutus-core baseline.
 ```bash
 git clone https://github.com/Unisay/plinth-cape-submissions
 cd plinth-cape-submissions
-git checkout a865c024bc1dfd1fddf395f46c0393a4d311fbff
+git checkout 0c5402976e192975505a179609725531251b49cc
 ```
 
 `CAPE_REPO` must point at the sibling UPLC-CAPE checkout; the build aborts if the variable is unset. The recommended place is `.envrc.local` (gitignored), e.g.:

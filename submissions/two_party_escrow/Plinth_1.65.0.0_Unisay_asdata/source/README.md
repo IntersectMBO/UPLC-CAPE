@@ -2,9 +2,9 @@
 
 **Repository**: <https://github.com/Unisay/plinth-cape-submissions>
 
-**Branch**: `plinth-1.65-asdata-escrow-30min`
+**Branch**: `plinth-1.65-asdata-escrow-thread-token`
 
-**Commit**: `b1862dcd32dc69c2cd3cefbaf22f88e981ba76c6`
+**Commit**: `22634af1e1702b3c21ee13adc1a1aaf0b108db29`
 
 **Path**: `lib/TwoPartyEscrow/AsData.hs`
 
@@ -12,12 +12,14 @@ This submission compiles `lib/TwoPartyEscrow/AsData.hs` from the Plinth source r
 
 Production line with Plinth 1.65.0.0 (no BuiltinCasing). Plugin pragmas live in `plinth-cape-submissions.cabal`; validator modules carry no Plinth-specific options.
 
+In revision 2 this module has the validator text of the plain family (`lib/TwoPartyEscrow.hs` of the 1.45 plain line).
+
 ## Reproducing the compilation
 
 ```bash
 git clone https://github.com/Unisay/plinth-cape-submissions
 cd plinth-cape-submissions
-git checkout b1862dcd32dc69c2cd3cefbaf22f88e981ba76c6
+git checkout 22634af1e1702b3c21ee13adc1a1aaf0b108db29
 ```
 
 `CAPE_REPO` must point at the sibling UPLC-CAPE checkout; the build aborts if the variable is unset. The recommended place is `.envrc.local` (gitignored), e.g.:
