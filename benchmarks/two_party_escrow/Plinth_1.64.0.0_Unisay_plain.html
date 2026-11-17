@@ -164,7 +164,7 @@
         <p class="section-lead">Every evaluation measured for this submission, with its stored CPU and memory units. Measurements feed the aggregate bars on the scenario page; checks (failure-path and pending evaluations) are measured but excluded from the aggregates.</p>
 
         <div class="eval-group included">
-            <h3>Measurements <span class="badge badge-included">included in aggregates</span> <span class="group-count">10</span></h3>
+            <h3>Measurements <span class="badge badge-included">included in aggregates</span> <span class="group-count">5</span></h3>
             <p class="group-note">Expected on-chain evaluations that feed this submission's aggregate metrics.</p>
             
             <table class="eval-table">
@@ -181,101 +181,51 @@
                     <tr>
                         <td>
                             <div class="eval-name">deposit_successful</div>
-                            <div class="eval-desc">Deposit with buyer signature and exactly 75 ADA should succeed</div>
+                            <div class="eval-desc">Deposit: the buyer mints the thread token into a new escrow UTXO with 75 ADA</div>
                         </td>
                         <td><span class="eval-result">success</span></td>
-                        <td class="num">40,417,762</td>
-                        <td class="num">154,543</td>
+                        <td class="num">64,538,553</td>
+                        <td class="num">225,857</td>
                     </tr>
                     
                     <tr>
                         <td>
                             <div class="eval-name">accept_successful</div>
-                            <div class="eval-desc">Accept with seller signature and 75 ADA to seller should succeed</div>
+                            <div class="eval-desc">Accept: the seller spends the escrow UTXO, burns the token and receives 75 ADA</div>
                         </td>
                         <td><span class="eval-result">success</span></td>
-                        <td class="num">64,394,150</td>
-                        <td class="num">257,221</td>
+                        <td class="num">75,905,095</td>
+                        <td class="num">268,323</td>
                     </tr>
                     
                     <tr>
                         <td>
-                            <div class="eval-name">accept_with_multiple_inputs</div>
-                            <div class="eval-desc">Accept with multiple script inputs (ambiguous state - expects pass)</div>
+                            <div class="eval-name">accept_burn</div>
+                            <div class="eval-desc">Accept, minting side: the same transaction burns the thread token</div>
                         </td>
                         <td><span class="eval-result">success</span></td>
-                        <td class="num">64,394,150</td>
-                        <td class="num">257,221</td>
-                    </tr>
-                    
-                    <tr>
-                        <td>
-                            <div class="eval-name">accept_with_datum_attached</div>
-                            <div class="eval-desc">Accept with datum attached to seller&#39;s payment (expects pass)</div>
-                        </td>
-                        <td><span class="eval-result">success</span></td>
-                        <td class="num">64,394,150</td>
-                        <td class="num">257,221</td>
-                    </tr>
-                    
-                    <tr>
-                        <td>
-                            <div class="eval-name">accept_with_multiple_outputs_to_seller</div>
-                            <div class="eval-desc">Accept with payment split across two outputs to seller (50+25 ADA - expects pass)</div>
-                        </td>
-                        <td><span class="eval-result">success</span></td>
-                        <td class="num">95,033,943</td>
-                        <td class="num">376,780</td>
+                        <td class="num">16,274,462</td>
+                        <td class="num">59,037</td>
                     </tr>
                     
                     <tr>
                         <td>
                             <div class="eval-name">refund_successful</div>
-                            <div class="eval-desc">Refund after deadline with buyer signature should succeed</div>
+                            <div class="eval-desc">Refund: after the deadline the buyer spends the escrow UTXO, burns the token and receives 75 ADA</div>
                         </td>
                         <td><span class="eval-result">success</span></td>
-                        <td class="num">62,204,761</td>
-                        <td class="num">251,260</td>
+                        <td class="num">82,842,325</td>
+                        <td class="num">299,687</td>
                     </tr>
                     
                     <tr>
                         <td>
-                            <div class="eval-name">refund_after_exact_deadline</div>
-                            <div class="eval-desc">Refund exactly 1 second after deadline expiry should succeed</div>
+                            <div class="eval-name">refund_burn</div>
+                            <div class="eval-desc">Refund, minting side: the same transaction burns the thread token</div>
                         </td>
                         <td><span class="eval-result">success</span></td>
-                        <td class="num">62,204,761</td>
-                        <td class="num">251,260</td>
-                    </tr>
-                    
-                    <tr>
-                        <td>
-                            <div class="eval-name">refund_with_multiple_inputs</div>
-                            <div class="eval-desc">Refund with multiple script inputs should succeed (no single input validation)</div>
-                        </td>
-                        <td><span class="eval-result">success</span></td>
-                        <td class="num">62,204,761</td>
-                        <td class="num">251,260</td>
-                    </tr>
-                    
-                    <tr>
-                        <td>
-                            <div class="eval-name">refund_with_datum_attached</div>
-                            <div class="eval-desc">Refund with datum attached to buyer&#39;s output should succeed</div>
-                        </td>
-                        <td><span class="eval-result">success</span></td>
-                        <td class="num">62,204,761</td>
-                        <td class="num">251,260</td>
-                    </tr>
-                    
-                    <tr>
-                        <td>
-                            <div class="eval-name">refund_with_multiple_outputs_to_buyer</div>
-                            <div class="eval-desc">Refund split across two outputs to buyer (50+25 ADA) should succeed</div>
-                        </td>
-                        <td><span class="eval-result">success</span></td>
-                        <td class="num">89,147,932</td>
-                        <td class="num">359,734</td>
+                        <td class="num">16,390,795</td>
+                        <td class="num">59,438</td>
                     </tr>
                     
                 </tbody>
@@ -284,7 +234,7 @@
         </div>
 
         <div class="eval-group excluded">
-            <h3>Checks <span class="badge badge-excluded">excluded from aggregates</span> <span class="group-count">37</span></h3>
+            <h3>Checks <span class="badge badge-excluded">excluded from aggregates</span> <span class="group-count">131</span></h3>
             <p class="group-note">Failure-path checks and any pending measurements. Their cost is recorded here but does not enter the aggregates.</p>
             
             <table class="eval-table">
@@ -300,372 +250,1312 @@
                     
                     <tr>
                         <td>
-                            <div class="eval-name">redeemer_integer_3</div>
-                            <div class="eval-desc">Validator fails when redeemer is integer 3 (not 0, 1, or 2)</div>
-                        </td>
-                        <td><span class="eval-result">success</span></td>
-                        <td class="num">24,688</td>
-                        <td class="num">132</td>
-                    </tr>
-                    
-                    <tr>
-                        <td>
-                            <div class="eval-name">redeemer_integer_4</div>
-                            <div class="eval-desc">Validator fails when redeemer is integer 4 (not 0, 1, or 2)</div>
-                        </td>
-                        <td><span class="eval-result">success</span></td>
-                        <td class="num">24,688</td>
-                        <td class="num">132</td>
-                    </tr>
-                    
-                    <tr>
-                        <td>
-                            <div class="eval-name">redeemer_integer_99</div>
-                            <div class="eval-desc">Validator fails when redeemer is integer 99 (not 0, 1, or 2)</div>
-                        </td>
-                        <td><span class="eval-result">success</span></td>
-                        <td class="num">24,688</td>
-                        <td class="num">132</td>
-                    </tr>
-                    
-                    <tr>
-                        <td>
-                            <div class="eval-name">redeemer_integer_negative_1</div>
-                            <div class="eval-desc">Validator fails when redeemer is integer -1 (not 0, 1, or 2)</div>
-                        </td>
-                        <td><span class="eval-result">success</span></td>
-                        <td class="num">24,688</td>
-                        <td class="num">132</td>
-                    </tr>
-                    
-                    <tr>
-                        <td>
-                            <div class="eval-name">redeemer_constructor_0</div>
-                            <div class="eval-desc">Validator fails when redeemer is constructor instead of integer</div>
-                        </td>
-                        <td><span class="eval-result">success</span></td>
-                        <td class="num">106,351</td>
-                        <td class="num">164</td>
-                    </tr>
-                    
-                    <tr>
-                        <td>
-                            <div class="eval-name">redeemer_bytestring</div>
-                            <div class="eval-desc">Validator fails when redeemer is bytestring instead of integer</div>
-                        </td>
-                        <td><span class="eval-result">success</span></td>
-                        <td class="num">24,688</td>
-                        <td class="num">132</td>
-                    </tr>
-                    
-                    <tr>
-                        <td>
-                            <div class="eval-name">redeemer_list_with_integers</div>
-                            <div class="eval-desc">Validator fails when redeemer is list [1,2,3] instead of integer</div>
-                        </td>
-                        <td><span class="eval-result">success</span></td>
-                        <td class="num">24,688</td>
-                        <td class="num">132</td>
-                    </tr>
-                    
-                    <tr>
-                        <td>
-                            <div class="eval-name">redeemer_map_with_data</div>
-                            <div class="eval-desc">Validator fails when redeemer is map instead of integer</div>
-                        </td>
-                        <td><span class="eval-result">success</span></td>
-                        <td class="num">24,688</td>
-                        <td class="num">132</td>
-                    </tr>
-                    
-                    <tr>
-                        <td>
-                            <div class="eval-name">simple_builtin_data_redeemer_0</div>
-                            <div class="eval-desc">Test redeemer 0 with simple builtin_data (not script_context)</div>
-                        </td>
-                        <td><span class="eval-result">success</span></td>
-                        <td class="num">24,688</td>
-                        <td class="num">132</td>
-                    </tr>
-                    
-                    <tr>
-                        <td>
                             <div class="eval-name">deposit_without_buyer_signature</div>
-                            <div class="eval-desc">Deposit without buyer signature should fail</div>
+                            <div class="eval-desc">Deposit with no required signer must fail (rule D1)</div>
                         </td>
                         <td><span class="eval-result">success</span></td>
-                        <td class="num">22,119,293</td>
-                        <td class="num">83,882</td>
+                        <td class="num">11,019,886</td>
+                        <td class="num">42,406</td>
                     </tr>
                     
                     <tr>
                         <td>
-                            <div class="eval-name">deposit_with_incorrect_amount</div>
-                            <div class="eval-desc">Deposit with buyer signature but wrong amount (50 ADA) should fail</div>
+                            <div class="eval-name">deposit_signed_by_seller_only</div>
+                            <div class="eval-desc">Deposit signed by the seller instead of the buyer must fail (rule D1)</div>
                         </td>
                         <td><span class="eval-result">success</span></td>
-                        <td class="num">18,348,387</td>
-                        <td class="num">62,733</td>
+                        <td class="num">11,069,083</td>
+                        <td class="num">42,439</td>
                     </tr>
                     
                     <tr>
                         <td>
-                            <div class="eval-name">deposit_to_wrong_address</div>
-                            <div class="eval-desc">Deposit fails when ADA goes to pubkey address instead of script</div>
+                            <div class="eval-name">deposit_with_second_signature</div>
+                            <div class="eval-desc">Deposit with a second required signer next to the buyer succeeds</div>
                         </td>
                         <td><span class="eval-result">success</span></td>
-                        <td class="num">12,444,062</td>
-                        <td class="num">42,343</td>
-                    </tr>
-                    
-                    <tr>
-                        <td>
-                            <div class="eval-name">accept_without_seller_signature</div>
-                            <div class="eval-desc">Accept operation fails when seller signature is missing</div>
-                        </td>
-                        <td><span class="eval-result">success</span></td>
-                        <td class="num">26,030,832</td>
-                        <td class="num">104,457</td>
-                    </tr>
-                    
-                    <tr>
-                        <td>
-                            <div class="eval-name">accept_with_incorrect_payment_amount</div>
-                            <div class="eval-desc">Accept operation fails with wrong payment amount (50 ADA instead of 75 ADA)</div>
-                        </td>
-                        <td><span class="eval-result">success</span></td>
-                        <td class="num">94,345,943</td>
-                        <td class="num">372,480</td>
-                    </tr>
-                    
-                    <tr>
-                        <td>
-                            <div class="eval-name">accept_with_payment_to_wrong_address</div>
-                            <div class="eval-desc">Accept operation fails when payment goes to impostor address instead of seller</div>
-                        </td>
-                        <td><span class="eval-result">success</span></td>
-                        <td class="num">16,428,142</td>
-                        <td class="num">62,824</td>
-                    </tr>
-                    
-                    <tr>
-                        <td>
-                            <div class="eval-name">accept_without_prior_deposit</div>
-                            <div class="eval-desc">Accept operation without valid deposit UTXO (should fail - invalid escrow state)</div>
-                        </td>
-                        <td><span class="eval-result">success</span></td>
-                        <td class="num">16,428,142</td>
-                        <td class="num">62,824</td>
-                    </tr>
-                    
-                    <tr>
-                        <td>
-                            <div class="eval-name">accept_with_partial_payment_to_seller</div>
-                            <div class="eval-desc">Accept with only 50 ADA payment to seller (insufficient - expects fail)</div>
-                        </td>
-                        <td><span class="eval-result">success</span></td>
-                        <td class="num">16,428,142</td>
-                        <td class="num">62,824</td>
-                    </tr>
-                    
-                    <tr>
-                        <td>
-                            <div class="eval-name">accept_with_excess_payment_to_seller</div>
-                            <div class="eval-desc">Accept with 100 ADA payment to seller (excess amount - expects fail due to exact validation)</div>
-                        </td>
-                        <td><span class="eval-result">success</span></td>
-                        <td class="num">16,428,142</td>
-                        <td class="num">62,824</td>
-                    </tr>
-                    
-                    <tr>
-                        <td>
-                            <div class="eval-name">accept_with_remaining_script_output</div>
-                            <div class="eval-desc">Accept while leaving funds in script (should fail - incomplete withdrawal)</div>
-                        </td>
-                        <td><span class="eval-result">success</span></td>
-                        <td class="num">21,895,450</td>
-                        <td class="num">83,243</td>
-                    </tr>
-                    
-                    <tr>
-                        <td>
-                            <div class="eval-name">refund_without_buyer_signature</div>
-                            <div class="eval-desc">Refund without buyer signature should fail</div>
-                        </td>
-                        <td><span class="eval-result">success</span></td>
-                        <td class="num">21,541,606</td>
-                        <td class="num">84,395</td>
-                    </tr>
-                    
-                    <tr>
-                        <td>
-                            <div class="eval-name">refund_with_seller_signature_only</div>
-                            <div class="eval-desc">Refund with seller signature instead of buyer should fail</div>
-                        </td>
-                        <td><span class="eval-result">success</span></td>
-                        <td class="num">15,081,545</td>
-                        <td class="num">62,761</td>
-                    </tr>
-                    
-                    <tr>
-                        <td>
-                            <div class="eval-name">refund_with_impostor_signature</div>
-                            <div class="eval-desc">Refund with impostor signature should fail</div>
-                        </td>
-                        <td><span class="eval-result">success</span></td>
-                        <td class="num">15,081,545</td>
-                        <td class="num">62,761</td>
-                    </tr>
-                    
-                    <tr>
-                        <td>
-                            <div class="eval-name">refund_before_deadline</div>
-                            <div class="eval-desc">Refund before deadline expiry should fail</div>
-                        </td>
-                        <td><span class="eval-result">success</span></td>
-                        <td class="num">15,081,545</td>
-                        <td class="num">62,761</td>
-                    </tr>
-                    
-                    <tr>
-                        <td>
-                            <div class="eval-name">refund_at_exact_deadline</div>
-                            <div class="eval-desc">Refund exactly at deadline should fail (must be strictly after)</div>
-                        </td>
-                        <td><span class="eval-result">success</span></td>
-                        <td class="num">15,081,545</td>
-                        <td class="num">62,761</td>
-                    </tr>
-                    
-                    <tr>
-                        <td>
-                            <div class="eval-name">refund_with_no_time_range</div>
-                            <div class="eval-desc">Refund without time range should fail (missing temporal context)</div>
-                        </td>
-                        <td><span class="eval-result">success</span></td>
-                        <td class="num">10,693,676</td>
-                        <td class="num">42,184</td>
-                    </tr>
-                    
-                    <tr>
-                        <td>
-                            <div class="eval-name">refund_with_incorrect_amount</div>
-                            <div class="eval-desc">Refund with wrong total amount (80 ADA instead of 75) should fail</div>
-                        </td>
-                        <td><span class="eval-result">success</span></td>
-                        <td class="num">15,081,545</td>
-                        <td class="num">62,761</td>
-                    </tr>
-                    
-                    <tr>
-                        <td>
-                            <div class="eval-name">refund_with_partial_refund</div>
-                            <div class="eval-desc">Partial refund (50 ADA to buyer) should fail</div>
-                        </td>
-                        <td><span class="eval-result">success</span></td>
-                        <td class="num">15,081,545</td>
-                        <td class="num">62,761</td>
-                    </tr>
-                    
-                    <tr>
-                        <td>
-                            <div class="eval-name">refund_with_excess_refund</div>
-                            <div class="eval-desc">Excess refund (100 ADA to buyer) should fail</div>
-                        </td>
-                        <td><span class="eval-result">success</span></td>
-                        <td class="num">15,081,545</td>
-                        <td class="num">62,761</td>
-                    </tr>
-                    
-                    <tr>
-                        <td>
-                            <div class="eval-name">refund_to_wrong_address</div>
-                            <div class="eval-desc">Refund to wrong address (seller instead of buyer) should fail</div>
-                        </td>
-                        <td><span class="eval-result">success</span></td>
-                        <td class="num">15,081,545</td>
-                        <td class="num">62,761</td>
-                    </tr>
-                    
-                    <tr>
-                        <td>
-                            <div class="eval-name">refund_with_remaining_script_output</div>
-                            <div class="eval-desc">Refund leaving funds in script should fail (incomplete withdrawal)</div>
-                        </td>
-                        <td><span class="eval-result">success</span></td>
-                        <td class="num">15,081,545</td>
-                        <td class="num">62,761</td>
-                    </tr>
-                    
-                    <tr>
-                        <td>
-                            <div class="eval-name">refund_without_prior_deposit</div>
-                            <div class="eval-desc">Refund without valid deposit UTXO should fail (invalid escrow state)</div>
-                        </td>
-                        <td><span class="eval-result">success</span></td>
-                        <td class="num">15,081,545</td>
-                        <td class="num">62,761</td>
-                    </tr>
-                    
-                    <tr>
-                        <td>
-                            <div class="eval-name">refund_after_accept_should_fail</div>
-                            <div class="eval-desc">Refund attempt after seller has already accepted should fail (state validation)</div>
-                        </td>
-                        <td><span class="eval-result">success</span></td>
-                        <td class="num">15,392,898</td>
-                        <td class="num">62,891</td>
-                    </tr>
-                    
-                    <tr>
-                        <td>
-                            <div class="eval-name">accept_after_refund_should_fail</div>
-                            <div class="eval-desc">Accept attempt after buyer has already refunded should fail (state validation)</div>
-                        </td>
-                        <td><span class="eval-result">success</span></td>
-                        <td class="num">16,638,287</td>
-                        <td class="num">62,952</td>
-                    </tr>
-                    
-                    <tr>
-                        <td>
-                            <div class="eval-name">double_refund_should_fail</div>
-                            <div class="eval-desc">Multiple refund attempts should fail (double spending prevention)</div>
-                        </td>
-                        <td><span class="eval-result">success</span></td>
-                        <td class="num">15,392,898</td>
-                        <td class="num">62,891</td>
-                    </tr>
-                    
-                    <tr>
-                        <td>
-                            <div class="eval-name">double_accept_should_fail</div>
-                            <div class="eval-desc">Multiple accept attempts should fail (double spending prevention)</div>
-                        </td>
-                        <td><span class="eval-result">success</span></td>
-                        <td class="num">16,638,287</td>
-                        <td class="num">62,952</td>
+                        <td class="num">64,971,750</td>
+                        <td class="num">228,290</td>
                     </tr>
                     
                     <tr>
                         <td>
                             <div class="eval-name">deposit_infinite_upper_bound</div>
-                            <div class="eval-desc">Deposit with no upper bound (+inf) should fail; the upper bound must be finite to record the deposit time safely</div>
+                            <div class="eval-desc">Deposit with no upper bound on the validity range must fail: there is no deposit time to record (rule D2)</div>
                         </td>
                         <td><span class="eval-result">success</span></td>
-                        <td class="num">35,105,893</td>
-                        <td class="num">126,256</td>
+                        <td class="num">59,632,963</td>
+                        <td class="num">209,110</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>
+                            <div class="eval-name">deposit_infinite_lower_bound</div>
+                            <div class="eval-desc">Deposit with no lower bound on the validity range succeeds: only the upper bound is read</div>
+                        </td>
+                        <td><span class="eval-result">success</span></td>
+                        <td class="num">64,538,553</td>
+                        <td class="num">225,857</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>
+                            <div class="eval-name">deposit_mints_two_tokens</div>
+                            <div class="eval-desc">Deposit that mints two thread tokens, one of them into the buyer&#39;s change, must fail (rule D3)</div>
+                        </td>
+                        <td><span class="eval-result">success</span></td>
+                        <td class="num">23,085,730</td>
+                        <td class="num">84,169</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>
+                            <div class="eval-name">deposit_mints_second_token_name</div>
+                            <div class="eval-desc">Deposit that mints a second token name under the escrow policy must fail (rule D3)</div>
+                        </td>
+                        <td><span class="eval-result">success</span></td>
+                        <td class="num">23,085,730</td>
+                        <td class="num">84,169</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>
+                            <div class="eval-name">deposit_mints_wrong_token_name</div>
+                            <div class="eval-desc">Deposit that mints a token with another name instead of the thread token must fail (rules D3, D6)</div>
+                        </td>
+                        <td><span class="eval-result">success</span></td>
+                        <td class="num">23,085,730</td>
+                        <td class="num">84,169</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>
+                            <div class="eval-name">deposit_with_unrelated_mint</div>
+                            <div class="eval-desc">Deposit next to mints of two other policies, one sorting before the escrow policy and one after, succeeds</div>
+                        </td>
+                        <td><span class="eval-result">success</span></td>
+                        <td class="num">65,974,933</td>
+                        <td class="num">227,858</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>
+                            <div class="eval-name">deposit_to_pubkey_address</div>
+                            <div class="eval-desc">Deposit whose 75 ADA, token and datum go to a public key address must fail (rule D4)</div>
+                        </td>
+                        <td><span class="eval-result">success</span></td>
+                        <td class="num">36,456,015</td>
+                        <td class="num">126,444</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>
+                            <div class="eval-name">deposit_to_other_script</div>
+                            <div class="eval-desc">Deposit whose escrow output sits at another script must fail: the address must come from the policy id (rule D4)</div>
+                        </td>
+                        <td><span class="eval-result">success</span></td>
+                        <td class="num">36,456,015</td>
+                        <td class="num">126,444</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>
+                            <div class="eval-name">deposit_with_second_script_output</div>
+                            <div class="eval-desc">Deposit with a second output at the escrow script, 2 ADA and no token, must fail (rule D4)</div>
+                        </td>
+                        <td><span class="eval-result">success</span></td>
+                        <td class="num">41,987,777</td>
+                        <td class="num">146,897</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>
+                            <div class="eval-name">deposit_with_second_script_output_staked</div>
+                            <div class="eval-desc">Deposit with a second output at the escrow script under another staking credential must fail: outputs are counted by payment credential (rule D4)</div>
+                        </td>
+                        <td><span class="eval-result">success</span></td>
+                        <td class="num">41,987,777</td>
+                        <td class="num">146,897</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>
+                            <div class="eval-name">deposit_split_across_script_outputs</div>
+                            <div class="eval-desc">Deposit that splits the 75 ADA into two outputs at the escrow script, 50 ADA with the token and 25 ADA, must fail (rule D4)</div>
+                        </td>
+                        <td><span class="eval-result">success</span></td>
+                        <td class="num">41,987,777</td>
+                        <td class="num">146,897</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>
+                            <div class="eval-name">deposit_one_lovelace_short</div>
+                            <div class="eval-desc">Deposit of 74.999999 ADA must fail (rule D5)</div>
+                        </td>
+                        <td><span class="eval-result">success</span></td>
+                        <td class="num">42,753,275</td>
+                        <td class="num">146,961</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>
+                            <div class="eval-name">deposit_one_lovelace_over</div>
+                            <div class="eval-desc">Deposit of 75.000001 ADA must fail (rule D5)</div>
+                        </td>
+                        <td><span class="eval-result">success</span></td>
+                        <td class="num">42,753,275</td>
+                        <td class="num">146,961</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>
+                            <div class="eval-name">deposit_token_to_buyer</div>
+                            <div class="eval-desc">Deposit whose thread token goes to the buyer&#39;s change instead of the escrow output must fail (rule D6)</div>
+                        </td>
+                        <td><span class="eval-result">success</span></td>
+                        <td class="num">47,702,722</td>
+                        <td class="num">167,315</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>
+                            <div class="eval-name">deposit_without_datum</div>
+                            <div class="eval-desc">Deposit whose escrow output has no datum must fail (rule D7)</div>
+                        </td>
+                        <td><span class="eval-result">success</span></td>
+                        <td class="num">61,701,042</td>
+                        <td class="num">209,657</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>
+                            <div class="eval-name">deposit_datum_records_upper_bound</div>
+                            <div class="eval-desc">Deposit whose datum has the exclusive upper bound itself, one millisecond late must fail (rule D7)</div>
+                        </td>
+                        <td><span class="eval-result">success</span></td>
+                        <td class="num">61,946,553</td>
+                        <td class="num">209,657</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>
+                            <div class="eval-name">deposit_datum_one_millisecond_early</div>
+                            <div class="eval-desc">Deposit whose datum has a time one millisecond early must fail (rule D7)</div>
+                        </td>
+                        <td><span class="eval-result">success</span></td>
+                        <td class="num">61,946,553</td>
+                        <td class="num">209,657</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>
+                            <div class="eval-name">deposit_datum_records_lower_bound</div>
+                            <div class="eval-desc">Deposit whose datum has the lower bound of the validity range must fail (rule D7)</div>
+                        </td>
+                        <td><span class="eval-result">success</span></td>
+                        <td class="num">61,946,553</td>
+                        <td class="num">209,657</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>
+                            <div class="eval-name">deposit_datum_with_extra_field</div>
+                            <div class="eval-desc">Deposit whose datum has an extra field must fail (rule D7)</div>
+                        </td>
+                        <td><span class="eval-result">success</span></td>
+                        <td class="num">61,946,553</td>
+                        <td class="num">209,657</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>
+                            <div class="eval-name">deposit_datum_with_state_field</div>
+                            <div class="eval-desc">Deposit whose datum has the state field of the previous revision must fail (rule D7)</div>
+                        </td>
+                        <td><span class="eval-result">success</span></td>
+                        <td class="num">61,946,553</td>
+                        <td class="num">209,657</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>
+                            <div class="eval-name">deposit_datum_wrong_constructor</div>
+                            <div class="eval-desc">Deposit whose datum has constructor 1 must fail (rule D7)</div>
+                        </td>
+                        <td><span class="eval-result">success</span></td>
+                        <td class="num">61,946,553</td>
+                        <td class="num">209,657</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>
+                            <div class="eval-name">deposit_datum_bare_integer</div>
+                            <div class="eval-desc">Deposit whose datum has a bare integer must fail (rule D7)</div>
+                        </td>
+                        <td><span class="eval-result">success</span></td>
+                        <td class="num">61,837,437</td>
+                        <td class="num">209,657</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>
+                            <div class="eval-name">deposit_change_before_escrow_output</div>
+                            <div class="eval-desc">Deposit whose change output comes before the escrow output succeeds</div>
+                        </td>
+                        <td><span class="eval-result">success</span></td>
+                        <td class="num">64,538,553</td>
+                        <td class="num">225,857</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>
+                            <div class="eval-name">deposit_to_staked_script_address</div>
+                            <div class="eval-desc">Deposit to the escrow script with a staking credential succeeds</div>
+                        </td>
+                        <td><span class="eval-result">success</span></td>
+                        <td class="num">64,538,553</td>
+                        <td class="num">225,857</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>
+                            <div class="eval-name">deposit_with_reference_script</div>
+                            <div class="eval-desc">Deposit whose escrow output carries a reference script succeeds</div>
+                        </td>
+                        <td><span class="eval-result">success</span></td>
+                        <td class="num">65,335,721</td>
+                        <td class="num">228,513</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>
+                            <div class="eval-name">deposit_with_output_to_unrelated_script</div>
+                            <div class="eval-desc">Deposit whose first output pays 2 ADA to another script succeeds: only outputs at the escrow script count</div>
+                        </td>
+                        <td><span class="eval-result">success</span></td>
+                        <td class="num">68,235,175</td>
+                        <td class="num">236,942</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>
+                            <div class="eval-name">deposit_with_unrelated_script_input</div>
+                            <div class="eval-desc">Deposit that also spends a UTXO of another script succeeds: Deposit does not restrict the inputs</div>
+                        </td>
+                        <td><span class="eval-result">success</span></td>
+                        <td class="num">64,538,553</td>
+                        <td class="num">225,857</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>
+                            <div class="eval-name">deposit_with_foreign_assets</div>
+                            <div class="eval-desc">Deposit whose escrow output also holds assets of two other policies, one sorting before the escrow policy and one after, succeeds</div>
+                        </td>
+                        <td><span class="eval-result">success</span></td>
+                        <td class="num">65,974,933</td>
+                        <td class="num">227,858</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>
+                            <div class="eval-name">accept_without_seller_signature</div>
+                            <div class="eval-desc">Accept with no required signer must fail (rule A1)</div>
+                        </td>
+                        <td><span class="eval-result">success</span></td>
+                        <td class="num">47,270,434</td>
+                        <td class="num">167,219</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>
+                            <div class="eval-name">accept_signed_by_buyer_only</div>
+                            <div class="eval-desc">Accept signed by the buyer instead of the seller must fail (rule A1)</div>
+                        </td>
+                        <td><span class="eval-result">success</span></td>
+                        <td class="num">47,319,631</td>
+                        <td class="num">167,252</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>
+                            <div class="eval-name">accept_one_lovelace_short</div>
+                            <div class="eval-desc">Accept that pays 74.999999 ADA, with the change going to another wallet, must fail (rule A2)</div>
+                        </td>
+                        <td><span class="eval-result">success</span></td>
+                        <td class="num">70,183,680</td>
+                        <td class="num">250,171</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>
+                            <div class="eval-name">accept_exact_payment</div>
+                            <div class="eval-desc">Accept that pays exactly 75 ADA, with the change going to another wallet, succeeds</div>
+                        </td>
+                        <td><span class="eval-result">success</span></td>
+                        <td class="num">70,247,680</td>
+                        <td class="num">250,571</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>
+                            <div class="eval-name">accept_payment_to_impostor</div>
+                            <div class="eval-desc">Accept that pays the 75 ADA to a third party must fail (rule A2)</div>
+                        </td>
+                        <td><span class="eval-result">success</span></td>
+                        <td class="num">64,094,265</td>
+                        <td class="num">229,719</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>
+                            <div class="eval-name">accept_payment_to_buyer</div>
+                            <div class="eval-desc">Accept that pays the 75 ADA to the buyer must fail (rule A2)</div>
+                        </td>
+                        <td><span class="eval-result">success</span></td>
+                        <td class="num">64,094,265</td>
+                        <td class="num">229,719</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>
+                            <div class="eval-name">accept_payment_in_one_output</div>
+                            <div class="eval-desc">Accept that merges the payment and the change into one output succeeds</div>
+                        </td>
+                        <td><span class="eval-result">success</span></td>
+                        <td class="num">66,237,362</td>
+                        <td class="num">238,090</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>
+                            <div class="eval-name">accept_payment_split</div>
+                            <div class="eval-desc">Accept that pays 50 ADA and 25 ADA in two outputs, with the change going to another wallet, succeeds: the payment is the sum of the outputs</div>
+                        </td>
+                        <td><span class="eval-result">success</span></td>
+                        <td class="num">79,915,413</td>
+                        <td class="num">280,804</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>
+                            <div class="eval-name">accept_payment_to_staked_address</div>
+                            <div class="eval-desc">Accept that pays to an address of the seller with a staking credential succeeds</div>
+                        </td>
+                        <td><span class="eval-result">success</span></td>
+                        <td class="num">70,247,680</td>
+                        <td class="num">250,571</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>
+                            <div class="eval-name">accept_payment_with_datum</div>
+                            <div class="eval-desc">Accept whose payment output carries a datum succeeds</div>
+                        </td>
+                        <td><span class="eval-result">success</span></td>
+                        <td class="num">70,247,680</td>
+                        <td class="num">250,571</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>
+                            <div class="eval-name">accept_payment_with_reference_script</div>
+                            <div class="eval-desc">Accept whose payment output carries a reference script succeeds</div>
+                        </td>
+                        <td><span class="eval-result">success</span></td>
+                        <td class="num">76,303,679</td>
+                        <td class="num">269,651</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>
+                            <div class="eval-name">accept_leftover_at_script</div>
+                            <div class="eval-desc">Accept that also leaves 2 ADA at the escrow script succeeds: after the burn that output is outside the protocol</div>
+                        </td>
+                        <td><span class="eval-result">success</span></td>
+                        <td class="num">79,915,413</td>
+                        <td class="num">280,804</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>
+                            <div class="eval-name">accept_two_escrow_inputs</div>
+                            <div class="eval-desc">Accept that spends two escrow UTXOs and burns one token, the other token leaving with the payment, must fail (rule S2)</div>
+                        </td>
+                        <td><span class="eval-result">success</span></td>
+                        <td class="num">36,427,142</td>
+                        <td class="num">124,628</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>
+                            <div class="eval-name">accept_two_escrow_inputs_one_staked</div>
+                            <div class="eval-desc">Accept that spends a second escrow UTXO under another staking credential must fail: inputs are counted by payment credential (rule S2)</div>
+                        </td>
+                        <td><span class="eval-result">success</span></td>
+                        <td class="num">36,427,142</td>
+                        <td class="num">124,628</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>
+                            <div class="eval-name">accept_two_escrow_inputs_burn_both</div>
+                            <div class="eval-desc">Accept that spends two escrow UTXOs and burns both tokens must fail (rules S2, S3)</div>
+                        </td>
+                        <td><span class="eval-result">success</span></td>
+                        <td class="num">36,427,142</td>
+                        <td class="num">124,628</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>
+                            <div class="eval-name">accept_with_tokenless_script_input</div>
+                            <div class="eval-desc">Accept that also spends a UTXO at the escrow script that holds no token must fail (rule S2)</div>
+                        </td>
+                        <td><span class="eval-result">success</span></td>
+                        <td class="num">36,427,142</td>
+                        <td class="num">124,628</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>
+                            <div class="eval-name">accept_with_unrelated_script_input</div>
+                            <div class="eval-desc">Accept that also spends a UTXO of another script, sorting before the escrow input, succeeds</div>
+                        </td>
+                        <td><span class="eval-result">success</span></td>
+                        <td class="num">82,092,747</td>
+                        <td class="num">284,769</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>
+                            <div class="eval-name">accept_without_burn</div>
+                            <div class="eval-desc">Accept that burns nothing and carries the thread token out with the payment must fail (rule S3)</div>
+                        </td>
+                        <td><span class="eval-result">success</span></td>
+                        <td class="num">35,725,436</td>
+                        <td class="num">125,649</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>
+                            <div class="eval-name">accept_with_mint_instead_of_burn</div>
+                            <div class="eval-desc">Accept in a transaction that mints a thread token instead of burning one must fail (rule S3)</div>
+                        </td>
+                        <td><span class="eval-result">success</span></td>
+                        <td class="num">41,121,726</td>
+                        <td class="num">145,715</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>
+                            <div class="eval-name">accept_burns_token_of_other_policy</div>
+                            <div class="eval-desc">Accept that burns a token named escrow of another policy and keeps the thread token must fail (rule S3)</div>
+                        </td>
+                        <td><span class="eval-result">success</span></td>
+                        <td class="num">36,841,816</td>
+                        <td class="num">125,650</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>
+                            <div class="eval-name">accept_with_unrelated_mint</div>
+                            <div class="eval-desc">Accept next to mints of two other policies, one sorting before the escrow policy and one after, succeeds</div>
+                        </td>
+                        <td><span class="eval-result">success</span></td>
+                        <td class="num">77,341,475</td>
+                        <td class="num">270,324</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>
+                            <div class="eval-name">accept_escrow_at_staked_address</div>
+                            <div class="eval-desc">Accept of an escrow UTXO whose address has a staking credential succeeds</div>
+                        </td>
+                        <td><span class="eval-result">success</span></td>
+                        <td class="num">75,905,095</td>
+                        <td class="num">268,323</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>
+                            <div class="eval-name">accept_escrow_with_reference_script</div>
+                            <div class="eval-desc">Accept of an escrow UTXO that carries a reference script succeeds</div>
+                        </td>
+                        <td><span class="eval-result">success</span></td>
+                        <td class="num">76,303,679</td>
+                        <td class="num">269,651</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>
+                            <div class="eval-name">accept_escrow_with_foreign_assets</div>
+                            <div class="eval-desc">Accept of an escrow UTXO that also holds assets of two other policies succeeds</div>
+                        </td>
+                        <td><span class="eval-result">success</span></td>
+                        <td class="num">75,905,095</td>
+                        <td class="num">268,323</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>
+                            <div class="eval-name">accept_with_second_signature</div>
+                            <div class="eval-desc">Accept with a second required signer next to the seller succeeds</div>
+                        </td>
+                        <td><span class="eval-result">success</span></td>
+                        <td class="num">76,338,292</td>
+                        <td class="num">270,756</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>
+                            <div class="eval-name">accept_escrow_input_first</div>
+                            <div class="eval-desc">Accept whose escrow input is the first input of the transaction succeeds: the script finds its own input by reference</div>
+                        </td>
+                        <td><span class="eval-result">success</span></td>
+                        <td class="num">73,891,466</td>
+                        <td class="num">264,858</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>
+                            <div class="eval-name">refund_without_buyer_signature</div>
+                            <div class="eval-desc">Refund with no required signer must fail (rule R1)</div>
+                        </td>
+                        <td><span class="eval-result">success</span></td>
+                        <td class="num">45,853,138</td>
+                        <td class="num">167,155</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>
+                            <div class="eval-name">refund_signed_by_seller_only</div>
+                            <div class="eval-desc">Refund signed by the seller instead of the buyer must fail (rule R1)</div>
+                        </td>
+                        <td><span class="eval-result">success</span></td>
+                        <td class="num">45,902,335</td>
+                        <td class="num">167,188</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>
+                            <div class="eval-name">refund_one_lovelace_short</div>
+                            <div class="eval-desc">Refund that pays 74.999999 ADA, with the change going to another wallet, must fail (rule R3)</div>
+                        </td>
+                        <td><span class="eval-result">success</span></td>
+                        <td class="num">75,584,910</td>
+                        <td class="num">271,935</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>
+                            <div class="eval-name">refund_exact_payment</div>
+                            <div class="eval-desc">Refund that pays exactly 75 ADA, with the change going to another wallet, succeeds</div>
+                        </td>
+                        <td><span class="eval-result">success</span></td>
+                        <td class="num">77,184,910</td>
+                        <td class="num">281,935</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>
+                            <div class="eval-name">refund_payment_to_impostor</div>
+                            <div class="eval-desc">Refund that pays the 75 ADA to a third party must fail (rule R3)</div>
+                        </td>
+                        <td><span class="eval-result">success</span></td>
+                        <td class="num">69,495,495</td>
+                        <td class="num">251,483</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>
+                            <div class="eval-name">refund_payment_to_seller</div>
+                            <div class="eval-desc">Refund that pays the 75 ADA to the seller must fail (rule R3)</div>
+                        </td>
+                        <td><span class="eval-result">success</span></td>
+                        <td class="num">69,495,495</td>
+                        <td class="num">251,483</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>
+                            <div class="eval-name">refund_payment_in_one_output</div>
+                            <div class="eval-desc">Refund that merges the payment and the change into one output succeeds</div>
+                        </td>
+                        <td><span class="eval-result">success</span></td>
+                        <td class="num">73,174,592</td>
+                        <td class="num">269,454</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>
+                            <div class="eval-name">refund_payment_split</div>
+                            <div class="eval-desc">Refund that pays 50 ADA and 25 ADA in two outputs, with the change going to another wallet, succeeds: the payment is the sum of the outputs</div>
+                        </td>
+                        <td><span class="eval-result">success</span></td>
+                        <td class="num">86,852,643</td>
+                        <td class="num">312,168</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>
+                            <div class="eval-name">refund_payment_to_staked_address</div>
+                            <div class="eval-desc">Refund that pays to an address of the buyer with a staking credential succeeds</div>
+                        </td>
+                        <td><span class="eval-result">success</span></td>
+                        <td class="num">77,184,910</td>
+                        <td class="num">281,935</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>
+                            <div class="eval-name">refund_payment_with_datum</div>
+                            <div class="eval-desc">Refund whose payment output carries a datum succeeds</div>
+                        </td>
+                        <td><span class="eval-result">success</span></td>
+                        <td class="num">77,184,910</td>
+                        <td class="num">281,935</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>
+                            <div class="eval-name">refund_payment_with_reference_script</div>
+                            <div class="eval-desc">Refund whose payment output carries a reference script succeeds</div>
+                        </td>
+                        <td><span class="eval-result">success</span></td>
+                        <td class="num">83,240,909</td>
+                        <td class="num">301,015</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>
+                            <div class="eval-name">refund_leftover_at_script</div>
+                            <div class="eval-desc">Refund that also leaves 2 ADA at the escrow script succeeds: after the burn that output is outside the protocol</div>
+                        </td>
+                        <td><span class="eval-result">success</span></td>
+                        <td class="num">86,852,643</td>
+                        <td class="num">312,168</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>
+                            <div class="eval-name">refund_two_escrow_inputs</div>
+                            <div class="eval-desc">Refund that spends two escrow UTXOs and burns one token, the other token leaving with the payment, must fail (rule S2)</div>
+                        </td>
+                        <td><span class="eval-result">success</span></td>
+                        <td class="num">35,009,846</td>
+                        <td class="num">124,564</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>
+                            <div class="eval-name">refund_two_escrow_inputs_one_staked</div>
+                            <div class="eval-desc">Refund that spends a second escrow UTXO under another staking credential must fail: inputs are counted by payment credential (rule S2)</div>
+                        </td>
+                        <td><span class="eval-result">success</span></td>
+                        <td class="num">35,009,846</td>
+                        <td class="num">124,564</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>
+                            <div class="eval-name">refund_two_escrow_inputs_burn_both</div>
+                            <div class="eval-desc">Refund that spends two escrow UTXOs and burns both tokens must fail (rules S2, S3)</div>
+                        </td>
+                        <td><span class="eval-result">success</span></td>
+                        <td class="num">35,009,846</td>
+                        <td class="num">124,564</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>
+                            <div class="eval-name">refund_with_tokenless_script_input</div>
+                            <div class="eval-desc">Refund that also spends a UTXO at the escrow script that holds no token must fail (rule S2)</div>
+                        </td>
+                        <td><span class="eval-result">success</span></td>
+                        <td class="num">35,009,846</td>
+                        <td class="num">124,564</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>
+                            <div class="eval-name">refund_with_unrelated_script_input</div>
+                            <div class="eval-desc">Refund that also spends a UTXO of another script, sorting before the escrow input, succeeds</div>
+                        </td>
+                        <td><span class="eval-result">success</span></td>
+                        <td class="num">89,029,977</td>
+                        <td class="num">316,133</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>
+                            <div class="eval-name">refund_without_burn</div>
+                            <div class="eval-desc">Refund that burns nothing and carries the thread token out with the payment must fail (rule S3)</div>
+                        </td>
+                        <td><span class="eval-result">success</span></td>
+                        <td class="num">34,308,140</td>
+                        <td class="num">125,585</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>
+                            <div class="eval-name">refund_with_mint_instead_of_burn</div>
+                            <div class="eval-desc">Refund in a transaction that mints a thread token instead of burning one must fail (rule S3)</div>
+                        </td>
+                        <td><span class="eval-result">success</span></td>
+                        <td class="num">36,504,430</td>
+                        <td class="num">125,651</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>
+                            <div class="eval-name">refund_burns_token_of_other_policy</div>
+                            <div class="eval-desc">Refund that burns a token named escrow of another policy and keeps the thread token must fail (rule S3)</div>
+                        </td>
+                        <td><span class="eval-result">success</span></td>
+                        <td class="num">35,424,520</td>
+                        <td class="num">125,586</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>
+                            <div class="eval-name">refund_with_unrelated_mint</div>
+                            <div class="eval-desc">Refund next to mints of two other policies, one sorting before the escrow policy and one after, succeeds</div>
+                        </td>
+                        <td><span class="eval-result">success</span></td>
+                        <td class="num">84,278,705</td>
+                        <td class="num">301,688</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>
+                            <div class="eval-name">refund_escrow_at_staked_address</div>
+                            <div class="eval-desc">Refund of an escrow UTXO whose address has a staking credential succeeds</div>
+                        </td>
+                        <td><span class="eval-result">success</span></td>
+                        <td class="num">82,842,325</td>
+                        <td class="num">299,687</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>
+                            <div class="eval-name">refund_escrow_with_reference_script</div>
+                            <div class="eval-desc">Refund of an escrow UTXO that carries a reference script succeeds</div>
+                        </td>
+                        <td><span class="eval-result">success</span></td>
+                        <td class="num">83,240,909</td>
+                        <td class="num">301,015</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>
+                            <div class="eval-name">refund_escrow_with_foreign_assets</div>
+                            <div class="eval-desc">Refund of an escrow UTXO that also holds assets of two other policies succeeds</div>
+                        </td>
+                        <td><span class="eval-result">success</span></td>
+                        <td class="num">82,842,325</td>
+                        <td class="num">299,687</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>
+                            <div class="eval-name">refund_with_second_signature</div>
+                            <div class="eval-desc">Refund with a second required signer next to the buyer succeeds</div>
+                        </td>
+                        <td><span class="eval-result">success</span></td>
+                        <td class="num">83,275,522</td>
+                        <td class="num">302,120</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>
+                            <div class="eval-name">refund_escrow_input_last</div>
+                            <div class="eval-desc">Refund whose escrow input is the last input of the transaction succeeds: the script finds its own input by reference</div>
+                        </td>
+                        <td><span class="eval-result">success</span></td>
+                        <td class="num">84,855,954</td>
+                        <td class="num">303,152</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>
+                            <div class="eval-name">accept_after_refund_deadline</div>
+                            <div class="eval-desc">Accept after the refund deadline succeeds: the seller can accept for as long as the escrow UTXO exists</div>
+                        </td>
+                        <td><span class="eval-result">success</span></td>
+                        <td class="num">75,905,095</td>
+                        <td class="num">268,323</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>
+                            <div class="eval-name">accept_without_validity_range</div>
+                            <div class="eval-desc">Accept with an unbounded validity range succeeds</div>
+                        </td>
+                        <td><span class="eval-result">success</span></td>
+                        <td class="num">75,905,095</td>
+                        <td class="num">268,323</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>
+                            <div class="eval-name">refund_one_slot_before_deadline</div>
+                            <div class="eval-desc">Refund whose validity range starts at the last slot before the deadline passes must fail (rule R2)</div>
+                        </td>
+                        <td><span class="eval-result">success</span></td>
+                        <td class="num">55,920,861</td>
+                        <td class="num">209,016</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>
+                            <div class="eval-name">refund_at_first_valid_slot</div>
+                            <div class="eval-desc">Refund whose validity range starts at the first slot after the deadline succeeds</div>
+                        </td>
+                        <td><span class="eval-result">success</span></td>
+                        <td class="num">82,842,325</td>
+                        <td class="num">299,687</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>
+                            <div class="eval-name">refund_at_exact_deadline</div>
+                            <div class="eval-desc">Refund whose validity range starts exactly at depositTime + 1800000 must fail: the comparison is strict. Synthetic: this bound is not slot-aligned (rule R2)</div>
+                        </td>
+                        <td><span class="eval-result">success</span></td>
+                        <td class="num">55,920,861</td>
+                        <td class="num">209,016</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>
+                            <div class="eval-name">refund_right_after_deposit</div>
+                            <div class="eval-desc">Refund in the validity range of the accept transaction, long before the deadline, must fail (rule R2)</div>
+                        </td>
+                        <td><span class="eval-result">success</span></td>
+                        <td class="num">55,920,861</td>
+                        <td class="num">209,016</td>
                     </tr>
                     
                     <tr>
                         <td>
                             <div class="eval-name">refund_infinite_lower_bound</div>
-                            <div class="eval-desc">Refund with no lower bound (-inf) should fail; the lower bound must be finite to check the refund deadline</div>
+                            <div class="eval-desc">Refund with no lower bound on the validity range must fail (rule R2)</div>
                         </td>
                         <td><span class="eval-result">success</span></td>
-                        <td class="num">10,693,676</td>
-                        <td class="num">42,184</td>
+                        <td class="num">52,343,440</td>
+                        <td class="num">188,853</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>
+                            <div class="eval-name">refund_infinite_upper_bound</div>
+                            <div class="eval-desc">Refund with no upper bound on the validity range succeeds: only the lower bound is read</div>
+                        </td>
+                        <td><span class="eval-result">success</span></td>
+                        <td class="num">82,842,325</td>
+                        <td class="num">299,687</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>
+                            <div class="eval-name">refund_forged_utxo_without_token</div>
+                            <div class="eval-desc">Refund of a UTXO that was sent to the escrow script without minting, with a datum that claims a deposit one day earlier, must fail: nothing can be burned (rule S3)</div>
+                        </td>
+                        <td><span class="eval-result">success</span></td>
+                        <td class="num">34,308,140</td>
+                        <td class="num">125,585</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>
+                            <div class="eval-name">accept_burn_with_other_burn_redeemer</div>
+                            <div class="eval-desc">The minting side of the accept transaction under redeemer 2 succeeds: both burn redeemers have one rule</div>
+                        </td>
+                        <td><span class="eval-result">success</span></td>
+                        <td class="num">16,390,795</td>
+                        <td class="num">59,438</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>
+                            <div class="eval-name">accept_with_other_burn_redeemer</div>
+                            <div class="eval-desc">Accept whose transaction burns under redeemer 2 succeeds: the spending side does not read the redeemer of the burn</div>
+                        </td>
+                        <td><span class="eval-result">success</span></td>
+                        <td class="num">75,905,095</td>
+                        <td class="num">268,323</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>
+                            <div class="eval-name">accept_burn_two_tokens</div>
+                            <div class="eval-desc">The minting side of a accept transaction that burns two thread tokens must fail (rule B1)</div>
+                        </td>
+                        <td><span class="eval-result">success</span></td>
+                        <td class="num">13,634,462</td>
+                        <td class="num">42,537</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>
+                            <div class="eval-name">accept_burn_with_second_token_name</div>
+                            <div class="eval-desc">The minting side of a accept transaction that burns the thread token and mints a second token name under the escrow policy must fail (rule B1)</div>
+                        </td>
+                        <td><span class="eval-result">success</span></td>
+                        <td class="num">13,634,462</td>
+                        <td class="num">42,537</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>
+                            <div class="eval-name">accept_burn_with_second_signature</div>
+                            <div class="eval-desc">The minting side of a accept transaction with a second required signer succeeds</div>
+                        </td>
+                        <td><span class="eval-result">success</span></td>
+                        <td class="num">16,274,462</td>
+                        <td class="num">59,037</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>
+                            <div class="eval-name">accept_burn_with_unrelated_mint</div>
+                            <div class="eval-desc">The minting side of a accept transaction next to mints of two other policies succeeds</div>
+                        </td>
+                        <td><span class="eval-result">success</span></td>
+                        <td class="num">17,710,842</td>
+                        <td class="num">61,038</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>
+                            <div class="eval-name">burn_redeemer_1_on_deposit</div>
+                            <div class="eval-desc">The deposit transaction under the burn redeemer 1 must fail: it mints (rule B1)</div>
+                        </td>
+                        <td><span class="eval-result">success</span></td>
+                        <td class="num">13,634,462</td>
+                        <td class="num">42,537</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>
+                            <div class="eval-name">refund_burn_with_other_burn_redeemer</div>
+                            <div class="eval-desc">The minting side of the refund transaction under redeemer 1 succeeds: both burn redeemers have one rule</div>
+                        </td>
+                        <td><span class="eval-result">success</span></td>
+                        <td class="num">16,274,462</td>
+                        <td class="num">59,037</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>
+                            <div class="eval-name">refund_with_other_burn_redeemer</div>
+                            <div class="eval-desc">Refund whose transaction burns under redeemer 1 succeeds: the spending side does not read the redeemer of the burn</div>
+                        </td>
+                        <td><span class="eval-result">success</span></td>
+                        <td class="num">82,842,325</td>
+                        <td class="num">299,687</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>
+                            <div class="eval-name">refund_burn_two_tokens</div>
+                            <div class="eval-desc">The minting side of a refund transaction that burns two thread tokens must fail (rule B1)</div>
+                        </td>
+                        <td><span class="eval-result">success</span></td>
+                        <td class="num">13,686,795</td>
+                        <td class="num">42,538</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>
+                            <div class="eval-name">refund_burn_with_second_token_name</div>
+                            <div class="eval-desc">The minting side of a refund transaction that burns the thread token and mints a second token name under the escrow policy must fail (rule B1)</div>
+                        </td>
+                        <td><span class="eval-result">success</span></td>
+                        <td class="num">13,686,795</td>
+                        <td class="num">42,538</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>
+                            <div class="eval-name">refund_burn_with_second_signature</div>
+                            <div class="eval-desc">The minting side of a refund transaction with a second required signer succeeds</div>
+                        </td>
+                        <td><span class="eval-result">success</span></td>
+                        <td class="num">16,390,795</td>
+                        <td class="num">59,438</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>
+                            <div class="eval-name">refund_burn_with_unrelated_mint</div>
+                            <div class="eval-desc">The minting side of a refund transaction next to mints of two other policies succeeds</div>
+                        </td>
+                        <td><span class="eval-result">success</span></td>
+                        <td class="num">17,827,175</td>
+                        <td class="num">61,439</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>
+                            <div class="eval-name">burn_redeemer_2_on_deposit</div>
+                            <div class="eval-desc">The deposit transaction under the burn redeemer 2 must fail: it mints (rule B1)</div>
+                        </td>
+                        <td><span class="eval-result">success</span></td>
+                        <td class="num">13,686,795</td>
+                        <td class="num">42,538</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>
+                            <div class="eval-name">deposit_redeemer_on_burn</div>
+                            <div class="eval-desc">The accept transaction under the deposit redeemer 0 must fail: it burns (rules D1, D3, D4)</div>
+                        </td>
+                        <td><span class="eval-result">success</span></td>
+                        <td class="num">11,069,083</td>
+                        <td class="num">42,439</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>
+                            <div class="eval-name">deposit_successful_other_hash</div>
+                            <div class="eval-desc">Deposit under a second script hash succeeds: the validator reads its own hash from the context</div>
+                        </td>
+                        <td><span class="eval-result">success</span></td>
+                        <td class="num">64,538,553</td>
+                        <td class="num">225,857</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>
+                            <div class="eval-name">accept_successful_other_hash</div>
+                            <div class="eval-desc">Accept under a second script hash succeeds: the validator reads its own hash from the context</div>
+                        </td>
+                        <td><span class="eval-result">success</span></td>
+                        <td class="num">75,905,095</td>
+                        <td class="num">268,323</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>
+                            <div class="eval-name">accept_burn_other_hash</div>
+                            <div class="eval-desc">The minting side of accept under a second script hash succeeds: the validator reads its own hash from the context</div>
+                        </td>
+                        <td><span class="eval-result">success</span></td>
+                        <td class="num">16,274,462</td>
+                        <td class="num">59,037</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>
+                            <div class="eval-name">refund_successful_other_hash</div>
+                            <div class="eval-desc">Refund under a second script hash succeeds: the validator reads its own hash from the context</div>
+                        </td>
+                        <td><span class="eval-result">success</span></td>
+                        <td class="num">82,842,325</td>
+                        <td class="num">299,687</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>
+                            <div class="eval-name">refund_burn_other_hash</div>
+                            <div class="eval-desc">The minting side of refund under a second script hash succeeds: the validator reads its own hash from the context</div>
+                        </td>
+                        <td><span class="eval-result">success</span></td>
+                        <td class="num">16,390,795</td>
+                        <td class="num">59,438</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>
+                            <div class="eval-name">spending_with_deposit_redeemer</div>
+                            <div class="eval-desc">Spending the escrow UTXO with redeemer 0 must fail: Deposit is not a spending action (rule X1)</div>
+                        </td>
+                        <td><span class="eval-result">success</span></td>
+                        <td class="num">5,122,557</td>
+                        <td class="num">20,904</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>
+                            <div class="eval-name">spending_redeemer_integer_3</div>
+                            <div class="eval-desc">Spending the escrow UTXO with integer 3 as the redeemer must fail (rule X1)</div>
+                        </td>
+                        <td><span class="eval-result">success</span></td>
+                        <td class="num">5,122,557</td>
+                        <td class="num">20,904</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>
+                            <div class="eval-name">minting_redeemer_integer_3</div>
+                            <div class="eval-desc">Minting under the escrow policy with integer 3 as the redeemer must fail (rule X1)</div>
+                        </td>
+                        <td><span class="eval-result">success</span></td>
+                        <td class="num">4,766,856</td>
+                        <td class="num">20,744</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>
+                            <div class="eval-name">spending_redeemer_integer_negative_1</div>
+                            <div class="eval-desc">Spending the escrow UTXO with integer -1 as the redeemer must fail (rule X1)</div>
+                        </td>
+                        <td><span class="eval-result">success</span></td>
+                        <td class="num">5,122,557</td>
+                        <td class="num">20,904</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>
+                            <div class="eval-name">minting_redeemer_integer_negative_1</div>
+                            <div class="eval-desc">Minting under the escrow policy with integer -1 as the redeemer must fail (rule X1)</div>
+                        </td>
+                        <td><span class="eval-result">success</span></td>
+                        <td class="num">4,766,856</td>
+                        <td class="num">20,744</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>
+                            <div class="eval-name">spending_redeemer_constructor_0</div>
+                            <div class="eval-desc">Spending the escrow UTXO with constructor 0 instead of an integer as the redeemer must fail (rule X1)</div>
+                        </td>
+                        <td><span class="eval-result">success</span></td>
+                        <td class="num">895,572</td>
+                        <td class="num">516</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>
+                            <div class="eval-name">minting_redeemer_constructor_0</div>
+                            <div class="eval-desc">Minting under the escrow policy with constructor 0 instead of an integer as the redeemer must fail (rule X1)</div>
+                        </td>
+                        <td><span class="eval-result">success</span></td>
+                        <td class="num">895,572</td>
+                        <td class="num">516</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>
+                            <div class="eval-name">spending_redeemer_constructor_1</div>
+                            <div class="eval-desc">Spending the escrow UTXO with constructor 1 instead of an integer as the redeemer must fail (rule X1)</div>
+                        </td>
+                        <td><span class="eval-result">success</span></td>
+                        <td class="num">895,572</td>
+                        <td class="num">516</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>
+                            <div class="eval-name">minting_redeemer_constructor_1</div>
+                            <div class="eval-desc">Minting under the escrow policy with constructor 1 instead of an integer as the redeemer must fail (rule X1)</div>
+                        </td>
+                        <td><span class="eval-result">success</span></td>
+                        <td class="num">895,572</td>
+                        <td class="num">516</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>
+                            <div class="eval-name">spending_redeemer_bytestring</div>
+                            <div class="eval-desc">Spending the escrow UTXO with a bytestring as the redeemer must fail (rule X1)</div>
+                        </td>
+                        <td><span class="eval-result">success</span></td>
+                        <td class="num">895,572</td>
+                        <td class="num">516</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>
+                            <div class="eval-name">minting_redeemer_bytestring</div>
+                            <div class="eval-desc">Minting under the escrow policy with a bytestring as the redeemer must fail (rule X1)</div>
+                        </td>
+                        <td><span class="eval-result">success</span></td>
+                        <td class="num">895,572</td>
+                        <td class="num">516</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>
+                            <div class="eval-name">spending_redeemer_list</div>
+                            <div class="eval-desc">Spending the escrow UTXO with a list as the redeemer must fail (rule X1)</div>
+                        </td>
+                        <td><span class="eval-result">success</span></td>
+                        <td class="num">895,572</td>
+                        <td class="num">516</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>
+                            <div class="eval-name">minting_redeemer_list</div>
+                            <div class="eval-desc">Minting under the escrow policy with a list as the redeemer must fail (rule X1)</div>
+                        </td>
+                        <td><span class="eval-result">success</span></td>
+                        <td class="num">895,572</td>
+                        <td class="num">516</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>
+                            <div class="eval-name">spending_redeemer_map</div>
+                            <div class="eval-desc">Spending the escrow UTXO with a map as the redeemer must fail (rule X1)</div>
+                        </td>
+                        <td><span class="eval-result">success</span></td>
+                        <td class="num">895,572</td>
+                        <td class="num">516</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>
+                            <div class="eval-name">minting_redeemer_map</div>
+                            <div class="eval-desc">Minting under the escrow policy with a map as the redeemer must fail (rule X1)</div>
+                        </td>
+                        <td><span class="eval-result">success</span></td>
+                        <td class="num">895,572</td>
+                        <td class="num">516</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>
+                            <div class="eval-name">rewarding_purpose_redeemer_0</div>
+                            <div class="eval-desc">The deposit transaction under the rewarding purpose with redeemer 0 must fail: the script has no rewarding action. Synthetic: the withdrawals stay empty (rule X2)</div>
+                        </td>
+                        <td><span class="eval-result">success</span></td>
+                        <td class="num">4,662,190</td>
+                        <td class="num">20,742</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>
+                            <div class="eval-name">rewarding_purpose_redeemer_1</div>
+                            <div class="eval-desc">The accept transaction under the rewarding purpose with redeemer 1 must fail: the script has no rewarding action. Synthetic: the withdrawals stay empty (rule X2)</div>
+                        </td>
+                        <td><span class="eval-result">success</span></td>
+                        <td class="num">4,662,190</td>
+                        <td class="num">20,742</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>
+                            <div class="eval-name">rewarding_purpose_redeemer_2</div>
+                            <div class="eval-desc">The refund transaction under the rewarding purpose with redeemer 2 must fail: the script has no rewarding action. Synthetic: the withdrawals stay empty (rule X2)</div>
+                        </td>
+                        <td><span class="eval-result">success</span></td>
+                        <td class="num">4,662,190</td>
+                        <td class="num">20,742</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>
+                            <div class="eval-name">not_a_script_context</div>
+                            <div class="eval-desc">The integer 0 instead of a script context must fail (rule X3)</div>
+                        </td>
+                        <td><span class="eval-result">success</span></td>
+                        <td class="num">24,688</td>
+                        <td class="num">132</td>
                     </tr>
                     
                 </tbody>
@@ -684,7 +1574,7 @@
 
     <div class="footer">
         <p>Generated by UPLC-CAPE • <a href="https://github.com/IntersectMBO/UPLC-CAPE">View on GitHub</a></p>
-        <p class="timestamp">Generated on: 2026-11-17 13:12:55 UTC</p>
+        <p class="timestamp">Generated on: 2026-11-17 13:29:34 UTC</p>
     </div>
 </body>
 </html>
