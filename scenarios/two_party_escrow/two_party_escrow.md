@@ -4,8 +4,6 @@ category: open
 
 # Two-Party Escrow Benchmark Scenario
 
-> **Revision 2: thread token.** Revision 1 measured `Deposit` as a spending action. A deposit transaction only creates the escrow UTXO, so on chain no script ran for it ([#272](https://github.com/IntersectMBO/UPLC-CAPE/issues/272)). Revision 2 makes the deposit a minting action of the same script. The rules, the datum and every fixture changed, so results measured under revision 1 cannot be compared with results under revision 2.
-
 ## Overview
 
 The Two-Party Escrow benchmark is a **real-world smart contract scenario**. A buyer locks 75 ADA for a seller. The seller can take the payment for as long as it is locked. Thirty minutes after the deposit the buyer can take the money back.
@@ -431,10 +429,3 @@ All other tests are `checks`. A check verifies correctness: its budget is record
 3. **Term Size**: number of AST nodes of the UPLC term
 
 `cape submission measure` produces `metrics.json` in the format of `submissions/TEMPLATE/metrics.schema.json`. [`doc/metrics.md`](../../doc/metrics.md) defines each metric.
-
-## Revision History
-
-| Revision | Change |
-| --- | --- |
-| 2 | Thread token ([#272](https://github.com/IntersectMBO/UPLC-CAPE/issues/272)). Deposit is a minting action. The datum loses its state field. The script reads its own hash from the context. Key hashes are 28 bytes long. The payment is at least 75 ADA instead of exactly 75 ADA, and value left at the script is no longer rejected. Five measurements instead of ten. |
-| 1 | Deposit, Accept and Refund as spending actions of a script at a fixed placeholder address. |
