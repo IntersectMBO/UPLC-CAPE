@@ -1,14 +1,14 @@
 # Scalus Two-Party Escrow Implementation
 
-**Source Code**: [TwoPartyEscrow.scala](https://github.com/Unisay/scalus-cape-submissions/blob/3ac57b5af61d5a698cf27e159b28639f86180ead/src/two_party_escrow/TwoPartyEscrow.scala)
+**Source Code**: [TwoPartyEscrow.scala](https://github.com/Unisay/scalus-cape-submissions/blob/39b36f12b1803f2f88529c20e00b573b3c21147b/src/two_party_escrow/TwoPartyEscrow.scala)
 
 **Repository**: <https://github.com/Unisay/scalus-cape-submissions>
 
-**Commit**: `3ac57b5af61d5a698cf27e159b28639f86180ead`
+**Commit**: `39b36f12b1803f2f88529c20e00b573b3c21147b`
 
 **Path**: `src/two_party_escrow/TwoPartyEscrow.scala`
 
-This submission uses Scalus compiler version 0.18.2. Two-party escrow spending validator (`@Compile object TwoPartyEscrowValidator`, `Data -> Unit`) implementing a buyer/seller `Deposited -> Accepted | Refunded` state machine with parameters baked in (buyer/seller keys, 75 ADA price, 30-minute (1800000 ms) deadline). Redeemer is a raw integer (0=Deposit, 1=Accept, 2=Refund); datum is `Constr 0 [state, depositTime]`. Deposit records `depositTime` as the finite upper bound of the validity range (an infinite upper bound is rejected). Targets the van Rossem protocol version (Cardano protocol version 11), live on mainnet since 2026-07-18. Same source as the pre-fork Scalus_0.18.2_Unisay submission it replaces, recompiled with `Options.release.copy(targetProtocolVersion = MajorProtocolVersion.vanRossemPV)`, which enables `case-on-builtins` and batch-6 builtins (e.g. `dropList`). Measured on `PlutusVM.makePlutusV3VM(MajorProtocolVersion.vanRossemPV)`.
+This submission uses Scalus compiler version 0.18.2. Revision 2 of the scenario (thread token): one Plutus V3 script (`@Compile object TwoPartyEscrowValidator`, `Data -> Unit`) that runs as a minting policy for the token and as a spending validator for the funds, and reads its own hash from the script context. Minting with redeemer 0 is the deposit and minting with redeemer 1 or 2 is the burn; spending with redeemer 1 is Accept and with redeemer 2 is Refund. The buyer and seller keys, the 75 ADA price, the 30-minute (1800000 ms) delay and the token name are compiled in; the datum is `Constr 0 [depositTime]`, where `depositTime` is the finite upper bound of the deposit validity range minus one millisecond. The validator enforces one escrow input per spend and sums payments by payment credential. Targets the van Rossem protocol version (Cardano protocol version 11), live on mainnet since 2026-07-18. The validator text is the same as in `Scalus_1.3.0_Unisay`, apart from imports. Compiled with `Options.release.copy(targetProtocolVersion = MajorProtocolVersion.vanRossemPV)` (Scala 3.3.7), which enables `case-on-builtins` and batch-6 builtins (for example `dropList`). The artifact reads token quantities from the `Data` maps and uses no CIP-153 Value builtin.
 
 ## Reproducing the Compilation
 
@@ -22,7 +22,7 @@ This submission uses Scalus compiler version 0.18.2. Two-party escrow spending v
 2. Check out the specific commit:
 
    ```bash
-   git checkout 3ac57b5af61d5a698cf27e159b28639f86180ead
+   git checkout 39b36f12b1803f2f88529c20e00b573b3c21147b
    ```
 
 3. Build the artifact (nix shell `build-scalus`, or per scenario):

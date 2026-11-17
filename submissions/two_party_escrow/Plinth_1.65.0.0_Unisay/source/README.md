@@ -4,18 +4,18 @@
 
 **Branch**: `plinth-1.65-escrow-30min`
 
-**Commit**: `593f3953df06a0087b0b07ddf3549b2350401eb9`
+**Commit**: `1de61b3a7bda3a0f6a0617e0e99c0877a379728d`
 
 **Path**: `lib/TwoPartyEscrow.hs` (+ `lib/Plinth/Decoder.hs`, `lib/Plinth/Decoder/Named.hs`, `lib/Plinth/Encoded.hs`)
 
-The monadic two-party escrow validator with builtin casing plus the `dropList` decoder step. Both have been mainnet features since the van Rossem hard fork (protocol version 11, 2026-07-18).
+The two-party escrow validator (revision 2, thread token) on the Named decoder, with builtin casing plus the `dropList` decoder step. Both have been mainnet features since the van Rossem hard fork (protocol version 11, 2026-07-18).
 
 ## Reproducing the compilation
 
 ```bash
 git clone https://github.com/Unisay/plinth-cape-submissions
 cd plinth-cape-submissions
-git checkout 593f3953df06a0087b0b07ddf3549b2350401eb9
+git checkout 1de61b3a7bda3a0f6a0617e0e99c0877a379728d
 ```
 
 `CAPE_REPO` must point at the sibling UPLC-CAPE checkout; the build aborts if the variable is unset. The recommended place is `.envrc.local` (gitignored), e.g.:

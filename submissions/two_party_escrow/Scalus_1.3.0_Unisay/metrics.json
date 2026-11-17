@@ -1,423 +1,1135 @@
 {
   "evaluations": [
     {
-      "cpu_units": 14845878,
-      "description": "Deposit with buyer signature and exactly 75 ADA should succeed",
+      "cpu_units": 23404887,
+      "description": "Deposit: the buyer mints the thread token into a new escrow UTXO with 75 ADA",
       "execution_result": "success",
       "included_in_aggregates": true,
-      "memory_units": 33314,
+      "memory_units": 63338,
       "name": "deposit_successful"
     },
     {
-      "cpu_units": 18720944,
-      "description": "Accept with seller signature and 75 ADA to seller should succeed",
+      "cpu_units": 30386340,
+      "description": "Accept: the seller spends the escrow UTXO, burns the token and receives 75 ADA",
       "execution_result": "success",
       "included_in_aggregates": true,
-      "memory_units": 47881,
+      "memory_units": 74154,
       "name": "accept_successful"
     },
     {
-      "cpu_units": 18720944,
-      "description": "Accept with multiple script inputs (ambiguous state - expects pass)",
+      "cpu_units": 7206894,
+      "description": "Accept, minting side: the same transaction burns the thread token",
       "execution_result": "success",
       "included_in_aggregates": true,
-      "memory_units": 47881,
-      "name": "accept_with_multiple_inputs"
+      "memory_units": 27898,
+      "name": "accept_burn"
     },
     {
-      "cpu_units": 18720944,
-      "description": "Accept with datum attached to seller's payment (expects pass)",
+      "cpu_units": 31290969,
+      "description": "Refund: after the deadline the buyer spends the escrow UTXO, burns the token and receives 75 ADA",
       "execution_result": "success",
       "included_in_aggregates": true,
-      "memory_units": 47881,
-      "name": "accept_with_datum_attached"
-    },
-    {
-      "cpu_units": 25532069,
-      "description": "Accept with payment split across two outputs to seller (50+25 ADA - expects pass)",
-      "execution_result": "success",
-      "included_in_aggregates": true,
-      "memory_units": 62277,
-      "name": "accept_with_multiple_outputs_to_seller"
-    },
-    {
-      "cpu_units": 21890017,
-      "description": "Refund after deadline with buyer signature should succeed",
-      "execution_result": "success",
-      "included_in_aggregates": true,
-      "memory_units": 56797,
+      "memory_units": 78241,
       "name": "refund_successful"
     },
     {
-      "cpu_units": 21890017,
-      "description": "Refund exactly 1 second after deadline expiry should succeed",
+      "cpu_units": 7291227,
+      "description": "Refund, minting side: the same transaction burns the thread token",
       "execution_result": "success",
       "included_in_aggregates": true,
-      "memory_units": 56797,
-      "name": "refund_after_exact_deadline"
+      "memory_units": 28099,
+      "name": "refund_burn"
     },
     {
-      "cpu_units": 21890017,
-      "description": "Refund with multiple script inputs should succeed (no single input validation)",
-      "execution_result": "success",
-      "included_in_aggregates": true,
-      "memory_units": 56797,
-      "name": "refund_with_multiple_inputs"
-    },
-    {
-      "cpu_units": 21890017,
-      "description": "Refund with datum attached to buyer's output should succeed",
-      "execution_result": "success",
-      "included_in_aggregates": true,
-      "memory_units": 56797,
-      "name": "refund_with_datum_attached"
-    },
-    {
-      "cpu_units": 28701142,
-      "description": "Refund split across two outputs to buyer (50+25 ADA) should succeed",
-      "execution_result": "success",
-      "included_in_aggregates": true,
-      "memory_units": 71193,
-      "name": "refund_with_multiple_outputs_to_buyer"
-    },
-    {
-      "cpu_units": 24688,
-      "description": "Validator fails when redeemer is integer 3 (not 0, 1, or 2)",
+      "cpu_units": 1419183,
+      "description": "Deposit with no required signer must fail (rule D1)",
       "execution_result": "success",
       "included_in_aggregates": false,
-      "memory_units": 132,
-      "name": "redeemer_integer_3"
-    },
-    {
-      "cpu_units": 24688,
-      "description": "Validator fails when redeemer is integer 4 (not 0, 1, or 2)",
-      "execution_result": "success",
-      "included_in_aggregates": false,
-      "memory_units": 132,
-      "name": "redeemer_integer_4"
-    },
-    {
-      "cpu_units": 24688,
-      "description": "Validator fails when redeemer is integer 99 (not 0, 1, or 2)",
-      "execution_result": "success",
-      "included_in_aggregates": false,
-      "memory_units": 132,
-      "name": "redeemer_integer_99"
-    },
-    {
-      "cpu_units": 24688,
-      "description": "Validator fails when redeemer is integer -1 (not 0, 1, or 2)",
-      "execution_result": "success",
-      "included_in_aggregates": false,
-      "memory_units": 132,
-      "name": "redeemer_integer_negative_1"
-    },
-    {
-      "cpu_units": 370455,
-      "description": "Validator fails when redeemer is constructor instead of integer",
-      "execution_result": "success",
-      "included_in_aggregates": false,
-      "memory_units": 200,
-      "name": "redeemer_constructor_0"
-    },
-    {
-      "cpu_units": 24688,
-      "description": "Validator fails when redeemer is bytestring instead of integer",
-      "execution_result": "success",
-      "included_in_aggregates": false,
-      "memory_units": 132,
-      "name": "redeemer_bytestring"
-    },
-    {
-      "cpu_units": 24688,
-      "description": "Validator fails when redeemer is list [1,2,3] instead of integer",
-      "execution_result": "success",
-      "included_in_aggregates": false,
-      "memory_units": 132,
-      "name": "redeemer_list_with_integers"
-    },
-    {
-      "cpu_units": 24688,
-      "description": "Validator fails when redeemer is map instead of integer",
-      "execution_result": "success",
-      "included_in_aggregates": false,
-      "memory_units": 132,
-      "name": "redeemer_map_with_data"
-    },
-    {
-      "cpu_units": 24688,
-      "description": "Test redeemer 0 with simple builtin_data (not script_context)",
-      "execution_result": "success",
-      "included_in_aggregates": false,
-      "memory_units": 132,
-      "name": "simple_builtin_data_redeemer_0"
-    },
-    {
-      "cpu_units": 1277191,
-      "description": "Deposit without buyer signature should fail",
-      "execution_result": "success",
-      "included_in_aggregates": false,
-      "memory_units": 557,
+      "memory_units": 589,
       "name": "deposit_without_buyer_signature"
     },
     {
-      "cpu_units": 9781650,
-      "description": "Deposit with buyer signature but wrong amount (50 ADA) should fail",
+      "cpu_units": 2535563,
+      "description": "Deposit signed by the seller instead of the buyer must fail (rule D1)",
       "execution_result": "success",
       "included_in_aggregates": false,
-      "memory_units": 21236,
-      "name": "deposit_with_incorrect_amount"
+      "memory_units": 590,
+      "name": "deposit_signed_by_seller_only"
     },
     {
-      "cpu_units": 7633953,
-      "description": "Deposit fails when ADA goes to pubkey address instead of script",
+      "cpu_units": 24777267,
+      "description": "Deposit with a second required signer next to the buyer succeeds",
       "execution_result": "success",
       "included_in_aggregates": false,
-      "memory_units": 20915,
-      "name": "deposit_to_wrong_address"
+      "memory_units": 64939,
+      "name": "deposit_with_second_signature"
     },
     {
-      "cpu_units": 2693897,
-      "description": "Accept operation fails when seller signature is missing",
+      "cpu_units": 3496729,
+      "description": "Deposit with no upper bound on the validity range must fail: there is no deposit time to record (rule D2)",
       "execution_result": "success",
       "included_in_aggregates": false,
-      "memory_units": 1038,
-      "name": "accept_without_seller_signature"
-    },
-    {
-      "cpu_units": 18960654,
-      "description": "Accept operation fails with wrong payment amount (50 ADA instead of 75 ADA)",
-      "execution_result": "success",
-      "included_in_aggregates": false,
-      "memory_units": 43131,
-      "name": "accept_with_incorrect_payment_amount"
-    },
-    {
-      "cpu_units": 2025051,
-      "description": "Accept operation fails when payment goes to impostor address instead of seller",
-      "execution_result": "success",
-      "included_in_aggregates": false,
-      "memory_units": 778,
-      "name": "accept_with_payment_to_wrong_address"
-    },
-    {
-      "cpu_units": 2025051,
-      "description": "Accept operation without valid deposit UTXO (should fail - invalid escrow state)",
-      "execution_result": "success",
-      "included_in_aggregates": false,
-      "memory_units": 778,
-      "name": "accept_without_prior_deposit"
-    },
-    {
-      "cpu_units": 2025051,
-      "description": "Accept with only 50 ADA payment to seller (insufficient - expects fail)",
-      "execution_result": "success",
-      "included_in_aggregates": false,
-      "memory_units": 778,
-      "name": "accept_with_partial_payment_to_seller"
-    },
-    {
-      "cpu_units": 2025051,
-      "description": "Accept with 100 ADA payment to seller (excess amount - expects fail due to exact validation)",
-      "execution_result": "success",
-      "included_in_aggregates": false,
-      "memory_units": 778,
-      "name": "accept_with_excess_payment_to_seller"
-    },
-    {
-      "cpu_units": 2025051,
-      "description": "Accept while leaving funds in script (should fail - incomplete withdrawal)",
-      "execution_result": "success",
-      "included_in_aggregates": false,
-      "memory_units": 778,
-      "name": "accept_with_remaining_script_output"
-    },
-    {
-      "cpu_units": 2746230,
-      "description": "Refund without buyer signature should fail",
-      "execution_result": "success",
-      "included_in_aggregates": false,
-      "memory_units": 1039,
-      "name": "refund_without_buyer_signature"
-    },
-    {
-      "cpu_units": 2077384,
-      "description": "Refund with seller signature instead of buyer should fail",
-      "execution_result": "success",
-      "included_in_aggregates": false,
-      "memory_units": 779,
-      "name": "refund_with_seller_signature_only"
-    },
-    {
-      "cpu_units": 2077384,
-      "description": "Refund with impostor signature should fail",
-      "execution_result": "success",
-      "included_in_aggregates": false,
-      "memory_units": 779,
-      "name": "refund_with_impostor_signature"
-    },
-    {
-      "cpu_units": 2077384,
-      "description": "Refund before deadline expiry should fail",
-      "execution_result": "success",
-      "included_in_aggregates": false,
-      "memory_units": 779,
-      "name": "refund_before_deadline"
-    },
-    {
-      "cpu_units": 2077384,
-      "description": "Refund exactly at deadline should fail (must be strictly after)",
-      "execution_result": "success",
-      "included_in_aggregates": false,
-      "memory_units": 779,
-      "name": "refund_at_exact_deadline"
-    },
-    {
-      "cpu_units": 2077384,
-      "description": "Refund without time range should fail (missing temporal context)",
-      "execution_result": "success",
-      "included_in_aggregates": false,
-      "memory_units": 779,
-      "name": "refund_with_no_time_range"
-    },
-    {
-      "cpu_units": 2077384,
-      "description": "Refund with wrong total amount (80 ADA instead of 75) should fail",
-      "execution_result": "success",
-      "included_in_aggregates": false,
-      "memory_units": 779,
-      "name": "refund_with_incorrect_amount"
-    },
-    {
-      "cpu_units": 2077384,
-      "description": "Partial refund (50 ADA to buyer) should fail",
-      "execution_result": "success",
-      "included_in_aggregates": false,
-      "memory_units": 779,
-      "name": "refund_with_partial_refund"
-    },
-    {
-      "cpu_units": 2077384,
-      "description": "Excess refund (100 ADA to buyer) should fail",
-      "execution_result": "success",
-      "included_in_aggregates": false,
-      "memory_units": 779,
-      "name": "refund_with_excess_refund"
-    },
-    {
-      "cpu_units": 2077384,
-      "description": "Refund to wrong address (seller instead of buyer) should fail",
-      "execution_result": "success",
-      "included_in_aggregates": false,
-      "memory_units": 779,
-      "name": "refund_to_wrong_address"
-    },
-    {
-      "cpu_units": 2077384,
-      "description": "Refund leaving funds in script should fail (incomplete withdrawal)",
-      "execution_result": "success",
-      "included_in_aggregates": false,
-      "memory_units": 779,
-      "name": "refund_with_remaining_script_output"
-    },
-    {
-      "cpu_units": 2077384,
-      "description": "Refund without valid deposit UTXO should fail (invalid escrow state)",
-      "execution_result": "success",
-      "included_in_aggregates": false,
-      "memory_units": 779,
-      "name": "refund_without_prior_deposit"
-    },
-    {
-      "cpu_units": 2243867,
-      "description": "Refund attempt after seller has already accepted should fail (state validation)",
-      "execution_result": "success",
-      "included_in_aggregates": false,
-      "memory_units": 843,
-      "name": "refund_after_accept_should_fail"
-    },
-    {
-      "cpu_units": 2191534,
-      "description": "Accept attempt after buyer has already refunded should fail (state validation)",
-      "execution_result": "success",
-      "included_in_aggregates": false,
-      "memory_units": 842,
-      "name": "accept_after_refund_should_fail"
-    },
-    {
-      "cpu_units": 2243867,
-      "description": "Multiple refund attempts should fail (double spending prevention)",
-      "execution_result": "success",
-      "included_in_aggregates": false,
-      "memory_units": 843,
-      "name": "double_refund_should_fail"
-    },
-    {
-      "cpu_units": 2191534,
-      "description": "Multiple accept attempts should fail (double spending prevention)",
-      "execution_result": "success",
-      "included_in_aggregates": false,
-      "memory_units": 842,
-      "name": "double_accept_should_fail"
-    },
-    {
-      "cpu_units": 8965328,
-      "description": "Deposit with no upper bound (+inf) should fail; the upper bound must be finite to record the deposit time safely",
-      "execution_result": "success",
-      "included_in_aggregates": false,
-      "memory_units": 21367,
+      "memory_units": 914,
       "name": "deposit_infinite_upper_bound"
     },
     {
-      "cpu_units": 8228878,
-      "description": "Refund with no lower bound (-inf) should fail; the lower bound must be finite to check the refund deadline",
+      "cpu_units": 23404887,
+      "description": "Deposit with no lower bound on the validity range succeeds: only the upper bound is read",
       "execution_result": "success",
       "included_in_aggregates": false,
-      "memory_units": 21430,
+      "memory_units": 63338,
+      "name": "deposit_infinite_lower_bound"
+    },
+    {
+      "cpu_units": 8775834,
+      "description": "Deposit that mints two thread tokens, one of them into the buyer's change, must fail (rule D3)",
+      "execution_result": "success",
+      "included_in_aggregates": false,
+      "memory_units": 21820,
+      "name": "deposit_mints_two_tokens"
+    },
+    {
+      "cpu_units": 8478479,
+      "description": "Deposit that mints a second token name under the escrow policy must fail (rule D3)",
+      "execution_result": "success",
+      "included_in_aggregates": false,
+      "memory_units": 21722,
+      "name": "deposit_mints_second_token_name"
+    },
+    {
+      "cpu_units": 8537944,
+      "description": "Deposit that mints a token with another name instead of the thread token must fail (rules D3, D6)",
+      "execution_result": "success",
+      "included_in_aggregates": false,
+      "memory_units": 21723,
+      "name": "deposit_mints_wrong_token_name"
+    },
+    {
+      "cpu_units": 24159521,
+      "description": "Deposit next to mints of two other policies, one sorting before the escrow policy and one after, succeeds",
+      "execution_result": "success",
+      "included_in_aggregates": false,
+      "memory_units": 67504,
+      "name": "deposit_with_unrelated_mint"
+    },
+    {
+      "cpu_units": 15895470,
+      "description": "Deposit whose 75 ADA, token and datum go to a public key address must fail (rule D4)",
+      "execution_result": "success",
+      "included_in_aggregates": false,
+      "memory_units": 42498,
+      "name": "deposit_to_pubkey_address"
+    },
+    {
+      "cpu_units": 15895470,
+      "description": "Deposit whose escrow output sits at another script must fail: the address must come from the policy id (rule D4)",
+      "execution_result": "success",
+      "included_in_aggregates": false,
+      "memory_units": 42498,
+      "name": "deposit_to_other_script"
+    },
+    {
+      "cpu_units": 17824935,
+      "description": "Deposit with a second output at the escrow script, 2 ADA and no token, must fail (rule D4)",
+      "execution_result": "success",
+      "included_in_aggregates": false,
+      "memory_units": 42819,
+      "name": "deposit_with_second_script_output"
+    },
+    {
+      "cpu_units": 17824935,
+      "description": "Deposit with a second output at the escrow script under another staking credential must fail: outputs are counted by payment credential (rule D4)",
+      "execution_result": "success",
+      "included_in_aggregates": false,
+      "memory_units": 42819,
+      "name": "deposit_with_second_script_output_staked"
+    },
+    {
+      "cpu_units": 17824935,
+      "description": "Deposit that splits the 75 ADA into two outputs at the escrow script, 50 ADA with the token and 25 ADA, must fail (rule D4)",
+      "execution_result": "success",
+      "included_in_aggregates": false,
+      "memory_units": 42819,
+      "name": "deposit_split_across_script_outputs"
+    },
+    {
+      "cpu_units": 17206922,
+      "description": "Deposit of 74.999999 ADA must fail (rule D5)",
+      "execution_result": "success",
+      "included_in_aggregates": false,
+      "memory_units": 43075,
+      "name": "deposit_one_lovelace_short"
+    },
+    {
+      "cpu_units": 17206922,
+      "description": "Deposit of 75.000001 ADA must fail (rule D5)",
+      "execution_result": "success",
+      "included_in_aggregates": false,
+      "memory_units": 43075,
+      "name": "deposit_one_lovelace_over"
+    },
+    {
+      "cpu_units": 17978784,
+      "description": "Deposit whose thread token goes to the buyer's change instead of the escrow output must fail (rule D6)",
+      "execution_result": "success",
+      "included_in_aggregates": false,
+      "memory_units": 43133,
+      "name": "deposit_token_to_buyer"
+    },
+    {
+      "cpu_units": 18852086,
+      "description": "Deposit whose escrow output has no datum must fail (rule D7)",
+      "execution_result": "success",
+      "included_in_aggregates": false,
+      "memory_units": 43373,
+      "name": "deposit_without_datum"
+    },
+    {
+      "cpu_units": 20220887,
+      "description": "Deposit whose datum has the exclusive upper bound itself, one millisecond late must fail (rule D7)",
+      "execution_result": "success",
+      "included_in_aggregates": false,
+      "memory_units": 43438,
+      "name": "deposit_datum_records_upper_bound"
+    },
+    {
+      "cpu_units": 20220887,
+      "description": "Deposit whose datum has a time one millisecond early must fail (rule D7)",
+      "execution_result": "success",
+      "included_in_aggregates": false,
+      "memory_units": 43438,
+      "name": "deposit_datum_one_millisecond_early"
+    },
+    {
+      "cpu_units": 20220887,
+      "description": "Deposit whose datum has the lower bound of the validity range must fail (rule D7)",
+      "execution_result": "success",
+      "included_in_aggregates": false,
+      "memory_units": 43438,
+      "name": "deposit_datum_records_lower_bound"
+    },
+    {
+      "cpu_units": 20220887,
+      "description": "Deposit whose datum has an extra field must fail (rule D7)",
+      "execution_result": "success",
+      "included_in_aggregates": false,
+      "memory_units": 43438,
+      "name": "deposit_datum_with_extra_field"
+    },
+    {
+      "cpu_units": 20220887,
+      "description": "Deposit whose datum has the state field of the previous revision must fail (rule D7)",
+      "execution_result": "success",
+      "included_in_aggregates": false,
+      "memory_units": 43438,
+      "name": "deposit_datum_with_state_field"
+    },
+    {
+      "cpu_units": 20220887,
+      "description": "Deposit whose datum has constructor 1 must fail (rule D7)",
+      "execution_result": "success",
+      "included_in_aggregates": false,
+      "memory_units": 43438,
+      "name": "deposit_datum_wrong_constructor"
+    },
+    {
+      "cpu_units": 20111771,
+      "description": "Deposit whose datum has a bare integer must fail (rule D7)",
+      "execution_result": "success",
+      "included_in_aggregates": false,
+      "memory_units": 43438,
+      "name": "deposit_datum_bare_integer"
+    },
+    {
+      "cpu_units": 23404887,
+      "description": "Deposit whose change output comes before the escrow output succeeds",
+      "execution_result": "success",
+      "included_in_aggregates": false,
+      "memory_units": 63338,
+      "name": "deposit_change_before_escrow_output"
+    },
+    {
+      "cpu_units": 23404887,
+      "description": "Deposit to the escrow script with a staking credential succeeds",
+      "execution_result": "success",
+      "included_in_aggregates": false,
+      "memory_units": 63338,
+      "name": "deposit_to_staked_script_address"
+    },
+    {
+      "cpu_units": 23404887,
+      "description": "Deposit whose escrow output carries a reference script succeeds",
+      "execution_result": "success",
+      "included_in_aggregates": false,
+      "memory_units": 63338,
+      "name": "deposit_with_reference_script"
+    },
+    {
+      "cpu_units": 25797628,
+      "description": "Deposit whose first output pays 2 ADA to another script succeeds: only outputs at the escrow script count",
+      "execution_result": "success",
+      "included_in_aggregates": false,
+      "memory_units": 67395,
+      "name": "deposit_with_output_to_unrelated_script"
+    },
+    {
+      "cpu_units": 23404887,
+      "description": "Deposit that also spends a UTXO of another script succeeds: Deposit does not restrict the inputs",
+      "execution_result": "success",
+      "included_in_aggregates": false,
+      "memory_units": 63338,
+      "name": "deposit_with_unrelated_script_input"
+    },
+    {
+      "cpu_units": 24182003,
+      "description": "Deposit whose escrow output also holds assets of two other policies, one sorting before the escrow policy and one after, succeeds",
+      "execution_result": "success",
+      "included_in_aggregates": false,
+      "memory_units": 63426,
+      "name": "deposit_with_foreign_assets"
+    },
+    {
+      "cpu_units": 18321207,
+      "description": "Accept with no required signer must fail (rule A1)",
+      "execution_result": "success",
+      "included_in_aggregates": false,
+      "memory_units": 42578,
+      "name": "accept_without_seller_signature"
+    },
+    {
+      "cpu_units": 19437587,
+      "description": "Accept signed by the buyer instead of the seller must fail (rule A1)",
+      "execution_result": "success",
+      "included_in_aggregates": false,
+      "memory_units": 42579,
+      "name": "accept_signed_by_buyer_only"
+    },
+    {
+      "cpu_units": 27680955,
+      "description": "Accept that pays 74.999999 ADA, with the change going to another wallet, must fail (rule A2)",
+      "execution_result": "success",
+      "included_in_aggregates": false,
+      "memory_units": 63772,
+      "name": "accept_one_lovelace_short"
+    },
+    {
+      "cpu_units": 28416955,
+      "description": "Accept that pays exactly 75 ADA, with the change going to another wallet, succeeds",
+      "execution_result": "success",
+      "included_in_aggregates": false,
+      "memory_units": 68372,
+      "name": "accept_exact_payment"
+    },
+    {
+      "cpu_units": 23359570,
+      "description": "Accept that pays the 75 ADA to a third party must fail (rule A2)",
+      "execution_result": "success",
+      "included_in_aggregates": false,
+      "memory_units": 43290,
+      "name": "accept_payment_to_impostor"
+    },
+    {
+      "cpu_units": 23359570,
+      "description": "Accept that pays the 75 ADA to the buyer must fail (rule A2)",
+      "execution_result": "success",
+      "included_in_aggregates": false,
+      "memory_units": 43290,
+      "name": "accept_payment_to_buyer"
+    },
+    {
+      "cpu_units": 25919956,
+      "description": "Accept that merges the payment and the change into one output succeeds",
+      "execution_result": "success",
+      "included_in_aggregates": false,
+      "memory_units": 63515,
+      "name": "accept_payment_in_one_output"
+    },
+    {
+      "cpu_units": 32883339,
+      "description": "Accept that pays 50 ADA and 25 ADA in two outputs, with the change going to another wallet, succeeds: the payment is the sum of the outputs",
+      "execution_result": "success",
+      "included_in_aggregates": false,
+      "memory_units": 79011,
+      "name": "accept_payment_split"
+    },
+    {
+      "cpu_units": 28416955,
+      "description": "Accept that pays to an address of the seller with a staking credential succeeds",
+      "execution_result": "success",
+      "included_in_aggregates": false,
+      "memory_units": 68372,
+      "name": "accept_payment_to_staked_address"
+    },
+    {
+      "cpu_units": 28416955,
+      "description": "Accept whose payment output carries a datum succeeds",
+      "execution_result": "success",
+      "included_in_aggregates": false,
+      "memory_units": 68372,
+      "name": "accept_payment_with_datum"
+    },
+    {
+      "cpu_units": 30386340,
+      "description": "Accept whose payment output carries a reference script succeeds",
+      "execution_result": "success",
+      "included_in_aggregates": false,
+      "memory_units": 74154,
+      "name": "accept_payment_with_reference_script"
+    },
+    {
+      "cpu_units": 32883339,
+      "description": "Accept that also leaves 2 ADA at the escrow script succeeds: after the burn that output is outside the protocol",
+      "execution_result": "success",
+      "included_in_aggregates": false,
+      "memory_units": 79011,
+      "name": "accept_leftover_at_script"
+    },
+    {
+      "cpu_units": 21105126,
+      "description": "Accept that spends two escrow UTXOs and burns one token, the other token leaving with the payment, must fail (rule S2)",
+      "execution_result": "success",
+      "included_in_aggregates": false,
+      "memory_units": 42996,
+      "name": "accept_two_escrow_inputs"
+    },
+    {
+      "cpu_units": 21105126,
+      "description": "Accept that spends a second escrow UTXO under another staking credential must fail: inputs are counted by payment credential (rule S2)",
+      "execution_result": "success",
+      "included_in_aggregates": false,
+      "memory_units": 42996,
+      "name": "accept_two_escrow_inputs_one_staked"
+    },
+    {
+      "cpu_units": 21105126,
+      "description": "Accept that spends two escrow UTXOs and burns both tokens must fail (rules S2, S3)",
+      "execution_result": "success",
+      "included_in_aggregates": false,
+      "memory_units": 42996,
+      "name": "accept_two_escrow_inputs_burn_both"
+    },
+    {
+      "cpu_units": 21105126,
+      "description": "Accept that also spends a UTXO at the escrow script that holds no token must fail (rule S2)",
+      "execution_result": "success",
+      "included_in_aggregates": false,
+      "memory_units": 42996,
+      "name": "accept_with_tokenless_script_input"
+    },
+    {
+      "cpu_units": 35709235,
+      "description": "Accept that also spends a UTXO of another script, sorting before the escrow input, succeeds",
+      "execution_result": "success",
+      "included_in_aggregates": false,
+      "memory_units": 83564,
+      "name": "accept_with_unrelated_script_input"
+    },
+    {
+      "cpu_units": 14465930,
+      "description": "Accept that burns nothing and carries the thread token out with the payment must fail (rule S3)",
+      "execution_result": "success",
+      "included_in_aggregates": false,
+      "memory_units": 22434,
+      "name": "accept_without_burn"
+    },
+    {
+      "cpu_units": 14868574,
+      "description": "Accept in a transaction that mints a thread token instead of burning one must fail (rule S3)",
+      "execution_result": "success",
+      "included_in_aggregates": false,
+      "memory_units": 22478,
+      "name": "accept_with_mint_instead_of_burn"
+    },
+    {
+      "cpu_units": 14868574,
+      "description": "Accept that burns a token named escrow of another policy and keeps the thread token must fail (rule S3)",
+      "execution_result": "success",
+      "included_in_aggregates": false,
+      "memory_units": 22478,
+      "name": "accept_burns_token_of_other_policy"
+    },
+    {
+      "cpu_units": 31163392,
+      "description": "Accept next to mints of two other policies, one sorting before the escrow policy and one after, succeeds",
+      "execution_result": "success",
+      "included_in_aggregates": false,
+      "memory_units": 74242,
+      "name": "accept_with_unrelated_mint"
+    },
+    {
+      "cpu_units": 30386340,
+      "description": "Accept of an escrow UTXO whose address has a staking credential succeeds",
+      "execution_result": "success",
+      "included_in_aggregates": false,
+      "memory_units": 74154,
+      "name": "accept_escrow_at_staked_address"
+    },
+    {
+      "cpu_units": 30386340,
+      "description": "Accept of an escrow UTXO that carries a reference script succeeds",
+      "execution_result": "success",
+      "included_in_aggregates": false,
+      "memory_units": 74154,
+      "name": "accept_escrow_with_reference_script"
+    },
+    {
+      "cpu_units": 30386340,
+      "description": "Accept of an escrow UTXO that also holds assets of two other policies succeeds",
+      "execution_result": "success",
+      "included_in_aggregates": false,
+      "memory_units": 74154,
+      "name": "accept_escrow_with_foreign_assets"
+    },
+    {
+      "cpu_units": 31758720,
+      "description": "Accept with a second required signer next to the seller succeeds",
+      "execution_result": "success",
+      "included_in_aggregates": false,
+      "memory_units": 75755,
+      "name": "accept_with_second_signature"
+    },
+    {
+      "cpu_units": 27971837,
+      "description": "Accept whose escrow input is the first input of the transaction succeeds: the script finds its own input by reference",
+      "execution_result": "success",
+      "included_in_aggregates": false,
+      "memory_units": 70229,
+      "name": "accept_escrow_input_first"
+    },
+    {
+      "cpu_units": 16551037,
+      "description": "Refund with no required signer must fail (rule R1)",
+      "execution_result": "success",
+      "included_in_aggregates": false,
+      "memory_units": 42354,
+      "name": "refund_without_buyer_signature"
+    },
+    {
+      "cpu_units": 17667417,
+      "description": "Refund signed by the seller instead of the buyer must fail (rule R1)",
+      "execution_result": "success",
+      "included_in_aggregates": false,
+      "memory_units": 42355,
+      "name": "refund_signed_by_seller_only"
+    },
+    {
+      "cpu_units": 28009584,
+      "description": "Refund that pays 74.999999 ADA, with the change going to another wallet, must fail (rule R3)",
+      "execution_result": "success",
+      "included_in_aggregates": false,
+      "memory_units": 64259,
+      "name": "refund_one_lovelace_short"
+    },
+    {
+      "cpu_units": 29321584,
+      "description": "Refund that pays exactly 75 ADA, with the change going to another wallet, succeeds",
+      "execution_result": "success",
+      "included_in_aggregates": false,
+      "memory_units": 72459,
+      "name": "refund_exact_payment"
+    },
+    {
+      "cpu_units": 26888199,
+      "description": "Refund that pays the 75 ADA to a third party must fail (rule R3)",
+      "execution_result": "success",
+      "included_in_aggregates": false,
+      "memory_units": 63777,
+      "name": "refund_payment_to_impostor"
+    },
+    {
+      "cpu_units": 26888199,
+      "description": "Refund that pays the 75 ADA to the seller must fail (rule R3)",
+      "execution_result": "success",
+      "included_in_aggregates": false,
+      "memory_units": 63777,
+      "name": "refund_payment_to_seller"
+    },
+    {
+      "cpu_units": 26824585,
+      "description": "Refund that merges the payment and the change into one output succeeds",
+      "execution_result": "success",
+      "included_in_aggregates": false,
+      "memory_units": 67602,
+      "name": "refund_payment_in_one_output"
+    },
+    {
+      "cpu_units": 33787968,
+      "description": "Refund that pays 50 ADA and 25 ADA in two outputs, with the change going to another wallet, succeeds: the payment is the sum of the outputs",
+      "execution_result": "success",
+      "included_in_aggregates": false,
+      "memory_units": 83098,
+      "name": "refund_payment_split"
+    },
+    {
+      "cpu_units": 29321584,
+      "description": "Refund that pays to an address of the buyer with a staking credential succeeds",
+      "execution_result": "success",
+      "included_in_aggregates": false,
+      "memory_units": 72459,
+      "name": "refund_payment_to_staked_address"
+    },
+    {
+      "cpu_units": 29321584,
+      "description": "Refund whose payment output carries a datum succeeds",
+      "execution_result": "success",
+      "included_in_aggregates": false,
+      "memory_units": 72459,
+      "name": "refund_payment_with_datum"
+    },
+    {
+      "cpu_units": 31290969,
+      "description": "Refund whose payment output carries a reference script succeeds",
+      "execution_result": "success",
+      "included_in_aggregates": false,
+      "memory_units": 78241,
+      "name": "refund_payment_with_reference_script"
+    },
+    {
+      "cpu_units": 33787968,
+      "description": "Refund that also leaves 2 ADA at the escrow script succeeds: after the burn that output is outside the protocol",
+      "execution_result": "success",
+      "included_in_aggregates": false,
+      "memory_units": 83098,
+      "name": "refund_leftover_at_script"
+    },
+    {
+      "cpu_units": 19334956,
+      "description": "Refund that spends two escrow UTXOs and burns one token, the other token leaving with the payment, must fail (rule S2)",
+      "execution_result": "success",
+      "included_in_aggregates": false,
+      "memory_units": 42772,
+      "name": "refund_two_escrow_inputs"
+    },
+    {
+      "cpu_units": 19334956,
+      "description": "Refund that spends a second escrow UTXO under another staking credential must fail: inputs are counted by payment credential (rule S2)",
+      "execution_result": "success",
+      "included_in_aggregates": false,
+      "memory_units": 42772,
+      "name": "refund_two_escrow_inputs_one_staked"
+    },
+    {
+      "cpu_units": 19334956,
+      "description": "Refund that spends two escrow UTXOs and burns both tokens must fail (rules S2, S3)",
+      "execution_result": "success",
+      "included_in_aggregates": false,
+      "memory_units": 42772,
+      "name": "refund_two_escrow_inputs_burn_both"
+    },
+    {
+      "cpu_units": 19334956,
+      "description": "Refund that also spends a UTXO at the escrow script that holds no token must fail (rule S2)",
+      "execution_result": "success",
+      "included_in_aggregates": false,
+      "memory_units": 42772,
+      "name": "refund_with_tokenless_script_input"
+    },
+    {
+      "cpu_units": 36613864,
+      "description": "Refund that also spends a UTXO of another script, sorting before the escrow input, succeeds",
+      "execution_result": "success",
+      "included_in_aggregates": false,
+      "memory_units": 87651,
+      "name": "refund_with_unrelated_script_input"
+    },
+    {
+      "cpu_units": 12695760,
+      "description": "Refund that burns nothing and carries the thread token out with the payment must fail (rule S3)",
+      "execution_result": "success",
+      "included_in_aggregates": false,
+      "memory_units": 22210,
+      "name": "refund_without_burn"
+    },
+    {
+      "cpu_units": 13098404,
+      "description": "Refund in a transaction that mints a thread token instead of burning one must fail (rule S3)",
+      "execution_result": "success",
+      "included_in_aggregates": false,
+      "memory_units": 22254,
+      "name": "refund_with_mint_instead_of_burn"
+    },
+    {
+      "cpu_units": 13098404,
+      "description": "Refund that burns a token named escrow of another policy and keeps the thread token must fail (rule S3)",
+      "execution_result": "success",
+      "included_in_aggregates": false,
+      "memory_units": 22254,
+      "name": "refund_burns_token_of_other_policy"
+    },
+    {
+      "cpu_units": 32068021,
+      "description": "Refund next to mints of two other policies, one sorting before the escrow policy and one after, succeeds",
+      "execution_result": "success",
+      "included_in_aggregates": false,
+      "memory_units": 78329,
+      "name": "refund_with_unrelated_mint"
+    },
+    {
+      "cpu_units": 31290969,
+      "description": "Refund of an escrow UTXO whose address has a staking credential succeeds",
+      "execution_result": "success",
+      "included_in_aggregates": false,
+      "memory_units": 78241,
+      "name": "refund_escrow_at_staked_address"
+    },
+    {
+      "cpu_units": 31290969,
+      "description": "Refund of an escrow UTXO that carries a reference script succeeds",
+      "execution_result": "success",
+      "included_in_aggregates": false,
+      "memory_units": 78241,
+      "name": "refund_escrow_with_reference_script"
+    },
+    {
+      "cpu_units": 31290969,
+      "description": "Refund of an escrow UTXO that also holds assets of two other policies succeeds",
+      "execution_result": "success",
+      "included_in_aggregates": false,
+      "memory_units": 78241,
+      "name": "refund_escrow_with_foreign_assets"
+    },
+    {
+      "cpu_units": 32663349,
+      "description": "Refund with a second required signer next to the buyer succeeds",
+      "execution_result": "success",
+      "included_in_aggregates": false,
+      "memory_units": 79842,
+      "name": "refund_with_second_signature"
+    },
+    {
+      "cpu_units": 33705472,
+      "description": "Refund whose escrow input is the last input of the transaction succeeds: the script finds its own input by reference",
+      "execution_result": "success",
+      "included_in_aggregates": false,
+      "memory_units": 82166,
+      "name": "refund_escrow_input_last"
+    },
+    {
+      "cpu_units": 30386340,
+      "description": "Accept after the refund deadline succeeds: the seller can accept for as long as the escrow UTXO exists",
+      "execution_result": "success",
+      "included_in_aggregates": false,
+      "memory_units": 74154,
+      "name": "accept_after_refund_deadline"
+    },
+    {
+      "cpu_units": 30386340,
+      "description": "Accept with an unbounded validity range succeeds",
+      "execution_result": "success",
+      "included_in_aggregates": false,
+      "memory_units": 74154,
+      "name": "accept_without_validity_range"
+    },
+    {
+      "cpu_units": 19766216,
+      "description": "Refund whose validity range starts at the last slot before the deadline passes must fail (rule R2)",
+      "execution_result": "success",
+      "included_in_aggregates": false,
+      "memory_units": 43066,
+      "name": "refund_one_slot_before_deadline"
+    },
+    {
+      "cpu_units": 31290969,
+      "description": "Refund whose validity range starts at the first slot after the deadline succeeds",
+      "execution_result": "success",
+      "included_in_aggregates": false,
+      "memory_units": 78241,
+      "name": "refund_at_first_valid_slot"
+    },
+    {
+      "cpu_units": 19766216,
+      "description": "Refund whose validity range starts exactly at depositTime + 1800000 must fail: the comparison is strict. Synthetic: this bound is not slot-aligned (rule R2)",
+      "execution_result": "success",
+      "included_in_aggregates": false,
+      "memory_units": 43066,
+      "name": "refund_at_exact_deadline"
+    },
+    {
+      "cpu_units": 19766216,
+      "description": "Refund in the validity range of the accept transaction, long before the deadline, must fail (rule R2)",
+      "execution_result": "success",
+      "included_in_aggregates": false,
+      "memory_units": 43066,
+      "name": "refund_right_after_deposit"
+    },
+    {
+      "cpu_units": 19475040,
+      "description": "Refund with no lower bound on the validity range must fail (rule R2)",
+      "execution_result": "success",
+      "included_in_aggregates": false,
+      "memory_units": 42969,
       "name": "refund_infinite_lower_bound"
+    },
+    {
+      "cpu_units": 31290969,
+      "description": "Refund with no upper bound on the validity range succeeds: only the lower bound is read",
+      "execution_result": "success",
+      "included_in_aggregates": false,
+      "memory_units": 78241,
+      "name": "refund_infinite_upper_bound"
+    },
+    {
+      "cpu_units": 12695760,
+      "description": "Refund of a UTXO that was sent to the escrow script without minting, with a datum that claims a deposit one day earlier, must fail: nothing can be burned (rule S3)",
+      "execution_result": "success",
+      "included_in_aggregates": false,
+      "memory_units": 22210,
+      "name": "refund_forged_utxo_without_token"
+    },
+    {
+      "cpu_units": 7291227,
+      "description": "The minting side of the accept transaction under redeemer 2 succeeds: both burn redeemers have one rule",
+      "execution_result": "success",
+      "included_in_aggregates": false,
+      "memory_units": 28099,
+      "name": "accept_burn_with_other_burn_redeemer"
+    },
+    {
+      "cpu_units": 30386340,
+      "description": "Accept whose transaction burns under redeemer 2 succeeds: the spending side does not read the redeemer of the burn",
+      "execution_result": "success",
+      "included_in_aggregates": false,
+      "memory_units": 74154,
+      "name": "accept_with_other_burn_redeemer"
+    },
+    {
+      "cpu_units": 6150894,
+      "description": "The minting side of a accept transaction that burns two thread tokens must fail (rule B1)",
+      "execution_result": "success",
+      "included_in_aggregates": false,
+      "memory_units": 21298,
+      "name": "accept_burn_two_tokens"
+    },
+    {
+      "cpu_units": 5853539,
+      "description": "The minting side of a accept transaction that burns the thread token and mints a second token name under the escrow policy must fail (rule B1)",
+      "execution_result": "success",
+      "included_in_aggregates": false,
+      "memory_units": 21200,
+      "name": "accept_burn_with_second_token_name"
+    },
+    {
+      "cpu_units": 7206894,
+      "description": "The minting side of a accept transaction with a second required signer succeeds",
+      "execution_result": "success",
+      "included_in_aggregates": false,
+      "memory_units": 27898,
+      "name": "accept_burn_with_second_signature"
+    },
+    {
+      "cpu_units": 7961528,
+      "description": "The minting side of a accept transaction next to mints of two other policies succeeds",
+      "execution_result": "success",
+      "included_in_aggregates": false,
+      "memory_units": 32064,
+      "name": "accept_burn_with_unrelated_mint"
+    },
+    {
+      "cpu_units": 6150894,
+      "description": "The deposit transaction under the burn redeemer 1 must fail: it mints (rule B1)",
+      "execution_result": "success",
+      "included_in_aggregates": false,
+      "memory_units": 21298,
+      "name": "burn_redeemer_1_on_deposit"
+    },
+    {
+      "cpu_units": 7206894,
+      "description": "The minting side of the refund transaction under redeemer 1 succeeds: both burn redeemers have one rule",
+      "execution_result": "success",
+      "included_in_aggregates": false,
+      "memory_units": 27898,
+      "name": "refund_burn_with_other_burn_redeemer"
+    },
+    {
+      "cpu_units": 31290969,
+      "description": "Refund whose transaction burns under redeemer 1 succeeds: the spending side does not read the redeemer of the burn",
+      "execution_result": "success",
+      "included_in_aggregates": false,
+      "memory_units": 78241,
+      "name": "refund_with_other_burn_redeemer"
+    },
+    {
+      "cpu_units": 6203227,
+      "description": "The minting side of a refund transaction that burns two thread tokens must fail (rule B1)",
+      "execution_result": "success",
+      "included_in_aggregates": false,
+      "memory_units": 21299,
+      "name": "refund_burn_two_tokens"
+    },
+    {
+      "cpu_units": 5905872,
+      "description": "The minting side of a refund transaction that burns the thread token and mints a second token name under the escrow policy must fail (rule B1)",
+      "execution_result": "success",
+      "included_in_aggregates": false,
+      "memory_units": 21201,
+      "name": "refund_burn_with_second_token_name"
+    },
+    {
+      "cpu_units": 7291227,
+      "description": "The minting side of a refund transaction with a second required signer succeeds",
+      "execution_result": "success",
+      "included_in_aggregates": false,
+      "memory_units": 28099,
+      "name": "refund_burn_with_second_signature"
+    },
+    {
+      "cpu_units": 8045861,
+      "description": "The minting side of a refund transaction next to mints of two other policies succeeds",
+      "execution_result": "success",
+      "included_in_aggregates": false,
+      "memory_units": 32265,
+      "name": "refund_burn_with_unrelated_mint"
+    },
+    {
+      "cpu_units": 6203227,
+      "description": "The deposit transaction under the burn redeemer 2 must fail: it mints (rule B1)",
+      "execution_result": "success",
+      "included_in_aggregates": false,
+      "memory_units": 21299,
+      "name": "burn_redeemer_2_on_deposit"
+    },
+    {
+      "cpu_units": 2535563,
+      "description": "The accept transaction under the deposit redeemer 0 must fail: it burns (rules D1, D3, D4)",
+      "execution_result": "success",
+      "included_in_aggregates": false,
+      "memory_units": 590,
+      "name": "deposit_redeemer_on_burn"
+    },
+    {
+      "cpu_units": 23404887,
+      "description": "Deposit under a second script hash succeeds: the validator reads its own hash from the context",
+      "execution_result": "success",
+      "included_in_aggregates": false,
+      "memory_units": 63338,
+      "name": "deposit_successful_other_hash"
+    },
+    {
+      "cpu_units": 30386340,
+      "description": "Accept under a second script hash succeeds: the validator reads its own hash from the context",
+      "execution_result": "success",
+      "included_in_aggregates": false,
+      "memory_units": 74154,
+      "name": "accept_successful_other_hash"
+    },
+    {
+      "cpu_units": 7206894,
+      "description": "The minting side of accept under a second script hash succeeds: the validator reads its own hash from the context",
+      "execution_result": "success",
+      "included_in_aggregates": false,
+      "memory_units": 27898,
+      "name": "accept_burn_other_hash"
+    },
+    {
+      "cpu_units": 31290969,
+      "description": "Refund under a second script hash succeeds: the validator reads its own hash from the context",
+      "execution_result": "success",
+      "included_in_aggregates": false,
+      "memory_units": 78241,
+      "name": "refund_successful_other_hash"
+    },
+    {
+      "cpu_units": 7291227,
+      "description": "The minting side of refund under a second script hash succeeds: the validator reads its own hash from the context",
+      "execution_result": "success",
+      "included_in_aggregates": false,
+      "memory_units": 28099,
+      "name": "refund_burn_other_hash"
+    },
+    {
+      "cpu_units": 969153,
+      "description": "Spending the escrow UTXO with redeemer 0 must fail: Deposit is not a spending action (rule X1)",
+      "execution_result": "success",
+      "included_in_aggregates": false,
+      "memory_units": 394,
+      "name": "spending_with_deposit_redeemer"
+    },
+    {
+      "cpu_units": 969153,
+      "description": "Spending the escrow UTXO with integer 3 as the redeemer must fail (rule X1)",
+      "execution_result": "success",
+      "included_in_aggregates": false,
+      "memory_units": 394,
+      "name": "spending_redeemer_integer_3"
+    },
+    {
+      "cpu_units": 1021486,
+      "description": "Minting under the escrow policy with integer 3 as the redeemer must fail (rule X1)",
+      "execution_result": "success",
+      "included_in_aggregates": false,
+      "memory_units": 395,
+      "name": "minting_redeemer_integer_3"
+    },
+    {
+      "cpu_units": 969153,
+      "description": "Spending the escrow UTXO with integer -1 as the redeemer must fail (rule X1)",
+      "execution_result": "success",
+      "included_in_aggregates": false,
+      "memory_units": 394,
+      "name": "spending_redeemer_integer_negative_1"
+    },
+    {
+      "cpu_units": 1021486,
+      "description": "Minting under the escrow policy with integer -1 as the redeemer must fail (rule X1)",
+      "execution_result": "success",
+      "included_in_aggregates": false,
+      "memory_units": 395,
+      "name": "minting_redeemer_integer_negative_1"
+    },
+    {
+      "cpu_units": 864487,
+      "description": "Spending the escrow UTXO with constructor 0 instead of an integer as the redeemer must fail (rule X1)",
+      "execution_result": "success",
+      "included_in_aggregates": false,
+      "memory_units": 392,
+      "name": "spending_redeemer_constructor_0"
+    },
+    {
+      "cpu_units": 864487,
+      "description": "Minting under the escrow policy with constructor 0 instead of an integer as the redeemer must fail (rule X1)",
+      "execution_result": "success",
+      "included_in_aggregates": false,
+      "memory_units": 392,
+      "name": "minting_redeemer_constructor_0"
+    },
+    {
+      "cpu_units": 864487,
+      "description": "Spending the escrow UTXO with constructor 1 instead of an integer as the redeemer must fail (rule X1)",
+      "execution_result": "success",
+      "included_in_aggregates": false,
+      "memory_units": 392,
+      "name": "spending_redeemer_constructor_1"
+    },
+    {
+      "cpu_units": 864487,
+      "description": "Minting under the escrow policy with constructor 1 instead of an integer as the redeemer must fail (rule X1)",
+      "execution_result": "success",
+      "included_in_aggregates": false,
+      "memory_units": 392,
+      "name": "minting_redeemer_constructor_1"
+    },
+    {
+      "cpu_units": 864487,
+      "description": "Spending the escrow UTXO with a bytestring as the redeemer must fail (rule X1)",
+      "execution_result": "success",
+      "included_in_aggregates": false,
+      "memory_units": 392,
+      "name": "spending_redeemer_bytestring"
+    },
+    {
+      "cpu_units": 864487,
+      "description": "Minting under the escrow policy with a bytestring as the redeemer must fail (rule X1)",
+      "execution_result": "success",
+      "included_in_aggregates": false,
+      "memory_units": 392,
+      "name": "minting_redeemer_bytestring"
+    },
+    {
+      "cpu_units": 864487,
+      "description": "Spending the escrow UTXO with a list as the redeemer must fail (rule X1)",
+      "execution_result": "success",
+      "included_in_aggregates": false,
+      "memory_units": 392,
+      "name": "spending_redeemer_list"
+    },
+    {
+      "cpu_units": 864487,
+      "description": "Minting under the escrow policy with a list as the redeemer must fail (rule X1)",
+      "execution_result": "success",
+      "included_in_aggregates": false,
+      "memory_units": 392,
+      "name": "minting_redeemer_list"
+    },
+    {
+      "cpu_units": 864487,
+      "description": "Spending the escrow UTXO with a map as the redeemer must fail (rule X1)",
+      "execution_result": "success",
+      "included_in_aggregates": false,
+      "memory_units": 392,
+      "name": "spending_redeemer_map"
+    },
+    {
+      "cpu_units": 864487,
+      "description": "Minting under the escrow policy with a map as the redeemer must fail (rule X1)",
+      "execution_result": "success",
+      "included_in_aggregates": false,
+      "memory_units": 392,
+      "name": "minting_redeemer_map"
+    },
+    {
+      "cpu_units": 678930,
+      "description": "The deposit transaction under the rewarding purpose with redeemer 0 must fail: the script has no rewarding action. Synthetic: the withdrawals stay empty (rule X2)",
+      "execution_result": "success",
+      "included_in_aggregates": false,
+      "memory_units": 296,
+      "name": "rewarding_purpose_redeemer_0"
+    },
+    {
+      "cpu_units": 678930,
+      "description": "The accept transaction under the rewarding purpose with redeemer 1 must fail: the script has no rewarding action. Synthetic: the withdrawals stay empty (rule X2)",
+      "execution_result": "success",
+      "included_in_aggregates": false,
+      "memory_units": 296,
+      "name": "rewarding_purpose_redeemer_1"
+    },
+    {
+      "cpu_units": 678930,
+      "description": "The refund transaction under the rewarding purpose with redeemer 2 must fail: the script has no rewarding action. Synthetic: the withdrawals stay empty (rule X2)",
+      "execution_result": "success",
+      "included_in_aggregates": false,
+      "memory_units": 296,
+      "name": "rewarding_purpose_redeemer_2"
+    },
+    {
+      "cpu_units": 24688,
+      "description": "The integer 0 instead of a script context must fail (rule X3)",
+      "execution_result": "success",
+      "included_in_aggregates": false,
+      "memory_units": 132,
+      "name": "not_a_script_context"
     }
   ],
   "execution_environment": {
     "evaluator": "PlutusTx.Eval-1.63.0.0"
   },
   "measurements": {
-    "block_cpu_budget_pct": 0.14350571,
-    "block_memory_budget_pct": 0.09887916666666667,
+    "block_cpu_budget_pct": 0.156454845,
+    "block_memory_budget_pct": 0.10866805555555556,
     "cpu_units": {
-      "maximum": 28701142,
-      "median": 21890017,
-      "minimum": 14845878,
-      "sum": 212801989
+      "maximum": 31290969,
+      "median": 23404887,
+      "minimum": 7206894,
+      "sum": 99580317
     },
     "excluded": {
-      "count": 37,
+      "count": 131,
       "cpu_units": {
-        "maximum": 18960654,
-        "sum": 102703021
+        "maximum": 36613864,
+        "sum": 2363562653
       },
       "memory_units": {
-        "maximum": 43131,
-        "sum": 147798
+        "maximum": 87651,
+        "sum": 5680596
       }
     },
-    "execution_fee_lovelace": 46364,
+    "execution_fee_lovelace": 22859,
     "memory_units": {
-      "maximum": 71193,
-      "median": 56797,
-      "minimum": 33314,
-      "sum": 537615
+      "maximum": 78241,
+      "median": 63338,
+      "minimum": 27898,
+      "sum": 271730
     },
-    "reference_script_fee_lovelace": 19875,
-    "script_size_bytes": 1325,
-    "scripts_per_block": 696,
-    "scripts_per_tx": 231,
-    "term_size": 899,
-    "total_fee_lovelace": 66239,
-    "tx_cpu_budget_pct": 0.28701142,
-    "tx_memory_budget_pct": 0.4314727272727273
+    "reference_script_fee_lovelace": 19680,
+    "script_size_bytes": 1312,
+    "scripts_per_block": 639,
+    "scripts_per_tx": 210,
+    "term_size": 1098,
+    "total_fee_lovelace": 42539,
+    "tx_cpu_budget_pct": 0.31290969,
+    "tx_memory_budget_pct": 0.4741878787878788
   },
   "scenario": "two_party_escrow",
-  "timestamp": "2026-10-08T10:49:48Z",
+  "timestamp": "2026-11-13T18:42:35Z",
   "version": "2.0.0",
   "notes": "Generated using UPLC-CAPE measure tool"
 }

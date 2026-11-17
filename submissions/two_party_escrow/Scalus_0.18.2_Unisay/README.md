@@ -7,7 +7,7 @@
 ## Implementation Details
 
 - **Compiler**: `Scalus 0.18.2`
-- **Implementation Approach**: `@Compile spending validator, Data -> Unit, Deposited->Accepted|Refunded state machine`
+- **Implementation Approach**: `@Compile validator, Data -> Unit, one script with minting and spending purposes (thread token)`
 - **Compilation Flags**: `targetProtocolVersion = vanRossemPV` (Cardano protocol version 11)
 
 ## Performance Results

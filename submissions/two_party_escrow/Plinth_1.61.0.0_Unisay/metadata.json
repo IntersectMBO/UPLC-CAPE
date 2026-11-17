@@ -16,10 +16,10 @@
     }
   ],
   "submission": {
-    "date": "2026-07-06T17:43:54Z",
+    "date": "2026-11-13T19:30:00Z",
     "source_available": true,
     "source_repository": "https://github.com/Unisay/plinth-cape-submissions",
-    "implementation_notes": "Two-party escrow validator compiled with Plinth 1.61.0.0 and the `datatypes=BuiltinCasing` plugin flag. Requires plutus-core >= 1.61.0.0, which mainnet has run since the van Rossem hard fork (protocol version 11, 2026-07-18).",
-    "source_commit_hash": "d0a9d341a4702ef572c16e223f5cb55857d7a622"
+    "implementation_notes": "Revision 2 of the scenario (thread token): one script that runs as a minting policy for the token and as a spending validator for the funds, and reads its own hash from the script context. The plain validator: its source and fixture are byte for byte the ones of `Plinth_1.45.0.0_Unisay_plain`. Compiled with Plinth 1.61.0.0 and the `datatypes=BuiltinCasing` plugin flag. Requires plutus-core >= 1.61.0.0, which mainnet has run since the van Rossem hard fork (protocol version 11, 2026-07-18). Source: `lib/TwoPartyEscrow.hs` (+ `lib/TwoPartyEscrow/Fixture.hs`; `lib/Preview/TwoPartyEscrow.hs` holds the compile splice) in plinth-cape-submissions @ e1f91b9a999d1357bbcccebaa15aa61cfb35444f.",
+    "source_commit_hash": "e1f91b9a999d1357bbcccebaa15aa61cfb35444f"
   }
 }

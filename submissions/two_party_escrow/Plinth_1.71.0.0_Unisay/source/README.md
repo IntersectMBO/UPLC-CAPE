@@ -4,7 +4,7 @@
 
 **Branch**: `plinth-1.71`
 
-**Commit**: `bcb8d73ba0e19b9582e62a3c2ace1b7167a74eb8`
+**Commit**: `e042431e55696f705c4159082ca07e08c12348bd`
 
 **Path**: `lib/TwoPartyEscrow.hs` (fixture: `lib/TwoPartyEscrow/Fixture.hs`; decoder DSL: `lib/Plinth/Validator.hs`, `lib/Plinth/Encoded.hs`, `lib/Plinth/Decoder/Named.hs`, `lib/Plinth/Decoder/Named/ScriptContext.hs`, `lib/Plinth/Decoder/Named/TH.hs`)
 
@@ -15,7 +15,7 @@ This submission compiles `lib/TwoPartyEscrow.hs` from the Plinth source reposito
 ```bash
 git clone https://github.com/Unisay/plinth-cape-submissions
 cd plinth-cape-submissions
-git checkout bcb8d73ba0e19b9582e62a3c2ace1b7167a74eb8
+git checkout e042431e55696f705c4159082ca07e08c12348bd
 ```
 
 `CAPE_REPO` must point at the sibling UPLC-CAPE checkout; the build aborts if the variable is unset. The recommended place is `.envrc.local` (gitignored), e.g.:

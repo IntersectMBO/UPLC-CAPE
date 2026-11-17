@@ -16,10 +16,10 @@
     }
   ],
   "submission": {
-    "date": "2026-07-06T17:43:54Z",
+    "date": "2026-11-13T19:30:00Z",
     "source_available": true,
     "source_repository": "https://github.com/Unisay/plinth-cape-submissions",
-    "source_commit_hash": "dc204dd3d5130a25b030af34530236c4a312ee3c",
-    "implementation_notes": "Compiled with Plinth 1.64.0.0 and the `datatypes=BuiltinCasing` plugin flag. Builtin casing has been a mainnet feature since the van Rossem hard fork (protocol version 11, 2026-07-18); plutus-tx-plugin 1.67 dropped the flag and enables casing under the default `SumsOfProducts`. Source: lib/TwoPartyEscrow.hs in plinth-cape-submissions @ dc204dd3d5130a25b030af34530236c4a312ee3c (branch plinth-1.64)."
+    "source_commit_hash": "aa83e453bbde1de6a947c79db2626828913f80a3",
+    "implementation_notes": "Revision 2 of the scenario (thread token): one script that runs as a minting policy for the token and as a spending validator for the funds, and reads its own hash from the script context. The plain validator text of `Plinth_1.45.0.0_Unisay_plain`; on this line the plugin options live in the Cabal file, so the module carries no plugin pragmas. Compiled with Plinth 1.64.0.0 and the `datatypes=BuiltinCasing` plugin flag. Builtin casing has been a mainnet feature since the van Rossem hard fork (protocol version 11, 2026-07-18); plutus-tx-plugin 1.67 dropped the flag and enables casing under the default `SumsOfProducts`. Source: `lib/TwoPartyEscrow.hs` (+ `lib/TwoPartyEscrow/Fixture.hs`) in plinth-cape-submissions @ aa83e453bbde1de6a947c79db2626828913f80a3."
   }
 }

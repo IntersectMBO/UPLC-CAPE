@@ -16,10 +16,10 @@
     }
   ],
   "submission": {
-    "date": "2026-09-04T15:00:00Z",
+    "date": "2026-11-13T19:30:00Z",
     "source_available": true,
     "source_repository": "https://github.com/Unisay/plinth-cape-submissions",
-    "source_commit_hash": "f042fed351c510af0dda43daa1b30ce6e9eaf5e3",
-    "implementation_notes": "Compiled with Plinth 1.67.0.0. Builtin casing needs no flag any more: 1.67 removed the plugin's `datatypes=BuiltinCasing` option (IntersectMBO/plutus#7859) and the default `SumsOfProducts` enables casing on its own, so the source repo's `preview` cabal flag, its PREVIEW CPP define and the PREVIEW-gated `dropList` emission are all deleted and one build now yields one artifact per scenario. Requires protocol version 11 (van Rossem), live on mainnet since 2026-07-18. Inliner budgets: `inline-unconditional-growth=16`, `inline-callsite-growth=21`. Both budgets are swept; the 1.65 sibling used uncond 27 and left callsite at the default. The local `adaOf` helper now calls upstream `unsafeLovelaceValueOf`; both expand to the same builtin chain, so that change is byte-identical. The compiler is cost-neutral from 1.65 to 1.67 on this code: built from one source at plugin-default inliner budgets, 1.65, 1.66 and 1.67 measure within 0.2% of each other. Any difference against the 1.65 sibling therefore comes from inliner budget values and from validator source vintage, not from the compiler. Source: `lib/TwoPartyEscrow.hs` (+ `lib/TwoPartyEscrow/Fixture.hs` and the decoder DSL under `lib/Plinth/`) in plinth-cape-submissions @ f042fed351c510af0dda43daa1b30ce6e9eaf5e3."
+    "source_commit_hash": "814c7fc0f262e86ea7fd6a45e9e5b3c54d42374f",
+    "implementation_notes": "Revision 2 of the scenario (thread token): one script that runs as a minting policy for the token and as a spending validator for the funds, and reads its own hash from the script context. The validator body is the one of `Plinth_1.71.0.0_Unisay`, on the decoder of the 1.67 line. Compiled with Plinth 1.67.0.0. Builtin casing needs no flag: 1.67 removed the plugin's `datatypes=BuiltinCasing` option (IntersectMBO/plutus#7859) and the default `SumsOfProducts` enables casing on its own. Requires protocol version 11 (van Rossem), live on mainnet since 2026-07-18. Inliner budgets: `inline-unconditional-growth=16`, `inline-callsite-growth=21`, kept from revision 1 and not swept again. Source: `lib/TwoPartyEscrow.hs` (+ `lib/TwoPartyEscrow/Fixture.hs` and the decoder DSL under `lib/Plinth/`) in plinth-cape-submissions @ 814c7fc0f262e86ea7fd6a45e9e5b3c54d42374f."
   }
 }
