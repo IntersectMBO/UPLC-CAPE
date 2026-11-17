@@ -16,6 +16,7 @@ data Options = Options
   , optOutput :: FilePath
   , optTests :: FilePath
   , optDebugContext :: Bool
+  , optDebugTrace :: Bool
   }
 
 optionsParser :: Parser Options
@@ -43,6 +44,11 @@ optionsParser =
     <*> switch
       ( long "debug-context"
           <> help "Output BuiltinData encoding for ScriptContext inputs (for debugging)"
+      )
+    <*> switch
+      ( long "debug-trace"
+          <> help
+            "Output the evaluation log of each test: trace messages and diagnostics of failed builtins (for debugging)"
       )
 
 optsInfo :: ParserInfo Options

@@ -19,6 +19,7 @@ import Cape.Metrics (
  )
 import Cape.PrettyResult (
   EvalResult (..),
+  TraceMode (..),
   compareResult,
   evaluateCompiledCode,
   extractPrettyResult,
@@ -90,9 +91,9 @@ parseUplcProgram ::
     (UPLC.Program UPLC.Name PLC.DefaultUni PLC.DefaultFun PLC.SrcSpan)
 parseUplcProgram txt =
   case PLC.runQuote (runExceptT (UPLCParser.parseProgram txt)) ::
-        Either
-          ParserErrorBundle
-          (UPLC.Program UPLC.Name PLC.DefaultUni PLC.DefaultFun PLC.SrcSpan) of
+         Either
+           ParserErrorBundle
+           (UPLC.Program UPLC.Name PLC.DefaultUni PLC.DefaultFun PLC.SrcSpan) of
     Left err -> Left (show err)
     Right prog -> Right prog
 
@@ -146,7 +147,7 @@ colorizePendingPassing text = do
 
 main :: IO ()
 main = do
-  Options {optInput, optOutput, optTests, optDebugContext} <-
+  Options {optInput, optOutput, optTests, optDebugContext, optDebugTrace} <-
     parseOptions
   -- Run test execution
   E.try
@@ -155,6 +156,7 @@ main = do
         optTests
         (Just optOutput)
         optDebugContext
+        (if optDebugTrace then KeepTraces else DropTraces)
     )
     >>= \case
       Left err -> do
@@ -163,8 +165,9 @@ main = do
       Right () -> pass
 
 -- | Run test suite
-runTestSuite :: FilePath -> FilePath -> Maybe FilePath -> Bool -> IO ()
-runTestSuite uplcFile testsFile metricsFileOpt debugContext = do
+runTestSuite ::
+  FilePath -> FilePath -> Maybe FilePath -> Bool -> TraceMode -> IO ()
+runTestSuite uplcFile testsFile metricsFileOpt debugContext traceMode = do
   -- Load test suite
   testSuite <- loadTestSuite testsFile
   let baseDir = getTestBaseDir testsFile
@@ -177,7 +180,14 @@ runTestSuite uplcFile testsFile metricsFileOpt debugContext = do
 
   -- Run each test case and collect results and metrics
   testResultsAndMetrics <- forM (suiteTests testSuite) \(policy, testCase) -> do
-    runSingleTest program baseDir testSuite policy testCase debugContext
+    runSingleTest
+      program
+      baseDir
+      testSuite
+      policy
+      testCase
+      debugContext
+      traceMode
 
   let (testResults, evaluationMetrics) = unzip testResultsAndMetrics
 
@@ -285,8 +295,9 @@ runSingleTest ::
   AggregationPolicy ->
   TestCase ->
   Bool ->
+  TraceMode ->
   IO (TestResult, EvaluationMetrics)
-runSingleTest program baseDir testSuite declaredPolicy testCase debugContext = do
+runSingleTest program baseDir testSuite declaredPolicy testCase debugContext traceMode = do
   -- Apply inputs sequentially to the program
   let inputs = tcInputs testCase
   finalProgram <-
@@ -294,7 +305,9 @@ runSingleTest program baseDir testSuite declaredPolicy testCase debugContext = d
 
   -- Evaluate the fully-applied program
   code <- compileProgram finalProgram Nothing
-  let evalRes = evaluateCompiledCode code
+  let evalRes = evaluateCompiledCode traceMode code
+  forM_ (evalResultTraces evalRes) \message ->
+    putTextLn $ "DEBUG_TRACE[" <> tcName testCase <> "]: " <> message
   testResult <- checkTestResult evalRes testCase baseDir
 
   -- Extract metrics from evaluation result

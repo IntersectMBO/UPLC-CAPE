@@ -29,12 +29,17 @@ module Cape.Tests (
   BaselineType (..),
   BaselineSpec (..),
   AddressSpec (..),
+  CredentialSpec (..),
+  ScriptInfoSpec (..),
+  PurposeSpec (..),
+  RedeemerSpec (..),
   DataStructureEntry (..),
   ResolvedInput (..),
   loadTestSuite,
   resolveTestInput,
   resolveExpectedResult,
   buildValue,
+  buildMintValue,
   getTestBaseDir,
   isPendingTest,
   suiteTests,
@@ -49,6 +54,7 @@ import Cape.ScriptContextBuilder
 import Data.Aeson (FromJSON (..), withObject, (.!=), (.:), (.:?))
 import Data.Aeson qualified as Json
 import Data.Aeson.Types qualified as AesonTypes
+import Data.ByteString.Base16 qualified as Base16
 import Data.ByteString.Lazy qualified as LBS
 import Data.Map qualified as HaskellMap
 import Data.Text qualified as Text
@@ -307,7 +313,7 @@ data ScriptContextSpec = ScriptContextSpec
     JSON examples:
     @
     {"lovelace": 2000000}
-    {"lovelace": 2000000, "assets": [{"currency_symbol": "#dddd...", "token_name": "#7465", "quantity": 1000}]}
+    {"lovelace": 2000000, "assets": [{"currency_symbol": "B #dddd...", "token_name": "B #7465", "quantity": 1000}]}
     @
 -}
 data ValueSpec = ValueSpec
@@ -321,9 +327,10 @@ data ValueSpec = ValueSpec
 -- | Specification for a native asset within a value.
 data AssetSpec = AssetSpec
   { asCurrencySymbol :: Text
-  -- ^ Currency symbol as hex-encoded bytestring (e.g. "#dddd...dddd")
+  -- ^ Currency symbol: a @\"\@reference\"@ to a bytestring or a UPLC text
+  -- Data literal (e.g. @\"B #dddd...dddd\"@)
   , asTokenName :: Text
-  -- ^ Token name as hex-encoded bytestring (e.g. "#76657374")
+  -- ^ Token name, in the same two forms (e.g. @\"B #76657374\"@)
   , asQuantity :: Integer
   -- ^ Token quantity
   }
@@ -353,19 +360,37 @@ data PatchOperationSpec
     --     {"op": "set_redeemer", "redeemer": "0"}
     --     @
     SetRedeemerSpec AesonTypes.Value
-  | -- | Add input UTXO with value and optional datum
+  | -- | Add input UTXO with value, optional address and optional datum.
     --
-    --     JSON example:
+    -- Without @address@ the input sits at the placeholder script address
+    -- when @is_own_input@ is true, and at an empty public key hash otherwise.
+    --
+    --     JSON examples:
     --     @
     --     {
     --       "op": "add_input_utxo",
     --       "utxo_ref": "1234567890abcdef:0",
-    --       "value": {"lovelace": 2000000, "assets": [{"currency_symbol": "#dddd...", "token_name": "#76657374", "quantity": 1000}]},
+    --       "value": {"lovelace": 2000000, "assets": [{"currency_symbol": "B #dddd...", "token_name": "B #76657374", "quantity": 1000}]},
     --       "is_own_input": true,
     --       "datum": "@vesting_datum"
     --     }
+    --     {
+    --       "op": "add_input_utxo",
+    --       "utxo_ref": "#5e1f...c0a1:0",
+    --       "address": {"type": "script", "script_hash": "@escrow_script_hash"},
+    --       "value": {"lovelace": 75000000},
+    --       "is_own_input": true,
+    --       "datum": "@escrow_datum",
+    --       "reference_script": "@other_script_hash"
+    --     }
     --     @
-    AddInputUTXOSpec Text ValueSpec Bool (Maybe AesonTypes.Value)
+    AddInputUTXOSpec
+      Text
+      (Maybe AddressSpec)
+      ValueSpec
+      Bool
+      (Maybe AesonTypes.Value)
+      (Maybe Text)
   | -- | Set validity range. @from_time@ is the inclusive lower bound and
     -- @to_time@ the exclusive upper bound, exactly as the ledger translates
     -- a transaction's validity interval; an omitted bound is infinite.
@@ -394,6 +419,19 @@ data PatchOperationSpec
     --     {"op": "add_output_utxo", "address": {"type": "script"}, "value": {"lovelace": 75000000}, "datum": "@datum"}
     --     @
     AddOutputUTXOWithDatumSpec AddressSpec ValueSpec AesonTypes.Value
+  | -- | Add output UTXO that carries a reference script, with or without
+    -- a datum. The reference script is its hash, either a
+    -- @\"\@reference\"@ to a bytestring or a @\"B #hex\"@ literal.
+    --
+    --     JSON example:
+    --     @
+    --     {"op": "add_output_utxo", "address": {"type": "script", "script_hash": "@escrow_script_hash"}, "value": {"lovelace": 75000000}, "datum": "@datum", "reference_script": "@other_script_hash"}
+    --     @
+    AddOutputUTXOWithReferenceScriptSpec
+      AddressSpec
+      ValueSpec
+      (Maybe AesonTypes.Value)
+      Text
   | -- | Remove output UTXO by index
     --
     --     JSON example:
@@ -409,6 +447,83 @@ data PatchOperationSpec
     --     {"op": "set_script_datum", "datum": "@accepted_escrow_datum"}
     --     @
     SetScriptDatumSpec AesonTypes.Value
+  | -- | Replace the script purpose. The transaction stays as it is, so one
+    -- transaction can be evaluated under each purpose it triggers.
+    --
+    --     JSON examples:
+    --     @
+    --     {"op": "set_script_info", "script_info": {"type": "minting", "policy_id": "@escrow_script_hash"}}
+    --     {"op": "set_script_info", "script_info": {"type": "rewarding", "credential": {"type": "script", "script_hash": "@escrow_script_hash"}}}
+    --     @
+    SetScriptInfoSpec ScriptInfoSpec
+  | -- | Replace the mint field of the transaction. Quantities are signed:
+    -- a positive quantity mints, a negative one burns.
+    --
+    --     JSON example:
+    --     @
+    --     {"op": "set_mint", "assets": [{"currency_symbol": "@escrow_script_hash", "token_name": "@token_name", "quantity": -1}]}
+    --     @
+    SetMintSpec [AssetSpec]
+  | -- | Set the transaction fee in lovelace
+    --
+    --     JSON example:
+    --     @
+    --     {"op": "set_fee", "lovelace": 214561}
+    --     @
+    SetFeeSpec Integer
+  | -- | Set the transaction id, in the two forms of the id in @utxo_ref@
+    --
+    --     JSON example:
+    --     @
+    --     {"op": "set_tx_id", "tx_id": "#8a7f...03d2"}
+    --     @
+    SetTxIdSpec Text
+  | -- | Replace the redeemers of the transaction: the map that every
+    -- script of the transaction sees, in the given order. It is
+    -- independent of @set_redeemer@, the redeemer of the script under test.
+    --
+    --     JSON example:
+    --     @
+    --     {
+    --       "op": "set_redeemers",
+    --       "redeemers": [
+    --         {"purpose": {"type": "spending", "utxo_ref": "#5e1f...c0a1:0"}, "redeemer": "I 1"},
+    --         {"purpose": {"type": "minting", "policy_id": "@escrow_script_hash"}, "redeemer": "I 1"}
+    --       ]
+    --     }
+    --     @
+    SetRedeemersSpec [RedeemerSpec]
+  deriving stock (Show, Eq)
+
+-- | One entry of the @set_redeemers@ patch.
+data RedeemerSpec = RedeemerSpec
+  { rsPurpose :: PurposeSpec
+  -- ^ The purpose the redeemer belongs to
+  , rsRedeemer :: AesonTypes.Value
+  -- ^ The redeemer, as any BuiltinData value
+  }
+  deriving stock (Show, Eq)
+
+-- | Script purpose of an entry of the @set_redeemers@ patch.
+data PurposeSpec
+  = {- | Spending purpose with the reference of the spent UTXO, in the
+    @utxo_ref@ format
+    -}
+    SpendingPurposeSpec Text
+  | -- | Minting purpose with the policy id
+    MintingPurposeSpec Text
+  | -- | Rewarding purpose with the withdrawing credential
+    RewardingPurposeSpec CredentialSpec
+  deriving stock (Show, Eq)
+
+-- | Script purpose specification for the @set_script_info@ patch.
+data ScriptInfoSpec
+  = {- | Minting purpose; the text is the policy id, either a @\"\@reference\"@
+    to a bytestring or a @\"B #hex\"@ literal.
+    -}
+    MintingScriptInfoSpec Text
+  | -- | Rewarding purpose with the withdrawing credential.
+    RewardingScriptInfoSpec CredentialSpec
   deriving stock (Show, Eq)
 
 -- | Expected result specification for test cases.
@@ -442,54 +557,95 @@ data ResultType
     ExpectedError
   deriving stock (Show)
 
-{- | Address specification for ScriptContext operations.
-Uses structural JSON format with proper type discrimination.
+{- | Address specification for ScriptContext operations: a payment
+credential and an optional staking credential.
+
+    JSON examples:
+    @
+    "address": {
+      "type": "script",
+      "script_hash": "@escrow_script_hash"
+    }
+    "address": {
+      "type": "pubkey",
+      "pubkey_hash": "@seller_pubkey",
+      "staking": {"type": "pubkey", "pubkey_hash": "@seller_stake_key"}
+    }
+    @
 -}
-data AddressSpec
-  = -- | Script address with explicit script hash
-    --
-    --     JSON example:
-    --     @
-    --     "address": {
-    --       "type": "script",
-    --       "script_hash": "1111111111111111111111111111111111111111111111111111111111"
-    --     }
-    --     @
-    ScriptAddressSpec Text
-  | -- | Public key address with pubkey hash
-    --
-    --     JSON examples:
-    --     @
-    --     "address": {
-    --       "type": "pubkey",
-    --       "pubkey_hash": "@impostor_pubkey"
-    --     }
-    --     "address": {
-    --       "type": "pubkey",
-    --       "pubkey_hash": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
-    --     }
-    --     @
-    PubkeyAddressSpec Text
+data AddressSpec = AddressSpec
+  { addrPayment :: CredentialSpec
+  -- ^ Payment credential, given by the @type@ field and its hash field
+  , addrStaking :: Maybe CredentialSpec
+  {- ^ Staking credential
+
+    JSON: @"staking": {"type": "pubkey", "pubkey_hash": "@stake_key"}@
+  -}
+  }
+  deriving stock (Show, Eq)
+
+{- | Credential specification: a script hash or a public key hash.
+
+The hash is either a @\"\@reference\"@ to a bytestring in @data_structures@,
+which gives exactly those bytes, or a literal. A literal is taken as its raw
+ASCII bytes, not decoded from hex: the @htlc@ and @linear_vesting@ suites
+rely on that reading, so it stays.
+-}
+data CredentialSpec
+  = {- | Script credential
+
+    JSON examples:
+    @
+    {"type": "script", "script_hash": "@escrow_script_hash"}
+    {"type": "script", "script_hash": "1111111111111111111111111111111111111111111111111111111111"}
+    @
+    -}
+    ScriptCredentialSpec Text
+  | {- | Public key credential
+
+    JSON examples:
+    @
+    {"type": "pubkey", "pubkey_hash": "@impostor_pubkey"}
+    {"type": "pubkey", "pubkey_hash": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"}
+    @
+    -}
+    PubkeyCredentialSpec Text
   deriving stock (Show, Eq)
 
 -- * Utility Functions
 
 {- | Parse TxOutRef from "txid:index" format.
 
-Example:
+The transaction id has two forms. With a leading @#@ it is hex and gives the
+decoded bytes, so 64 hex digits make the 32-byte id the ledger produces.
+Without the prefix the text itself is the id, byte for byte (legacy form).
+
+Examples:
 
 @
+parseTxOutRef "#1234...cdef:0"
+-- Right (TxOutRef (TxId <32 bytes>) 0)
 parseTxOutRef "1234...cdef:0"
--- Right (TxOutRef (TxId "1234...cdef") 0)
+-- Right (TxOutRef (TxId <the 64 ASCII characters>) 0)
 @
 -}
 parseTxOutRef :: Text -> Either String V3.TxOutRef
 parseTxOutRef ref = case Text.splitOn ":" ref of
   [txIdText, indexText] -> do
     index <- Read.readEither (toString indexText)
-    let txIdBytes = Builtins.toBuiltin (TE.encodeUtf8 txIdText)
-    pure $ V3.TxOutRef (V3.TxId txIdBytes) index
+    txId <- parseTxId txIdText
+    pure $ V3.TxOutRef txId index
   _ -> Left "Invalid TxOutRef format, expected 'txid:index'"
+
+-- | Parse a transaction id in the two forms 'parseTxOutRef' describes.
+parseTxId :: Text -> Either String V3.TxId
+parseTxId txIdText =
+  V3.TxId . Builtins.toBuiltin <$> case Text.stripPrefix "#" txIdText of
+    Just hex ->
+      first
+        (const $ "Invalid hex transaction id: " <> toString hex)
+        (Base16.decode (TE.encodeUtf8 hex))
+    Nothing -> Right (TE.encodeUtf8 txIdText)
 
 -- * JSON Parsing Instances
 
@@ -576,9 +732,11 @@ instance FromJSON PatchOperationSpec where
       "add_input_utxo" ->
         AddInputUTXOSpec
           <$> o .: "utxo_ref"
+          <*> o .:? "address"
           <*> o .: "value"
           <*> o .: "is_own_input"
           <*> o .:? "datum"
+          <*> o .:? "reference_script"
       "set_valid_range" ->
         SetValidRangeSpec
           <$> o .:? "from_time"
@@ -587,12 +745,39 @@ instance FromJSON PatchOperationSpec where
         address <- o .: "address"
         valueSpec <- o .: "value"
         mDatum <- o .:? "datum"
-        case mDatum of
-          Just datum -> pure $ AddOutputUTXOWithDatumSpec address valueSpec datum
-          Nothing -> pure $ AddOutputUTXOSpec address valueSpec
+        mReferenceScript <- o .:? "reference_script"
+        pure $ case (mReferenceScript, mDatum) of
+          (Just referenceScript, _) ->
+            AddOutputUTXOWithReferenceScriptSpec
+              address
+              valueSpec
+              mDatum
+              referenceScript
+          (Nothing, Just datum) -> AddOutputUTXOWithDatumSpec address valueSpec datum
+          (Nothing, Nothing) -> AddOutputUTXOSpec address valueSpec
       "remove_output_utxo" -> RemoveOutputUTXOSpec <$> o .: "index"
       "set_script_datum" -> SetScriptDatumSpec <$> o .: "datum"
+      "set_script_info" -> SetScriptInfoSpec <$> o .: "script_info"
+      "set_mint" -> SetMintSpec <$> o .: "assets"
+      "set_fee" -> SetFeeSpec <$> o .: "lovelace"
+      "set_tx_id" -> SetTxIdSpec <$> o .: "tx_id"
+      "set_redeemers" -> SetRedeemersSpec <$> o .: "redeemers"
       _ -> fail $ "Unknown patch operation: " <> toString op
+
+instance FromJSON RedeemerSpec where
+  parseJSON = withObject "RedeemerSpec" \o ->
+    RedeemerSpec
+      <$> o .: "purpose"
+      <*> o .: "redeemer"
+
+instance FromJSON PurposeSpec where
+  parseJSON = withObject "PurposeSpec" \o -> do
+    purpose :: Text <- o .: "type"
+    case purpose of
+      "spending" -> SpendingPurposeSpec <$> o .: "utxo_ref"
+      "minting" -> MintingPurposeSpec <$> o .: "policy_id"
+      "rewarding" -> RewardingPurposeSpec <$> o .: "credential"
+      _ -> fail $ "Unknown purpose type: " <> toString purpose
 
 instance FromJSON ValueSpec where
   parseJSON = withObject "ValueSpec" \o ->
@@ -608,12 +793,32 @@ instance FromJSON AssetSpec where
       <*> o .: "quantity"
 
 instance FromJSON AddressSpec where
-  parseJSON = withObject "AddressSpec" \o -> do
-    addrType :: Text <- o .: "type"
-    case addrType of
-      "script" -> ScriptAddressSpec <$> o .: "script_hash"
-      "pubkey" -> PubkeyAddressSpec <$> o .: "pubkey_hash"
-      _ -> fail $ "Unknown address type: " <> toString addrType
+  parseJSON = withObject "AddressSpec" \o ->
+    AddressSpec
+      <$> parseCredentialFields o
+      <*> o .:? "staking"
+
+instance FromJSON CredentialSpec where
+  parseJSON = withObject "CredentialSpec" parseCredentialFields
+
+{- | The fields of a credential: @type@ and the hash field it selects. An
+address carries them at its top level, next to @staking@.
+-}
+parseCredentialFields :: Json.Object -> AesonTypes.Parser CredentialSpec
+parseCredentialFields o = do
+  credentialType :: Text <- o .: "type"
+  case credentialType of
+    "script" -> ScriptCredentialSpec <$> o .: "script_hash"
+    "pubkey" -> PubkeyCredentialSpec <$> o .: "pubkey_hash"
+    _ -> fail $ "Unknown credential type: " <> toString credentialType
+
+instance FromJSON ScriptInfoSpec where
+  parseJSON = withObject "ScriptInfoSpec" \o -> do
+    purpose :: Text <- o .: "type"
+    case purpose of
+      "minting" -> MintingScriptInfoSpec <$> o .: "policy_id"
+      "rewarding" -> RewardingScriptInfoSpec <$> o .: "credential"
+      _ -> fail $ "Unknown script info type: " <> toString purpose
 
 -- * Core Functions
 
@@ -870,7 +1075,9 @@ resolveTextReference dataStructures text
 
 {- | Resolve script context reference.
 
-Looks up a ScriptContextSpec from the data structures map.
+Looks up a ScriptContextSpec from the data structures map. The error says
+which of the three ways the lookup failed: the name is absent, it names
+a @builtin_data@ entry, or its @script_context@ does not parse.
 
 Example:
 
@@ -879,16 +1086,17 @@ spec <- resolveScriptContextReference dataStructures "successful_deposit"
 @
 -}
 resolveScriptContextReference ::
-  HaskellMap.Map Text DataStructureEntry -> Text -> Maybe ScriptContextSpec
+  HaskellMap.Map Text DataStructureEntry ->
+  Text ->
+  Either Text ScriptContextSpec
 resolveScriptContextReference dataStructures refName =
   case HaskellMap.lookup refName dataStructures of
     Just (ScriptContextEntry value) ->
       case Json.fromJSON value of
-        Json.Success spec -> Just spec
-        Json.Error _err ->
-          Nothing -- Parse error - invalid script_context reference
-    Just _ -> Nothing -- Not a script_context reference
-    Nothing -> Nothing -- Reference not found
+        Json.Success spec -> Right spec
+        Json.Error err -> Left ("is not a valid script_context: " <> toText err)
+    Just (BuiltinDataEntry _) -> Left "is builtin_data, not a script_context"
+    Nothing -> Left "not found in data_structures"
 
 -- * Value Construction
 
@@ -912,13 +1120,42 @@ buildValue ::
   IO V3.Value
 buildValue dataStructures ValueSpec {vsLovelace, vsAssets} = do
   assets <- traverse (resolveAsset dataStructures) vsAssets
-  entries <- traverse coinEntry ((mempty, mempty, vsLovelace) : assets)
-  case PV.fromList entries >>= PV.valueData of
-    BuiltinSuccess valueData -> pure $ fromData valueData
-    BuiltinSuccessWithLogs _ valueData -> pure $ fromData valueData
-    BuiltinFailure logs _ -> die $ "Invalid value: " <> show (toList logs)
+  fromData <$> buildCoinsData ((mempty, mempty, vsLovelace) : assets)
   where
     fromData = V3.unsafeFromBuiltinData . Builtins.dataToBuiltinData
+
+{- | Build the mint field of a transaction from its assets.
+
+It takes the same path as 'buildValue', so it has the shape the ledger
+gives @txInfoMint@: policies and token names in strictly ascending byte
+order, duplicate coins summed, zero quantities dropped. Quantities are
+signed, a negative one burns. Unlike a 'V3.Value' the result has no ADA
+entry, and no assets give an empty map.
+-}
+buildMintValue ::
+  HaskellMap.Map Text DataStructureEntry ->
+  [AssetSpec] ->
+  IO V3.MintValue
+buildMintValue dataStructures assetSpecs = do
+  assets <- traverse (resolveAsset dataStructures) assetSpecs
+  forM_ assets \coin@(currency, _, _) ->
+    when (currency == mempty) $
+      die ("Mint cannot contain ADA: " <> show coin)
+  fromData <$> buildCoinsData assets
+  where
+    fromData = V3.unsafeFromBuiltinData . Builtins.dataToBuiltinData
+
+{- | The Data encoding of a multi-asset map built from
+(currency symbol, token name, quantity) coins by @PlutusCore.Value@.
+-}
+buildCoinsData :: [(ByteString, ByteString, Integer)] -> IO PLC.Data
+buildCoinsData coins = do
+  entries <- traverse coinEntry coins
+  case PV.fromList entries >>= PV.valueData of
+    BuiltinSuccess valueData -> pure valueData
+    BuiltinSuccessWithLogs _ valueData -> pure valueData
+    BuiltinFailure logs _ -> die $ "Invalid value: " <> show (toList logs)
+  where
     coinEntry coin@(currency, token, amount) =
       case (PV.k currency, PV.k token, PV.quantity amount) of
         (Just c, Just t, Just q) -> pure (c, [(t, q)])
@@ -933,34 +1170,45 @@ resolveAsset ::
   AssetSpec ->
   IO (ByteString, ByteString, Integer)
 resolveAsset dataStructures AssetSpec {asCurrencySymbol, asTokenName, asQuantity} = do
-  csBytes <- resolveAsBytes dataStructures asCurrencySymbol
-  tnBytes <- resolveAsBytes dataStructures asTokenName
+  csBytes <- resolveAsBytes dataStructures "asset component" asCurrencySymbol
+  tnBytes <- resolveAsBytes dataStructures "asset component" asTokenName
   pure (csBytes, tnBytes, asQuantity)
 
 {- | Resolve a text value to a ByteString.
 
-Supports @references (resolving to BuiltinData bytestrings)
-and hex-encoded literals (prefixed with #).
+Supports @references (resolving to BuiltinData bytestrings) and
+bytestring literals in UPLC text Data syntax (@B #hex@). The second
+argument names the field in error messages.
 -}
 resolveAsBytes ::
-  HaskellMap.Map Text DataStructureEntry -> Text -> IO ByteString
-resolveAsBytes dataStructures text
-  | Text.isPrefixOf "@" text && Text.length text > 1 = do
-      resolvedBuiltinData <- resolveBuiltinDataReference dataStructures text
-      let coreData = Builtins.builtinDataToData resolvedBuiltinData
-      case coreData of
-        PLC.B bytestring -> pure bytestring
-        _ -> die $ "Expected bytestring data for asset component: " <> toString text
-  | otherwise = do
-      -- Resolve as text (handles non-reference cases) and parse via the
-      -- BuiltinData decoder (string → UPLC text Data syntax).
-      let resolved = resolveTextReference dataStructures text
-      resolvedBuiltinData <-
-        decodeBuiltinDataValue dataStructures "asset component" (Json.String resolved)
-      let coreData = Builtins.builtinDataToData resolvedBuiltinData
-      case coreData of
-        PLC.B bytestring -> pure bytestring
-        _ -> die $ "Expected bytestring for asset component: " <> toString text
+  HaskellMap.Map Text DataStructureEntry -> Text -> Text -> IO ByteString
+resolveAsBytes dataStructures context text = do
+  resolvedBuiltinData <-
+    decodeBuiltinDataValue dataStructures context (Json.String text)
+  case Builtins.builtinDataToData resolvedBuiltinData of
+    PLC.B bytestring -> pure bytestring
+    _ ->
+      die $
+        "Expected bytestring for " <> toString context <> ": " <> toString text
+
+-- | Whether a text value is an @\@name@ reference into @data_structures@.
+isReference :: Text -> Bool
+isReference text = Text.isPrefixOf "@" text && Text.length text > 1
+
+{- | Resolve the hash of a credential.
+
+A @reference gives the bytes of the bytestring it points to, and fails
+when it points to anything else. A literal gives its raw ASCII bytes.
+-}
+resolveHashBytes ::
+  HaskellMap.Map Text DataStructureEntry ->
+  Text ->
+  Text ->
+  IO V3.BuiltinByteString
+resolveHashBytes dataStructures context text
+  | isReference text =
+      Builtins.toBuiltin <$> resolveAsBytes dataStructures context text
+  | otherwise = pure (fromString (toString text))
 
 -- * Datum Resolution
 
@@ -1073,15 +1321,21 @@ convertPatchOperation dataStructures spec =
     SetRedeemerSpec redeemerValue -> do
       builtinData <- decodeBuiltinDataValue dataStructures "redeemer" redeemerValue
       pure $ SetRedeemer (V3.Redeemer builtinData)
-    AddInputUTXOSpec utxoRefText valueSpec isOwnInput mDatumValue -> do
-      let resolvedUtxoRef = resolveTextReference dataStructures utxoRefText
-      case parseTxOutRef resolvedUtxoRef of
-        Left parseErr ->
-          die ("Failed to parse UTXO reference: " <> show parseErr)
-        Right txOutRef -> do
-          value <- buildValue dataStructures valueSpec
-          outputDatum <- resolveOutputDatum dataStructures "input datum" mDatumValue
-          pure $ AddInputUTXO txOutRef value isOwnInput outputDatum
+    AddInputUTXOSpec
+      utxoRefText
+      mAddressSpec
+      valueSpec
+      isOwnInput
+      mDatumValue
+      mReferenceScript -> do
+        txOutRef <- resolveTxOutRef dataStructures utxoRefText
+        address <- traverse (parseAddressSpec dataStructures) mAddressSpec
+        value <- buildValue dataStructures valueSpec
+        outputDatum <- resolveOutputDatum dataStructures "input datum" mDatumValue
+        referenceScript <-
+          traverse (resolveReferenceScript dataStructures) mReferenceScript
+        pure $
+          AddInputUTXO txOutRef address value isOwnInput outputDatum referenceScript
     SetValidRangeSpec fromTime toTime -> do
       let fromPosix = fmap V3.POSIXTime fromTime
           toPosix = fmap V3.POSIXTime toTime
@@ -1095,57 +1349,92 @@ convertPatchOperation dataStructures spec =
       address <- parseAddressSpec dataStructures addressSpec
       datum <- resolveDatumValue dataStructures "output datum" datumValue
       pure $ AddOutputUTXOWithDatum address value datum
+    AddOutputUTXOWithReferenceScriptSpec
+      addressSpec
+      valueSpec
+      mDatumValue
+      referenceScriptText -> do
+        value <- buildValue dataStructures valueSpec
+        address <- parseAddressSpec dataStructures addressSpec
+        outputDatum <- resolveOutputDatum dataStructures "output datum" mDatumValue
+        referenceScript <- resolveReferenceScript dataStructures referenceScriptText
+        pure . AddOutputUTXORaw $
+          V3.TxOut address value outputDatum (Just referenceScript)
     RemoveOutputUTXOSpec index -> do
       pure $ RemoveOutputUTXO index
     SetScriptDatumSpec datumValue -> do
       datum <- resolveDatumValue dataStructures "script datum" datumValue
       pure $ SetScriptDatum datum
+    SetScriptInfoSpec (MintingScriptInfoSpec policyIdText) -> do
+      policyId <- resolveAsBytes dataStructures "policy id" policyIdText
+      pure $ SetMintingScript (V3.CurrencySymbol (Builtins.toBuiltin policyId))
+    SetScriptInfoSpec (RewardingScriptInfoSpec credentialSpec) ->
+      SetRewardingScript <$> resolveCredential dataStructures credentialSpec
+    SetMintSpec assetSpecs ->
+      SetMint <$> buildMintValue dataStructures assetSpecs
+    SetFeeSpec lovelace -> pure $ SetFee (V3.Lovelace lovelace)
+    SetTxIdSpec txIdText ->
+      either (die . ("Failed to parse transaction id: " <>)) (pure . SetTxId) $
+        parseTxId txIdText
+    SetRedeemersSpec redeemerSpecs ->
+      SetRedeemers <$> forM redeemerSpecs \RedeemerSpec {rsPurpose, rsRedeemer} ->
+        (,)
+          <$> resolvePurpose dataStructures rsPurpose
+          <*> ( V3.Redeemer
+                  <$> decodeBuiltinDataValue dataStructures "redeemer" rsRedeemer
+              )
+
+-- | Resolve a @utxo_ref@ value, which can be a reference to its text.
+resolveTxOutRef ::
+  HaskellMap.Map Text DataStructureEntry -> Text -> IO V3.TxOutRef
+resolveTxOutRef dataStructures utxoRefText =
+  case parseTxOutRef (resolveTextReference dataStructures utxoRefText) of
+    Left parseErr -> die ("Failed to parse UTXO reference: " <> show parseErr)
+    Right txOutRef -> pure txOutRef
+
+-- | Resolve the hash of a reference script: a bytes reference or literal.
+resolveReferenceScript ::
+  HaskellMap.Map Text DataStructureEntry -> Text -> IO V3.ScriptHash
+resolveReferenceScript dataStructures text =
+  V3.ScriptHash . Builtins.toBuiltin
+    <$> resolveAsBytes dataStructures "reference script" text
+
+-- | Resolve the purpose of a @set_redeemers@ entry.
+resolvePurpose ::
+  HaskellMap.Map Text DataStructureEntry -> PurposeSpec -> IO Purpose
+resolvePurpose dataStructures = \case
+  SpendingPurposeSpec utxoRefText ->
+    SpendingPurpose <$> resolveTxOutRef dataStructures utxoRefText
+  MintingPurposeSpec policyIdText ->
+    MintingPurpose . V3.CurrencySymbol . Builtins.toBuiltin
+      <$> resolveAsBytes dataStructures "policy id" policyIdText
+  RewardingPurposeSpec credentialSpec ->
+    RewardingPurpose <$> resolveCredential dataStructures credentialSpec
 
 {- | Parse AddressSpec into Address with reference resolution.
 
-Supports structural address format:
-- ScriptAddressSpec: Script address (uses standard all-1s script hash)
-- PubkeyAddressSpec: Public key address with pubkey hash (supports @references and hex literals)
+The payment credential and the optional staking credential resolve the
+same way, see 'CredentialSpec'.
 -}
 parseAddressSpec ::
   HaskellMap.Map Text DataStructureEntry -> AddressSpec -> IO V3.Address
-parseAddressSpec dataStructures addressSpec = case addressSpec of
-  ScriptAddressSpec scriptHashText -> do
-    -- Use OverloadedStrings directly like ScriptContextBuilder does
-    pure $
-      V3.Address
-        (V3.ScriptCredential (V3.ScriptHash (fromString (toString scriptHashText))))
-        Nothing
-  PubkeyAddressSpec pubkeyHashText -> do
-    -- Check if this is a reference to a builtin_data type
-    if Text.isPrefixOf "@" pubkeyHashText && Text.length pubkeyHashText > 1
-      then do
-        let refName = Text.drop 1 pubkeyHashText
-        case HaskellMap.lookup refName dataStructures of
-          Just (BuiltinDataEntry _) -> do
-            -- Reference to builtin_data: resolve and use bytes directly
-            resolvedBuiltinData <-
-              resolveBuiltinDataReference dataStructures pubkeyHashText
-            let coreData = Builtins.builtinDataToData resolvedBuiltinData
-            case coreData of
-              PLC.B bytestring -> do
-                let pubKeyHashBytes = Builtins.toBuiltin bytestring
-                pure $ V3.Address (V3.PubKeyCredential (V3.PubKeyHash pubKeyHashBytes)) Nothing
-              _ ->
-                die $
-                  "Expected bytestring data for PubKeyHash in address: "
-                    <> toString pubkeyHashText
-          _ ->
-            die $
-              "Address reference @"
-                <> toString refName
-                <> " not found or not a builtin_data type"
-      else do
-        -- Literal hex string: use OverloadedStrings directly for consistency
-        pure $
-          V3.Address
-            (V3.PubKeyCredential (V3.PubKeyHash (fromString (toString pubkeyHashText))))
-            Nothing
+parseAddressSpec dataStructures AddressSpec {addrPayment, addrStaking} =
+  V3.Address
+    <$> resolveCredential dataStructures addrPayment
+    <*> traverse
+      (fmap V3.StakingHash . resolveCredential dataStructures)
+      addrStaking
+
+-- | Resolve a CredentialSpec into a Credential, see 'resolveHashBytes'.
+resolveCredential ::
+  HaskellMap.Map Text DataStructureEntry -> CredentialSpec -> IO V3.Credential
+resolveCredential dataStructures = \case
+  ScriptCredentialSpec scriptHashText ->
+    V3.ScriptCredential . V3.ScriptHash
+      <$> resolveHashBytes dataStructures "script hash" scriptHashText
+  PubkeyCredentialSpec pubkeyHashText ->
+    V3.PubKeyCredential . V3.PubKeyHash
+      <$> resolveHashBytes dataStructures "public key hash" pubkeyHashText
 
 {- | Convert ScriptContextSpec to ScriptContextBuilder with reference resolution.
 
@@ -1171,16 +1460,14 @@ convertScriptContextSpec
       ReferencedBaseline refText -> do
         let refName = Text.drop 1 refText -- Remove '@' prefix
         case resolveScriptContextReference dataStructures refName of
-          Just referencedSpec -> do
+          Right referencedSpec -> do
             -- Recursively resolve the referenced spec
             ScriptContextBuilder refBaseline refPatches <-
               convertScriptContextSpec dataStructures referencedSpec
             pure (refBaseline, refPatches)
-          Nothing ->
-            die $
-              "Script context reference @"
-                <> toString refName
-                <> " not found or not a script_context type"
+          Left reason ->
+            die . toString $
+              "Script context reference @" <> refName <> " " <> reason
 
     -- Convert patches and combine inherited with local patches
     convertedInheritedPatches <- pure inheritedPatches

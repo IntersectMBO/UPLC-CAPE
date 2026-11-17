@@ -207,7 +207,10 @@ spec = do
               txId = TxId "3333333333333333333333333333333333333333333333333333333333333333"
               txOutRef = TxOutRef txId 5
               value = singleton adaSymbol adaToken 50000000
-              result = applyPatch baseline (AddInputUTXO txOutRef value False NoOutputDatum)
+              result =
+                applyPatch
+                  baseline
+                  (AddInputUTXO txOutRef Nothing value False NoOutputDatum Nothing)
           case result of
             Right ctx -> do
               -- Should add input to transaction
@@ -225,7 +228,10 @@ spec = do
             txId = TxId "3333333333333333333333333333333333333333333333333333333333333333"
             txOutRef = TxOutRef txId 5
             value = singleton adaSymbol adaToken 75000000
-            result = applyPatch baseline (AddInputUTXO txOutRef value True NoOutputDatum)
+            result =
+              applyPatch
+                baseline
+                (AddInputUTXO txOutRef Nothing value True NoOutputDatum Nothing)
         case result of
           Right ctx -> do
             -- Should add input to transaction
@@ -243,7 +249,10 @@ spec = do
             txId = TxId "4444444444444444444444444444444444444444444444444444444444444444"
             txOutRef = TxOutRef txId 2
             value = singleton adaSymbol adaToken 100000000
-            result = applyPatch baseline (AddInputUTXO txOutRef value True NoOutputDatum)
+            result =
+              applyPatch
+                baseline
+                (AddInputUTXO txOutRef Nothing value True NoOutputDatum Nothing)
         case result of
           Right ctx -> case scriptContextScriptInfo ctx of
             SpendingScript _ maybeDatum ->
@@ -260,8 +269,8 @@ spec = do
             value1 = singleton adaSymbol adaToken 25000000
             value2 = singleton adaSymbol adaToken 50000000
             patches =
-              [ AddInputUTXO txOutRef1 value1 False NoOutputDatum
-              , AddInputUTXO txOutRef2 value2 True NoOutputDatum
+              [ AddInputUTXO txOutRef1 Nothing value1 False NoOutputDatum Nothing
+              , AddInputUTXO txOutRef2 Nothing value2 True NoOutputDatum Nothing
               ]
             result = applyPatches patches baseline
         case result of
@@ -274,6 +283,118 @@ spec = do
               SpendingScript scriptTxOutRef _ ->
                 scriptTxOutRef `shouldBe` txOutRef2
               _ -> expectationFailure "Expected SpendingScript"
+          Left err -> expectationFailure $ "Unexpected error: " <> show err
+
+      it "puts the input at the default address when no address is given" do
+        let baseline = createBaseline SpendingBaseline
+            txOutRef = TxOutRef (TxId "33") 0
+            value = singleton adaSymbol adaToken 75000000
+            inputAddresses =
+              fmap (txOutAddress . txInInfoResolved)
+                . List.toSOP
+                . txInfoInputs
+                . scriptContextTxInfo
+            inputAddress isOwnInput =
+              inputAddresses
+                <$> applyPatch
+                  baseline
+                  (AddInputUTXO txOutRef Nothing value isOwnInput NoOutputDatum Nothing)
+            placeholderScriptHash =
+              ScriptHash "1111111111111111111111111111111111111111111111111111111111"
+        inputAddress True
+          `shouldBe` Right [Address (ScriptCredential placeholderScriptHash) Nothing]
+        inputAddress False
+          `shouldBe` Right [Address (PubKeyCredential (PubKeyHash "")) Nothing]
+
+      it "puts the input at the given address" do
+        let baseline = createBaseline SpendingBaseline
+            txOutRef = TxOutRef (TxId "33") 0
+            value = singleton adaSymbol adaToken 75000000
+            address =
+              Address
+                (ScriptCredential (ScriptHash "escrow"))
+                (Just (StakingHash (PubKeyCredential (PubKeyHash "stake"))))
+            result =
+              applyPatch
+                baseline
+                (AddInputUTXO txOutRef (Just address) value True NoOutputDatum Nothing)
+        case result of
+          Right ctx -> do
+            fmap
+              (txOutAddress . txInInfoResolved)
+              (List.toSOP (txInfoInputs (scriptContextTxInfo ctx)))
+              `shouldBe` [address]
+            case scriptContextScriptInfo ctx of
+              SpendingScript scriptTxOutRef _ -> scriptTxOutRef `shouldBe` txOutRef
+              _ -> expectationFailure "Expected SpendingScript"
+          Left err -> expectationFailure $ "Unexpected error: " <> show err
+
+    context "SetMintingScript" do
+      it "switches the purpose to minting and keeps the transaction" do
+        let policyId = CurrencySymbol "policy"
+            spending =
+              applyPatches
+                [ AddSignature (PubKeyHash "buyer")
+                , AddInputUTXO
+                    (TxOutRef (TxId "33") 0)
+                    Nothing
+                    (singleton adaSymbol adaToken 75000000)
+                    True
+                    NoOutputDatum
+                    Nothing
+                ]
+                (createBaseline SpendingBaseline)
+        case (spending, spending >>= (`applyPatch` SetMintingScript policyId)) of
+          (Right spent, Right minted) -> do
+            case scriptContextScriptInfo minted of
+              MintingScript actualPolicyId -> actualPolicyId `shouldBe` policyId
+              _ -> expectationFailure "Expected MintingScript"
+            toBuiltinData (scriptContextTxInfo minted)
+              `shouldBe` toBuiltinData (scriptContextTxInfo spent)
+            scriptContextRedeemer minted `shouldBe` scriptContextRedeemer spent
+          (Left err, _) -> expectationFailure $ "Unexpected error: " <> show err
+          (_, Left err) -> expectationFailure $ "Unexpected error: " <> show err
+
+      it "rejects an own input once the purpose is minting" do
+        let patches =
+              [ SetMintingScript (CurrencySymbol "policy")
+              , AddInputUTXO
+                  (TxOutRef (TxId "33") 0)
+                  Nothing
+                  (singleton adaSymbol adaToken 75000000)
+                  True
+                  NoOutputDatum
+                  Nothing
+              ]
+        applyPatches patches (createBaseline SpendingBaseline)
+          `shouldSatisfy` isLeft
+
+    context "SetRewardingScript" do
+      it "switches the purpose to rewarding" do
+        let credential = ScriptCredential (ScriptHash "escrow")
+            result =
+              applyPatch (createBaseline SpendingBaseline) (SetRewardingScript credential)
+        case scriptContextScriptInfo <$> result of
+          Right (RewardingScript actualCredential) ->
+            actualCredential `shouldBe` credential
+          Right _ -> expectationFailure "Expected RewardingScript"
+          Left err -> expectationFailure $ "Unexpected error: " <> show err
+
+    context "SetMint" do
+      it "replaces the mint field" do
+        let mintOf quantity =
+              unsafeFromBuiltinData @MintValue
+                ( toBuiltinData
+                    (singleton (CurrencySymbol "policy") (TokenName "escrow") quantity)
+                )
+            result =
+              applyPatches
+                [SetMint (mintOf 5), SetMint (mintOf (-1))]
+                (createBaseline SpendingBaseline)
+        case result of
+          Right ctx ->
+            toBuiltinData (txInfoMint (scriptContextTxInfo ctx))
+              `shouldBe` toBuiltinData (mintOf (-1))
           Left err -> expectationFailure $ "Unexpected error: " <> show err
 
     context "SetValidRange" do
@@ -489,7 +610,13 @@ spec = do
               SpendingBaseline
               [ AddSignature pkh
               , SetRedeemer redeemer
-              , AddInputUTXO txOutRef (singleton adaSymbol adaToken 75000000) True NoOutputDatum
+              , AddInputUTXO
+                  txOutRef
+                  Nothing
+                  (singleton adaSymbol adaToken 75000000)
+                  True
+                  NoOutputDatum
+                  Nothing
               , SetValidRange (Just fromTime) (Just toTime)
               ]
           result = buildScriptContext builder
