@@ -1,0 +1,29 @@
+{
+  "compiler": {
+    "name": "Scalus",
+    "version": "1.5.0",
+    "commit_hash": "5bf331bc5f0a4e5100bf5ea033468ed771d71ea9"
+  },
+  "compilation_config": {
+    "optimization_level": "release",
+    "target": "uplc",
+    "flags": [
+      "Options.release"
+    ],
+    "min_protocol_version": 11
+  },
+  "contributors": [
+    {
+      "name": "Alexander Nemish",
+      "organization": "Lantr",
+      "contact": "@nau"
+    }
+  ],
+  "submission": {
+    "date": "2026-11-17T17:46:58.058869Z",
+    "source_available": true,
+    "source_repository": "https://github.com/scalus3/scalus",
+    "source_commit_hash": "7f0d171797f0d705fef5bef38caa968116b45e65",
+    "implementation_notes": "Compiled from Scala 3 with the Scalus compiler plugin, Options.release (PV11/vanRossem target: flexible case, batch-6 builtins), no traces. Scenario revision 2: one script with a minting purpose (Deposit mints the thread token, Burn destroys it) and a spending purpose (Accept, Refund). It reads its own hash from the context: the policy id when minting, the script hash of the spent input when spending."
+  }
+}
