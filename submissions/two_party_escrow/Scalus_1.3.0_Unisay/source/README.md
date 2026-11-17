@@ -4,7 +4,7 @@
 
 **Repository**: <https://github.com/Unisay/scalus-cape-submissions>
 
-**Branch**: `main`
+**Branch**: `yura/issue-272-escrow-1.3.0`
 
 **Commit**: `9f6ab5038c4a3fdd7752edad17b6c6cdfd70e0ec`
 
