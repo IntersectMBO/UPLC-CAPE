@@ -2,7 +2,7 @@
 
 **Repository**: <https://github.com/Unisay/plinth-cape-submissions>
 
-**Branch**: `plinth-1.71-escrow-thread-token`
+**Branch**: `plinth-1.71`
 
 **Commit**: `e042431e55696f705c4159082ca07e08c12348bd`
 
