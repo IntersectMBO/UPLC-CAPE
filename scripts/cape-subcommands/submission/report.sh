@@ -132,6 +132,7 @@ if [[ $DRY_RUN -eq 1 ]]; then
 else
   mkdir -p "$report_dir/benchmarks"
   cp -f "$PROJECT_ROOT/uplc-cape-logo.png" "$report_dir/uplc-cape-logo.png"
+  cp -f "$SCRIPT_DIR/report-comparison.js" "$report_dir/report-comparison.js"
 fi
 
 # Cached aggregate CSV per target filter, populated on first fetch. Lives in the
@@ -213,8 +214,8 @@ generate_benchmark_data_json() {
   while IFS= read -r line; do
     [ -n "$line" ] || continue
     local timestamp language version user variant
-    local cpu memory script_size term_size
-    local exec_fee ref_fee total_fee
+    local cpu memory
+    local exec_fee total_fee
     local tx_mem_pct tx_cpu_pct block_mem_pct block_cpu_pct
     local spt spb submission_dir min_protocol_version
     local excluded_count excluded_cpu_sum excluded_mem_sum
@@ -226,10 +227,7 @@ generate_benchmark_data_json() {
     variant=$(csv_field "$line" "variant")
     cpu=$(csv_field "$line" "cpu_units")
     memory=$(csv_field "$line" "memory_units")
-    script_size=$(csv_field "$line" "script_size_bytes")
-    term_size=$(csv_field "$line" "term_size")
     exec_fee=$(csv_field "$line" "execution_fee_lovelace")
-    ref_fee=$(csv_field "$line" "reference_script_fee_lovelace")
     total_fee=$(csv_field "$line" "total_fee_lovelace")
     tx_mem_pct=$(csv_field "$line" "tx_memory_budget_pct")
     tx_cpu_pct=$(csv_field "$line" "tx_cpu_budget_pct")
@@ -254,10 +252,7 @@ generate_benchmark_data_json() {
       --argjson min_protocol_version "${min_protocol_version:-null}" \
       --argjson cpu "${cpu:-null}" \
       --argjson memory "${memory:-null}" \
-      --argjson script_size "${script_size:-null}" \
-      --argjson term_size "${term_size:-null}" \
       --argjson exec_fee "${exec_fee:-null}" \
-      --argjson ref_fee "${ref_fee:-null}" \
       --argjson total_fee "${total_fee:-null}" \
       --argjson tx_mem_pct "${tx_mem_pct:-null}" \
       --argjson tx_cpu_pct "${tx_cpu_pct:-null}" \
@@ -268,6 +263,7 @@ generate_benchmark_data_json() {
       --argjson excluded_count "${excluded_count:-null}" \
       --argjson excluded_cpu_sum "${excluded_cpu_sum:-null}" \
       --argjson excluded_mem_sum "${excluded_mem_sum:-null}" \
+      --slurpfile source "$PROJECT_ROOT/submissions/$benchmark/$submission_dir/metrics.json" \
       '{
         timestamp: $timestamp,
         compiler: $compiler,
@@ -276,13 +272,18 @@ generate_benchmark_data_json() {
         variant: $variant,
         submission_dir: $submission_dir,
         min_protocol_version: $min_protocol_version,
+        positive_evaluations: [
+          $source[0].evaluations[]?
+          | select(.included_in_aggregates != false and .execution_result == "success")
+          | {name, cpu_units, memory_units}
+        ],
         metrics: {
           cpu_units: $cpu,
           memory_units: $memory,
-          script_size_bytes: $script_size,
-          term_size: $term_size,
+          script_size_bytes: $source[0].measurements.script_size_bytes,
+          term_size: $source[0].measurements.term_size,
           execution_fee_lovelace: $exec_fee,
-          reference_script_fee_lovelace: $ref_fee,
+          reference_script_fee_lovelace: $source[0].measurements.reference_script_fee_lovelace,
           total_fee_lovelace: $total_fee,
           tx_memory_budget_pct: $tx_mem_pct,
           tx_cpu_budget_pct: $tx_cpu_pct,
@@ -303,7 +304,14 @@ generate_benchmark_data_json() {
     --arg benchmark "$benchmark" \
     --arg generated_at "$(date -u +"%Y-%m-%dT%H:%M:%SZ")" \
     --slurpfile submissions "$tmp_submissions" \
-    '{benchmark: $benchmark, generated_at: $generated_at, submissions: $submissions[0]}' \
+    --slurpfile suite "$PROJECT_ROOT/scenarios/$benchmark/cape-tests.json" \
+    '[($suite[0].measurements // $suite[0].tests // [])[]
+        | select(.pending != true and .included_in_aggregates != false and .expected.type != "error")
+        | .name] as $cases
+      | {benchmark: $benchmark, generated_at: $generated_at,
+         positive_cases: $cases,
+         submissions: ($submissions[0] | map(.positive_evaluations |=
+           map(select(.name as $name | $cases | index($name)))))}' \
     > "$out_path"
 }
 
@@ -450,160 +458,30 @@ generate_submission_detail_pages() {
   done <<< "$csv_data"
 }
 
-# Build filtered benchmark stats from CSV data (consumed by index.html.tmpl).
-build_filtered_stats() {
-  local target_filter="${1:-}"
-  local csv_data
-  local aggregate_args=()
-  if [ -n "$target_filter" ]; then
-    aggregate_args+=("--target=$target_filter")
-  fi
-  csv_data=$($CAPE_CMD submission aggregate "${aggregate_args[@]}")
-
-  echo '{'
-  echo '  "generated_at": "'$(date -u +"%Y-%m-%dT%H:%M:%SZ")'",'
-  echo '  "benchmarks": ['
-
-  local benchmarks
-  benchmarks=$(echo "$csv_data" | tail -n +2 | awk -F, -v col="${CSV_COL[benchmark]}" '{print $col}' | sort -u)
-
-  local first_benchmark=true
-  local bench
-  for bench in $benchmarks; do
-    local benchmark_csv
-    benchmark_csv=$(echo "$csv_data" | grep "^$bench,")
-
-    local submission_count
-    submission_count=$(echo "$benchmark_csv" | wc -l)
-
-    if [ "$first_benchmark" = "false" ]; then
-      echo ','
+# The index and charts consume the same generated benchmark JSON files.
+# Keep only navigation metadata here; ranking is shared in report-comparison.js.
+build_index_stats() {
+  local benchmark_list="$1"
+  local benchmark data category scenario_type submission_count
+  local stats
+  stats=$(mktemp_json)
+  echo '[]' > "$stats"
+  while IFS= read -r benchmark; do
+    [ -n "$benchmark" ] || continue
+    [ -f "$PROJECT_ROOT/scenarios/$benchmark/$benchmark.md" ] || continue
+    data="$report_dir/benchmarks/$benchmark.json"
+    category=$(categorize_scenario "$benchmark")
+    scenario_type=$(classify_scenario "$benchmark")
+    submission_count=0
+    if [ -f "$data" ]; then
+      submission_count=$(jq '.submissions | length' "$data")
     fi
-    first_benchmark=false
-
-    local category winners_json
-    category=$(categorize_scenario "$bench")
-    winners_json=$(find_winners "$benchmark_csv")
-
-    echo '    {'
-    echo '      "name": "'$bench'",'
-    echo '      "category": "'$category'",'
-    echo '      "submission_count": '$submission_count','
-    echo '      "winners": '$winners_json','
-    echo '      "submissions": ['
-
-    local first_submission=true
-    while IFS= read -r line; do
-      if [ -z "$line" ]; then continue; fi
-
-      local timestamp language version user variant cpu_units memory_units script_size term_size execution_fee_lovelace reference_script_fee_lovelace total_fee_lovelace tx_memory_budget_pct tx_cpu_budget_pct block_memory_budget_pct block_cpu_budget_pct scripts_per_tx scripts_per_block
-      timestamp=$(csv_field "$line" "timestamp")
-      language=$(csv_field "$line" "language")
-      version=$(csv_field "$line" "version")
-      user=$(csv_field "$line" "user")
-      variant=$(csv_field "$line" "variant")
-      cpu_units=$(csv_field "$line" "cpu_units")
-      memory_units=$(csv_field "$line" "memory_units")
-      script_size=$(csv_field "$line" "script_size_bytes")
-      term_size=$(csv_field "$line" "term_size")
-      execution_fee_lovelace=$(csv_field "$line" "execution_fee_lovelace")
-      reference_script_fee_lovelace=$(csv_field "$line" "reference_script_fee_lovelace")
-      total_fee_lovelace=$(csv_field "$line" "total_fee_lovelace")
-      tx_memory_budget_pct=$(csv_field "$line" "tx_memory_budget_pct")
-      tx_cpu_budget_pct=$(csv_field "$line" "tx_cpu_budget_pct")
-      block_memory_budget_pct=$(csv_field "$line" "block_memory_budget_pct")
-      block_cpu_budget_pct=$(csv_field "$line" "block_cpu_budget_pct")
-      scripts_per_tx=$(csv_field "$line" "scripts_per_tx")
-      scripts_per_block=$(csv_field "$line" "scripts_per_block")
-
-      local date_only
-      date_only=$(echo "$timestamp" | cut -d'T' -f1)
-
-      local cpu_formatted memory_formatted total_fee_ada
-      cpu_formatted=$(format_number_short "$cpu_units")
-      memory_formatted=$(format_number_short "$memory_units")
-      total_fee_ada=$(awk -v lovelace="$total_fee_lovelace" 'BEGIN{printf "%.6f", lovelace/1000000}')
-
-      if [ "$first_submission" = "false" ]; then
-        echo ','
-      fi
-      first_submission=false
-
-      cat << EOF
-        {
-          "compiler": "$language",
-          "version": "$version",
-          "variant": "$variant",
-          "author": "$user",
-          "date": "$date_only",
-          "timestamp": "$timestamp",
-          "cpu_units": {
-            "value": $cpu_units,
-            "formatted": "$cpu_formatted",
-            "is_best": false
-          },
-          "memory_units": {
-            "value": $memory_units,
-            "formatted": "$memory_formatted",
-            "is_best": false
-          },
-          "script_size": {
-            "value": $script_size,
-            "formatted": "$script_size",
-            "is_best": false
-          },
-          "term_size": {
-            "value": $term_size,
-            "formatted": "$term_size",
-            "is_best": false
-          },
-          "total_fee_lovelace": {
-            "value": $total_fee_lovelace,
-            "formatted": "$total_fee_lovelace",
-            "is_best": false
-          },
-          "total_fee_ada": {
-            "value": $total_fee_ada,
-            "formatted": "$total_fee_ada",
-            "is_best": false
-          },
-          "tx_memory_budget_pct": $tx_memory_budget_pct,
-          "tx_cpu_budget_pct": $tx_cpu_budget_pct,
-          "block_memory_budget_pct": $block_memory_budget_pct,
-          "block_cpu_budget_pct": $block_cpu_budget_pct,
-          "scripts_per_tx": $scripts_per_tx,
-          "scripts_per_block": $scripts_per_block
-        }
-EOF
-    done <<< "$benchmark_csv"
-
-    echo ''
-    echo '      ]'
-    echo '    }'
-  done
-
-  echo ''
-  echo '  ]'
-  echo '}'
-}
-
-format_number_short() {
-  local num="$1"
-  if [ -z "$num" ] || [ "$num" = "null" ] || [ "$num" = "" ]; then
-    echo "0"
-    return
-  fi
-  echo "$num" | awk '{
-    if ($1 >= 1000000000) {
-      printf "%.2fB", $1/1000000000
-    } else if ($1 >= 1000000) {
-      printf "%.2fM", $1/1000000
-    } else if ($1 >= 1000) {
-      printf "%.2fK", $1/1000
-    } else {
-      print $1
-    }
-  }'
+    jq --arg name "$benchmark" --arg category "$category" --arg type "$scenario_type" --argjson count "$submission_count" \
+      '. + [{name: $name, category: $category, type: $type, submission_count: $count}]' \
+      "$stats" > "$stats.new"
+    mv "$stats.new" "$stats"
+  done <<< "$benchmark_list"
+  jq '{benchmarks: .}' "$stats"
 }
 
 # Category ∈ {fixed, open}, taken from YAML frontmatter of the scenario spec.
@@ -635,65 +513,30 @@ categorize_scenario() {
   echo "$category"
 }
 
-# Returns JSON with winners for each of the four headline metrics (handles ties).
-find_winners() {
-  local benchmark_csv="$1"
-
-  build_winners_json() {
-    local metric_col="$1"
-    local metric_name="$2"
-
-    local best_value
-    best_value=$(echo "$benchmark_csv" | awk -F, -v col="$metric_col" '{print $col}' | sort -n | head -1)
-
-    if [ -z "$best_value" ]; then
-      echo "null"
-      return
-    fi
-
-    local tied_submissions
-    tied_submissions=$(echo "$benchmark_csv" | awk -F, -v col="$metric_col" -v val="$best_value" '$col == val')
-
-    local total_count
-    total_count=$(echo "$tied_submissions" | wc -l)
-
-    echo -n "{\"value\":$best_value,\"formatted\":\"$(format_number_short "$best_value")\",\"total\":$total_count,\"submissions\":["
-
-    local first=true
-    while IFS= read -r line; do
-      [ -z "$line" ] && continue
-
-      local compiler version variant author
-      compiler=$(csv_field "$line" "language")
-      version=$(csv_field "$line" "version")
-      variant=$(csv_field "$line" "variant")
-      author=$(csv_field "$line" "user")
-
-      if [ "$first" = "false" ]; then
-        echo -n ","
-      fi
-      first=false
-
-      echo -n "{\"compiler\":\"$compiler\",\"version\":\"$version\",\"variant\":\"$variant\",\"author\":\"$author\"}"
-    done <<< "$tied_submissions"
-
-    echo -n "]}"
-  }
-
-  local cpu_json memory_json script_json term_json
-  cpu_json=$(build_winners_json "${CSV_COL[cpu_units]}" "cpu")
-  memory_json=$(build_winners_json "${CSV_COL[memory_units]}" "memory")
-  script_json=$(build_winners_json "${CSV_COL[script_size_bytes]}" "script_size")
-  term_json=$(build_winners_json "${CSV_COL[term_size]}" "term_size")
-
-  echo "{\"cpu\":$cpu_json,\"memory\":$memory_json,\"script_size\":$script_json,\"term_size\":$term_json}"
+# Type is independent of the fixed/open algorithm category.
+classify_scenario() {
+  local scenario="$1"
+  local scenario_file="$PROJECT_ROOT/scenarios/$scenario/${scenario}.md"
+  local scenario_type
+  scenario_type=$(awk 'BEGIN{in_fm=0} /^---$/ {in_fm++; next} in_fm==1 && /^type:/ {print $2; exit}' "$scenario_file")
+  if [[ "$scenario_type" != "synthetic" && "$scenario_type" != "real-world" ]]; then
+    log_err "Scenario '$scenario' must have 'type: synthetic' or 'type: real-world' in $scenario_file"
+    return 1
+  fi
+  printf '%s\n' "$scenario_type"
 }
 
 generate_index_report() {
   local output_dir="$1"
   local benchmark_list="$2"
-  local target_filter="${3:-}"
-  local template_name="${4:-index.html.tmpl}"
+
+  # Single-benchmark updates with --keep-existing retain the other rendered
+  # benchmarks in the index. A fresh report lists only pages it generated.
+  if [[ $KEEP_EXISTING -eq 1 && -d "$output_dir/benchmarks" ]]; then
+    local saved_benchmarks
+    saved_benchmarks=$(find "$output_dir/benchmarks" -maxdepth 1 -type f -name '*.json' -printf '%f\n' | sed 's/\.json$//')
+    benchmark_list=$(printf '%s\n%s\n' "$benchmark_list" "$saved_benchmarks" | sort -u)
+  fi
 
   local temp_json temp_stats
   temp_json=$(mktemp_json)
@@ -703,11 +546,7 @@ generate_index_report() {
     log_info "[dry-run] Would generate benchmark stats"
     echo '{"benchmarks":[]}' > "$temp_stats"
   else
-    if [ -n "$target_filter" ]; then
-      build_filtered_stats "$target_filter" > "$temp_stats"
-    else
-      build_filtered_stats > "$temp_stats"
-    fi
+    build_index_stats "$benchmark_list" > "$temp_stats"
   fi
 
   cat > "$temp_json" << EOF
@@ -739,9 +578,9 @@ EOF
 EOF
 
   if [[ $DRY_RUN -eq 1 ]]; then
-    log_info "[dry-run] Would render $output_dir/index.html using template $SCRIPT_DIR/$template_name"
+    log_info "[dry-run] Would render $output_dir/index.html using template $SCRIPT_DIR/index.html.tmpl"
   else
-    if ! gomplate -f "$SCRIPT_DIR/$template_name" -c .="$temp_json" > "$output_dir/index.html"; then
+    if ! gomplate -f "$SCRIPT_DIR/index.html.tmpl" -c .="$temp_json" > "$output_dir/index.html"; then
       echo "ERROR: Index template rendering failed" >&2
       exit 1
     fi
@@ -768,6 +607,8 @@ EOF
     log_info "[dry-run] Would render $abs_output_path using template $abs_template_path"
   else
     mkdir -p "$output_dir/benchmarks"
+    # A retained data file must not rank submissions that no longer exist.
+    rm -f "$output_dir/benchmarks/${benchmark}.json"
     if ! gomplate -f "$abs_template_path" -c .="$temp_json" > "$abs_output_path"; then
       echo "ERROR: Template rendering failed for no-submissions report" >&2
       exit 1
@@ -1003,7 +844,7 @@ if [ "$1" = "--all" ]; then
   done
 
   if [ -n "$benchmarks_with_submissions" ]; then
-    generate_index_report "$report_dir" "$(echo -e "$benchmarks_with_submissions")" "current"
+    generate_index_report "$report_dir" "$(echo -e "$benchmarks_with_submissions")"
     echo ""
     echo "✅ Current HTML reports generated:"
     echo "   📄 $report_dir/index.html (main index)"

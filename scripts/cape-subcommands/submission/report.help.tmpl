@@ -1,7 +1,7 @@
 Usage: cape submission report [--dry-run] [--keep-existing] <benchmark>
        cape submission report [--dry-run] [--keep-existing] --all
 
-Generate HTML performance reports with chart images comparing submission performance.
+Generate interactive HTML performance reports comparing submission performance.
 
 Arguments:
   <benchmark>    Name of the benchmark to generate report for
@@ -17,11 +17,13 @@ The report includes:
 - Per-submission evaluation breakdown pages
   (report/benchmarks/<benchmark>/<submission_dir>.html), linked from each
   submission row on the benchmark page
-- 4 PNG chart images per benchmark comparing submissions by:
-  - CPU Units: Execution cost in CPU units
-  - Memory Units: Memory consumption
-  - Script Size: Serialized UPLC script size in bytes
-  - Term Size: Number of AST nodes in UPLC term
+- Selectable ranking criterion, shared by scenario winners and comparison charts
+- Fee, CPU and memory with sum, mean, median, minimum and maximum aggregations
+- Script/AST size, transaction capacity and budget percentages
+
+The default ranking is the sum of execution costs of positive measured cases,
+plus the reference-script fee once. Failure-path checks and pending cases are
+excluded. The selected criterion and aggregation are preserved in the URL.
 
 Each submission is labeled as: {language}_{version}_{user}
 
@@ -29,12 +31,12 @@ Output:
   report/index.html                           # Main index with all benchmarks
   report/benchmarks/<benchmark>.html          # Individual benchmark reports
   report/benchmarks/<benchmark>/<dir>.html    # Per-submission evaluation breakdowns
-  report/benchmarks/images/<benchmark>_*.png  # Chart image files
+  report/benchmarks/<benchmark>.json         # Comparison data
 
 Examples:
   cape submission report fibonacci           # Report for fibonacci benchmark
   cape submission report --all               # Reports for all benchmarks
 
 Requirements:
-  - gnuplot must be installed
+  - gomplate and jq must be installed
   - Submissions must have metrics.json files (use 'cape submission measure')

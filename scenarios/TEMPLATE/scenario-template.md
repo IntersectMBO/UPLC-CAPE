@@ -1,4 +1,5 @@
 ---
+type: synthetic # or "real-world"
 category: fixed # or "open" - see below for guidance
 ---
 

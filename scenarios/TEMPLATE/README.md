@@ -62,6 +62,8 @@ The benchmark template includes:
 
 When creating a new benchmark, replace all `{placeholder}` values with concrete specifications:
 
+Set the frontmatter `type` to `synthetic` or `real-world` for the report tab. The separate `category` field (`fixed` or `open`) describes algorithm constraints.
+
 - `{Scenario Name}`: Human-readable title
 - `{scenario_name}`: Machine-readable identifier
 - `{synthetic/real-world}`: Type classification

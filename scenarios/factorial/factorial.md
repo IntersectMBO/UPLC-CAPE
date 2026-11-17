@@ -1,4 +1,5 @@
 ---
+type: synthetic
 category: open
 ---
 
