@@ -123,7 +123,14 @@
             cursor: pointer;
         }
         .ranking-select:focus-visible { outline: 2px solid #667eea; outline-offset: 2px; }
-        .ranking-status { color: #6c757d; font-size: 0.9em; }
+        .metric-about { font: inherit; font-size: 0.9em; color: #6c757d; background: none; border: 0; padding: 0; cursor: pointer; }
+        .metric-about::before { content: "\25B8\00A0"; }
+        .metric-about[aria-expanded="true"]::before { content: "\25BE\00A0"; }
+        .metric-about:hover { color: #343f79; }
+        .metric-about:focus-visible { outline: 2px solid #667eea; outline-offset: 2px; }
+        .ranking-compare { margin-left: auto; color: #4c5bd4; text-decoration: none; font-size: 0.9em; }
+        .ranking-compare:hover { text-decoration: underline; }
+        .metric-description { color: #6c757d; font-size: 0.9em; margin: -4px 0 12px; max-width: 760px; }
         .podium { display: grid; gap: 5px; }
         .podium-row {
             display: grid;
@@ -140,12 +147,6 @@
         .podium-value { font-variant-numeric: tabular-nums; font-weight: 600; white-space: nowrap; }
         .podium-submission { color: #4c5bd4; text-decoration: none; overflow-wrap: anywhere; }
         .podium-submission:hover { text-decoration: underline; }
-        .ranking-footer { display: flex; align-items: baseline; justify-content: space-between; flex-wrap: wrap; gap: 8px 20px; margin-top: 12px; font-size: 0.88em; }
-        .ranking-footer > a { color: #4c5bd4; text-decoration: none; }
-        .ranking-footer > a:hover { text-decoration: underline; }
-        .metric-details { color: #6c757d; max-width: 760px; }
-        .metric-details summary { cursor: pointer; }
-        .metric-details p { margin: 6px 0 0; }
         .ranking-note { color: #6c757d; font-size: 0.9em; margin: 10px 0 0; }
         .ranking-note a { color: #4c5bd4; }
         .comparison-note { color: #6c757d; margin: 0 0 24px; font-size: 0.9em; }
@@ -237,7 +238,7 @@
         <div class="scenario-name">
             <a href="benchmarks/{{.name}}.html">{{.name}}</a>
         </div>
-        <div class="scenario-meta">{{.submission_count}} submissions</div>
+        <div class="scenario-meta">{{if eq .optimization "compiler-only"}}Compiler-only{{else}}Unrestricted{{end}} optimization</div>
         {{if gt .submission_count 0}}
         <div class="selected-winner">Loading comparison…</div>
         {{else}}
@@ -310,23 +311,23 @@
                 const metric = C.metrics.find(m => m.key === key);
                 location.hash = C.scenarioSelectionHash(location.hash, name, metric, aggregation);
             });
-            const separator = node("span", "podium-separator", "·");
-            separator.setAttribute("aria-hidden", "true");
-            const status = node("span", "ranking-status", "Loading…");
-            status.setAttribute("role", "status");
-            toolbar.append(select, separator, status);
-            const results = node("div", "podium", "Loading comparison…");
-            const footer = node("div", "ranking-footer", "");
-            const compare = node("a", "", "Compare all submissions →");
-            const details = node("details", "metric-details", "");
-            const summary = node("summary", "", "About this metric");
-            const description = node("p", "", "");
+            const description = node("p", "metric-description", "");
             description.id = `metric-description-${name}`;
-            details.append(summary, description);
-            footer.append(compare, details);
+            description.hidden = true;
+            const about = node("button", "metric-about", "About this metric");
+            about.type = "button";
+            about.setAttribute("aria-expanded", "false");
+            about.setAttribute("aria-controls", description.id);
+            about.addEventListener("click", () => {
+                description.hidden = !description.hidden;
+                about.setAttribute("aria-expanded", String(!description.hidden));
+            });
+            const compare = node("a", "ranking-compare", "Compare all submissions →");
+            toolbar.append(select, about, compare);
+            const results = node("div", "podium", "Loading comparison…");
             const note = node("p", "ranking-note", "");
-            target.replaceChildren(toolbar, results, note, footer);
-            views.set(name, { select, status, results, compare, summary, description, note });
+            target.replaceChildren(toolbar, description, results, note);
+            views.set(name, { select, about, results, compare, description, note });
         }
 
         function renderCard(card) {
@@ -336,7 +337,7 @@
             const { metric, aggregation } = C.readScenarioSelection(location.hash, name);
             view.select.value = `${metric.key}:${metric.aggregate ? aggregation : "sum"}`;
             view.description.textContent = C.description(metric, aggregation);
-            view.summary.textContent = `About ${view.select.selectedOptions[0].textContent}`;
+            view.about.textContent = `About ${view.select.selectedOptions[0].textContent}`;
             const scenarioLink = card.querySelector(".scenario-name a");
             const url = new URL(`benchmarks/${encodeURIComponent(name)}.html`, location.href);
             url.searchParams.set("index", location.hash);
@@ -348,19 +349,15 @@
             view.results.replaceChildren();
             view.note.textContent = "";
             if (entry.error) {
-                view.status.textContent = "Unavailable";
                 view.results.append(node("p", "ranking-note", "Failed to load comparison data. Reload to retry."));
                 return;
             }
             const { submissions } = entry;
-            card.querySelector(".scenario-meta").textContent = `${submissions.length} submission${submissions.length === 1 ? "" : "s"} · ${entry.caseCount} positive cases · ${card.dataset.optimization === "compiler-only" ? "Compiler-only optimization" : "Unrestricted optimization"}`;
+            card.querySelector(".scenario-meta").textContent = `${entry.caseCount} positive cases · ${card.dataset.optimization === "compiler-only" ? "Compiler-only" : "Unrestricted"} optimization`;
             view.compare.textContent = `Compare all ${submissions.length} submissions →`;
             const ranked = C.rank(submissions, metric, aggregation);
-            const winners = C.winners(submissions, metric, aggregation);
             const podium = C.podium(submissions, metric, aggregation);
             view.results.style.setProperty("--value-width", `${Math.max(1, ...podium.map(p => C.format(metric, p.value).length))}ch`);
-            view.status.textContent = !ranked.length ? "No ranking"
-                : !winners.length ? "None fit" : winners.length > 1 ? "Joint winners" : "Winner";
             if (!ranked.length) {
                 view.results.append(node("p", "ranking-note", "No comparable measurements"));
             } else if (!podium.length) {
