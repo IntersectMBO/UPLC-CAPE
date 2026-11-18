@@ -1,6 +1,18 @@
 {
   "benchmark": "factorial_naive_recursion",
-  "generated_at": "2026-11-17T13:29:26Z",
+  "generated_at": "2026-11-18T11:57:49Z",
+  "positive_cases": [
+    "factorial_0",
+    "factorial_1",
+    "factorial_2",
+    "factorial_3",
+    "factorial_4",
+    "factorial_5",
+    "factorial_8",
+    "factorial_10",
+    "factorial_12",
+    "factorial_negative"
+  ],
   "submissions": [
     {
       "timestamp": "2026-08-12T10:54:11Z",
@@ -10,6 +22,58 @@
       "variant": "default",
       "submission_dir": "OpShin_0.26.1_nielstron",
       "min_protocol_version": null,
+      "positive_evaluations": [
+        {
+          "name": "factorial_0",
+          "cpu_units": 1063986,
+          "memory_units": 6002
+        },
+        {
+          "name": "factorial_1",
+          "cpu_units": 2448033,
+          "memory_units": 12708
+        },
+        {
+          "name": "factorial_2",
+          "cpu_units": 3832080,
+          "memory_units": 19414
+        },
+        {
+          "name": "factorial_3",
+          "cpu_units": 5216127,
+          "memory_units": 26120
+        },
+        {
+          "name": "factorial_4",
+          "cpu_units": 6600174,
+          "memory_units": 32826
+        },
+        {
+          "name": "factorial_5",
+          "cpu_units": 7984221,
+          "memory_units": 39532
+        },
+        {
+          "name": "factorial_8",
+          "cpu_units": 12136362,
+          "memory_units": 59650
+        },
+        {
+          "name": "factorial_10",
+          "cpu_units": 14904456,
+          "memory_units": 73062
+        },
+        {
+          "name": "factorial_12",
+          "cpu_units": 17672550,
+          "memory_units": 86474
+        },
+        {
+          "name": "factorial_negative",
+          "cpu_units": 1063986,
+          "memory_units": 6002
+        }
+      ],
       "metrics": {
         "cpu_units": 72921975,
         "memory_units": 361790,
@@ -37,6 +101,58 @@
       "variant": "default",
       "submission_dir": "Pebble_0.1.2_michele-nuzzi",
       "min_protocol_version": null,
+      "positive_evaluations": [
+        {
+          "name": "factorial_0",
+          "cpu_units": 633439,
+          "memory_units": 3302
+        },
+        {
+          "name": "factorial_1",
+          "cpu_units": 1282939,
+          "memory_units": 5408
+        },
+        {
+          "name": "factorial_2",
+          "cpu_units": 1932439,
+          "memory_units": 7514
+        },
+        {
+          "name": "factorial_3",
+          "cpu_units": 2581939,
+          "memory_units": 9620
+        },
+        {
+          "name": "factorial_4",
+          "cpu_units": 3231439,
+          "memory_units": 11726
+        },
+        {
+          "name": "factorial_5",
+          "cpu_units": 3880939,
+          "memory_units": 13832
+        },
+        {
+          "name": "factorial_8",
+          "cpu_units": 5829439,
+          "memory_units": 20150
+        },
+        {
+          "name": "factorial_10",
+          "cpu_units": 7128439,
+          "memory_units": 24362
+        },
+        {
+          "name": "factorial_12",
+          "cpu_units": 8427439,
+          "memory_units": 28574
+        },
+        {
+          "name": "factorial_negative",
+          "cpu_units": 633439,
+          "memory_units": 3302
+        }
+      ],
       "metrics": {
         "cpu_units": 35561890,
         "memory_units": 127790,
@@ -64,6 +180,58 @@
       "variant": "default",
       "submission_dir": "Pebble_0.4.4_michele-nuzzi",
       "min_protocol_version": 11,
+      "positive_evaluations": [
+        {
+          "name": "factorial_0",
+          "cpu_units": 477390,
+          "memory_units": 2801
+        },
+        {
+          "name": "factorial_1",
+          "cpu_units": 970841,
+          "memory_units": 4406
+        },
+        {
+          "name": "factorial_2",
+          "cpu_units": 1464292,
+          "memory_units": 6011
+        },
+        {
+          "name": "factorial_3",
+          "cpu_units": 1957743,
+          "memory_units": 7616
+        },
+        {
+          "name": "factorial_4",
+          "cpu_units": 2451194,
+          "memory_units": 9221
+        },
+        {
+          "name": "factorial_5",
+          "cpu_units": 2944645,
+          "memory_units": 10826
+        },
+        {
+          "name": "factorial_8",
+          "cpu_units": 4424998,
+          "memory_units": 15641
+        },
+        {
+          "name": "factorial_10",
+          "cpu_units": 5411900,
+          "memory_units": 18851
+        },
+        {
+          "name": "factorial_12",
+          "cpu_units": 6398802,
+          "memory_units": 22061
+        },
+        {
+          "name": "factorial_negative",
+          "cpu_units": 477390,
+          "memory_units": 2801
+        }
+      ],
       "metrics": {
         "cpu_units": 26979195,
         "memory_units": 100235,
@@ -91,6 +259,58 @@
       "variant": "default",
       "submission_dir": "Pebble_0.5.0_michele-nuzzi",
       "min_protocol_version": 11,
+      "positive_evaluations": [
+        {
+          "name": "factorial_0",
+          "cpu_units": 477390,
+          "memory_units": 2801
+        },
+        {
+          "name": "factorial_1",
+          "cpu_units": 970841,
+          "memory_units": 4406
+        },
+        {
+          "name": "factorial_2",
+          "cpu_units": 1464292,
+          "memory_units": 6011
+        },
+        {
+          "name": "factorial_3",
+          "cpu_units": 1957743,
+          "memory_units": 7616
+        },
+        {
+          "name": "factorial_4",
+          "cpu_units": 2451194,
+          "memory_units": 9221
+        },
+        {
+          "name": "factorial_5",
+          "cpu_units": 2944645,
+          "memory_units": 10826
+        },
+        {
+          "name": "factorial_8",
+          "cpu_units": 4424998,
+          "memory_units": 15641
+        },
+        {
+          "name": "factorial_10",
+          "cpu_units": 5411900,
+          "memory_units": 18851
+        },
+        {
+          "name": "factorial_12",
+          "cpu_units": 6398802,
+          "memory_units": 22061
+        },
+        {
+          "name": "factorial_negative",
+          "cpu_units": 477390,
+          "memory_units": 2801
+        }
+      ],
       "metrics": {
         "cpu_units": 26979195,
         "memory_units": 100235,
@@ -118,6 +338,58 @@
       "variant": "default",
       "submission_dir": "Plinth_1.45.0.0_Unisay",
       "min_protocol_version": null,
+      "positive_evaluations": [
+        {
+          "name": "factorial_0",
+          "cpu_units": 519986,
+          "memory_units": 2602
+        },
+        {
+          "name": "factorial_1",
+          "cpu_units": 1344033,
+          "memory_units": 5808
+        },
+        {
+          "name": "factorial_2",
+          "cpu_units": 2168080,
+          "memory_units": 9014
+        },
+        {
+          "name": "factorial_3",
+          "cpu_units": 2992127,
+          "memory_units": 12220
+        },
+        {
+          "name": "factorial_4",
+          "cpu_units": 3816174,
+          "memory_units": 15426
+        },
+        {
+          "name": "factorial_5",
+          "cpu_units": 4640221,
+          "memory_units": 18632
+        },
+        {
+          "name": "factorial_8",
+          "cpu_units": 7112362,
+          "memory_units": 28250
+        },
+        {
+          "name": "factorial_10",
+          "cpu_units": 8760456,
+          "memory_units": 34662
+        },
+        {
+          "name": "factorial_12",
+          "cpu_units": 10408550,
+          "memory_units": 41074
+        },
+        {
+          "name": "factorial_negative",
+          "cpu_units": 519986,
+          "memory_units": 2602
+        }
+      ],
       "metrics": {
         "cpu_units": 42281975,
         "memory_units": 170290,
@@ -145,6 +417,58 @@
       "variant": "default",
       "submission_dir": "Plinth_1.61.0.0_Unisay",
       "min_protocol_version": 11,
+      "positive_evaluations": [
+        {
+          "name": "factorial_0",
+          "cpu_units": 299937,
+          "memory_units": 1701
+        },
+        {
+          "name": "factorial_1",
+          "cpu_units": 855935,
+          "memory_units": 3706
+        },
+        {
+          "name": "factorial_2",
+          "cpu_units": 1411933,
+          "memory_units": 5711
+        },
+        {
+          "name": "factorial_3",
+          "cpu_units": 1967931,
+          "memory_units": 7716
+        },
+        {
+          "name": "factorial_4",
+          "cpu_units": 2523929,
+          "memory_units": 9721
+        },
+        {
+          "name": "factorial_5",
+          "cpu_units": 3079927,
+          "memory_units": 11726
+        },
+        {
+          "name": "factorial_8",
+          "cpu_units": 4747921,
+          "memory_units": 17741
+        },
+        {
+          "name": "factorial_10",
+          "cpu_units": 5859917,
+          "memory_units": 21751
+        },
+        {
+          "name": "factorial_12",
+          "cpu_units": 6971913,
+          "memory_units": 25761
+        },
+        {
+          "name": "factorial_negative",
+          "cpu_units": 299937,
+          "memory_units": 1701
+        }
+      ],
       "metrics": {
         "cpu_units": 28019280,
         "memory_units": 107235,
@@ -172,6 +496,58 @@
       "variant": "default",
       "submission_dir": "Plinth_1.64.0.0_Unisay",
       "min_protocol_version": 11,
+      "positive_evaluations": [
+        {
+          "name": "factorial_0",
+          "cpu_units": 299937,
+          "memory_units": 1701
+        },
+        {
+          "name": "factorial_1",
+          "cpu_units": 855935,
+          "memory_units": 3706
+        },
+        {
+          "name": "factorial_2",
+          "cpu_units": 1411933,
+          "memory_units": 5711
+        },
+        {
+          "name": "factorial_3",
+          "cpu_units": 1967931,
+          "memory_units": 7716
+        },
+        {
+          "name": "factorial_4",
+          "cpu_units": 2523929,
+          "memory_units": 9721
+        },
+        {
+          "name": "factorial_5",
+          "cpu_units": 3079927,
+          "memory_units": 11726
+        },
+        {
+          "name": "factorial_8",
+          "cpu_units": 4747921,
+          "memory_units": 17741
+        },
+        {
+          "name": "factorial_10",
+          "cpu_units": 5859917,
+          "memory_units": 21751
+        },
+        {
+          "name": "factorial_12",
+          "cpu_units": 6971913,
+          "memory_units": 25761
+        },
+        {
+          "name": "factorial_negative",
+          "cpu_units": 299937,
+          "memory_units": 1701
+        }
+      ],
       "metrics": {
         "cpu_units": 28019280,
         "memory_units": 107235,
@@ -199,6 +575,58 @@
       "variant": "default",
       "submission_dir": "Plinth_1.65.0.0_Unisay",
       "min_protocol_version": 11,
+      "positive_evaluations": [
+        {
+          "name": "factorial_0",
+          "cpu_units": 299937,
+          "memory_units": 1701
+        },
+        {
+          "name": "factorial_1",
+          "cpu_units": 855935,
+          "memory_units": 3706
+        },
+        {
+          "name": "factorial_2",
+          "cpu_units": 1411933,
+          "memory_units": 5711
+        },
+        {
+          "name": "factorial_3",
+          "cpu_units": 1967931,
+          "memory_units": 7716
+        },
+        {
+          "name": "factorial_4",
+          "cpu_units": 2523929,
+          "memory_units": 9721
+        },
+        {
+          "name": "factorial_5",
+          "cpu_units": 3079927,
+          "memory_units": 11726
+        },
+        {
+          "name": "factorial_8",
+          "cpu_units": 4747921,
+          "memory_units": 17741
+        },
+        {
+          "name": "factorial_10",
+          "cpu_units": 5859917,
+          "memory_units": 21751
+        },
+        {
+          "name": "factorial_12",
+          "cpu_units": 6971913,
+          "memory_units": 25761
+        },
+        {
+          "name": "factorial_negative",
+          "cpu_units": 299937,
+          "memory_units": 1701
+        }
+      ],
       "metrics": {
         "cpu_units": 28019280,
         "memory_units": 107235,
@@ -226,6 +654,58 @@
       "variant": "default",
       "submission_dir": "Plinth_1.67.0.0_Unisay",
       "min_protocol_version": 11,
+      "positive_evaluations": [
+        {
+          "name": "factorial_0",
+          "cpu_units": 299937,
+          "memory_units": 1701
+        },
+        {
+          "name": "factorial_1",
+          "cpu_units": 855935,
+          "memory_units": 3706
+        },
+        {
+          "name": "factorial_2",
+          "cpu_units": 1411933,
+          "memory_units": 5711
+        },
+        {
+          "name": "factorial_3",
+          "cpu_units": 1967931,
+          "memory_units": 7716
+        },
+        {
+          "name": "factorial_4",
+          "cpu_units": 2523929,
+          "memory_units": 9721
+        },
+        {
+          "name": "factorial_5",
+          "cpu_units": 3079927,
+          "memory_units": 11726
+        },
+        {
+          "name": "factorial_8",
+          "cpu_units": 4747921,
+          "memory_units": 17741
+        },
+        {
+          "name": "factorial_10",
+          "cpu_units": 5859917,
+          "memory_units": 21751
+        },
+        {
+          "name": "factorial_12",
+          "cpu_units": 6971913,
+          "memory_units": 25761
+        },
+        {
+          "name": "factorial_negative",
+          "cpu_units": 299937,
+          "memory_units": 1701
+        }
+      ],
       "metrics": {
         "cpu_units": 28019280,
         "memory_units": 107235,
@@ -253,6 +733,58 @@
       "variant": "default",
       "submission_dir": "Plinth_1.71.0.0_Unisay",
       "min_protocol_version": 11,
+      "positive_evaluations": [
+        {
+          "name": "factorial_0",
+          "cpu_units": 299937,
+          "memory_units": 1701
+        },
+        {
+          "name": "factorial_1",
+          "cpu_units": 855935,
+          "memory_units": 3706
+        },
+        {
+          "name": "factorial_2",
+          "cpu_units": 1411933,
+          "memory_units": 5711
+        },
+        {
+          "name": "factorial_3",
+          "cpu_units": 1967931,
+          "memory_units": 7716
+        },
+        {
+          "name": "factorial_4",
+          "cpu_units": 2523929,
+          "memory_units": 9721
+        },
+        {
+          "name": "factorial_5",
+          "cpu_units": 3079927,
+          "memory_units": 11726
+        },
+        {
+          "name": "factorial_8",
+          "cpu_units": 4747921,
+          "memory_units": 17741
+        },
+        {
+          "name": "factorial_10",
+          "cpu_units": 5859917,
+          "memory_units": 21751
+        },
+        {
+          "name": "factorial_12",
+          "cpu_units": 6971913,
+          "memory_units": 25761
+        },
+        {
+          "name": "factorial_negative",
+          "cpu_units": 299937,
+          "memory_units": 1701
+        }
+      ],
       "metrics": {
         "cpu_units": 28019280,
         "memory_units": 107235,
@@ -280,6 +812,58 @@
       "variant": "default",
       "submission_dir": "Plutarch_1.11.0_SeungheonOh",
       "min_protocol_version": null,
+      "positive_evaluations": [
+        {
+          "name": "factorial_0",
+          "cpu_units": 519986,
+          "memory_units": 2602
+        },
+        {
+          "name": "factorial_1",
+          "cpu_units": 1344033,
+          "memory_units": 5808
+        },
+        {
+          "name": "factorial_2",
+          "cpu_units": 2168080,
+          "memory_units": 9014
+        },
+        {
+          "name": "factorial_3",
+          "cpu_units": 2992127,
+          "memory_units": 12220
+        },
+        {
+          "name": "factorial_4",
+          "cpu_units": 3816174,
+          "memory_units": 15426
+        },
+        {
+          "name": "factorial_5",
+          "cpu_units": 4640221,
+          "memory_units": 18632
+        },
+        {
+          "name": "factorial_8",
+          "cpu_units": 7112362,
+          "memory_units": 28250
+        },
+        {
+          "name": "factorial_10",
+          "cpu_units": 8760456,
+          "memory_units": 34662
+        },
+        {
+          "name": "factorial_12",
+          "cpu_units": 10408550,
+          "memory_units": 41074
+        },
+        {
+          "name": "factorial_negative",
+          "cpu_units": 519986,
+          "memory_units": 2602
+        }
+      ],
       "metrics": {
         "cpu_units": 42281975,
         "memory_units": 170290,
@@ -307,6 +891,58 @@
       "variant": "default",
       "submission_dir": "Scalus_0.12.1_Unisay",
       "min_protocol_version": null,
+      "positive_evaluations": [
+        {
+          "name": "factorial_0",
+          "cpu_units": 615986,
+          "memory_units": 3202
+        },
+        {
+          "name": "factorial_1",
+          "cpu_units": 1424033,
+          "memory_units": 6308
+        },
+        {
+          "name": "factorial_2",
+          "cpu_units": 2232080,
+          "memory_units": 9414
+        },
+        {
+          "name": "factorial_3",
+          "cpu_units": 3040127,
+          "memory_units": 12520
+        },
+        {
+          "name": "factorial_4",
+          "cpu_units": 3848174,
+          "memory_units": 15626
+        },
+        {
+          "name": "factorial_5",
+          "cpu_units": 4656221,
+          "memory_units": 18732
+        },
+        {
+          "name": "factorial_8",
+          "cpu_units": 7080362,
+          "memory_units": 28050
+        },
+        {
+          "name": "factorial_10",
+          "cpu_units": 8696456,
+          "memory_units": 34262
+        },
+        {
+          "name": "factorial_12",
+          "cpu_units": 10312550,
+          "memory_units": 40474
+        },
+        {
+          "name": "factorial_negative",
+          "cpu_units": 615986,
+          "memory_units": 3202
+        }
+      ],
       "metrics": {
         "cpu_units": 42521975,
         "memory_units": 171790,
@@ -334,6 +970,58 @@
       "variant": "default",
       "submission_dir": "Scalus_0.16.0_Unisay",
       "min_protocol_version": null,
+      "positive_evaluations": [
+        {
+          "name": "factorial_0",
+          "cpu_units": 567986,
+          "memory_units": 2902
+        },
+        {
+          "name": "factorial_1",
+          "cpu_units": 1376033,
+          "memory_units": 6008
+        },
+        {
+          "name": "factorial_2",
+          "cpu_units": 2184080,
+          "memory_units": 9114
+        },
+        {
+          "name": "factorial_3",
+          "cpu_units": 2992127,
+          "memory_units": 12220
+        },
+        {
+          "name": "factorial_4",
+          "cpu_units": 3800174,
+          "memory_units": 15326
+        },
+        {
+          "name": "factorial_5",
+          "cpu_units": 4608221,
+          "memory_units": 18432
+        },
+        {
+          "name": "factorial_8",
+          "cpu_units": 7032362,
+          "memory_units": 27750
+        },
+        {
+          "name": "factorial_10",
+          "cpu_units": 8648456,
+          "memory_units": 33962
+        },
+        {
+          "name": "factorial_12",
+          "cpu_units": 10264550,
+          "memory_units": 40174
+        },
+        {
+          "name": "factorial_negative",
+          "cpu_units": 567986,
+          "memory_units": 2902
+        }
+      ],
       "metrics": {
         "cpu_units": 42041975,
         "memory_units": 168790,
@@ -361,6 +1049,58 @@
       "variant": "default",
       "submission_dir": "Scalus_0.17.0_Unisay",
       "min_protocol_version": 11,
+      "positive_evaluations": [
+        {
+          "name": "factorial_0",
+          "cpu_units": 347937,
+          "memory_units": 2001
+        },
+        {
+          "name": "factorial_1",
+          "cpu_units": 999935,
+          "memory_units": 4606
+        },
+        {
+          "name": "factorial_2",
+          "cpu_units": 1651933,
+          "memory_units": 7211
+        },
+        {
+          "name": "factorial_3",
+          "cpu_units": 2303931,
+          "memory_units": 9816
+        },
+        {
+          "name": "factorial_4",
+          "cpu_units": 2955929,
+          "memory_units": 12421
+        },
+        {
+          "name": "factorial_5",
+          "cpu_units": 3607927,
+          "memory_units": 15026
+        },
+        {
+          "name": "factorial_8",
+          "cpu_units": 5563921,
+          "memory_units": 22841
+        },
+        {
+          "name": "factorial_10",
+          "cpu_units": 6867917,
+          "memory_units": 28051
+        },
+        {
+          "name": "factorial_12",
+          "cpu_units": 8171913,
+          "memory_units": 33261
+        },
+        {
+          "name": "factorial_negative",
+          "cpu_units": 347937,
+          "memory_units": 2001
+        }
+      ],
       "metrics": {
         "cpu_units": 32819280,
         "memory_units": 137235,
@@ -388,6 +1128,58 @@
       "variant": "default",
       "submission_dir": "Scalus_0.18.2_Unisay",
       "min_protocol_version": 11,
+      "positive_evaluations": [
+        {
+          "name": "factorial_0",
+          "cpu_units": 347937,
+          "memory_units": 2001
+        },
+        {
+          "name": "factorial_1",
+          "cpu_units": 999935,
+          "memory_units": 4606
+        },
+        {
+          "name": "factorial_2",
+          "cpu_units": 1651933,
+          "memory_units": 7211
+        },
+        {
+          "name": "factorial_3",
+          "cpu_units": 2303931,
+          "memory_units": 9816
+        },
+        {
+          "name": "factorial_4",
+          "cpu_units": 2955929,
+          "memory_units": 12421
+        },
+        {
+          "name": "factorial_5",
+          "cpu_units": 3607927,
+          "memory_units": 15026
+        },
+        {
+          "name": "factorial_8",
+          "cpu_units": 5563921,
+          "memory_units": 22841
+        },
+        {
+          "name": "factorial_10",
+          "cpu_units": 6867917,
+          "memory_units": 28051
+        },
+        {
+          "name": "factorial_12",
+          "cpu_units": 8171913,
+          "memory_units": 33261
+        },
+        {
+          "name": "factorial_negative",
+          "cpu_units": 347937,
+          "memory_units": 2001
+        }
+      ],
       "metrics": {
         "cpu_units": 32819280,
         "memory_units": 137235,
@@ -415,6 +1207,58 @@
       "variant": "default",
       "submission_dir": "Scalus_1.3.0_Unisay",
       "min_protocol_version": 11,
+      "positive_evaluations": [
+        {
+          "name": "factorial_0",
+          "cpu_units": 299937,
+          "memory_units": 1701
+        },
+        {
+          "name": "factorial_1",
+          "cpu_units": 855935,
+          "memory_units": 3706
+        },
+        {
+          "name": "factorial_2",
+          "cpu_units": 1411933,
+          "memory_units": 5711
+        },
+        {
+          "name": "factorial_3",
+          "cpu_units": 1967931,
+          "memory_units": 7716
+        },
+        {
+          "name": "factorial_4",
+          "cpu_units": 2523929,
+          "memory_units": 9721
+        },
+        {
+          "name": "factorial_5",
+          "cpu_units": 3079927,
+          "memory_units": 11726
+        },
+        {
+          "name": "factorial_8",
+          "cpu_units": 4747921,
+          "memory_units": 17741
+        },
+        {
+          "name": "factorial_10",
+          "cpu_units": 5859917,
+          "memory_units": 21751
+        },
+        {
+          "name": "factorial_12",
+          "cpu_units": 6971913,
+          "memory_units": 25761
+        },
+        {
+          "name": "factorial_negative",
+          "cpu_units": 299937,
+          "memory_units": 1701
+        }
+      ],
       "metrics": {
         "cpu_units": 28019280,
         "memory_units": 107235,
@@ -442,6 +1286,58 @@
       "variant": "default",
       "submission_dir": "Scalus_1.4.0_nau",
       "min_protocol_version": 11,
+      "positive_evaluations": [
+        {
+          "name": "factorial_0",
+          "cpu_units": 299937,
+          "memory_units": 1701
+        },
+        {
+          "name": "factorial_1",
+          "cpu_units": 855935,
+          "memory_units": 3706
+        },
+        {
+          "name": "factorial_2",
+          "cpu_units": 1411933,
+          "memory_units": 5711
+        },
+        {
+          "name": "factorial_3",
+          "cpu_units": 1967931,
+          "memory_units": 7716
+        },
+        {
+          "name": "factorial_4",
+          "cpu_units": 2523929,
+          "memory_units": 9721
+        },
+        {
+          "name": "factorial_5",
+          "cpu_units": 3079927,
+          "memory_units": 11726
+        },
+        {
+          "name": "factorial_8",
+          "cpu_units": 4747921,
+          "memory_units": 17741
+        },
+        {
+          "name": "factorial_10",
+          "cpu_units": 5859917,
+          "memory_units": 21751
+        },
+        {
+          "name": "factorial_12",
+          "cpu_units": 6971913,
+          "memory_units": 25761
+        },
+        {
+          "name": "factorial_negative",
+          "cpu_units": 299937,
+          "memory_units": 1701
+        }
+      ],
       "metrics": {
         "cpu_units": 28019280,
         "memory_units": 107235,

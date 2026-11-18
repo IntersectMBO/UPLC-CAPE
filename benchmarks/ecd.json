@@ -1,6 +1,22 @@
 {
   "benchmark": "ecd",
-  "generated_at": "2026-11-17T13:29:24Z",
+  "generated_at": "2026-11-18T11:57:47Z",
+  "positive_cases": [
+    "ecd_0_12",
+    "ecd_12_0",
+    "ecd_7_7",
+    "ecd_6_9",
+    "ecd_12_8",
+    "ecd_15_25",
+    "ecd_17_19",
+    "ecd_13_29",
+    "ecd_48_18",
+    "ecd_100_75",
+    "ecd_1071_462",
+    "ecd_2520_1890",
+    "ecd_negative_12_8",
+    "ecd_12_negative_8"
+  ],
   "submissions": [
     {
       "timestamp": "2026-08-12T10:54:10Z",
@@ -10,6 +26,78 @@
       "variant": "default",
       "submission_dir": "Plinth_1.45.0.0_Unisay",
       "min_protocol_version": null,
+      "positive_evaluations": [
+        {
+          "name": "ecd_0_12",
+          "cpu_units": 1646544,
+          "memory_units": 7207
+        },
+        {
+          "name": "ecd_12_0",
+          "cpu_units": 937821,
+          "memory_units": 4404
+        },
+        {
+          "name": "ecd_7_7",
+          "cpu_units": 1646544,
+          "memory_units": 7207
+        },
+        {
+          "name": "ecd_6_9",
+          "cpu_units": 3063990,
+          "memory_units": 12813
+        },
+        {
+          "name": "ecd_12_8",
+          "cpu_units": 2355267,
+          "memory_units": 10010
+        },
+        {
+          "name": "ecd_15_25",
+          "cpu_units": 3772713,
+          "memory_units": 15616
+        },
+        {
+          "name": "ecd_17_19",
+          "cpu_units": 3772713,
+          "memory_units": 15616
+        },
+        {
+          "name": "ecd_13_29",
+          "cpu_units": 3772713,
+          "memory_units": 15616
+        },
+        {
+          "name": "ecd_48_18",
+          "cpu_units": 3063990,
+          "memory_units": 12813
+        },
+        {
+          "name": "ecd_100_75",
+          "cpu_units": 2355267,
+          "memory_units": 10010
+        },
+        {
+          "name": "ecd_1071_462",
+          "cpu_units": 3063990,
+          "memory_units": 12813
+        },
+        {
+          "name": "ecd_2520_1890",
+          "cpu_units": 2355267,
+          "memory_units": 10010
+        },
+        {
+          "name": "ecd_negative_12_8",
+          "cpu_units": 2355267,
+          "memory_units": 10010
+        },
+        {
+          "name": "ecd_12_negative_8",
+          "cpu_units": 2520475,
+          "memory_units": 10412
+        }
+      ],
       "metrics": {
         "cpu_units": 36682561,
         "memory_units": 154557,
@@ -37,6 +125,78 @@
       "variant": "default",
       "submission_dir": "Plinth_1.61.0.0_Unisay",
       "min_protocol_version": 11,
+      "positive_evaluations": [
+        {
+          "name": "ecd_0_12",
+          "cpu_units": 970397,
+          "memory_units": 4404
+        },
+        {
+          "name": "ecd_12_0",
+          "cpu_units": 497723,
+          "memory_units": 2602
+        },
+        {
+          "name": "ecd_7_7",
+          "cpu_units": 970397,
+          "memory_units": 4404
+        },
+        {
+          "name": "ecd_6_9",
+          "cpu_units": 1915745,
+          "memory_units": 8008
+        },
+        {
+          "name": "ecd_12_8",
+          "cpu_units": 1443071,
+          "memory_units": 6206
+        },
+        {
+          "name": "ecd_15_25",
+          "cpu_units": 2388419,
+          "memory_units": 9810
+        },
+        {
+          "name": "ecd_17_19",
+          "cpu_units": 2388419,
+          "memory_units": 9810
+        },
+        {
+          "name": "ecd_13_29",
+          "cpu_units": 2388419,
+          "memory_units": 9810
+        },
+        {
+          "name": "ecd_48_18",
+          "cpu_units": 1915745,
+          "memory_units": 8008
+        },
+        {
+          "name": "ecd_100_75",
+          "cpu_units": 1443071,
+          "memory_units": 6206
+        },
+        {
+          "name": "ecd_1071_462",
+          "cpu_units": 1915745,
+          "memory_units": 8008
+        },
+        {
+          "name": "ecd_2520_1890",
+          "cpu_units": 1443071,
+          "memory_units": 6206
+        },
+        {
+          "name": "ecd_negative_12_8",
+          "cpu_units": 1443071,
+          "memory_units": 6206
+        },
+        {
+          "name": "ecd_12_negative_8",
+          "cpu_units": 1608279,
+          "memory_units": 6608
+        }
+      ],
       "metrics": {
         "cpu_units": 22731572,
         "memory_units": 96296,
@@ -64,6 +224,78 @@
       "variant": "default",
       "submission_dir": "Plinth_1.64.0.0_Unisay",
       "min_protocol_version": 11,
+      "positive_evaluations": [
+        {
+          "name": "ecd_0_12",
+          "cpu_units": 794397,
+          "memory_units": 3304
+        },
+        {
+          "name": "ecd_12_0",
+          "cpu_units": 401723,
+          "memory_units": 2002
+        },
+        {
+          "name": "ecd_7_7",
+          "cpu_units": 794397,
+          "memory_units": 3304
+        },
+        {
+          "name": "ecd_6_9",
+          "cpu_units": 1579745,
+          "memory_units": 5908
+        },
+        {
+          "name": "ecd_12_8",
+          "cpu_units": 1187071,
+          "memory_units": 4606
+        },
+        {
+          "name": "ecd_15_25",
+          "cpu_units": 1972419,
+          "memory_units": 7210
+        },
+        {
+          "name": "ecd_17_19",
+          "cpu_units": 1972419,
+          "memory_units": 7210
+        },
+        {
+          "name": "ecd_13_29",
+          "cpu_units": 1972419,
+          "memory_units": 7210
+        },
+        {
+          "name": "ecd_48_18",
+          "cpu_units": 1579745,
+          "memory_units": 5908
+        },
+        {
+          "name": "ecd_100_75",
+          "cpu_units": 1187071,
+          "memory_units": 4606
+        },
+        {
+          "name": "ecd_1071_462",
+          "cpu_units": 1579745,
+          "memory_units": 5908
+        },
+        {
+          "name": "ecd_2520_1890",
+          "cpu_units": 1187071,
+          "memory_units": 4606
+        },
+        {
+          "name": "ecd_negative_12_8",
+          "cpu_units": 1187071,
+          "memory_units": 4606
+        },
+        {
+          "name": "ecd_12_negative_8",
+          "cpu_units": 1352279,
+          "memory_units": 5008
+        }
+      ],
       "metrics": {
         "cpu_units": 18747572,
         "memory_units": 71396,
@@ -91,6 +323,78 @@
       "variant": "default",
       "submission_dir": "Plinth_1.65.0.0_Unisay",
       "min_protocol_version": 11,
+      "positive_evaluations": [
+        {
+          "name": "ecd_0_12",
+          "cpu_units": 794397,
+          "memory_units": 3304
+        },
+        {
+          "name": "ecd_12_0",
+          "cpu_units": 401723,
+          "memory_units": 2002
+        },
+        {
+          "name": "ecd_7_7",
+          "cpu_units": 794397,
+          "memory_units": 3304
+        },
+        {
+          "name": "ecd_6_9",
+          "cpu_units": 1579745,
+          "memory_units": 5908
+        },
+        {
+          "name": "ecd_12_8",
+          "cpu_units": 1187071,
+          "memory_units": 4606
+        },
+        {
+          "name": "ecd_15_25",
+          "cpu_units": 1972419,
+          "memory_units": 7210
+        },
+        {
+          "name": "ecd_17_19",
+          "cpu_units": 1972419,
+          "memory_units": 7210
+        },
+        {
+          "name": "ecd_13_29",
+          "cpu_units": 1972419,
+          "memory_units": 7210
+        },
+        {
+          "name": "ecd_48_18",
+          "cpu_units": 1579745,
+          "memory_units": 5908
+        },
+        {
+          "name": "ecd_100_75",
+          "cpu_units": 1187071,
+          "memory_units": 4606
+        },
+        {
+          "name": "ecd_1071_462",
+          "cpu_units": 1579745,
+          "memory_units": 5908
+        },
+        {
+          "name": "ecd_2520_1890",
+          "cpu_units": 1187071,
+          "memory_units": 4606
+        },
+        {
+          "name": "ecd_negative_12_8",
+          "cpu_units": 1187071,
+          "memory_units": 4606
+        },
+        {
+          "name": "ecd_12_negative_8",
+          "cpu_units": 1352279,
+          "memory_units": 5008
+        }
+      ],
       "metrics": {
         "cpu_units": 18747572,
         "memory_units": 71396,
@@ -118,6 +422,78 @@
       "variant": "default",
       "submission_dir": "Plinth_1.67.0.0_Unisay",
       "min_protocol_version": 11,
+      "positive_evaluations": [
+        {
+          "name": "ecd_0_12",
+          "cpu_units": 970397,
+          "memory_units": 4404
+        },
+        {
+          "name": "ecd_12_0",
+          "cpu_units": 497723,
+          "memory_units": 2602
+        },
+        {
+          "name": "ecd_7_7",
+          "cpu_units": 970397,
+          "memory_units": 4404
+        },
+        {
+          "name": "ecd_6_9",
+          "cpu_units": 1915745,
+          "memory_units": 8008
+        },
+        {
+          "name": "ecd_12_8",
+          "cpu_units": 1443071,
+          "memory_units": 6206
+        },
+        {
+          "name": "ecd_15_25",
+          "cpu_units": 2388419,
+          "memory_units": 9810
+        },
+        {
+          "name": "ecd_17_19",
+          "cpu_units": 2388419,
+          "memory_units": 9810
+        },
+        {
+          "name": "ecd_13_29",
+          "cpu_units": 2388419,
+          "memory_units": 9810
+        },
+        {
+          "name": "ecd_48_18",
+          "cpu_units": 1915745,
+          "memory_units": 8008
+        },
+        {
+          "name": "ecd_100_75",
+          "cpu_units": 1443071,
+          "memory_units": 6206
+        },
+        {
+          "name": "ecd_1071_462",
+          "cpu_units": 1915745,
+          "memory_units": 8008
+        },
+        {
+          "name": "ecd_2520_1890",
+          "cpu_units": 1443071,
+          "memory_units": 6206
+        },
+        {
+          "name": "ecd_negative_12_8",
+          "cpu_units": 1443071,
+          "memory_units": 6206
+        },
+        {
+          "name": "ecd_12_negative_8",
+          "cpu_units": 1608279,
+          "memory_units": 6608
+        }
+      ],
       "metrics": {
         "cpu_units": 22731572,
         "memory_units": 96296,
@@ -145,6 +521,78 @@
       "variant": "default",
       "submission_dir": "Plinth_1.71.0.0_Unisay",
       "min_protocol_version": 11,
+      "positive_evaluations": [
+        {
+          "name": "ecd_0_12",
+          "cpu_units": 970397,
+          "memory_units": 4404
+        },
+        {
+          "name": "ecd_12_0",
+          "cpu_units": 497723,
+          "memory_units": 2602
+        },
+        {
+          "name": "ecd_7_7",
+          "cpu_units": 970397,
+          "memory_units": 4404
+        },
+        {
+          "name": "ecd_6_9",
+          "cpu_units": 1915745,
+          "memory_units": 8008
+        },
+        {
+          "name": "ecd_12_8",
+          "cpu_units": 1443071,
+          "memory_units": 6206
+        },
+        {
+          "name": "ecd_15_25",
+          "cpu_units": 2388419,
+          "memory_units": 9810
+        },
+        {
+          "name": "ecd_17_19",
+          "cpu_units": 2388419,
+          "memory_units": 9810
+        },
+        {
+          "name": "ecd_13_29",
+          "cpu_units": 2388419,
+          "memory_units": 9810
+        },
+        {
+          "name": "ecd_48_18",
+          "cpu_units": 1915745,
+          "memory_units": 8008
+        },
+        {
+          "name": "ecd_100_75",
+          "cpu_units": 1443071,
+          "memory_units": 6206
+        },
+        {
+          "name": "ecd_1071_462",
+          "cpu_units": 1915745,
+          "memory_units": 8008
+        },
+        {
+          "name": "ecd_2520_1890",
+          "cpu_units": 1443071,
+          "memory_units": 6206
+        },
+        {
+          "name": "ecd_negative_12_8",
+          "cpu_units": 1443071,
+          "memory_units": 6206
+        },
+        {
+          "name": "ecd_12_negative_8",
+          "cpu_units": 1608279,
+          "memory_units": 6608
+        }
+      ],
       "metrics": {
         "cpu_units": 22731572,
         "memory_units": 96296,
@@ -172,6 +620,78 @@
       "variant": "default",
       "submission_dir": "Scalus_1.4.0_nau",
       "min_protocol_version": 11,
+      "positive_evaluations": [
+        {
+          "name": "ecd_0_12",
+          "cpu_units": 970397,
+          "memory_units": 4404
+        },
+        {
+          "name": "ecd_12_0",
+          "cpu_units": 497723,
+          "memory_units": 2602
+        },
+        {
+          "name": "ecd_7_7",
+          "cpu_units": 970397,
+          "memory_units": 4404
+        },
+        {
+          "name": "ecd_6_9",
+          "cpu_units": 1915745,
+          "memory_units": 8008
+        },
+        {
+          "name": "ecd_12_8",
+          "cpu_units": 1443071,
+          "memory_units": 6206
+        },
+        {
+          "name": "ecd_15_25",
+          "cpu_units": 2388419,
+          "memory_units": 9810
+        },
+        {
+          "name": "ecd_17_19",
+          "cpu_units": 2388419,
+          "memory_units": 9810
+        },
+        {
+          "name": "ecd_13_29",
+          "cpu_units": 2388419,
+          "memory_units": 9810
+        },
+        {
+          "name": "ecd_48_18",
+          "cpu_units": 1915745,
+          "memory_units": 8008
+        },
+        {
+          "name": "ecd_100_75",
+          "cpu_units": 1443071,
+          "memory_units": 6206
+        },
+        {
+          "name": "ecd_1071_462",
+          "cpu_units": 1915745,
+          "memory_units": 8008
+        },
+        {
+          "name": "ecd_2520_1890",
+          "cpu_units": 1443071,
+          "memory_units": 6206
+        },
+        {
+          "name": "ecd_negative_12_8",
+          "cpu_units": 1443071,
+          "memory_units": 6206
+        },
+        {
+          "name": "ecd_12_negative_8",
+          "cpu_units": 1608279,
+          "memory_units": 6608
+        }
+      ],
       "metrics": {
         "cpu_units": 22731572,
         "memory_units": 96296,

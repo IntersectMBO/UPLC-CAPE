@@ -1,6 +1,14 @@
 {
   "benchmark": "linear_vesting",
-  "generated_at": "2026-11-17T13:29:33Z",
+  "generated_at": "2026-11-18T11:57:57Z",
+  "positive_cases": [
+    "partial_unlock_first_installment",
+    "partial_unlock_mid_vesting",
+    "partial_unlock_near_end",
+    "partial_unlock_between_installments",
+    "full_unlock_after_period_end",
+    "full_unlock_well_after"
+  ],
   "submissions": [
     {
       "timestamp": "2026-10-07T11:30:57Z",
@@ -10,6 +18,38 @@
       "variant": "default",
       "submission_dir": "Plinth_1.45.0.0_Unisay",
       "min_protocol_version": null,
+      "positive_evaluations": [
+        {
+          "name": "partial_unlock_first_installment",
+          "cpu_units": 58621316,
+          "memory_units": 170839
+        },
+        {
+          "name": "partial_unlock_mid_vesting",
+          "cpu_units": 58621316,
+          "memory_units": 170839
+        },
+        {
+          "name": "partial_unlock_near_end",
+          "cpu_units": 58621316,
+          "memory_units": 170839
+        },
+        {
+          "name": "partial_unlock_between_installments",
+          "cpu_units": 58621316,
+          "memory_units": 170839
+        },
+        {
+          "name": "full_unlock_after_period_end",
+          "cpu_units": 15116555,
+          "memory_units": 51762
+        },
+        {
+          "name": "full_unlock_well_after",
+          "cpu_units": 15116555,
+          "memory_units": 51762
+        }
+      ],
       "metrics": {
         "cpu_units": 264718374,
         "memory_units": 786880,
@@ -37,6 +77,38 @@
       "variant": "plain",
       "submission_dir": "Plinth_1.45.0.0_Unisay_plain",
       "min_protocol_version": null,
+      "positive_evaluations": [
+        {
+          "name": "partial_unlock_first_installment",
+          "cpu_units": 162102726,
+          "memory_units": 573275
+        },
+        {
+          "name": "partial_unlock_mid_vesting",
+          "cpu_units": 172933323,
+          "memory_units": 612797
+        },
+        {
+          "name": "partial_unlock_near_end",
+          "cpu_units": 172933323,
+          "memory_units": 612797
+        },
+        {
+          "name": "partial_unlock_between_installments",
+          "cpu_units": 172933323,
+          "memory_units": 612797
+        },
+        {
+          "name": "full_unlock_after_period_end",
+          "cpu_units": 39595882,
+          "memory_units": 148174
+        },
+        {
+          "name": "full_unlock_well_after",
+          "cpu_units": 39595882,
+          "memory_units": 148174
+        }
+      ],
       "metrics": {
         "cpu_units": 760094459,
         "memory_units": 2708014,
@@ -64,6 +136,38 @@
       "variant": "default",
       "submission_dir": "Plinth_1.61.0.0_Unisay",
       "min_protocol_version": 11,
+      "positive_evaluations": [
+        {
+          "name": "partial_unlock_first_installment",
+          "cpu_units": 103311358,
+          "memory_units": 372827
+        },
+        {
+          "name": "partial_unlock_mid_vesting",
+          "cpu_units": 107091952,
+          "memory_units": 382580
+        },
+        {
+          "name": "partial_unlock_near_end",
+          "cpu_units": 107091952,
+          "memory_units": 382580
+        },
+        {
+          "name": "partial_unlock_between_installments",
+          "cpu_units": 107091952,
+          "memory_units": 382580
+        },
+        {
+          "name": "full_unlock_after_period_end",
+          "cpu_units": 26818666,
+          "memory_units": 109425
+        },
+        {
+          "name": "full_unlock_well_after",
+          "cpu_units": 26818666,
+          "memory_units": 109425
+        }
+      ],
       "metrics": {
         "cpu_units": 478224546,
         "memory_units": 1739417,
@@ -91,6 +195,38 @@
       "variant": "default",
       "submission_dir": "Plinth_1.64.0.0_Unisay",
       "min_protocol_version": null,
+      "positive_evaluations": [
+        {
+          "name": "partial_unlock_first_installment",
+          "cpu_units": 52933549,
+          "memory_units": 134946
+        },
+        {
+          "name": "partial_unlock_mid_vesting",
+          "cpu_units": 52933549,
+          "memory_units": 134946
+        },
+        {
+          "name": "partial_unlock_near_end",
+          "cpu_units": 52933549,
+          "memory_units": 134946
+        },
+        {
+          "name": "partial_unlock_between_installments",
+          "cpu_units": 52933549,
+          "memory_units": 134946
+        },
+        {
+          "name": "full_unlock_after_period_end",
+          "cpu_units": 13388065,
+          "memory_units": 40132
+        },
+        {
+          "name": "full_unlock_well_after",
+          "cpu_units": 13388065,
+          "memory_units": 40132
+        }
+      ],
       "metrics": {
         "cpu_units": 238510326,
         "memory_units": 620048,
@@ -118,6 +254,38 @@
       "variant": "plain",
       "submission_dir": "Plinth_1.64.0.0_Unisay_plain",
       "min_protocol_version": 11,
+      "positive_evaluations": [
+        {
+          "name": "partial_unlock_first_installment",
+          "cpu_units": 90809919,
+          "memory_units": 326473
+        },
+        {
+          "name": "partial_unlock_mid_vesting",
+          "cpu_units": 94590513,
+          "memory_units": 336226
+        },
+        {
+          "name": "partial_unlock_near_end",
+          "cpu_units": 94590513,
+          "memory_units": 336226
+        },
+        {
+          "name": "partial_unlock_between_installments",
+          "cpu_units": 94590513,
+          "memory_units": 336226
+        },
+        {
+          "name": "full_unlock_after_period_end",
+          "cpu_units": 26546666,
+          "memory_units": 107725
+        },
+        {
+          "name": "full_unlock_well_after",
+          "cpu_units": 26546666,
+          "memory_units": 107725
+        }
+      ],
       "metrics": {
         "cpu_units": 427674790,
         "memory_units": 1550601,
@@ -145,6 +313,38 @@
       "variant": "default",
       "submission_dir": "Plinth_1.65.0.0_Unisay",
       "min_protocol_version": 11,
+      "positive_evaluations": [
+        {
+          "name": "partial_unlock_first_installment",
+          "cpu_units": 31854147,
+          "memory_units": 100207
+        },
+        {
+          "name": "partial_unlock_mid_vesting",
+          "cpu_units": 31854147,
+          "memory_units": 100207
+        },
+        {
+          "name": "partial_unlock_near_end",
+          "cpu_units": 31854147,
+          "memory_units": 100207
+        },
+        {
+          "name": "partial_unlock_between_installments",
+          "cpu_units": 31854147,
+          "memory_units": 100207
+        },
+        {
+          "name": "full_unlock_after_period_end",
+          "cpu_units": 8160426,
+          "memory_units": 29135
+        },
+        {
+          "name": "full_unlock_well_after",
+          "cpu_units": 8160426,
+          "memory_units": 29135
+        }
+      ],
       "metrics": {
         "cpu_units": 143737440,
         "memory_units": 459098,
@@ -172,6 +372,38 @@
       "variant": "plain",
       "submission_dir": "Plinth_1.65.0.0_Unisay_plain",
       "min_protocol_version": null,
+      "positive_evaluations": [
+        {
+          "name": "partial_unlock_first_installment",
+          "cpu_units": 127147314,
+          "memory_units": 401911
+        },
+        {
+          "name": "partial_unlock_mid_vesting",
+          "cpu_units": 132752407,
+          "memory_units": 416661
+        },
+        {
+          "name": "partial_unlock_near_end",
+          "cpu_units": 132752407,
+          "memory_units": 416661
+        },
+        {
+          "name": "partial_unlock_between_installments",
+          "cpu_units": 132752407,
+          "memory_units": 416661
+        },
+        {
+          "name": "full_unlock_after_period_end",
+          "cpu_units": 37377175,
+          "memory_units": 130483
+        },
+        {
+          "name": "full_unlock_well_after",
+          "cpu_units": 37377175,
+          "memory_units": 130483
+        }
+      ],
       "metrics": {
         "cpu_units": 600158885,
         "memory_units": 1912860,
@@ -199,6 +431,38 @@
       "variant": "default",
       "submission_dir": "Plinth_1.67.0.0_Unisay",
       "min_protocol_version": 11,
+      "positive_evaluations": [
+        {
+          "name": "partial_unlock_first_installment",
+          "cpu_units": 32407378,
+          "memory_units": 101127
+        },
+        {
+          "name": "partial_unlock_mid_vesting",
+          "cpu_units": 32407378,
+          "memory_units": 101127
+        },
+        {
+          "name": "partial_unlock_near_end",
+          "cpu_units": 32407378,
+          "memory_units": 101127
+        },
+        {
+          "name": "partial_unlock_between_installments",
+          "cpu_units": 32407378,
+          "memory_units": 101127
+        },
+        {
+          "name": "full_unlock_after_period_end",
+          "cpu_units": 8979770,
+          "memory_units": 30579
+        },
+        {
+          "name": "full_unlock_well_after",
+          "cpu_units": 8979770,
+          "memory_units": 30579
+        }
+      ],
       "metrics": {
         "cpu_units": 147589052,
         "memory_units": 465666,
@@ -226,6 +490,38 @@
       "variant": "asdata",
       "submission_dir": "Plinth_1.67.0.0_Unisay_asdata",
       "min_protocol_version": 11,
+      "positive_evaluations": [
+        {
+          "name": "partial_unlock_first_installment",
+          "cpu_units": 51104572,
+          "memory_units": 237749
+        },
+        {
+          "name": "partial_unlock_mid_vesting",
+          "cpu_units": 54118727,
+          "memory_units": 245610
+        },
+        {
+          "name": "partial_unlock_near_end",
+          "cpu_units": 54118727,
+          "memory_units": 245610
+        },
+        {
+          "name": "partial_unlock_between_installments",
+          "cpu_units": 54118727,
+          "memory_units": 245610
+        },
+        {
+          "name": "full_unlock_after_period_end",
+          "cpu_units": 14132930,
+          "memory_units": 75057
+        },
+        {
+          "name": "full_unlock_well_after",
+          "cpu_units": 14132930,
+          "memory_units": 75057
+        }
+      ],
       "metrics": {
         "cpu_units": 241726613,
         "memory_units": 1124693,
@@ -253,6 +549,38 @@
       "variant": "default",
       "submission_dir": "Plinth_1.71.0.0_Unisay",
       "min_protocol_version": 11,
+      "positive_evaluations": [
+        {
+          "name": "partial_unlock_first_installment",
+          "cpu_units": 31901445,
+          "memory_units": 98095
+        },
+        {
+          "name": "partial_unlock_mid_vesting",
+          "cpu_units": 31901445,
+          "memory_units": 98095
+        },
+        {
+          "name": "partial_unlock_near_end",
+          "cpu_units": 31901445,
+          "memory_units": 98095
+        },
+        {
+          "name": "partial_unlock_between_installments",
+          "cpu_units": 31901445,
+          "memory_units": 98095
+        },
+        {
+          "name": "full_unlock_after_period_end",
+          "cpu_units": 8979770,
+          "memory_units": 30579
+        },
+        {
+          "name": "full_unlock_well_after",
+          "cpu_units": 8979770,
+          "memory_units": 30579
+        }
+      ],
       "metrics": {
         "cpu_units": 145565320,
         "memory_units": 453538,
@@ -280,6 +608,38 @@
       "variant": "default",
       "submission_dir": "Scalus_0.18.2_Unisay",
       "min_protocol_version": 11,
+      "positive_evaluations": [
+        {
+          "name": "partial_unlock_first_installment",
+          "cpu_units": 50495442,
+          "memory_units": 152757
+        },
+        {
+          "name": "partial_unlock_mid_vesting",
+          "cpu_units": 53405661,
+          "memory_units": 158946
+        },
+        {
+          "name": "partial_unlock_near_end",
+          "cpu_units": 53405661,
+          "memory_units": 158946
+        },
+        {
+          "name": "partial_unlock_between_installments",
+          "cpu_units": 53405661,
+          "memory_units": 158946
+        },
+        {
+          "name": "full_unlock_after_period_end",
+          "cpu_units": 11697768,
+          "memory_units": 35474
+        },
+        {
+          "name": "full_unlock_well_after",
+          "cpu_units": 11697768,
+          "memory_units": 35474
+        }
+      ],
       "metrics": {
         "cpu_units": 234107961,
         "memory_units": 700543,
@@ -307,6 +667,38 @@
       "variant": "default",
       "submission_dir": "Scalus_1.3.0_Unisay",
       "min_protocol_version": 11,
+      "positive_evaluations": [
+        {
+          "name": "partial_unlock_first_installment",
+          "cpu_units": 36552331,
+          "memory_units": 85019
+        },
+        {
+          "name": "partial_unlock_mid_vesting",
+          "cpu_units": 39190550,
+          "memory_units": 89508
+        },
+        {
+          "name": "partial_unlock_near_end",
+          "cpu_units": 39190550,
+          "memory_units": 89508
+        },
+        {
+          "name": "partial_unlock_between_installments",
+          "cpu_units": 39190550,
+          "memory_units": 89508
+        },
+        {
+          "name": "full_unlock_after_period_end",
+          "cpu_units": 10035042,
+          "memory_units": 28050
+        },
+        {
+          "name": "full_unlock_well_after",
+          "cpu_units": 10035042,
+          "memory_units": 28050
+        }
+      ],
       "metrics": {
         "cpu_units": 174194065,
         "memory_units": 409643,
@@ -334,6 +726,38 @@
       "variant": "default",
       "submission_dir": "Scalus_1.4.0_nau",
       "min_protocol_version": 11,
+      "positive_evaluations": [
+        {
+          "name": "partial_unlock_first_installment",
+          "cpu_units": 31180571,
+          "memory_units": 62888
+        },
+        {
+          "name": "partial_unlock_mid_vesting",
+          "cpu_units": 31180571,
+          "memory_units": 62888
+        },
+        {
+          "name": "partial_unlock_near_end",
+          "cpu_units": 31180571,
+          "memory_units": 62888
+        },
+        {
+          "name": "partial_unlock_between_installments",
+          "cpu_units": 31180571,
+          "memory_units": 62888
+        },
+        {
+          "name": "full_unlock_after_period_end",
+          "cpu_units": 8935746,
+          "memory_units": 23122
+        },
+        {
+          "name": "full_unlock_well_after",
+          "cpu_units": 8935746,
+          "memory_units": 23122
+        }
+      ],
       "metrics": {
         "cpu_units": 142593776,
         "memory_units": 297796,
