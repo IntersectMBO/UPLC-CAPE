@@ -39,8 +39,8 @@
             margin: 5px 0;
         }
 
-        /* Category Sections */
-        .category-section {
+        /* Workload panels */
+        .scenario-panel {
             background: white;
             border-radius: 10px;
             padding: 30px;
@@ -68,7 +68,7 @@
         }
         .scenario-tabs button[aria-selected="true"] { color: white; background: #667eea; border-color: #667eea; }
         .scenario-tabs button:focus-visible { outline: 2px solid #667eea; outline-offset: 2px; }
-        .type-description { color: #6c757d; font-size: 0.9em; margin: 0 0 20px; }
+        .workload-description { color: #6c757d; font-size: 0.9em; margin: 0 0 20px; }
 
         /* Scenario Cards */
         .scenario-card {
@@ -160,8 +160,8 @@
             border-radius: 8px;
         }
 
-        /* Empty category state */
-        .empty-category {
+        /* Empty panel state */
+        .empty-panel {
             padding: 30px;
             text-align: center;
             color: #6c757d;
@@ -203,7 +203,7 @@
         /* Responsive design */
         @media (max-width: 768px) {
             .header { flex-direction: column; text-align: center; }
-            .category-section { padding: 20px; }
+            .scenario-panel { padding: 20px; }
         }
         @media (max-width: 620px) {
             body { padding: 12px; }
@@ -234,16 +234,16 @@
 
     
 
-    <div class="scenario-tabs" role="tablist" aria-label="Scenario type">
-        <button type="button" id="tab-real-world" role="tab" aria-selected="true" aria-controls="panel-real-world" data-type="real-world">Real-world</button>
-        <button type="button" id="tab-synthetic" role="tab" aria-selected="false" aria-controls="panel-synthetic" tabindex="-1" data-type="synthetic">Synthetic</button>
+    <div class="scenario-tabs" role="tablist" aria-label="Scenario workload">
+        <button type="button" id="tab-real-world" role="tab" aria-selected="true" aria-controls="panel-real-world" data-workload="real-world">Real-world</button>
+        <button type="button" id="tab-synthetic" role="tab" aria-selected="false" aria-controls="panel-synthetic" tabindex="-1" data-workload="synthetic">Synthetic</button>
     </div>
-    <section id="panel-real-world" class="category-section" role="tabpanel" aria-labelledby="tab-real-world" data-scenario-type="real-world">
-        <p class="type-description">Smart contract scenarios: authorization, payments and transaction context validation.</p>
+    <section id="panel-real-world" class="scenario-panel" role="tabpanel" aria-labelledby="tab-real-world" data-workload-panel="real-world">
+        <p class="workload-description">Smart contract scenarios: authorization, payments and transaction context validation.</p>
         
         
             
-    <div class="scenario-card" data-benchmark="htlc" data-category="open">
+    <div class="scenario-card" data-benchmark="htlc" data-optimization="unrestricted">
         <div class="scenario-name">
             <a href="benchmarks/htlc.html">htlc</a>
         </div>
@@ -255,7 +255,7 @@
     
         
             
-    <div class="scenario-card" data-benchmark="linear_vesting" data-category="open">
+    <div class="scenario-card" data-benchmark="linear_vesting" data-optimization="unrestricted">
         <div class="scenario-name">
             <a href="benchmarks/linear_vesting.html">linear_vesting</a>
         </div>
@@ -267,7 +267,7 @@
     
         
             
-    <div class="scenario-card" data-benchmark="two_party_escrow" data-category="open">
+    <div class="scenario-card" data-benchmark="two_party_escrow" data-optimization="unrestricted">
         <div class="scenario-name">
             <a href="benchmarks/two_party_escrow.html">two_party_escrow</a>
         </div>
@@ -280,12 +280,12 @@
         
         
     </section>
-    <section id="panel-synthetic" class="category-section" role="tabpanel" aria-labelledby="tab-synthetic" data-scenario-type="synthetic" hidden>
-        <p class="type-description">Computational benchmarks, including fixed algorithms and open optimization tasks.</p>
+    <section id="panel-synthetic" class="scenario-panel" role="tabpanel" aria-labelledby="tab-synthetic" data-workload-panel="synthetic" hidden>
+        <p class="workload-description">Computational benchmarks, with compiler-only or unrestricted optimization.</p>
         
         
             
-    <div class="scenario-card" data-benchmark="ecd" data-category="fixed">
+    <div class="scenario-card" data-benchmark="ecd" data-optimization="compiler-only">
         <div class="scenario-name">
             <a href="benchmarks/ecd.html">ecd</a>
         </div>
@@ -297,7 +297,7 @@
     
         
             
-    <div class="scenario-card" data-benchmark="factorial" data-category="open">
+    <div class="scenario-card" data-benchmark="factorial" data-optimization="unrestricted">
         <div class="scenario-name">
             <a href="benchmarks/factorial.html">factorial</a>
         </div>
@@ -309,7 +309,7 @@
     
         
             
-    <div class="scenario-card" data-benchmark="factorial_naive_recursion" data-category="fixed">
+    <div class="scenario-card" data-benchmark="factorial_naive_recursion" data-optimization="compiler-only">
         <div class="scenario-name">
             <a href="benchmarks/factorial_naive_recursion.html">factorial_naive_recursion</a>
         </div>
@@ -321,7 +321,7 @@
     
         
             
-    <div class="scenario-card" data-benchmark="fibonacci" data-category="open">
+    <div class="scenario-card" data-benchmark="fibonacci" data-optimization="unrestricted">
         <div class="scenario-name">
             <a href="benchmarks/fibonacci.html">fibonacci</a>
         </div>
@@ -333,7 +333,7 @@
     
         
             
-    <div class="scenario-card" data-benchmark="fibonacci_naive_recursion" data-category="fixed">
+    <div class="scenario-card" data-benchmark="fibonacci_naive_recursion" data-optimization="compiler-only">
         <div class="scenario-name">
             <a href="benchmarks/fibonacci_naive_recursion.html">fibonacci_naive_recursion</a>
         </div>
@@ -348,7 +348,7 @@
     </section>
 
     <div class="footer">
-        <p>Generated by UPLC-CAPE on 2026-11-18 09:41:28 UTC • <a href="https://github.com/IntersectMBO/UPLC-CAPE">View on GitHub</a> • <a href="evolution/index.html">Evolution report &rarr;</a></p>
+        <p>Generated by UPLC-CAPE on 2026-11-18 10:10:28 UTC • <a href="https://github.com/IntersectMBO/UPLC-CAPE">View on GitHub</a> • <a href="evolution/index.html">Evolution report &rarr;</a></p>
     </div>
     <script src="report-comparison.js"></script>
     <script>
@@ -433,7 +433,7 @@
                 return;
             }
             const { submissions } = entry;
-            card.querySelector(".scenario-meta").textContent = `${submissions.length} submission${submissions.length === 1 ? "" : "s"} · ${entry.caseCount} positive cases · ${card.dataset.category === "fixed" ? "Fixed algorithm" : "Open optimization"}`;
+            card.querySelector(".scenario-meta").textContent = `${submissions.length} submission${submissions.length === 1 ? "" : "s"} · ${entry.caseCount} positive cases · ${card.dataset.optimization === "compiler-only" ? "Compiler-only optimization" : "Unrestricted optimization"}`;
             view.compare.textContent = `Compare all ${submissions.length} submissions →`;
             const ranked = C.rank(submissions, metric, aggregation);
             const winners = C.winners(submissions, metric, aggregation);
@@ -483,23 +483,23 @@
         }
 
         const tabs = [...document.querySelectorAll('.scenario-tabs [role="tab"]')];
-        const panels = [...document.querySelectorAll('[data-scenario-type]')];
+        const panels = [...document.querySelectorAll('[data-workload-panel]')];
         function renderPanels() {
-            const requested = new URLSearchParams(location.hash.slice(1)).get("type");
-            const defaultType = document.querySelector('#panel-real-world .scenario-card') ? "real-world" : "synthetic";
-            const type = ["synthetic", "real-world"].includes(requested) ? requested : defaultType;
+            const requested = new URLSearchParams(location.hash.slice(1)).get("workload");
+            const defaultWorkload = document.querySelector('#panel-real-world .scenario-card') ? "real-world" : "synthetic";
+            const workload = ["synthetic", "real-world"].includes(requested) ? requested : defaultWorkload;
             tabs.forEach(tab => {
-                const selected = tab.dataset.type === type;
+                const selected = tab.dataset.workload === workload;
                 tab.setAttribute("aria-selected", String(selected));
                 tab.tabIndex = selected ? 0 : -1;
-                const count = document.querySelector(`#panel-${tab.dataset.type}`).querySelectorAll('.scenario-card').length;
-                tab.textContent = `${tab.dataset.type === "synthetic" ? "Synthetic" : "Real-world"} · ${count}`;
+                const count = document.querySelector(`#panel-${tab.dataset.workload}`).querySelectorAll('.scenario-card').length;
+                tab.textContent = `${tab.dataset.workload === "synthetic" ? "Synthetic" : "Real-world"} · ${count}`;
             });
-            panels.forEach(panel => { panel.hidden = panel.dataset.scenarioType !== type; });
+            panels.forEach(panel => { panel.hidden = panel.dataset.workloadPanel !== workload; });
         }
         function selectTab(tab) {
             const params = new URLSearchParams(location.hash.slice(1));
-            params.set("type", tab.dataset.type);
+            params.set("workload", tab.dataset.workload);
             location.hash = params.toString();
         }
         tabs.forEach((tab, index) => {
