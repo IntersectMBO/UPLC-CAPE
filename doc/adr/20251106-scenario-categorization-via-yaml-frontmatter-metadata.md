@@ -1,16 +1,18 @@
 # Scenario Categorization via YAML Frontmatter Metadata
 
 - Status: accepted
-- Date: 2025-11-06
+- Date: 2026-11-18
 - Tags: scenarios, metadata, categorization, reporting
 
-Technical Story: [Issue #137](https://github.com/IntersectMBO/UPLC-CAPE/issues/137)
+Technical Story: [Issue #137](https://github.com/IntersectMBO/UPLC-CAPE/issues/137), revised in [PR #278](https://github.com/IntersectMBO/UPLC-CAPE/pull/278)
 
 ## Context and Problem Statement
 
-The HTML report landing page needs to clearly distinguish between two types of benchmark scenarios: fixed algorithm scenarios (prescribed implementations for compiler comparison) and open optimization scenarios (any approach allowed). Scenarios need an explicit categorization mechanism that works for all cases (e.g., `ecd` is a fixed algorithm scenario, while `fibonacci` is open optimization).
+The HTML report landing page needs to clearly distinguish between two kinds of benchmark scenarios: scenarios that prescribe an algorithm, so that only compiler optimizations differ, and scenarios that allow any approach. Scenarios need an explicit categorization mechanism that works for all cases (e.g., `ecd` prescribes its algorithm, while `fibonacci` allows any approach).
 
-**Question**: How should scenarios be categorized in a way that is explicit, maintainable, and supports the reporting system's need to separate fixed vs open scenarios?
+The report later also separated smart contracts from computational tasks. This second distinction is independent of the first: `fibonacci` is a computational task that allows any approach, and `htlc` is a smart contract that allows any approach.
+
+**Question**: How should scenarios be categorized in a way that is explicit, maintainable, and supports the reporting system's need to separate them?
 
 ## Decision Drivers
 
@@ -23,7 +25,7 @@ The HTML report landing page needs to clearly distinguish between two types of b
 
 ## Considered Options
 
-1. **YAML Frontmatter Metadata** - Add `category` attribute to scenario markdown files
+1. **YAML Frontmatter Metadata** - Add attributes to scenario markdown files
 2. **Separate Metadata File** - Create `metadata.json` alongside scenario specification
 3. **Directory Structure** - Use subdirectories like `scenarios/fixed/` and `scenarios/open/`
 4. **Naming Convention** - Use suffixes like `_naive_recursion` to infer category
@@ -34,37 +36,52 @@ Chosen option: **"YAML Frontmatter Metadata"**, because it provides the best bal
 
 ### Implementation
 
-Add YAML frontmatter to the beginning of each scenario specification file (`scenarios/{name}/{name}.md`):
+Add YAML frontmatter with two independent attributes to the beginning of each scenario specification file (`scenarios/{name}/{name}.md`):
 
 ```yaml
 ---
-category: fixed # or "open"
+optimization: compiler-only # or "unrestricted"
+workload: synthetic # or "real-world"
 ---
 ```
 
-**Category Values**:
+**`optimization` values**:
 
-- `fixed`: Fixed algorithm scenarios requiring prescribed implementation (e.g., `ecd`, `factorial_naive_recursion`, `fibonacci_naive_recursion`)
-- `open`: Open optimization scenarios allowing any approach (e.g., `factorial`, `fibonacci`, `two_party_escrow`)
+- `compiler-only`: The scenario prescribes an algorithm that all submissions must follow, so only compiler optimizations differ (e.g., `ecd`, `factorial_naive_recursion`, `fibonacci_naive_recursion`)
+- `unrestricted`: Submissions may use any implementation approach (e.g., `factorial`, `fibonacci`, `two_party_escrow`)
 
-**Extraction Method**: The `categorize_scenario()` function in `report.sh` extracts the category using AWK:
+**`workload` values**:
+
+- `synthetic`: A computational task, such as a recursive function of an integer (e.g., `ecd`, `fibonacci`)
+- `real-world`: A smart contract that validates a transaction (e.g., `htlc`, `linear_vesting`, `two_party_escrow`)
+
+The report groups scenarios by `workload` in tabs and shows `optimization` on each scenario card.
+
+**Extraction Method**: The `scenario_attribute()` function in `report.sh` reads one attribute with AWK and checks it against the allowed values:
 
 ```bash
-category=$(awk 'BEGIN{in_fm=0} /^---$/ {in_fm++; next} in_fm==1 && /^category:/ {print $2; exit}' "$scenario_file")
+optimization=$(scenario_attribute "$benchmark" optimization compiler-only unrestricted)
+workload=$(scenario_attribute "$benchmark" workload synthetic real-world)
 ```
 
 **Error Handling**:
 
 - If scenario file is missing: Error with clear message
-- If category attribute is missing: Error with instructions to add frontmatter
-- If category value is invalid (not "fixed" or "open"): Error with valid values
+- If an attribute is missing or has an invalid value: Error naming the attribute, its allowed values and the file
+
+### Revision (2026-11-18)
+
+The original decision used one attribute, `category: fixed | open`. The revision renames it and adds a second attribute:
+
+- `category: fixed` became `optimization: compiler-only`, and `category: open` became `optimization: unrestricted`. The word "category" did not say what it classified, and "fixed" did not say what was fixed. In these scenarios the source algorithm is fixed, while compiler optimizations are exactly what the benchmark compares.
+- `workload: synthetic | real-world` is new. "Synthetic workload" is the established benchmarking term for a constructed task, as opposed to a real one. Grouping by `optimization` alone would have put `fibonacci` and `factorial` next to the smart contracts.
 
 ### Positive Consequences
 
 - ✅ Explicit categorization visible at the top of scenario specification
 - ✅ Single source of truth (embedded in the spec that defines the scenario)
 - ✅ Easy for scenario authors to understand and specify
-- ✅ Self-documenting (category is part of the specification)
+- ✅ Self-documenting (the attributes are part of the specification)
 - ✅ Supports validation and error checking
 - ✅ No additional files or complex directory restructuring required
 - ✅ Standard YAML format familiar to developers
@@ -102,6 +119,7 @@ category=$(awk 'BEGIN{in_fm=0} /^---$/ {in_fm++; next} in_fm==1 && /^category:/ 
 - Bad, because it requires major directory restructuring
 - Bad, because it complicates scenario naming and references
 - Bad, because moving scenarios between categories is harder
+- Bad, because two independent attributes would need nested directories
 
 ### Option 4: Naming Convention
 
@@ -114,21 +132,21 @@ category=$(awk 'BEGIN{in_fm=0} /^---$/ {in_fm++; next} in_fm==1 && /^category:/ 
 
 ## Migration
 
-All existing scenario files were updated to include category frontmatter:
+All scenario files declare both attributes:
 
-**Fixed algorithm scenarios**:
-
-- `scenarios/ecd/ecd.md`: `category: fixed`
-- `scenarios/factorial_naive_recursion/factorial_naive_recursion.md`: `category: fixed`
-- `scenarios/fibonacci_naive_recursion/fibonacci_naive_recursion.md`: `category: fixed`
-
-**Open optimization scenarios**:
-
-- `scenarios/factorial/factorial.md`: `category: open`
-- `scenarios/fibonacci/fibonacci.md`: `category: open`
-- `scenarios/two_party_escrow/two_party_escrow.md`: `category: open`
+| Scenario                    | `optimization`  | `workload`   |
+| --------------------------- | --------------- | ------------ |
+| `ecd`                       | `compiler-only` | `synthetic`  |
+| `factorial_naive_recursion` | `compiler-only` | `synthetic`  |
+| `fibonacci_naive_recursion` | `compiler-only` | `synthetic`  |
+| `factorial`                 | `unrestricted`  | `synthetic`  |
+| `fibonacci`                 | `unrestricted`  | `synthetic`  |
+| `htlc`                      | `unrestricted`  | `real-world` |
+| `linear_vesting`            | `unrestricted`  | `real-world` |
+| `two_party_escrow`          | `unrestricted`  | `real-world` |
 
 ## Links
 
 - [Issue #137: Improve HTML report landing page](https://github.com/IntersectMBO/UPLC-CAPE/issues/137)
+- [PR #278: report: make scenario rankings selectable](https://github.com/IntersectMBO/UPLC-CAPE/pull/278)
 - Related: [ADR 20251009: Scenario-Based Approach](20251009-scenario-based-approach-replacing-mode-system.md) - Defines fixed vs open scenarios

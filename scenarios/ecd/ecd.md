@@ -1,5 +1,6 @@
 ---
-category: fixed
+optimization: compiler-only
+workload: synthetic
 ---
 
 # ECD (Euclidean Common Divisor) Benchmark Scenario

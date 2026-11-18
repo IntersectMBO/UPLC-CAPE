@@ -1,5 +1,6 @@
 ---
-category: open
+optimization: unrestricted
+workload: synthetic
 ---
 
 # Factorial Benchmark Scenario

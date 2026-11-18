@@ -1,5 +1,6 @@
 ---
-category: fixed
+optimization: compiler-only
+workload: synthetic
 ---
 
 # Factorial (Naive Recursion) Benchmark Scenario
