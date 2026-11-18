@@ -1,6 +1,6 @@
 {
   "benchmark": "fibonacci_naive_recursion",
-  "generated_at": "2026-11-18T10:10:22Z",
+  "generated_at": "2026-11-18T11:13:59Z",
   "positive_cases": [
     "fibonacci_0",
     "fibonacci_1",
