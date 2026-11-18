@@ -1,6 +1,6 @@
 ---
-type: synthetic # or "real-world"
-category: fixed # or "open" - see below for guidance
+optimization: compiler-only # or "unrestricted" - see below for guidance
+workload: synthetic # or "real-world"
 ---
 
 # {Scenario Name} Scenario
@@ -26,21 +26,28 @@ The {Scenario Name} benchmark is a **{synthetic/real-world} {type}** designed to
 
 **Success Criteria**: The program must successfully {success condition} within the execution budget constraints.
 
-### Choosing the Category
+### Choosing the Frontmatter Attributes
 
-The `category` attribute in the YAML frontmatter determines how this scenario is classified in reports:
+The YAML frontmatter sets two independent attributes. The report shows `optimization` on each scenario card and groups scenarios by `workload` in tabs.
 
-- **`fixed`**: Fixed algorithm scenarios prescribe a specific implementation that all submissions must follow. Use this when:
+`optimization` states what may reduce a submission's cost:
+
+- **`compiler-only`**: The scenario prescribes an algorithm that all submissions must follow, so only compiler optimizations differ. Use this when:
   - You want pure compiler-to-compiler comparison
   - The goal is isolating compiler optimization effectiveness from algorithmic choices
   - Constraints apply to the source algorithm, including its base cases and recursive steps; general-purpose automatic compiler optimizations that preserve input/output behavior are allowed
-  - See [Fixed and Open Scenarios](../../doc/submission-guide.md#fixed-and-open-scenarios) for the compliance rules
+  - See [Compiler-only and Unrestricted Scenarios](../../doc/submission-guide.md#compiler-only-and-unrestricted-scenarios) for the compliance rules
   - Example: "All submissions must implement the naive recursive algorithm shown below"
 
-- **`open`**: Open optimization scenarios allow any implementation approach. Use this when:
+- **`unrestricted`**: Submissions may use any implementation approach. Use this when:
   - You want to showcase best achievable performance
   - Submissions can use any algorithmic optimizations, metaprogramming, or compiler-specific features
   - Example: "Use any approach (recursive, iterative, memoized, etc.) to compute the result"
+
+`workload` states what the scenario models:
+
+- **`synthetic`**: A computational task, such as a recursive function of an integer.
+- **`real-world`**: A smart contract that validates a transaction, such as an escrow or a vesting schedule.
 
 ## TL;DR
 

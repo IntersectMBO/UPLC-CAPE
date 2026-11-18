@@ -125,7 +125,7 @@ For implementation details, see [ADR: PR Preview Deployment](doc/adr/20251022-pr
 
 ## Available benchmark scenarios
 
-| Benchmark | Type | Description | Status |
+| Benchmark | Workload | Description | Status |
 | --- | --- | --- | --- |
 | [Fibonacci](scenarios/fibonacci/fibonacci.md) | Synthetic | Recursive algorithm performance | Ready |
 | [Fibonacci (Naive Recursion)](scenarios/fibonacci_naive_recursion/fibonacci_naive_recursion.md) | Synthetic | Prescribed naive recursive algorithm for compiler optimization comparison | Ready |

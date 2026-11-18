@@ -62,11 +62,11 @@ The benchmark template includes:
 
 When creating a new benchmark, replace all `{placeholder}` values with concrete specifications:
 
-Set the frontmatter `type` to `synthetic` or `real-world` for the report tab. The separate `category` field (`fixed` or `open`) describes algorithm constraints.
+Set the frontmatter `optimization` to `compiler-only` or `unrestricted`, and `workload` to `synthetic` or `real-world`. The template explains both attributes; the report groups scenarios by `workload` in tabs.
 
 - `{Scenario Name}`: Human-readable title
 - `{scenario_name}`: Machine-readable identifier
-- `{synthetic/real-world}`: Type classification
+- `{synthetic/real-world}`: Workload, matching the frontmatter
 - `{description}`: Computational task description
 - `{expected_result}`: Target computation result
 - `{parameter}`: Input parameters and constraints

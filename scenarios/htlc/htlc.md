@@ -1,6 +1,6 @@
 ---
-type: real-world
-category: open
+optimization: unrestricted
+workload: real-world
 ---
 
 # HTLC (Hashed Time-Locked Contract) Benchmark Scenario

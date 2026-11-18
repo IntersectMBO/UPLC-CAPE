@@ -462,7 +462,7 @@ generate_submission_detail_pages() {
 # Keep only navigation metadata here; ranking is shared in report-comparison.js.
 build_index_stats() {
   local benchmark_list="$1"
-  local benchmark data category scenario_type submission_count
+  local benchmark data optimization workload submission_count
   local stats
   stats=$(mktemp_json)
   echo '[]' > "$stats"
@@ -470,60 +470,41 @@ build_index_stats() {
     [ -n "$benchmark" ] || continue
     [ -f "$PROJECT_ROOT/scenarios/$benchmark/$benchmark.md" ] || continue
     data="$report_dir/benchmarks/$benchmark.json"
-    category=$(categorize_scenario "$benchmark")
-    scenario_type=$(classify_scenario "$benchmark")
+    optimization=$(scenario_attribute "$benchmark" optimization compiler-only unrestricted)
+    workload=$(scenario_attribute "$benchmark" workload synthetic real-world)
     submission_count=0
     if [ -f "$data" ]; then
       submission_count=$(jq '.submissions | length' "$data")
     fi
-    jq --arg name "$benchmark" --arg category "$category" --arg type "$scenario_type" --argjson count "$submission_count" \
-      '. + [{name: $name, category: $category, type: $type, submission_count: $count}]' \
+    jq --arg name "$benchmark" --arg optimization "$optimization" --arg workload "$workload" --argjson count "$submission_count" \
+      '. + [{name: $name, optimization: $optimization, workload: $workload, submission_count: $count}]' \
       "$stats" > "$stats.new"
     mv "$stats.new" "$stats"
   done <<< "$benchmark_list"
   jq '{benchmarks: .}' "$stats"
 }
 
-# Category ∈ {fixed, open}, taken from YAML frontmatter of the scenario spec.
-categorize_scenario() {
-  local scenario="$1"
+# Print a required attribute from the YAML frontmatter of a scenario spec,
+# checked against its allowed values. `optimization` (compiler-only or
+# unrestricted) and `workload` (synthetic or real-world) are independent.
+scenario_attribute() {
+  local scenario="$1" key="$2"
+  shift 2
   local scenario_file="$PROJECT_ROOT/scenarios/$scenario/${scenario}.md"
-
   if [ ! -f "$scenario_file" ]; then
     log_err "Scenario file not found: $scenario_file"
-    echo "ERROR: Cannot categorize scenario '$scenario' - specification file missing" >&2
     exit 1
   fi
-
-  local category
-  category=$(awk 'BEGIN{in_fm=0} /^---$/ {in_fm++; next} in_fm==1 && /^category:/ {print $2; exit}' "$scenario_file")
-
-  if [ -z "$category" ]; then
-    log_err "Missing 'category' attribute in YAML frontmatter for scenario: $scenario"
-    echo "ERROR: Scenario '$scenario' must have 'category: fixed' or 'category: open' in $scenario_file" >&2
-    exit 1
-  fi
-
-  if [ "$category" != "fixed" ] && [ "$category" != "open" ]; then
-    log_err "Invalid category '$category' for scenario: $scenario"
-    echo "ERROR: Scenario category must be 'fixed' or 'open', got: '$category'" >&2
-    exit 1
-  fi
-
-  echo "$category"
-}
-
-# Type is independent of the fixed/open algorithm category.
-classify_scenario() {
-  local scenario="$1"
-  local scenario_file="$PROJECT_ROOT/scenarios/$scenario/${scenario}.md"
-  local scenario_type
-  scenario_type=$(awk 'BEGIN{in_fm=0} /^---$/ {in_fm++; next} in_fm==1 && /^type:/ {print $2; exit}' "$scenario_file")
-  if [[ "$scenario_type" != "synthetic" && "$scenario_type" != "real-world" ]]; then
-    log_err "Scenario '$scenario' must have 'type: synthetic' or 'type: real-world' in $scenario_file"
-    return 1
-  fi
-  printf '%s\n' "$scenario_type"
+  local value allowed
+  value=$(awk -v key="$key:" 'BEGIN{in_fm=0} /^---$/ {in_fm++; next} in_fm==1 && $1 == key {print $2; exit}' "$scenario_file")
+  for allowed in "$@"; do
+    if [ "$value" = "$allowed" ]; then
+      printf '%s\n' "$value"
+      return 0
+    fi
+  done
+  log_err "Scenario '$scenario' must set '$key' to one of: $* (got '${value}') in the frontmatter of $scenario_file"
+  exit 1
 }
 
 generate_index_report() {

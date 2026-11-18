@@ -204,7 +204,7 @@ test("generator exports only the scenario's positive cases without rewriting met
   try {
     symlinkSync(path.join(root, "scripts"), path.join(fixture, "scripts"));
     write("uplc-cape-logo.png", "fixture");
-    write("scenarios/sample/sample.md", "---\ntype: synthetic\ncategory: fixed\n---\n");
+    write("scenarios/sample/sample.md", "---\noptimization: compiler-only\nworkload: synthetic\n---\n");
     const definition = (name, extra = {}) => ({ name, expected: { type: "value" }, ...extra });
     write("scenarios/sample/cape-tests.json", {
       measurements: [
@@ -292,7 +292,7 @@ test("generator exports only the scenario's positive cases without rewriting met
     );
     // A placeholder has no data JSON, and --keep-existing must preserve the
     // previously rendered scenario in the index as well as on disk.
-    write("scenarios/empty/empty.md", "---\ntype: synthetic\ncategory: open\n---\n");
+    write("scenarios/empty/empty.md", "---\noptimization: unrestricted\nworkload: synthetic\n---\n");
     report("--keep-existing", "empty");
     const retained = readFileSync(path.join(fixture, "report/index.html"), "utf8");
     assert.match(retained, /data-benchmark="sample"/);

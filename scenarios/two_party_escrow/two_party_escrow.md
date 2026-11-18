@@ -1,6 +1,6 @@
 ---
-type: real-world
-category: open
+optimization: unrestricted
+workload: real-world
 ---
 
 # Two-Party Escrow Benchmark Scenario

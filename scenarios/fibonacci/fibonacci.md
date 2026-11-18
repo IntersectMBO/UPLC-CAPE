@@ -1,6 +1,6 @@
 ---
-type: synthetic
-category: open
+optimization: unrestricted
+workload: synthetic
 ---
 
 # Fibonacci Benchmark Scenario
@@ -9,7 +9,7 @@ category: open
 
 ## Overview
 
-The Fibonacci benchmark is a synthetic computational scenario designed to measure the performance characteristics of algorithms implemented as UPLC programs. This open optimization scenario allows complete freedom in implementation approach, enabling compilers to showcase their best capabilities including optimization techniques, metaprogramming, and alternative algorithms.
+The Fibonacci benchmark is a synthetic computational scenario designed to measure the performance characteristics of algorithms implemented as UPLC programs. This unrestricted-optimization scenario allows complete freedom in implementation approach, enabling compilers to showcase their best capabilities including optimization techniques, metaprogramming, and alternative algorithms.
 
 ## Exact Task
 
