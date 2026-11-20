@@ -1,6 +1,6 @@
 {
   "benchmark": "factorial_naive_recursion",
-  "generated_at": "2026-11-20T12:44:42Z",
+  "generated_at": "2026-11-20T16:05:56Z",
   "positive_cases": [
     "factorial_0",
     "factorial_1",

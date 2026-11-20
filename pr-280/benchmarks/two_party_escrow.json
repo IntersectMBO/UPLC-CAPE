@@ -1,6 +1,6 @@
 {
   "benchmark": "two_party_escrow",
-  "generated_at": "2026-11-20T12:44:50Z",
+  "generated_at": "2026-11-20T16:06:04Z",
   "positive_cases": [
     "deposit_successful",
     "accept_successful",

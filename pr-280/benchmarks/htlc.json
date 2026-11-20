@@ -1,6 +1,6 @@
 {
   "benchmark": "htlc",
-  "generated_at": "2026-11-20T12:44:47Z",
+  "generated_at": "2026-11-20T16:06:01Z",
   "positive_cases": [
     "claim_well_before_timeout",
     "claim_just_before_timeout",
