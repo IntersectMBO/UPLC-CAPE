@@ -135,40 +135,25 @@ else
   cp -f "$SCRIPT_DIR/report-comparison.js" "$report_dir/report-comparison.js"
 fi
 
-# Cached aggregate CSV per target filter, populated on first fetch. Lives in the
-# outer shell — subshells (command substitution) can only read it, not mutate
-# it, so we fill it eagerly via `aggregate_csv_cache` before entering any loop.
-declare -A AGGREGATE_CSV=()
+# Cached aggregate CSV, populated once. Lives in the outer shell: subshells
+# (command substitution) can only read it, not mutate it, so fill it eagerly
+# via `aggregate_csv_cache` before entering any loop.
+AGGREGATE_CSV=""
+AGGREGATE_CSV_READY=0
 
-# Map a target filter to its cache key. The unfiltered case uses an empty
-# filter string, but bash 5.3 rejects an empty associative-array subscript
-# ("bad array subscript"), so fold it to a non-empty sentinel that can't
-# collide with a real target name.
-csv_cache_key() { printf '%s' "${1:-__unfiltered__}"; }
-
-# Populate AGGREGATE_CSV[<key>] if not already set. Call from the outer
-# shell before using fetch_benchmark_csv in a $(...) context.
 aggregate_csv_cache() {
-  local target_filter="${1:-}"
-  local key
-  key=$(csv_cache_key "$target_filter")
-  if [ -n "${AGGREGATE_CSV[$key]+set}" ]; then
+  if [ "$AGGREGATE_CSV_READY" -eq 1 ]; then
     return 0
   fi
-  local aggregate_args=()
-  if [ -n "$target_filter" ]; then
-    aggregate_args+=("--target=$target_filter")
-  fi
-  AGGREGATE_CSV[$key]=$($CAPE_CMD submission aggregate "${aggregate_args[@]}")
+  AGGREGATE_CSV=$($CAPE_CMD submission aggregate)
+  AGGREGATE_CSV_READY=1
 }
 
 # Fetch CSV rows for one benchmark, dropping template placeholders and rows with empty core metrics.
 fetch_benchmark_csv() {
   local benchmark="$1"
-  local target_filter="${2:-}"
-  local key csv_data
-  key=$(csv_cache_key "$target_filter")
-  csv_data=$(printf '%s' "${AGGREGATE_CSV[$key]:-}" | grep "^$benchmark," || true)
+  local csv_data
+  csv_data=$(printf '%s' "$AGGREGATE_CSV" | grep "^$benchmark," || true)
   if [ -z "$csv_data" ]; then
     return 0
   fi
@@ -185,10 +170,9 @@ fetch_benchmark_csv() {
 generate_benchmark_data_json() {
   local benchmark="$1"
   local output_dir="$2"
-  local target_filter="${3:-}"
 
   local csv_data
-  csv_data=$(fetch_benchmark_csv "$benchmark" "$target_filter")
+  csv_data=$(fetch_benchmark_csv "$benchmark")
   if [ -z "$csv_data" ]; then
     echo "No valid submissions found for benchmark: $benchmark" >&2
     return 1
@@ -353,10 +337,9 @@ EOF
 generate_submission_detail_pages() {
   local benchmark="$1"
   local output_dir="$2"
-  local target_filter="${3:-}"
 
   local csv_data
-  csv_data=$(fetch_benchmark_csv "$benchmark" "$target_filter")
+  csv_data=$(fetch_benchmark_csv "$benchmark")
   [ -n "$csv_data" ] || return 0
 
   local detail_dir="$output_dir/benchmarks/$benchmark"
@@ -598,20 +581,13 @@ EOF
 }
 
 # Build evolution stats per (compiler, author) for the evolution report.
-# Submissions are partitioned by directory-name variant:
-#   - variant `default`  → mainnet timeline (version chain with delta-vs-
-#     previous / delta-vs-first)
-#   - variant `preview`  → preview teaser column (single
-#     delta-vs-latest-mainnet computed against the latest mainnet column,
-#     NOT the previous overall column)
-# All other variants are sibling experiments and live in the per-scenario
-# production report, not on the evolution timeline. Track classification is
-# author-declared via the directory suffix, not derived from the runtime
-# `min_plutus_version` threshold — that field still drives `cape submission
-# verify --all` skipping but no longer steers the report.
+# The timeline holds the `default` directory-name variant only (version
+# chain with delta-vs-previous / delta-vs-first). All other variants are
+# sibling experiments and live in the per-scenario report.
 build_evolution_stats() {
+  aggregate_csv_cache
   local all_csv
-  all_csv=$($CAPE_CMD submission aggregate 2> /dev/null | tail -n +2)
+  all_csv=$(printf '%s\n' "$AGGREGATE_CSV" | tail -n +2)
 
   local ts
   ts=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
@@ -673,17 +649,15 @@ build_evolution_stats() {
         term_size:          (.[9]  | tonumber? // null),
         total_fee_lovelace: (.[12] | tonumber? // null)
       })
-    | map(select(.variant == "default" or .variant == "preview"))
+    | map(select(.variant == "default"))
     | group_by({compiler, author})
     | map(
         . as $rows
         | ($rows | map(select(.variant == "default") | .version) | unique | sort_by(vkey)) as $mainnet_versions
-        | ($rows | map(select(.variant == "preview") | .version) | unique | sort_by(vkey) | last) as $preview_version
         | {
             compiler: .[0].compiler,
             author:   .[0].author,
             mainnet_versions: $mainnet_versions,
-            preview_version:  $preview_version,
             scenarios: (
               $rows
               | group_by(.benchmark)
@@ -699,13 +673,6 @@ build_evolution_stats() {
                                { version: $v, cpu_units: null, memory_units: null, script_size_bytes: null, term_size: null, total_fee_lovelace: null }
                              else metrics_of($r) end)
                         )
-                      ),
-                      preview_value: (
-                        if $preview_version == null then null
-                        else
-                          ($srows | map(select(.version == $preview_version and .variant == "preview")) | .[0]) as $r
-                          | (if $r == null then null else metrics_of($r) end)
-                        end
                       )
                     }
                   # Decorate mainnet_values with delta_prev / delta_first.
@@ -736,34 +703,10 @@ build_evolution_stats() {
                             }
                         ]
                     )
-                  # Decorate preview_value with delta_vs_latest_mainnet
-                  # (baseline = latest non-null mainnet value for this scenario,
-                  # NOT the previous overall column). Pre-compute the bases at
-                  # the scenario level because inside `.preview_value |= (…)`
-                  # the bound `.` refers to preview_value, not the scenario.
-                  | (.mainnet_values | map(.cpu_units)          | map(select(. != null)) | last) as $cpu_base
-                  | (.mainnet_values | map(.memory_units)       | map(select(. != null)) | last) as $mem_base
-                  | (.mainnet_values | map(.script_size_bytes)  | map(select(. != null)) | last) as $size_base
-                  | (.mainnet_values | map(.term_size)          | map(select(. != null)) | last) as $term_base
-                  | (.mainnet_values | map(.total_fee_lovelace) | map(select(. != null)) | last) as $fee_base
-                  | .preview_value |= (
-                      if . == null then null
-                      else
-                        . + {
-                          delta_vs_latest_mainnet: {
-                            cpu_units:          delta_obj(.cpu_units;          $cpu_base),
-                            memory_units:       delta_obj(.memory_units;       $mem_base),
-                            script_size_bytes:  delta_obj(.script_size_bytes;  $size_base),
-                            term_size:          delta_obj(.term_size;          $term_base),
-                            total_fee_lovelace: delta_obj(.total_fee_lovelace; $fee_base)
-                          }
-                        }
-                      end
-                    )
                 )
               # A scenario contributes to the timeline only when it has at
-              # least two non-null mainnet points. Preview-only scenarios
-              # carry no improvement signal and are dropped.
+              # least two non-null mainnet points; a single point carries no
+              # improvement signal.
               | map(select([.mainnet_values[] | select(.cpu_units != null)] | length >= 2))
               | sort_by(.name)
             )
@@ -797,13 +740,13 @@ if [ "$1" = "--all" ]; then
   benchmarks_with_submissions=""
 
   # Compute aggregate CSV once up front; each benchmark iteration filters it.
-  aggregate_csv_cache "current"
+  aggregate_csv_cache
 
   for benchmark in $all_benchmarks; do
     if [ -d "$PROJECT_ROOT/submissions/$benchmark" ] && [ "$(find "$PROJECT_ROOT/submissions/$benchmark" -mindepth 1 -maxdepth 1 -type d ! -name "TEMPLATE" 2> /dev/null | wc -l)" -gt 0 ]; then
       echo "Processing $benchmark..."
 
-      if ! generate_benchmark_data_json "$benchmark" "$report_dir" "current"; then
+      if ! generate_benchmark_data_json "$benchmark" "$report_dir"; then
         echo "❌ Error: Failed to build data JSON for benchmark '$benchmark'" >&2
         exit 1
       fi
@@ -812,7 +755,7 @@ if [ "$1" = "--all" ]; then
         generate_individual_benchmark_report "$benchmark" "$report_dir"
       fi
 
-      generate_submission_detail_pages "$benchmark" "$report_dir" "current"
+      generate_submission_detail_pages "$benchmark" "$report_dir"
 
       if [ -n "$benchmarks_with_submissions" ]; then
         benchmarks_with_submissions="${benchmarks_with_submissions}\n"
@@ -871,8 +814,7 @@ if [ "$1" = "--all" ]; then
           > "$evolution_dir/compilers/${compiler_name}_${author}.html"
 
         mainnet_count=$(jq -r ".compilers[$i].mainnet_versions | length" "$temp_compiler_stats")
-        preview_version=$(jq -r '.compilers['"$i"'].preview_version // "—"' "$temp_compiler_stats")
-        echo "  Evolution: $compiler_name by $author (mainnet: $mainnet_count, preview: $preview_version)"
+        echo "  Evolution: $compiler_name by $author (mainnet: $mainnet_count)"
       done
 
       echo ""
@@ -906,7 +848,7 @@ else
   echo "================================================="
 
   # Compute aggregate CSV once; fetch_benchmark_csv filters it from the cache.
-  aggregate_csv_cache ""
+  aggregate_csv_cache
 
   if [ -d "$PROJECT_ROOT/submissions/$benchmark" ] && [ "$(find "$PROJECT_ROOT/submissions/$benchmark" -mindepth 1 -maxdepth 1 -type d ! -name "TEMPLATE" 2> /dev/null | wc -l)" -gt 0 ]; then
     if ! generate_benchmark_data_json "$benchmark" "$report_dir"; then

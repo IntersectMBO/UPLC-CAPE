@@ -319,16 +319,6 @@ main() {
     cape_info "Verifying all submissions under $(cape_relpath "$SUBMISSIONS_ROOT")"
     local any_found=0
     while IFS= read -r submission_dir; do
-      # Skip preview submissions (require newer plutus-core than production)
-      local meta="$submission_dir/metadata.json"
-      if [[ -f "$meta" ]]; then
-        local min_ver
-        min_ver=$(jq -r '.compilation_config.min_plutus_version // ""' "$meta" 2> /dev/null || true)
-        if cape_is_preview_submission "$min_ver"; then
-          cape_info "Skipping preview submission: ${submission_dir#$SUBMISSIONS_ROOT/}"
-          continue
-        fi
-      fi
       any_found=1
       if ! verify_submission_dir "$submission_dir"; then
         rc=1
@@ -341,17 +331,6 @@ main() {
     if [[ ! -d "$TARGET" ]]; then
       cape_error "Directory not found: $TARGET"
       exit 1
-    fi
-    # Guard: reject submissions that require a newer plutus-core than the evaluator supports
-    local meta="$TARGET/metadata.json"
-    if [[ -f "$meta" ]]; then
-      local min_ver
-      min_ver=$(jq -r '.compilation_config.min_plutus_version // ""' "$meta" 2> /dev/null || true)
-      if cape_is_preview_submission "$min_ver"; then
-        cape_error "Submission requires plutus-core >= $min_ver but the evaluator only supports $CAPE_CURRENT_PLUTUS_VERSION."
-        cape_error "Use 'cape submission measure --preview' to evaluate with a compatible version."
-        exit 1
-      fi
     fi
     verify_submission_dir "$TARGET" || rc=$?
   fi
