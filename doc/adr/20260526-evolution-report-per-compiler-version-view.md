@@ -238,7 +238,7 @@ The first step would be to derive every evaluation from a profile, replacing `ru
 
 - Each script is first decoded with `deserialiseScript` at the profile's protocol version. Decoding is where `plutus-ledger-api` rejects builtins that the protocol version does not allow.
 - Validator scenarios can then run through `PlutusLedgerApi.V3.evaluateScriptCounting`, with an evaluation context that `mkEvaluationContext` builds from the profile's cost-model parameters.
-- Scenarios that return a value, such as `fibonacci`, do not fit that entry point, which takes one script context and requires a unit result. They need the CEK machine with machine parameters built from the same profile. Wrapping them as validators would change the measured budget.
+- Scenarios that return a value, such as `fibonacci`, do not fit that entry point, which takes one script context and requires a unit result. They need the CEK machine with machine parameters built from the same profile. Wrapping them as validators would change the measured budget. Decoding does not check the program's UPLC version: the ledger does that separately (`plcVersionsAvailableIn`), so this path must apply the same check before it extracts the term, and a mismatch counts as a profile rejection.
 
 With profiles in place, a `plutus-core` upgrade should leave every profile's results and budgets unchanged. The compatibility guarantee covers outcomes on chain, not every budget for every input that CAPE constructs, so CI would compare results and budgets per profile before and after an upgrade, and any difference would be investigated before the upgrade lands. Moving the evaluator would then no longer move the mainnet numbers, and this would replace the re-measurement rule.
 
