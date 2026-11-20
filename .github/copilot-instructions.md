@@ -253,7 +253,7 @@ UPLC-CAPE/
 │   ├── cape.sh          # Main CLI
 │   └── cape-subcommands/ # Command implementations
 ├── lib/Cape/             # Evaluator and measurement library
-├── measure-app/          # `measure` / `measure-preview` source
+├── measure-app/          # `measure` source
 └── pretty-uplc-app/      # UPLC text pretty-printer source
 ```
 

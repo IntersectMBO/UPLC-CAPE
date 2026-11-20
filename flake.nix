@@ -229,9 +229,9 @@
           # Note: uplcMusl/plcMusl/pirMusl/plutusMusl not included in dev shell
           # as they require building Agda. Use nix build .#packages.* for those.
 
-          # Note: measure / measure-preview are NOT added to buildInputs to
-          # avoid triggering their (slow) build at shell startup. Use
-          # 'cabal build' / 'cabal run' to produce them on demand.
+          # Note: measure is NOT added to buildInputs to
+          # avoid triggering its (slow) build at shell startup. Use
+          # 'cabal build' / 'cabal run' to produce it on demand.
 
           shellHook = ''
             # Install log4brains via npx when needed
