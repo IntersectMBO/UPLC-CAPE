@@ -226,6 +226,24 @@ Removed: `cabal.project.preview`, the `preview` flag and the `measure-preview` e
 
 `min_protocol_version` is unaffected: it records what mainnet must accept, not which evaluator runs the artifact.
 
+### If a network gets ahead of mainnet
+
+Nothing in this subsection is implemented. It records the design to start from if the need returns, for example when a testnet such as Preview hard-forks to a protocol version that mainnet does not have yet. Until then the re-measurement rule in the second paragraph of this refinement applies.
+
+A measurement has three inputs: the `plutus-core` library, the protocol version, and the protocol parameters. Only the library is code. The protocol version and the parameters are data, and the parameters live on chain, where governance can change them without a new `plutus-core` release. A newer `plutus-core` keeps the behaviour of earlier protocol versions, because a node that syncs from genesis re-validates old transactions and has to reach the outcome the chain recorded. One evaluator built on a recent `plutus-core` could therefore measure for mainnet and for a testnet, given each network's protocol version and parameters.
+
+The design that follows is a network profile, stored in the repository as data. It holds a protocol version, the cost-model parameters, and the other parameters CAPE's numbers depend on (execution unit prices, reference-script fee parameters and transaction limits, see `lib/Cape/Protocol/Parameters.hs`), with the epoch they were taken from. Each submission is measured under each profile. An artifact that a profile's protocol version does not admit is reported as not executable on that network, separately from a test that is expected to fail. The removed preview track attached the evaluator to the submission through `min_plutus_version`. The evaluator belongs to the network instead, and the same artifact can cost different amounts on two networks. The old track needed its own `cabal.project.preview` because the two project files pinned different `plutus-core` versions for the same evaluator code; profiles make that second project unnecessary.
+
+The first step would be to derive every evaluation from a profile, replacing `runCekDeBruijn defaultCekParametersForTesting` (`lib/Cape/PrettyResult.hs`). That call uses the cost model built into the linked `plutus-core` and passes no protocol version (see Refinement 4).
+
+- Each script is first decoded with `deserialiseScript` at the profile's protocol version. Decoding is where `plutus-ledger-api` rejects builtins that the protocol version does not allow.
+- Validator scenarios can then run through `PlutusLedgerApi.V3.evaluateScriptCounting`, with an evaluation context that `mkEvaluationContext` builds from the profile's cost-model parameters.
+- Scenarios that return a value, such as `fibonacci`, do not fit that entry point, which takes one script context and requires a unit result. They need the CEK machine with machine parameters built from the same profile. Wrapping them as validators would change the measured budget.
+
+With profiles in place, a `plutus-core` upgrade should leave every profile's results and budgets unchanged. The compatibility guarantee covers outcomes on chain, not every budget for every input that CAPE constructs, so CI would compare results and budgets per profile before and after an upgrade, and any difference would be investigated before the upgrade lands. Moving the evaluator would then no longer move the mainnet numbers, and this would replace the re-measurement rule.
+
+One open question bears on today's numbers: nobody has compared the default cost model of `plutus-core` 1.63 with mainnet's on-chain parameters. CAPE's numbers equal mainnet's only where the two match.
+
 ## Links
 
 - Issue: [#204 — Redesign preview report as a per-compiler version-evolution view](https://github.com/IntersectMBO/UPLC-CAPE/issues/204)
