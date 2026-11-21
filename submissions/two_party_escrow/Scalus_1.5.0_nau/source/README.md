@@ -8,6 +8,8 @@
 
 The validator is one self-contained file. This directory holds a [scala-cli](https://scala-cli.virtuslab.org/) build that compiles it with the released Scalus 1.5.0: [project.scala](project.scala) pins the library `org.scalus::scalus:1.5.0` and the compiler plugin `org.scalus:::scalus-plugin:1.5.0` from Maven Central, so the compiler does not come from the source checkout. [Build.scala](Build.scala) compiles the validator with `Options.releaseUntagged` and writes the UPLC.
 
+The compiler names binders with a counter that is global to the JVM, so the names change with the build environment while the Flat bytes do not. Before it writes the file, `Build.scala` converts the program to De Bruijn indices and back. This renames every binder to `i0`, `i1`, ... in the order the binders occur, so the text depends only on the program.
+
 ## Reproducing the compilation
 
 Run from the root of a UPLC-CAPE checkout. Needs scala-cli and JDK 17 or later.
@@ -22,4 +24,4 @@ pretty-uplc /tmp/two_party_escrow.uplc
 diff /tmp/two_party_escrow.uplc submissions/two_party_escrow/Scalus_1.5.0_nau/two_party_escrow.uplc
 ```
 
-The build prints `1040 bytes`. `pretty-uplc` (from the UPLC-CAPE dev shell) applies the layout of the committed file and changes only whitespace, so `diff` prints nothing.
+The build prints `1040 bytes`. `pretty-uplc` (from the UPLC-CAPE dev shell) applies the layout of the committed file. The binder names are already fixed by `Build.scala`, so `diff` prints nothing.

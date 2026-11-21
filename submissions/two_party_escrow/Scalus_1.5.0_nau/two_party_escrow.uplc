@@ -12,59 +12,56 @@
       (force (builtin tailList))
     )
     (lam
-      __DropList-0
+      i0-0
       (lam
-        __FstPair-1
+        i1-1
         (lam
-          __HeadList-2
+          i2-2
           (lam
-            __MkCons-3
+            i3-3
             (lam
-              __NullList-4
+              i4-4
               (lam
-                __SndPair-5
+                i5-5
                 (lam
-                  __TailList-6
+                  i6-6
                   [
                     (lam
-                      scalus_cardano_onchain_plutus_v3_TxInfo__isSignedBy'631-7
+                      i7-7
                       [
                         (lam
-                          scalus_cardano_onchain_plutus_prelude_List__findUniqueOrElse'681-8
+                          i8-8
                           [
                             (lam
-                              scalus_cardano_onchain_plutus_v1_Value__getLovelace'791-9
+                              i9-9
                               [
                                 (lam
-                                  scalus_examples_cape_twopartyescrow_TwoPartyEscrowValidator__settle'864-10
+                                  i10-10
                                   [
                                     (lam
-                                      scalus_cardano_onchain_plutus_v1_Value__hasOnly'925-11
+                                      i11-11
                                       (lam
-                                        sc_proxy1_36801'1015-12
+                                        i12-12
                                         [
                                           (lam
-                                            sc_proxy1_36801r'1016-13
+                                            i13-13
                                             [
                                               (lam
-                                                __cse___DropList_c-14
+                                                i14-14
                                                 [
                                                   (lam
-                                                    __cse_UnConstr__Validator_scala_15_8_match_scrutinee_1'1017-15
+                                                    i15-15
                                                     [
                                                       (lam
-                                                        _match_datalist'1021-16
+                                                        i16-16
                                                         (case
-                                                          [
-                                                            __FstPair-1
-                                                            __cse_UnConstr__Validator_scala_15_8_match_scrutinee_1'1017-15
-                                                          ]
+                                                          [ i1-1 i15-15 ]
                                                           [
                                                             (lam
-                                                              __cse_EqI_UnI_action_36803'1023-17
+                                                              i17-17
                                                               (case
                                                                 [
-                                                                  __cse_EqI_UnI_action_36803'1023-17
+                                                                  i17-17
                                                                   (con
                                                                     integer 0
                                                                   )
@@ -72,14 +69,14 @@
                                                                 (case
                                                                   (case
                                                                     [
-                                                                      __cse_EqI_UnI_action_36803'1023-17
+                                                                      i17-17
                                                                       (con
                                                                         integer
                                                                         1
                                                                       )
                                                                     ]
                                                                     [
-                                                                      __cse_EqI_UnI_action_36803'1023-17
+                                                                      i17-17
                                                                       (con
                                                                         integer
                                                                         2
@@ -95,24 +92,24 @@
                                                                       (constr
                                                                         0
                                                                         [
-                                                                          __HeadList-2
+                                                                          i2-2
                                                                           [
                                                                             [
-                                                                              __DropList-0
+                                                                              i0-0
                                                                               (con
                                                                                 integer
                                                                                 4
                                                                               )
                                                                             ]
                                                                             [
-                                                                              __SndPair-5
+                                                                              i5-5
                                                                               [
                                                                                 (builtin
                                                                                   unConstrData
                                                                                 )
                                                                                 [
-                                                                                  __HeadList-2
-                                                                                  sc_proxy1_36801r'1016-13
+                                                                                  i2-2
+                                                                                  i13-13
                                                                                 ]
                                                                               ]
                                                                             ]
@@ -123,8 +120,8 @@
                                                                             unBData
                                                                           )
                                                                           [
-                                                                            __HeadList-2
-                                                                            _match_datalist'1021-16
+                                                                            i2-2
+                                                                            i16-16
                                                                           ]
                                                                         ]
                                                                         (con
@@ -136,7 +133,7 @@
                                                                           -1
                                                                         )
                                                                       )
-                                                                      scalus_cardano_onchain_plutus_v1_Value__hasOnly'925-11
+                                                                      i11-11
                                                                     )
                                                                     (error)
                                                                     (con
@@ -147,36 +144,36 @@
                                                                 [
                                                                   [
                                                                     (lam
-                                                                      policyId_30703'957-18
+                                                                      i18-18
                                                                       [
                                                                         (lam
-                                                                          policyId_30703r'985-19
+                                                                          i19-19
                                                                           (lam
-                                                                            tx_30704'958-20
+                                                                            i20-20
                                                                             [
                                                                               (lam
-                                                                                __TwoPartyEscrowValidator_line_77_0'961-21
+                                                                                i21-21
                                                                                 [
                                                                                   (lam
-                                                                                    depositTime_31137'972-22
+                                                                                    i22-22
                                                                                     [
                                                                                       (lam
-                                                                                        __cse_c-23
+                                                                                        i23-23
                                                                                         [
                                                                                           (lam
-                                                                                            __TwoPartyEscrowValidator_line_81_0'982-24
+                                                                                            i24-24
                                                                                             [
                                                                                               (lam
-                                                                                                escrow_31138r'1000-25
+                                                                                                i25-25
                                                                                                 [
                                                                                                   (lam
-                                                                                                    __cse___HeadList___TailList_escrow_31138r'1000-26
+                                                                                                    i26-26
                                                                                                     [
                                                                                                       (lam
-                                                                                                        __TwoPartyEscrowValidator_line_86_0'1002-27
+                                                                                                        i27-27
                                                                                                         [
                                                                                                           (lam
-                                                                                                            __TwoPartyEscrowValidator_line_87_0'1009-28
+                                                                                                            i28-28
                                                                                                             (case
                                                                                                               [
                                                                                                                 [
@@ -184,10 +181,10 @@
                                                                                                                     equalsData
                                                                                                                   )
                                                                                                                   [
-                                                                                                                    __HeadList-2
+                                                                                                                    i2-2
                                                                                                                     [
-                                                                                                                      __cse___DropList_c-14
-                                                                                                                      escrow_31138r'1000-25
+                                                                                                                      i14-14
+                                                                                                                      i25-25
                                                                                                                     ]
                                                                                                                   ]
                                                                                                                 ]
@@ -203,7 +200,7 @@
                                                                                                                   ]
                                                                                                                   [
                                                                                                                     [
-                                                                                                                      __MkCons-3
+                                                                                                                      i3-3
                                                                                                                       [
                                                                                                                         [
                                                                                                                           (builtin
@@ -216,12 +213,12 @@
                                                                                                                         ]
                                                                                                                         [
                                                                                                                           [
-                                                                                                                            __MkCons-3
+                                                                                                                            i3-3
                                                                                                                             [
                                                                                                                               (builtin
                                                                                                                                 iData
                                                                                                                               )
-                                                                                                                              depositTime_31137'972-22
+                                                                                                                              i22-22
                                                                                                                             ]
                                                                                                                           ]
                                                                                                                           (con
@@ -256,13 +253,13 @@
                                                                                                                 (case
                                                                                                                   (constr
                                                                                                                     0
-                                                                                                                    policyId_30703'957-18
-                                                                                                                    __cse_c-23
+                                                                                                                    i18-18
+                                                                                                                    i23-23
                                                                                                                     [
                                                                                                                       (builtin
                                                                                                                         unValueData
                                                                                                                       )
-                                                                                                                      __cse___HeadList___TailList_escrow_31138r'1000-26
+                                                                                                                      i26-26
                                                                                                                     ]
                                                                                                                   )
                                                                                                                   (builtin
@@ -292,8 +289,8 @@
                                                                                                               equalsInteger
                                                                                                             )
                                                                                                             [
-                                                                                                              scalus_cardano_onchain_plutus_v1_Value__getLovelace'791-9
-                                                                                                              __cse___HeadList___TailList_escrow_31138r'1000-26
+                                                                                                              i9-9
+                                                                                                              i26-26
                                                                                                             ]
                                                                                                           ]
                                                                                                           (con
@@ -312,16 +309,16 @@
                                                                                                     ]
                                                                                                   )
                                                                                                   [
-                                                                                                    __HeadList-2
+                                                                                                    i2-2
                                                                                                     [
-                                                                                                      __TailList-6
-                                                                                                      escrow_31138r'1000-25
+                                                                                                      i6-6
+                                                                                                      i25-25
                                                                                                     ]
                                                                                                   ]
                                                                                                 ]
                                                                                               )
                                                                                               [
-                                                                                                __SndPair-5
+                                                                                                i5-5
                                                                                                 [
                                                                                                   (builtin
                                                                                                     unConstrData
@@ -334,37 +331,37 @@
                                                                                                           unListData
                                                                                                         )
                                                                                                         [
-                                                                                                          __HeadList-2
+                                                                                                          i2-2
                                                                                                           [
-                                                                                                            __cse___DropList_c-14
-                                                                                                            tx_30704'958-20
+                                                                                                            i14-14
+                                                                                                            i20-20
                                                                                                           ]
                                                                                                         ]
                                                                                                       ]
                                                                                                       (lam
-                                                                                                        xIn'992-29
+                                                                                                        i29-29
                                                                                                         [
                                                                                                           [
                                                                                                             (builtin
                                                                                                               equalsData
                                                                                                             )
                                                                                                             [
-                                                                                                              __HeadList-2
+                                                                                                              i2-2
                                                                                                               [
-                                                                                                                __SndPair-5
+                                                                                                                i5-5
                                                                                                                 [
                                                                                                                   (builtin
                                                                                                                     unConstrData
                                                                                                                   )
                                                                                                                   [
-                                                                                                                    __HeadList-2
+                                                                                                                    i2-2
                                                                                                                     [
-                                                                                                                      __SndPair-5
+                                                                                                                      i5-5
                                                                                                                       [
                                                                                                                         (builtin
                                                                                                                           unConstrData
                                                                                                                         )
-                                                                                                                        xIn'992-29
+                                                                                                                        i29-29
                                                                                                                       ]
                                                                                                                     ]
                                                                                                                   ]
@@ -384,8 +381,8 @@
                                                                                                             ]
                                                                                                             [
                                                                                                               [
-                                                                                                                __MkCons-3
-                                                                                                                policyId_30703r'985-19
+                                                                                                                i3-3
+                                                                                                                i19-19
                                                                                                               ]
                                                                                                               (con
                                                                                                                 (list data)
@@ -396,13 +393,13 @@
                                                                                                         ]
                                                                                                       )
                                                                                                       (lam
-                                                                                                        __4_37298'997-30
+                                                                                                        i30-30
                                                                                                         (error
 
                                                                                                         )
                                                                                                       )
                                                                                                     )
-                                                                                                    scalus_cardano_onchain_plutus_prelude_List__findUniqueOrElse'681-8
+                                                                                                    i8-8
                                                                                                   )
                                                                                                 ]
                                                                                               ]
@@ -413,26 +410,26 @@
                                                                                               (constr
                                                                                                 0
                                                                                                 [
-                                                                                                  __HeadList-2
+                                                                                                  i2-2
                                                                                                   [
                                                                                                     [
-                                                                                                      __DropList-0
+                                                                                                      i0-0
                                                                                                       (con
                                                                                                         integer
                                                                                                         4
                                                                                                       )
                                                                                                     ]
-                                                                                                    tx_30704'958-20
+                                                                                                    i20-20
                                                                                                   ]
                                                                                                 ]
-                                                                                                policyId_30703'957-18
-                                                                                                __cse_c-23
+                                                                                                i18-18
+                                                                                                i23-23
                                                                                                 (con
                                                                                                   integer
                                                                                                   1
                                                                                                 )
                                                                                               )
-                                                                                              scalus_cardano_onchain_plutus_v1_Value__hasOnly'925-11
+                                                                                              i11-11
                                                                                             )
                                                                                             (error
 
@@ -457,11 +454,11 @@
                                                                                       )
                                                                                       [
                                                                                         (lam
-                                                                                          _match_scrutinee'965-31
+                                                                                          i31-31
                                                                                           (case
                                                                                             [
-                                                                                              __FstPair-1
-                                                                                              _match_scrutinee'965-31
+                                                                                              i1-1
+                                                                                              i31-31
                                                                                             ]
                                                                                             (error
 
@@ -471,10 +468,10 @@
                                                                                                 unIData
                                                                                               )
                                                                                               [
-                                                                                                __HeadList-2
+                                                                                                i2-2
                                                                                                 [
-                                                                                                  __SndPair-5
-                                                                                                  _match_scrutinee'965-31
+                                                                                                  i5-5
+                                                                                                  i31-31
                                                                                                 ]
                                                                                               ]
                                                                                             ]
@@ -488,34 +485,34 @@
                                                                                             unConstrData
                                                                                           )
                                                                                           [
-                                                                                            __HeadList-2
+                                                                                            i2-2
                                                                                             [
-                                                                                              __SndPair-5
+                                                                                              i5-5
                                                                                               [
                                                                                                 (builtin
                                                                                                   unConstrData
                                                                                                 )
                                                                                                 [
-                                                                                                  __HeadList-2
+                                                                                                  i2-2
                                                                                                   [
-                                                                                                    __TailList-6
+                                                                                                    i6-6
                                                                                                     [
-                                                                                                      __SndPair-5
+                                                                                                      i5-5
                                                                                                       [
                                                                                                         (builtin
                                                                                                           unConstrData
                                                                                                         )
                                                                                                         [
-                                                                                                          __HeadList-2
+                                                                                                          i2-2
                                                                                                           [
                                                                                                             [
-                                                                                                              __DropList-0
+                                                                                                              i0-0
                                                                                                               (con
                                                                                                                 integer
                                                                                                                 7
                                                                                                               )
                                                                                                             ]
-                                                                                                            tx_30704'958-20
+                                                                                                            i20-20
                                                                                                           ]
                                                                                                         ]
                                                                                                       ]
@@ -538,8 +535,8 @@
                                                                               (case
                                                                                 [
                                                                                   [
-                                                                                    scalus_cardano_onchain_plutus_v3_TxInfo__isSignedBy'631-7
-                                                                                    tx_30704'958-20
+                                                                                    i7-7
+                                                                                    i20-20
                                                                                   ]
                                                                                   (con
                                                                                     bytestring
@@ -561,7 +558,7 @@
                                                                           (builtin
                                                                             bData
                                                                           )
-                                                                          policyId_30703'957-18
+                                                                          i18-18
                                                                         ]
                                                                       ]
                                                                     )
@@ -570,20 +567,20 @@
                                                                         unBData
                                                                       )
                                                                       [
-                                                                        __HeadList-2
-                                                                        _match_datalist'1021-16
+                                                                        i2-2
+                                                                        i16-16
                                                                       ]
                                                                     ]
                                                                   ]
                                                                   [
-                                                                    __SndPair-5
+                                                                    i5-5
                                                                     [
                                                                       (builtin
                                                                         unConstrData
                                                                       )
                                                                       [
-                                                                        __HeadList-2
-                                                                        sc_proxy1_36801r'1016-13
+                                                                        i2-2
+                                                                        i13-13
                                                                       ]
                                                                     ]
                                                                   ]
@@ -599,10 +596,9 @@
                                                                   unIData
                                                                 )
                                                                 [
-                                                                  __HeadList-2
+                                                                  i2-2
                                                                   [
-                                                                    __TailList-6
-                                                                    sc_proxy1_36801r'1016-13
+                                                                    i6-6 i13-13
                                                                   ]
                                                                 ]
                                                               ]
@@ -610,17 +606,17 @@
                                                           ]
                                                           [
                                                             (lam
-                                                              __cse_EqI_UnI_action_36806'1041-32
+                                                              i32-32
                                                               (case
                                                                 [
-                                                                  __cse_EqI_UnI_action_36806'1041-32
+                                                                  i32-32
                                                                   (con
                                                                     integer 1
                                                                   )
                                                                 ]
                                                                 (case
                                                                   [
-                                                                    __cse_EqI_UnI_action_36806'1041-32
+                                                                    i32-32
                                                                     (con
                                                                       integer 2
                                                                     )
@@ -628,23 +624,23 @@
                                                                   (error)
                                                                   [
                                                                     (lam
-                                                                      __cse___SndPair_UnConstr___HeadList_sc_proxy1_36801r'1016-33
+                                                                      i33-33
                                                                       [
                                                                         (lam
-                                                                          __TwoPartyEscrowValidator_line_67_0'1070-34
+                                                                          i34-34
                                                                           (case
                                                                             (constr
                                                                               0
-                                                                              __cse___SndPair_UnConstr___HeadList_sc_proxy1_36801r'1016-33
+                                                                              i33-33
                                                                               [
-                                                                                __SndPair-5
+                                                                                i5-5
                                                                                 [
                                                                                   (builtin
                                                                                     unConstrData
                                                                                   )
                                                                                   [
-                                                                                    __HeadList-2
-                                                                                    _match_datalist'1021-16
+                                                                                    i2-2
+                                                                                    i16-16
                                                                                   ]
                                                                                 ]
                                                                               ]
@@ -653,7 +649,7 @@
                                                                                 #aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
                                                                               )
                                                                             )
-                                                                            scalus_examples_cape_twopartyescrow_TwoPartyEscrowValidator__settle'864-10
+                                                                            i10-10
                                                                           )
                                                                         )
                                                                         (case
@@ -672,26 +668,26 @@
                                                                                       unIData
                                                                                     )
                                                                                     [
-                                                                                      __HeadList-2
+                                                                                      i2-2
                                                                                       [
-                                                                                        __SndPair-5
+                                                                                        i5-5
                                                                                         [
                                                                                           (builtin
                                                                                             unConstrData
                                                                                           )
                                                                                           [
                                                                                             (lam
-                                                                                              _match_scrutinee'1049-35
+                                                                                              i35-35
                                                                                               (case
                                                                                                 [
-                                                                                                  __FstPair-1
-                                                                                                  _match_scrutinee'1049-35
+                                                                                                  i1-1
+                                                                                                  i35-35
                                                                                                 ]
                                                                                                 [
-                                                                                                  __HeadList-2
+                                                                                                  i2-2
                                                                                                   [
-                                                                                                    __SndPair-5
-                                                                                                    _match_scrutinee'1049-35
+                                                                                                    i5-5
+                                                                                                    i35-35
                                                                                                   ]
                                                                                                 ]
                                                                                                 (error
@@ -704,10 +700,10 @@
                                                                                                 unConstrData
                                                                                               )
                                                                                               [
-                                                                                                __HeadList-2
+                                                                                                i2-2
                                                                                                 [
-                                                                                                  __TailList-6
-                                                                                                  _match_datalist'1021-16
+                                                                                                  i6-6
+                                                                                                  i16-16
                                                                                                 ]
                                                                                               ]
                                                                                             ]
@@ -725,11 +721,11 @@
                                                                             ]
                                                                             [
                                                                               (lam
-                                                                                _match_scrutinee'1065-36
+                                                                                i36-36
                                                                                 (case
                                                                                   [
-                                                                                    __FstPair-1
-                                                                                    _match_scrutinee'1065-36
+                                                                                    i1-1
+                                                                                    i36-36
                                                                                   ]
                                                                                   (error
 
@@ -739,10 +735,10 @@
                                                                                       unIData
                                                                                     )
                                                                                     [
-                                                                                      __HeadList-2
+                                                                                      i2-2
                                                                                       [
-                                                                                        __SndPair-5
-                                                                                        _match_scrutinee'1065-36
+                                                                                        i5-5
+                                                                                        i36-36
                                                                                       ]
                                                                                     ]
                                                                                   ]
@@ -756,32 +752,32 @@
                                                                                   unConstrData
                                                                                 )
                                                                                 [
-                                                                                  __HeadList-2
+                                                                                  i2-2
                                                                                   [
-                                                                                    __SndPair-5
+                                                                                    i5-5
                                                                                     [
                                                                                       (builtin
                                                                                         unConstrData
                                                                                       )
                                                                                       [
-                                                                                        __HeadList-2
+                                                                                        i2-2
                                                                                         [
-                                                                                          __SndPair-5
+                                                                                          i5-5
                                                                                           [
                                                                                             (builtin
                                                                                               unConstrData
                                                                                             )
                                                                                             [
-                                                                                              __HeadList-2
+                                                                                              i2-2
                                                                                               [
                                                                                                 [
-                                                                                                  __DropList-0
+                                                                                                  i0-0
                                                                                                   (con
                                                                                                     integer
                                                                                                     7
                                                                                                   )
                                                                                                 ]
-                                                                                                __cse___SndPair_UnConstr___HeadList_sc_proxy1_36801r'1016-33
+                                                                                                i33-33
                                                                                               ]
                                                                                             ]
                                                                                           ]
@@ -804,14 +800,14 @@
                                                                       ]
                                                                     )
                                                                     [
-                                                                      __SndPair-5
+                                                                      i5-5
                                                                       [
                                                                         (builtin
                                                                           unConstrData
                                                                         )
                                                                         [
-                                                                          __HeadList-2
-                                                                          sc_proxy1_36801r'1016-13
+                                                                          i2-2
+                                                                          i13-13
                                                                         ]
                                                                       ]
                                                                     ]
@@ -821,26 +817,26 @@
                                                                   (constr
                                                                     0
                                                                     [
-                                                                      __SndPair-5
+                                                                      i5-5
                                                                       [
                                                                         (builtin
                                                                           unConstrData
                                                                         )
                                                                         [
-                                                                          __HeadList-2
-                                                                          sc_proxy1_36801r'1016-13
+                                                                          i2-2
+                                                                          i13-13
                                                                         ]
                                                                       ]
                                                                     ]
                                                                     [
-                                                                      __SndPair-5
+                                                                      i5-5
                                                                       [
                                                                         (builtin
                                                                           unConstrData
                                                                         )
                                                                         [
-                                                                          __HeadList-2
-                                                                          _match_datalist'1021-16
+                                                                          i2-2
+                                                                          i16-16
                                                                         ]
                                                                       ]
                                                                     ]
@@ -849,7 +845,7 @@
                                                                       #bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
                                                                     )
                                                                   )
-                                                                  scalus_examples_cape_twopartyescrow_TwoPartyEscrowValidator__settle'864-10
+                                                                  i10-10
                                                                 )
                                                               )
                                                             )
@@ -862,10 +858,9 @@
                                                                   unIData
                                                                 )
                                                                 [
-                                                                  __HeadList-2
+                                                                  i2-2
                                                                   [
-                                                                    __TailList-6
-                                                                    sc_proxy1_36801r'1016-13
+                                                                    i6-6 i13-13
                                                                   ]
                                                                 ]
                                                               ]
@@ -877,72 +872,54 @@
                                                           (error)
                                                         )
                                                       )
-                                                      [
-                                                        __SndPair-5
-                                                        __cse_UnConstr__Validator_scala_15_8_match_scrutinee_1'1017-15
-                                                      ]
+                                                      [ i5-5 i15-15 ]
                                                     ]
                                                   )
                                                   [
                                                     (builtin unConstrData)
-                                                    [
-                                                      __HeadList-2
-                                                      [
-                                                        __cse___DropList_c-14
-                                                        sc_proxy1_36801r'1016-13
-                                                      ]
-                                                    ]
+                                                    [ i2-2 [ i14-14 i13-13 ] ]
                                                   ]
                                                 ]
                                               )
-                                              [ __DropList-0 (con integer 2) ]
+                                              [ i0-0 (con integer 2) ]
                                             ]
                                           )
                                           [
-                                            __SndPair-5
-                                            [
-                                              (builtin unConstrData)
-                                              sc_proxy1_36801'1015-12
-                                            ]
+                                            i5-5
+                                            [ (builtin unConstrData) i12-12 ]
                                           ]
                                         ]
                                       )
                                     )
                                     (lam
-                                      v_97052'896-37
+                                      i37-37
                                       (lam
-                                        cs_97053'897-38
+                                        i38-38
                                         (lam
-                                          tn_97054'898-39
+                                          i39-39
                                           [
                                             (lam
-                                              tn_97054r'900-40
+                                              i40-40
                                               (lam
-                                                amount_97055'899-41
+                                                i41-41
                                                 [
                                                   (lam
-                                                    expectedTokens_97056'918-42
+                                                    i42-42
                                                     [
                                                       [
                                                         (lam
-                                                          go_97057'919-43
-                                                          [
-                                                            go_97057'919-43
-                                                            go_97057'919-43
-                                                          ]
+                                                          i43-43
+                                                          [ i43-43 i43-43 ]
                                                         )
                                                         (lam
-                                                          go_97057'919_cse-44
+                                                          i44-44
                                                           (lam
-                                                            pairs_97058'920-45
+                                                            i45-45
                                                             (case
-                                                              [
-                                                                __NullList-4
-                                                                pairs_97058'920-45
-                                                              ]
+                                                              [ i4-4 i45-45 ]
                                                               [
                                                                 (lam
-                                                                  __cse___HeadList_pairs_97058'920-46
+                                                                  i46-46
                                                                   (case
                                                                     [
                                                                       [
@@ -954,21 +931,21 @@
                                                                             unBData
                                                                           )
                                                                           [
-                                                                            __FstPair-1
-                                                                            __cse___HeadList_pairs_97058'920-46
+                                                                            i1-1
+                                                                            i46-46
                                                                           ]
                                                                         ]
                                                                       ]
-                                                                      cs_97053'897-38
+                                                                      i38-38
                                                                     ]
                                                                     [
                                                                       [
-                                                                        go_97057'919_cse-44
-                                                                        go_97057'919_cse-44
+                                                                        i44-44
+                                                                        i44-44
                                                                       ]
                                                                       [
-                                                                        __TailList-6
-                                                                        pairs_97058'920-45
+                                                                        i6-6
+                                                                        i45-45
                                                                       ]
                                                                     ]
                                                                     [
@@ -977,18 +954,15 @@
                                                                           equalsData
                                                                         )
                                                                         [
-                                                                          __SndPair-5
-                                                                          __cse___HeadList_pairs_97058'920-46
+                                                                          i5-5
+                                                                          i46-46
                                                                         ]
                                                                       ]
-                                                                      expectedTokens_97056'918-42
+                                                                      i42-42
                                                                     ]
                                                                   )
                                                                 )
-                                                                [
-                                                                  __HeadList-2
-                                                                  pairs_97058'920-45
-                                                                ]
+                                                                [ i2-2 i45-45 ]
                                                               ]
                                                               (con bool False)
                                                             )
@@ -997,7 +971,7 @@
                                                       ]
                                                       [
                                                         (builtin unMapData)
-                                                        v_97052'896-37
+                                                        i37-37
                                                       ]
                                                     ]
                                                   )
@@ -1005,15 +979,15 @@
                                                     (builtin mapData)
                                                     [
                                                       [
-                                                        __MkCons-3
+                                                        i3-3
                                                         [
                                                           [
                                                             (builtin mkPairData)
-                                                            tn_97054r'900-40
+                                                            i40-40
                                                           ]
                                                           [
                                                             (builtin iData)
-                                                            amount_97055'899-41
+                                                            i41-41
                                                           ]
                                                         ]
                                                       ]
@@ -1026,7 +1000,7 @@
                                                 ]
                                               )
                                             )
-                                            [ (builtin bData) tn_97054'898-39 ]
+                                            [ (builtin bData) i39-39 ]
                                           ]
                                         )
                                       )
@@ -1034,35 +1008,35 @@
                                   ]
                                 )
                                 (lam
-                                  tx_30911'792-47
+                                  i47-47
                                   (lam
-                                    ownRef_30912'793-48
+                                    i48-48
                                     [
                                       (lam
-                                        __cse_ConstrData_c-49
+                                        i49-49
                                         [
                                           (lam
-                                            ownRef_30912r'804-50
+                                            i50-50
                                             (lam
-                                              party_30913'794-51
+                                              i51-51
                                               [
                                                 (lam
-                                                  __TwoPartyEscrowValidator_line_98_0'797-52
+                                                  i52-52
                                                   [
                                                     (lam
-                                                      __cse_UnList___HeadList_tx_30911'792-53
+                                                      i53-53
                                                       [
                                                         (lam
-                                                          ownCredential_32364'808-54
+                                                          i54-54
                                                           [
                                                             (lam
-                                                              __TwoPartyEscrowValidator_line_100_0'825-55
+                                                              i55-55
                                                               [
                                                                 (lam
-                                                                  __TwoPartyEscrowValidator_line_105_0'839-56
+                                                                  i56-56
                                                                   [
                                                                     (lam
-                                                                      partyCredential_32366'841-57
+                                                                      i57-57
                                                                       (case
                                                                         [
                                                                           [
@@ -1086,16 +1060,16 @@
                                                                                     unListData
                                                                                   )
                                                                                   [
-                                                                                    __HeadList-2
+                                                                                    i2-2
                                                                                     [
                                                                                       [
-                                                                                        __DropList-0
+                                                                                        i0-0
                                                                                         (con
                                                                                           integer
                                                                                           2
                                                                                         )
                                                                                       ]
-                                                                                      tx_30911'792-47
+                                                                                      i47-47
                                                                                     ]
                                                                                   ]
                                                                                 ]
@@ -1104,19 +1078,19 @@
                                                                                   (I 0)
                                                                                 )
                                                                                 (lam
-                                                                                  xIn'856-58
+                                                                                  i58-58
                                                                                   [
                                                                                     (lam
-                                                                                      xIn'856r'857-59
+                                                                                      i59-59
                                                                                       (lam
-                                                                                        xIn'858-60
+                                                                                        i60-60
                                                                                         [
                                                                                           (builtin
                                                                                             iData
                                                                                           )
                                                                                           [
                                                                                             (lam
-                                                                                              out_32467'852-61
+                                                                                              i61-61
                                                                                               (case
                                                                                                 [
                                                                                                   [
@@ -1124,38 +1098,38 @@
                                                                                                       equalsData
                                                                                                     )
                                                                                                     [
-                                                                                                      __HeadList-2
+                                                                                                      i2-2
                                                                                                       [
-                                                                                                        __SndPair-5
+                                                                                                        i5-5
                                                                                                         [
                                                                                                           (builtin
                                                                                                             unConstrData
                                                                                                           )
                                                                                                           [
-                                                                                                            __HeadList-2
-                                                                                                            out_32467'852-61
+                                                                                                            i2-2
+                                                                                                            i61-61
                                                                                                           ]
                                                                                                         ]
                                                                                                       ]
                                                                                                     ]
                                                                                                   ]
-                                                                                                  partyCredential_32366'841-57
+                                                                                                  i57-57
                                                                                                 ]
-                                                                                                xIn'856r'857-59
+                                                                                                i59-59
                                                                                                 [
                                                                                                   [
                                                                                                     (builtin
                                                                                                       addInteger
                                                                                                     )
-                                                                                                    xIn'856r'857-59
+                                                                                                    i59-59
                                                                                                   ]
                                                                                                   [
-                                                                                                    scalus_cardano_onchain_plutus_v1_Value__getLovelace'791-9
+                                                                                                    i9-9
                                                                                                     [
-                                                                                                      __HeadList-2
+                                                                                                      i2-2
                                                                                                       [
-                                                                                                        __TailList-6
-                                                                                                        out_32467'852-61
+                                                                                                        i6-6
+                                                                                                        i61-61
                                                                                                       ]
                                                                                                     ]
                                                                                                   ]
@@ -1163,12 +1137,12 @@
                                                                                               )
                                                                                             )
                                                                                             [
-                                                                                              __SndPair-5
+                                                                                              i5-5
                                                                                               [
                                                                                                 (builtin
                                                                                                   unConstrData
                                                                                                 )
-                                                                                                xIn'858-60
+                                                                                                i60-60
                                                                                               ]
                                                                                             ]
                                                                                           ]
@@ -1179,62 +1153,62 @@
                                                                                       (builtin
                                                                                         unIData
                                                                                       )
-                                                                                      xIn'856-58
+                                                                                      i58-58
                                                                                     ]
                                                                                   ]
                                                                                 )
                                                                               )
                                                                               (lam
-                                                                                self_91949'767-62
+                                                                                i62-62
                                                                                 (lam
-                                                                                  init_91951'768-63
+                                                                                  i63-63
                                                                                   (lam
-                                                                                    combiner_91952'769-64
+                                                                                    i64-64
                                                                                     (case
                                                                                       (constr
                                                                                         0
                                                                                         (lam
-                                                                                          scalus_cardano_onchain_plutus_prelude_List__foldLeft_sat'770_cse-65
+                                                                                          i65-65
                                                                                           (lam
-                                                                                            self_91949'771-66
+                                                                                            i66-66
                                                                                             (lam
-                                                                                              init_91951'772-67
+                                                                                              i67-67
                                                                                               (case
-                                                                                                self_91949'771-66
+                                                                                                i66-66
                                                                                                 (lam
-                                                                                                  consHead'774-68
+                                                                                                  i68-68
                                                                                                   (lam
-                                                                                                    consTail'775-69
+                                                                                                    i69-69
                                                                                                     (case
                                                                                                       (constr
                                                                                                         0
-                                                                                                        scalus_cardano_onchain_plutus_prelude_List__foldLeft_sat'770_cse-65
-                                                                                                        consTail'775-69
+                                                                                                        i65-65
+                                                                                                        i69-69
                                                                                                         [
                                                                                                           [
-                                                                                                            combiner_91952'769-64
-                                                                                                            init_91951'772-67
+                                                                                                            i64-64
+                                                                                                            i67-67
                                                                                                           ]
-                                                                                                          consHead'774-68
+                                                                                                          i68-68
                                                                                                         ]
                                                                                                       )
-                                                                                                      scalus_cardano_onchain_plutus_prelude_List__foldLeft_sat'770_cse-65
+                                                                                                      i65-65
                                                                                                     )
                                                                                                   )
                                                                                                 )
-                                                                                                init_91951'772-67
+                                                                                                i67-67
                                                                                               )
                                                                                             )
                                                                                           )
                                                                                         )
-                                                                                        self_91949'767-62
-                                                                                        init_91951'768-63
+                                                                                        i62-62
+                                                                                        i63-63
                                                                                       )
                                                                                       (lam
-                                                                                        scalus_cardano_onchain_plutus_prelude_List__foldLeft_sat'770-70
+                                                                                        i70-70
                                                                                         [
-                                                                                          scalus_cardano_onchain_plutus_prelude_List__foldLeft_sat'770-70
-                                                                                          scalus_cardano_onchain_plutus_prelude_List__foldLeft_sat'770-70
+                                                                                          i70-70
+                                                                                          i70-70
                                                                                         ]
                                                                                       )
                                                                                     )
@@ -1252,15 +1226,15 @@
                                                                       )
                                                                     )
                                                                     [
-                                                                      __cse_ConstrData_c-49
+                                                                      i49-49
                                                                       [
                                                                         [
-                                                                          __MkCons-3
+                                                                          i3-3
                                                                           [
                                                                             (builtin
                                                                               bData
                                                                             )
-                                                                            party_30913'794-51
+                                                                            i51-51
                                                                           ]
                                                                         ]
                                                                         (con
@@ -1282,11 +1256,11 @@
                                                                           0
                                                                           [
                                                                             (lam
-                                                                              _match_scrutinee'826-71
+                                                                              i71-71
                                                                               (case
                                                                                 [
-                                                                                  __FstPair-1
-                                                                                  _match_scrutinee'826-71
+                                                                                  i1-1
+                                                                                  i71-71
                                                                                 ]
                                                                                 (error
 
@@ -1296,10 +1270,10 @@
                                                                                     unBData
                                                                                   )
                                                                                   [
-                                                                                    __HeadList-2
+                                                                                    i2-2
                                                                                     [
-                                                                                      __SndPair-5
-                                                                                      _match_scrutinee'826-71
+                                                                                      i5-5
+                                                                                      i71-71
                                                                                     ]
                                                                                   ]
                                                                                 ]
@@ -1309,7 +1283,7 @@
                                                                               (builtin
                                                                                 unConstrData
                                                                               )
-                                                                              ownCredential_32364'808-54
+                                                                              i54-54
                                                                             ]
                                                                           ]
                                                                           (con
@@ -1321,16 +1295,16 @@
                                                                               unValueData
                                                                             )
                                                                             [
-                                                                              __HeadList-2
+                                                                              i2-2
                                                                               [
                                                                                 [
-                                                                                  __DropList-0
+                                                                                  i0-0
                                                                                   (con
                                                                                     integer
                                                                                     4
                                                                                   )
                                                                                 ]
-                                                                                tx_30911'792-47
+                                                                                i47-47
                                                                               ]
                                                                             ]
                                                                           ]
@@ -1352,41 +1326,41 @@
                                                             (case
                                                               (constr
                                                                 0
-                                                                __cse_UnList___HeadList_tx_30911'792-53
+                                                                i53-53
                                                                 (lam
-                                                                  xIn'818-72
+                                                                  i72-72
                                                                   [
                                                                     [
                                                                       (builtin
                                                                         equalsData
                                                                       )
                                                                       [
-                                                                        __HeadList-2
+                                                                        i2-2
                                                                         [
-                                                                          __SndPair-5
+                                                                          i5-5
                                                                           [
                                                                             (builtin
                                                                               unConstrData
                                                                             )
                                                                             [
-                                                                              __HeadList-2
+                                                                              i2-2
                                                                               [
-                                                                                __SndPair-5
+                                                                                i5-5
                                                                                 [
                                                                                   (builtin
                                                                                     unConstrData
                                                                                   )
                                                                                   [
-                                                                                    __HeadList-2
+                                                                                    i2-2
                                                                                     [
-                                                                                      __TailList-6
+                                                                                      i6-6
                                                                                       [
-                                                                                        __SndPair-5
+                                                                                        i5-5
                                                                                         [
                                                                                           (builtin
                                                                                             unConstrData
                                                                                           )
-                                                                                          xIn'818-72
+                                                                                          i72-72
                                                                                         ]
                                                                                       ]
                                                                                     ]
@@ -1398,59 +1372,58 @@
                                                                         ]
                                                                       ]
                                                                     ]
-                                                                    ownCredential_32364'808-54
+                                                                    i54-54
                                                                   ]
                                                                 )
                                                                 (lam
-                                                                  __4_37501'823-73
-                                                                  (error)
+                                                                  i73-73 (error)
                                                                 )
                                                               )
-                                                              scalus_cardano_onchain_plutus_prelude_List__findUniqueOrElse'681-8
+                                                              i8-8
                                                             )
                                                           ]
                                                         )
                                                         [
-                                                          __HeadList-2
+                                                          i2-2
                                                           [
-                                                            __SndPair-5
+                                                            i5-5
                                                             [
                                                               (builtin
                                                                 unConstrData
                                                               )
                                                               [
-                                                                __HeadList-2
+                                                                i2-2
                                                                 [
-                                                                  __SndPair-5
+                                                                  i5-5
                                                                   [
                                                                     (builtin
                                                                       unConstrData
                                                                     )
                                                                     [
-                                                                      __HeadList-2
+                                                                      i2-2
                                                                       [
-                                                                        __TailList-6
+                                                                        i6-6
                                                                         [
                                                                           [
                                                                             (lam
-                                                                              go_37492'798-74
+                                                                              i74-74
                                                                               [
-                                                                                go_37492'798-74
-                                                                                go_37492'798-74
+                                                                                i74-74
+                                                                                i74-74
                                                                               ]
                                                                             )
                                                                             (lam
-                                                                              go_37492'798_cse-75
+                                                                              i75-75
                                                                               (lam
-                                                                                inputs_37493'799-76
+                                                                                i76-76
                                                                                 (case
-                                                                                  inputs_37493'799-76
+                                                                                  i76-76
                                                                                   (lam
-                                                                                    consHead'801-77
+                                                                                    i77-77
                                                                                     (lam
-                                                                                      consTail'802-78
+                                                                                      i78-78
                                                                                       [
-                                                                                        __SndPair-5
+                                                                                        i5-5
                                                                                         [
                                                                                           (builtin
                                                                                             unConstrData
@@ -1462,31 +1435,31 @@
                                                                                                   equalsData
                                                                                                 )
                                                                                                 [
-                                                                                                  __HeadList-2
+                                                                                                  i2-2
                                                                                                   [
-                                                                                                    __SndPair-5
+                                                                                                    i5-5
                                                                                                     [
                                                                                                       (builtin
                                                                                                         unConstrData
                                                                                                       )
-                                                                                                      consHead'801-77
+                                                                                                      i77-77
                                                                                                     ]
                                                                                                   ]
                                                                                                 ]
                                                                                               ]
-                                                                                              ownRef_30912r'804-50
+                                                                                              i50-50
                                                                                             ]
                                                                                             [
-                                                                                              __cse_ConstrData_c-49
+                                                                                              i49-49
                                                                                               [
                                                                                                 [
-                                                                                                  go_37492'798_cse-75
-                                                                                                  go_37492'798_cse-75
+                                                                                                  i75-75
+                                                                                                  i75-75
                                                                                                 ]
-                                                                                                consTail'802-78
+                                                                                                i78-78
                                                                                               ]
                                                                                             ]
-                                                                                            consHead'801-77
+                                                                                            i77-77
                                                                                           )
                                                                                         ]
                                                                                       ]
@@ -1499,7 +1472,7 @@
                                                                               )
                                                                             )
                                                                           ]
-                                                                          __cse_UnList___HeadList_tx_30911'792-53
+                                                                          i53-53
                                                                         ]
                                                                       ]
                                                                     ]
@@ -1513,31 +1486,19 @@
                                                     )
                                                     [
                                                       (builtin unListData)
-                                                      [
-                                                        __HeadList-2
-                                                        tx_30911'792-47
-                                                      ]
+                                                      [ i2-2 i47-47 ]
                                                     ]
                                                   ]
                                                 )
                                                 (case
-                                                  [
-                                                    [
-                                                      scalus_cardano_onchain_plutus_v3_TxInfo__isSignedBy'631-7
-                                                      tx_30911'792-47
-                                                    ]
-                                                    party_30913'794-51
-                                                  ]
+                                                  [ [ i7-7 i47-47 ] i51-51 ]
                                                   (error)
                                                   (con unit ())
                                                 )
                                               ]
                                             )
                                           )
-                                          [
-                                            __cse_ConstrData_c-49
-                                            ownRef_30912'793-48
-                                          ]
+                                          [ i49-49 i48-48 ]
                                         ]
                                       )
                                       [ (builtin constrData) (con integer 0) ]
@@ -1547,13 +1508,13 @@
                               ]
                             )
                             (lam
-                              v_96988'785-79
+                              i79-79
                               (case
                                 (constr
                                   0
                                   (con bytestring #)
                                   (con bytestring #)
-                                  [ (builtin unValueData) v_96988'785-79 ]
+                                  [ (builtin unValueData) i79-79 ]
                                 )
                                 (builtin lookupCoin)
                               )
@@ -1561,64 +1522,48 @@
                           ]
                         )
                         (lam
-                          self_94479'668-80
+                          i80-80
                           (lam
-                            predicate_94480'669-81
+                            i81-81
                             (lam
-                              orElse_94481'670-82
+                              i82-82
                               [
                                 [
+                                  (lam i83-83 [ i83-83 i83-83 ])
                                   (lam
-                                    go_94485'671-83
-                                    [ go_94485'671-83 go_94485'671-83 ]
-                                  )
-                                  (lam
-                                    go_94485'671_cse-84
+                                    i84-84
                                     (lam
-                                      list_94486'672-85
+                                      i85-85
                                       (case
-                                        list_94486'672-85
+                                        i85-85
                                         (lam
-                                          consHead'674-86
+                                          i86-86
                                           (lam
-                                            consTail'675-87
+                                            i87-87
                                             (case
-                                              [
-                                                predicate_94480'669-81
-                                                consHead'674-86
-                                              ]
-                                              [
-                                                [
-                                                  go_94485'671_cse-84
-                                                  go_94485'671_cse-84
-                                                ]
-                                                consTail'675-87
-                                              ]
+                                              [ i81-81 i86-86 ]
+                                              [ [ i84-84 i84-84 ] i87-87 ]
                                               (case
                                                 [
                                                   [
                                                     (lam
-                                                      scalus_cardano_onchain_plutus_prelude_List__forall_sat'662-88
-                                                      [
-                                                        scalus_cardano_onchain_plutus_prelude_List__forall_sat'662-88
-                                                        scalus_cardano_onchain_plutus_prelude_List__forall_sat'662-88
-                                                      ]
+                                                      i88-88 [ i88-88 i88-88 ]
                                                     )
                                                     (lam
-                                                      scalus_cardano_onchain_plutus_prelude_List__forall_sat'662_cse-89
+                                                      i89-89
                                                       (lam
-                                                        self_93383'663-90
+                                                        i90-90
                                                         (case
-                                                          self_93383'663-90
+                                                          i90-90
                                                           (lam
-                                                            consHead'665-91
+                                                            i91-91
                                                             (lam
-                                                              consTail'666-92
+                                                              i92-92
                                                               (case
                                                                 (case
                                                                   [
-                                                                    predicate_94480'669-81
-                                                                    consHead'665-91
+                                                                    i81-81
+                                                                    i91-91
                                                                   ]
                                                                   (con
                                                                     bool True
@@ -1630,10 +1575,10 @@
                                                                 (con bool False)
                                                                 [
                                                                   [
-                                                                    scalus_cardano_onchain_plutus_prelude_List__forall_sat'662_cse-89
-                                                                    scalus_cardano_onchain_plutus_prelude_List__forall_sat'662_cse-89
+                                                                    i89-89
+                                                                    i89-89
                                                                   ]
-                                                                  consTail'666-92
+                                                                  i92-92
                                                                 ]
                                                               )
                                                             )
@@ -1643,23 +1588,20 @@
                                                       )
                                                     )
                                                   ]
-                                                  consTail'675-87
+                                                  i87-87
                                                 ]
-                                                [
-                                                  orElse_94481'670-82
-                                                  (con unit ())
-                                                ]
-                                                consHead'674-86
+                                                [ i82-82 (con unit ()) ]
+                                                i86-86
                                               )
                                             )
                                           )
                                         )
-                                        [ orElse_94481'670-82 (con unit ()) ]
+                                        [ i82-82 (con unit ()) ]
                                       )
                                     )
                                   )
                                 ]
-                                self_94479'668-80
+                                i80-80
                               ]
                             )
                           )
@@ -1667,46 +1609,37 @@
                       ]
                     )
                     (lam
-                      self_341242'626-93
+                      i93-93
                       (lam
-                        pubKeyHash_341243'627-94
+                        i94-94
                         [
                           [
                             (lam
-                              self_98755'69-95
+                              i95-95
                               (lam
-                                elemData_98759'71-96
+                                i96-96
                                 [
                                   [
+                                    (lam i97-97 [ i97-97 i97-97 ])
                                     (lam
-                                      go_98760'72-97
-                                      [ go_98760'72-97 go_98760'72-97 ]
-                                    )
-                                    (lam
-                                      go_98760'72_cse-98
+                                      i98-98
                                       (lam
-                                        lst_98765'73-99
+                                        i99-99
                                         (case
-                                          lst_98765'73-99
+                                          i99-99
                                           (lam
-                                            consHead'75-100
+                                            i100-100
                                             (lam
-                                              consTail'76-101
+                                              i101-101
                                               (case
                                                 [
                                                   [
                                                     (builtin equalsData)
-                                                    consHead'75-100
+                                                    i100-100
                                                   ]
-                                                  elemData_98759'71-96
+                                                  i96-96
                                                 ]
-                                                [
-                                                  [
-                                                    go_98760'72_cse-98
-                                                    go_98760'72_cse-98
-                                                  ]
-                                                  consTail'76-101
-                                                ]
+                                                [ [ i98-98 i98-98 ] i101-101 ]
                                                 (con bool True)
                                               )
                                             )
@@ -1716,22 +1649,16 @@
                                       )
                                     )
                                   ]
-                                  self_98755'69-95
+                                  i95-95
                                 ]
                               )
                             )
                             [
                               (builtin unListData)
-                              [
-                                __HeadList-2
-                                [
-                                  [ __DropList-0 (con integer 8) ]
-                                  self_341242'626-93
-                                ]
-                              ]
+                              [ i2-2 [ [ i0-0 (con integer 8) ] i93-93 ] ]
                             ]
                           ]
-                          [ (builtin bData) pubKeyHash_341243'627-94 ]
+                          [ (builtin bData) i94-94 ]
                         ]
                       )
                     )
