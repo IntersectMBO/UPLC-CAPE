@@ -415,9 +415,8 @@ writeDetailedMetrics program evaluations metricsFile = do
   let timestamp = toText $ formatTime defaultTimeLocale "%Y-%m-%dT%H:%M:%SZ" currentTime
 
   -- Create execution environment info. Tag the evaluator with the
-  -- plutus-core version linked into this binary so production
-  -- (cabal.project) and preview (cabal.project.preview) reports
-  -- carry distinct, accurate labels.
+  -- plutus-core version linked into this binary, so every metrics file
+  -- records which cost model produced it.
   let evaluatorLabel = "PlutusTx.Eval-" <> VERSION_plutus_core :: String
   -- Also emit the label on stdout so the bash wrapper
   -- (cape_write_metrics_json) can lift it into the production metrics.

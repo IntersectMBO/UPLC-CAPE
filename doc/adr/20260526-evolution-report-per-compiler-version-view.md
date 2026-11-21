@@ -216,6 +216,34 @@ The requirement worth recording is the protocol version, which is what actually 
 
 `aggregate.sh` CSV column 21 now carries `min_protocol_version` instead of `min_plutus_version`, which had been empty on every row since this refinement. `aggregate --target` still reads `min_plutus_version` internally for routing. The scenario page tags each row that sets the field with a `PV<n>` badge, and the per-submission page states the requirement, so the 23 artifacts replaced in place under unchanged directory names are identifiable from the report itself.
 
+## Refinement 5 (2026-11-20)
+
+The preview machinery that Refinement 4 kept in place is removed. CAPE measures every submission with one evaluator, the `plutus-core` line that mainnet runs (1.63.0.0 today), whatever compiler version produced the artifact. The compiler version decides the bytes; the evaluator decides the numbers, and one evaluator keeps every row in the report on the same cost model.
+
+A routed second evaluator would break that. If a compiler emits something the evaluator cannot run, for example a builtin that only exists after protocol version 11, a `measure-preview` row would be costed by a different `plutus-core` than its neighbours in the same table. The rule instead: CAPE moves its single evaluator to a `plutus-core` that runs the new artifact, and every submission is re-measured in the same change.
+
+Removed: `cabal.project.preview`, the `preview` flag and the `measure-preview` executable in `cape.cabal`, `scripts/lib/cape_versions.sh` (`CAPE_CURRENT_PLUTUS_VERSION`, `CAPE_PREVIEW_PLUTUS_VERSION`, `cape_is_preview_submission`), `cape submission measure --preview`, `cape submission aggregate --target`, the skip and guard for `min_plutus_version` in `measure` and `verify`, `min_plutus_version` from the metadata schema, the preview build and measure steps in both CI workflows, and the preview column and chips in the evolution report. No submission set `min_plutus_version` or used the `_preview` suffix, so no measurement and no report row changes. The evolution timeline reads the `default` variant only; a directory with any other suffix, `_preview` included, is a sibling variant in the per-scenario report.
+
+`min_protocol_version` is unaffected: it records what mainnet must accept, not which evaluator runs the artifact.
+
+### If a network gets ahead of mainnet
+
+Nothing in this subsection is implemented. It records the design to start from if the need returns, for example when a testnet such as Preview hard-forks to a protocol version that mainnet does not have yet. Until then the re-measurement rule in the second paragraph of this refinement applies.
+
+A measurement has three inputs: the `plutus-core` library, the protocol version, and the protocol parameters. Only the library is code. The protocol version and the parameters are data, and the parameters live on chain, where governance can change them without a new `plutus-core` release. A newer `plutus-core` keeps the behaviour of earlier protocol versions, because a node that syncs from genesis re-validates old transactions and has to reach the outcome the chain recorded. One evaluator built on a recent `plutus-core` could therefore measure for mainnet and for a testnet, given each network's protocol version and parameters.
+
+The design that follows is a network profile, stored in the repository as data. It holds a protocol version, the cost-model parameters, and the other parameters CAPE's numbers depend on (execution unit prices, reference-script fee parameters and transaction limits, see `lib/Cape/Protocol/Parameters.hs`), with the epoch they were taken from. Each submission is measured under each profile. An artifact that a profile's protocol version does not admit is reported as not executable on that network, separately from a test that is expected to fail. The removed preview track attached the evaluator to the submission through `min_plutus_version`. The evaluator belongs to the network instead, and the same artifact can cost different amounts on two networks. The old track needed its own `cabal.project.preview` because the two project files pinned different `plutus-core` versions for the same evaluator code; profiles make that second project unnecessary.
+
+The first step would be to derive every evaluation from a profile, replacing `runCekDeBruijn defaultCekParametersForTesting` (`lib/Cape/PrettyResult.hs`). That call uses the cost model built into the linked `plutus-core` and passes no protocol version (see Refinement 4).
+
+- Each script is first decoded with `deserialiseScript` at the profile's protocol version. Decoding is where `plutus-ledger-api` rejects builtins that the protocol version does not allow.
+- Validator scenarios can then run through `PlutusLedgerApi.V3.evaluateScriptCounting`, with an evaluation context that `mkEvaluationContext` builds from the profile's cost-model parameters.
+- Scenarios that return a value, such as `fibonacci`, do not fit that entry point, which takes one script context and requires a unit result. They need the CEK machine with machine parameters built from the same profile. Wrapping them as validators would change the measured budget. Decoding does not check the program's UPLC version: the ledger does that separately (`plcVersionsAvailableIn`), so this path must apply the same check before it extracts the term, and a mismatch counts as a profile rejection.
+
+With profiles in place, a `plutus-core` upgrade should leave every profile's results and budgets unchanged. The compatibility guarantee covers outcomes on chain, not every budget for every input that CAPE constructs, so CI would compare results and budgets per profile before and after an upgrade, and any difference would be investigated before the upgrade lands. Moving the evaluator would then no longer move the mainnet numbers, and this would replace the re-measurement rule.
+
+One open question bears on today's numbers: nobody has compared the default cost model of `plutus-core` 1.63 with mainnet's on-chain parameters. CAPE's numbers equal mainnet's only where the two match.
+
 ## Links
 
 - Issue: [#204 — Redesign preview report as a per-compiler version-evolution view](https://github.com/IntersectMBO/UPLC-CAPE/issues/204)

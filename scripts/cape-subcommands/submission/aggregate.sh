@@ -32,24 +32,15 @@ if cape_help_requested "$@"; then
 fi
 
 # Parse arguments
-CAPE_TARGET=""
 while [[ $# -gt 0 ]]; do
   case "$1" in
     -h | --help | help)
       cape_render_help "${BASH_SOURCE[0]}"
       exit 0
       ;;
-    --target=*)
-      CAPE_TARGET="${1#--target=}"
-      shift
-      ;;
-    --target)
-      CAPE_TARGET="${2:-}"
-      shift 2
-      ;;
     *)
       echo "Error: Unknown argument '$1'" >&2
-      echo "Usage: cape submission aggregate [--target=current|preview]" >&2
+      echo "Usage: cape submission aggregate" >&2
       exit 1
       ;;
   esac
@@ -117,25 +108,8 @@ while IFS= read -r -d '' metadata_file; do
   excluded_cpu_sum=$(jq -r '.measurements.excluded.cpu_units.sum // 0' "$metrics_file" 2> /dev/null || true)
   excluded_mem_sum=$(jq -r '.measurements.excluded.memory_units.sum // 0' "$metrics_file" 2> /dev/null || true)
 
-  # min_plutus_version only routes the --target filter below; it is not emitted.
-  min_plutus_version=$(jq -r '.compilation_config.min_plutus_version // ""' "$metadata_file" 2> /dev/null || true)
   # min_protocol_version is the on-chain requirement the report shows per row.
   min_protocol_version=$(jq -r '.compilation_config.min_protocol_version // ""' "$metadata_file" 2> /dev/null || true)
-
-  # Apply --target filtering
-  if [ -n "$CAPE_TARGET" ]; then
-    if [ "$CAPE_TARGET" = "current" ]; then
-      # Current: skip submissions that require a version newer than current
-      if cape_is_preview_submission "$min_plutus_version"; then
-        continue
-      fi
-    elif [ "$CAPE_TARGET" = "preview" ]; then
-      # Preview: only include submissions that require a version newer than current
-      if ! cape_is_preview_submission "$min_plutus_version"; then
-        continue
-      fi
-    fi
-  fi
 
   # Extract variant from submission directory name (format: Compiler_Version_Author[_Variant])
   # Split by underscore and check if 4th element exists

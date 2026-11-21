@@ -203,17 +203,6 @@ measure_all_submissions() {
   while IFS= read -r submission_dir; do
     [[ -d "$submission_dir" ]] || continue
 
-    # Skip preview submissions (require newer plutus-core than production)
-    local metadata_file="$submission_dir/metadata.json"
-    if [[ -f "$metadata_file" ]]; then
-      local min_ver
-      min_ver=$(jq -r '.compilation_config.min_plutus_version // ""' "$metadata_file" 2> /dev/null || true)
-      if cape_is_preview_submission "$min_ver"; then
-        cape_info "Skipping preview submission: submissions/${submission_dir#$SUBMISSIONS_ROOT/} (requires plutus-core >= $min_ver)"
-        continue
-      fi
-    fi
-
     found_any=1
     local rel_path
     rel_path="${submission_dir#$SUBMISSIONS_ROOT/}"
@@ -228,91 +217,14 @@ measure_all_submissions() {
   return $overall_errors
 }
 
-# Measure all preview submissions using measure-preview binary
-measure_preview_submissions() {
-  cape_info "Measuring preview submissions under $(cape_relpath "$SUBMISSIONS_ROOT")"
-  local overall_errors=0
-  local found_any=0
-  local preview_measure_cmd
-  mapfile -t preview_measure_cmd < <(cape_measure_preview_binary)
-  cape_info "Using preview measure: $(printf '%s ' "${preview_measure_cmd[@]}")"
-
-  local submission_dir
-  while IFS= read -r submission_dir; do
-    [[ -d "$submission_dir" ]] || continue
-
-    # Only measure preview submissions
-    local metadata_file="$submission_dir/metadata.json"
-    if [[ -f "$metadata_file" ]]; then
-      local min_ver
-      min_ver=$(jq -r '.compilation_config.min_plutus_version // ""' "$metadata_file" 2> /dev/null || true)
-      if ! cape_is_preview_submission "$min_ver"; then
-        continue
-      fi
-    else
-      continue
-    fi
-
-    found_any=1
-    local rel_path
-    rel_path="${submission_dir#$SUBMISSIONS_ROOT/}"
-    cape_info "Measuring preview submission: submissions/${rel_path}"
-
-    # Find UPLC file
-    local uplc_file
-    uplc_file=$(find "$submission_dir" -maxdepth 1 -name "*.uplc" -type f | head -1)
-    if [[ -z "$uplc_file" ]]; then
-      cape_warn "No .uplc file found in $rel_path"
-      overall_errors=1
-      continue
-    fi
-
-    # Resolve scenario and tests
-    local scenario
-    scenario=$(basename "$(dirname "$submission_dir")")
-    local tests_file
-    tests_file="$SCENARIOS_ROOT/$scenario/cape-tests.json"
-    if [[ ! -f "$tests_file" ]]; then
-      cape_warn "No cape-tests.json found for scenario $scenario"
-      overall_errors=1
-      continue
-    fi
-
-    # Run measure-preview, then patch scenario field
-    local tmp_raw stdout_tmp
-    tmp_raw="$(cape_mktemp)"
-    stdout_tmp="$(cape_mktemp)"
-    if (cd "$PROJECT_ROOT" && "${preview_measure_cmd[@]}" -i "$uplc_file" -t "$tests_file" -o "$tmp_raw" 2> /dev/null) > "$stdout_tmp" 2>&1; then
-      # Patch scenario field and write final metrics
-      jq --arg s "$scenario" '.scenario = $s' "$tmp_raw" > "$submission_dir/metrics.json"
-      cape_success "  ✓ Measured: $rel_path"
-    else
-      cape_error "  ✗ Failed: $rel_path"
-      cat "$stdout_tmp" | grep -E "PASS|FAIL|Error:|Test results:" | sed 's/^/    /' >&2
-      overall_errors=1
-    fi
-    rm -f "$tmp_raw" "$stdout_tmp"
-  done < <(cape_each_submission_dir "$SUBMISSIONS_ROOT")
-
-  if [[ $found_any -eq 0 ]]; then
-    cape_warn "No preview submissions found"
-  fi
-  return $overall_errors
-}
-
 # Parse command line arguments
 target_path=""
 measure_all=false
-measure_preview=false
 
 while [[ $# -gt 0 ]]; do
   case $1 in
     -a | --all)
       measure_all=true
-      shift
-      ;;
-    --preview)
-      measure_preview=true
       shift
       ;;
     --verbose)
@@ -338,8 +250,8 @@ while [[ $# -gt 0 ]]; do
 done
 
 # Enforce explicit mode selection
-if [[ -z "$target_path" && "$measure_all" == false && "$measure_preview" == false ]]; then
-  cape_error "No mode specified. Provide a PATH, --all, or --preview"
+if [[ -z "$target_path" && "$measure_all" == false ]]; then
+  cape_error "No mode specified. Provide a PATH or --all"
   cape_render_help "${BASH_SOURCE[0]}"
   exit 1
 fi
@@ -352,16 +264,11 @@ fi
 
 # Main measurement logic
 main() {
-  if [[ "$measure_preview" == false ]]; then
-    check_measure_tool
-  fi
+  check_measure_tool
 
   local exit_code=0
 
-  if [[ "$measure_preview" == true ]]; then
-    measure_preview_submissions
-    exit_code=$?
-  elif [[ "$measure_all" == true ]]; then
+  if [[ "$measure_all" == true ]]; then
     measure_all_submissions
     exit_code=$?
   else
@@ -369,17 +276,6 @@ main() {
     if [[ ! -d "$dir_to_measure" ]]; then
       cape_error "Directory not found: $dir_to_measure"
       exit 1
-    fi
-    # Guard: reject submissions that require a newer plutus-core than the evaluator supports
-    local meta="$dir_to_measure/metadata.json"
-    if [[ -f "$meta" ]]; then
-      local min_ver
-      min_ver=$(jq -r '.compilation_config.min_plutus_version // ""' "$meta" 2> /dev/null || true)
-      if cape_is_preview_submission "$min_ver"; then
-        cape_error "Submission requires plutus-core >= $min_ver but the evaluator only supports $CAPE_CURRENT_PLUTUS_VERSION."
-        cape_error "Use 'cape submission measure --preview' to evaluate with a compatible version."
-        exit 1
-      fi
     fi
     measure_directory "$dir_to_measure"
     exit_code=$?
