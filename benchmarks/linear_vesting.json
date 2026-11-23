@@ -1,6 +1,6 @@
 {
   "benchmark": "linear_vesting",
-  "generated_at": "2026-11-18T11:57:57Z",
+  "generated_at": "2026-11-23T11:07:15Z",
   "positive_cases": [
     "partial_unlock_first_installment",
     "partial_unlock_mid_vesting",

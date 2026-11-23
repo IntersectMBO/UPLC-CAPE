@@ -1,6 +1,6 @@
 {
   "benchmark": "two_party_escrow",
-  "generated_at": "2026-11-18T11:57:59Z",
+  "generated_at": "2026-11-23T11:07:17Z",
   "positive_cases": [
     "deposit_successful",
     "accept_successful",
@@ -655,6 +655,60 @@
         "excluded_count": 131,
         "excluded_cpu_sum": 2363562653,
         "excluded_mem_sum": 5680596
+      }
+    },
+    {
+      "timestamp": "2026-11-17T18:34:26Z",
+      "compiler": "Scalus",
+      "version": "1.5.0",
+      "user": "Alexander Nemish",
+      "variant": "default",
+      "submission_dir": "Scalus_1.5.0_nau",
+      "min_protocol_version": 11,
+      "positive_evaluations": [
+        {
+          "name": "deposit_successful",
+          "cpu_units": 21771069,
+          "memory_units": 49109
+        },
+        {
+          "name": "accept_successful",
+          "cpu_units": 27612452,
+          "memory_units": 59845
+        },
+        {
+          "name": "accept_burn",
+          "cpu_units": 6367844,
+          "memory_units": 18844
+        },
+        {
+          "name": "refund_successful",
+          "cpu_units": 28795232,
+          "memory_units": 65564
+        },
+        {
+          "name": "refund_burn",
+          "cpu_units": 6452177,
+          "memory_units": 19045
+        }
+      ],
+      "metrics": {
+        "cpu_units": 90998774,
+        "memory_units": 212407,
+        "script_size_bytes": 1040,
+        "term_size": 905,
+        "execution_fee_lovelace": 18817,
+        "reference_script_fee_lovelace": 15600,
+        "total_fee_lovelace": 34417,
+        "tx_memory_budget_pct": 0.39735757575757574,
+        "tx_cpu_budget_pct": 0.28795232,
+        "block_memory_budget_pct": 0.0910611111111111,
+        "block_cpu_budget_pct": 0.14397616,
+        "scripts_per_tx": 251,
+        "scripts_per_block": 694,
+        "excluded_count": 131,
+        "excluded_cpu_sum": 2128317749,
+        "excluded_mem_sum": 4473103
       }
     }
   ]
