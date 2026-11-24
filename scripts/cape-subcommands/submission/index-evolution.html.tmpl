@@ -92,28 +92,6 @@
             color: #334155;
             margin-right: 4px;
         }
-        .version-chip.preview {
-            background: #fef3c7;
-            color: #92400e;
-        }
-        .preview-divider {
-            display: inline-block;
-            margin: 0 6px;
-            color: #94a3b8;
-        }
-        .preview-badge {
-            display: inline-block;
-            padding: 1px 6px;
-            margin-left: 6px;
-            border-radius: 3px;
-            background: #f59e0b;
-            color: white;
-            font-size: 0.7em;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            vertical-align: middle;
-        }
         .scenario-count {
             color: #6c757d;
             font-size: 0.85em;
@@ -143,9 +121,9 @@
     </div>
 
     <div class="evolution-banner">
-        <strong>EVOLUTION</strong> &mdash; Per-compiler default-variant timeline of mainnet submissions. A <span style="background:#f59e0b;color:white;padding:0 4px;border-radius:2px;font-size:0.85em;font-weight:700;">preview</span> chip appears only while a submission targets a protocol version mainnet has not activated; none does today.
+        <strong>EVOLUTION</strong> &mdash; Per-compiler default-variant timeline of mainnet submissions.
         Compilers with fewer than two mainnet versions are omitted (no improvement signal).
-        <div class="disclaimer">Note: a CAPE preview version is not the Cardano preview testnet. Alternative variants (plain, asdata, prepacked, exbudget, size, tailrec) live in the per-scenario report.</div>
+        <div class="disclaimer">Alternative variants (plain, asdata, prepacked, exbudget, size, tailrec) live in the per-scenario report.</div>
     </div>
 
     <div class="header">
@@ -162,7 +140,7 @@
         <h2><a href="compilers/{{.compiler}}_{{.author}}.html">{{.compiler}}</a></h2>
         <div class="compiler-meta">by {{.author}}</div>
         <div class="timeline-row">
-            <span>{{range $i, $v := .mainnet_versions}}{{if $i}} &rarr; {{end}}<span class="version-chip">{{$v}}</span>{{end}}{{if .preview_version}}<span class="preview-divider">&middot;</span><span class="version-chip preview">{{.preview_version}}</span><span class="preview-badge">preview</span>{{end}}</span>
+            <span>{{range $i, $v := .mainnet_versions}}{{if $i}} &rarr; {{end}}<span class="version-chip">{{$v}}</span>{{end}}</span>
             <span class="scenario-count">&middot; {{len .scenarios}} scenarios</span>
         </div>
     </div>

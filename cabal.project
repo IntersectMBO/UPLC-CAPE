@@ -18,15 +18,16 @@ index-state:
 packages:
   ./.
 
--- The production evaluator must charge what mainnet charges: Cape.PrettyResult
--- evaluates with defaultCekParametersForTesting and there is no
--- protocol-version argument, so the linked plutus-core version *is* the cost
--- model. 1.63 is the line shipped by cardano-node 11.0.1, the release running
--- mainnet since the van Rossem hard fork (protocol v11, 2026-07-18).
+-- The evaluator must charge what mainnet charges: Cape.PrettyResult evaluates
+-- with defaultCekParametersForTesting and there is no protocol-version
+-- argument, so the linked plutus-core version *is* the cost model. 1.63 is the
+-- line shipped by cardano-node 11.0.1, the release running mainnet since the
+-- van Rossem hard fork (protocol v11, 2026-07-18). The pin lives in cape.cabal
+-- (`plutus-core ^>=1.63`, i.e. <1.64).
 --
--- The pin itself lives in cape.cabal (`plutus-core ^>=1.63`, i.e. <1.64), not
--- here: constraints in an imported project file are cumulative, so a plutus
--- constraint at this level would intersect with cabal.project.preview's
--- ^>=1.68 to an empty range and make the preview project unsolvable.
+-- Every submission is measured by this one evaluator, whatever compiler version
+-- produced it. A submission that this evaluator cannot run needs the evaluator
+-- for all submissions to move to a newer plutus-core and every submission to be
+-- re-measured; there is no second evaluator for individual submissions.
 
 tests: true

@@ -23,7 +23,7 @@ Security vulnerabilities that affect the UPLC-CAPE framework's integrity, availa
 - **Measurement tool vulnerabilities**: Bugs in the `measure` executable that produce incorrect metrics, crash, or allow resource exhaustion attacks
 - **Report generation vulnerabilities**: XSS, injection attacks, or other security issues in the HTML report generation system
 - **Supply chain attacks**: Vulnerabilities in dependencies (plutus-core, plutus-tx, etc.) that compromise the framework
-- **Tooling exploitation via submitted artifacts**: A UPLC program or auxiliary submission file that, when processed by `measure`, `measure-preview`, the report generator, or any other framework tooling, causes crashes, RCE, sandbox escape, or other compromise of the host running CI.
+- **Tooling exploitation via submitted artifacts**: A UPLC program or auxiliary submission file that, when processed by `measure`, the report generator, or any other framework tooling, causes crashes, RCE, sandbox escape, or other compromise of the host running CI.
 - **Schema validation bypasses**: Issues that allow malformed `metadata.json` or `metrics.json` to pass automated validation in a way that compromises downstream tooling or the published report, beyond what a maintainer would catch in the diff.
 - **File system vulnerabilities**: Path traversal or other file system exploits through submission handling
 

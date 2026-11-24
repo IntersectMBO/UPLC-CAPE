@@ -103,28 +103,6 @@
             background: #e2e8f0;
             color: #334155;
         }
-        .version-chip.preview {
-            background: #fef3c7;
-            color: #92400e;
-        }
-        .preview-divider {
-            display: inline-block;
-            margin: 0 6px;
-            color: #94a3b8;
-        }
-        .preview-badge {
-            display: inline-block;
-            padding: 1px 6px;
-            margin-left: 6px;
-            border-radius: 3px;
-            background: #f59e0b;
-            color: white;
-            font-size: 0.7em;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            vertical-align: middle;
-        }
         .scenario {
             margin-top: 20px;
             padding-top: 16px;
@@ -150,8 +128,6 @@
         th { color: #6c757d; font-size: 0.8em; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600; }
         th:first-child, td:first-child { text-align: left; }
         td.metric-name { font-weight: 500; color: #333; }
-        th.preview-col, td.preview-cell { background: #fffbeb; }
-        th.preview-col { color: #92400e; }
         .cell-value { display: block; font-variant-numeric: tabular-nums; }
         .delta {
             display: block;
@@ -180,7 +156,7 @@
     </div>
 
     <div class="evolution-banner">
-        <strong>EVOLUTION</strong> &mdash; Default-variant mainnet timeline for this compiler/author. Deltas highlight improvement between releases. The rightmost <span style="background:#f59e0b;color:white;padding:0 4px;border-radius:2px;font-size:0.85em;font-weight:700;">preview</span> column (if present) is a sneak peek at a protocol version mainnet has not activated; its delta is computed against the latest mainnet column.
+        <strong>EVOLUTION</strong> &mdash; Default-variant mainnet timeline for this compiler/author. Deltas highlight improvement between releases.
     </div>
 
     <div class="header">
@@ -199,12 +175,10 @@
     <section class="timeline-section">
         <div class="version-chips">
             {{range $i, $v := .mainnet_versions}}{{if $i}} &rarr; {{end}}<span class="version-chip">{{$v}}</span>{{end}}
-            {{if .preview_version}}<span class="preview-divider">&middot;</span><span class="version-chip preview">{{.preview_version}}</span><span class="preview-badge">preview</span>{{end}}
             &middot; {{len .scenarios}} scenarios with evolution
         </div>
 
         {{$mainnet := .mainnet_versions}}
-        {{$preview := .preview_version}}
         {{range .scenarios}}
         <div class="scenario">
             <h3>{{.name}}</h3>
@@ -213,7 +187,6 @@
                     <tr>
                         <th>Metric</th>
                         {{range $mainnet}}<th>{{.}}</th>{{end}}
-                        {{if .preview_value}}<th class="preview-col">{{$preview}} <span class="preview-badge">preview</span></th>{{end}}
                     </tr>
                 </thead>
                 <tbody>
@@ -226,12 +199,6 @@
                             {{with .delta_first.cpu_units}}<span class="delta delta-first {{.class}}">{{.text}}</span>{{end}}
                         </td>
                         {{end}}
-                        {{with .preview_value}}
-                        <td class="preview-cell">
-                            {{if .cpu_units}}<span class="cell-value" data-value="{{.cpu_units}}">{{.cpu_units}}</span>{{else}}<span class="cell-value">&mdash;</span>{{end}}
-                            {{with .delta_vs_latest_mainnet.cpu_units}}<span class="delta {{.class}}">{{.text}}</span>{{end}}
-                        </td>
-                        {{end}}
                     </tr>
                     <tr>
                         <td class="metric-name">Memory Units</td>
@@ -240,12 +207,6 @@
                             {{if .memory_units}}<span class="cell-value" data-value="{{.memory_units}}">{{.memory_units}}</span>{{else}}<span class="cell-value">&mdash;</span>{{end}}
                             {{with .delta_prev.memory_units}}<span class="delta delta-prev {{.class}}">{{.text}}</span>{{end}}
                             {{with .delta_first.memory_units}}<span class="delta delta-first {{.class}}">{{.text}}</span>{{end}}
-                        </td>
-                        {{end}}
-                        {{with .preview_value}}
-                        <td class="preview-cell">
-                            {{if .memory_units}}<span class="cell-value" data-value="{{.memory_units}}">{{.memory_units}}</span>{{else}}<span class="cell-value">&mdash;</span>{{end}}
-                            {{with .delta_vs_latest_mainnet.memory_units}}<span class="delta {{.class}}">{{.text}}</span>{{end}}
                         </td>
                         {{end}}
                     </tr>
@@ -258,12 +219,6 @@
                             {{with .delta_first.script_size_bytes}}<span class="delta delta-first {{.class}}">{{.text}}</span>{{end}}
                         </td>
                         {{end}}
-                        {{with .preview_value}}
-                        <td class="preview-cell">
-                            {{if .script_size_bytes}}<span class="cell-value" data-value="{{.script_size_bytes}}">{{.script_size_bytes}}</span>{{else}}<span class="cell-value">&mdash;</span>{{end}}
-                            {{with .delta_vs_latest_mainnet.script_size_bytes}}<span class="delta {{.class}}">{{.text}}</span>{{end}}
-                        </td>
-                        {{end}}
                     </tr>
                     <tr>
                         <td class="metric-name">Term Size (AST nodes)</td>
@@ -274,12 +229,6 @@
                             {{with .delta_first.term_size}}<span class="delta delta-first {{.class}}">{{.text}}</span>{{end}}
                         </td>
                         {{end}}
-                        {{with .preview_value}}
-                        <td class="preview-cell">
-                            {{if .term_size}}<span class="cell-value" data-value="{{.term_size}}">{{.term_size}}</span>{{else}}<span class="cell-value">&mdash;</span>{{end}}
-                            {{with .delta_vs_latest_mainnet.term_size}}<span class="delta {{.class}}">{{.text}}</span>{{end}}
-                        </td>
-                        {{end}}
                     </tr>
                     <tr>
                         <td class="metric-name">Total Fee (lovelace)</td>
@@ -288,12 +237,6 @@
                             {{if .total_fee_lovelace}}<span class="cell-value" data-value="{{.total_fee_lovelace}}">{{.total_fee_lovelace}}</span>{{else}}<span class="cell-value">&mdash;</span>{{end}}
                             {{with .delta_prev.total_fee_lovelace}}<span class="delta delta-prev {{.class}}">{{.text}}</span>{{end}}
                             {{with .delta_first.total_fee_lovelace}}<span class="delta delta-first {{.class}}">{{.text}}</span>{{end}}
-                        </td>
-                        {{end}}
-                        {{with .preview_value}}
-                        <td class="preview-cell">
-                            {{if .total_fee_lovelace}}<span class="cell-value" data-value="{{.total_fee_lovelace}}">{{.total_fee_lovelace}}</span>{{else}}<span class="cell-value">&mdash;</span>{{end}}
-                            {{with .delta_vs_latest_mainnet.total_fee_lovelace}}<span class="delta {{.class}}">{{.text}}</span>{{end}}
                         </td>
                         {{end}}
                     </tr>
