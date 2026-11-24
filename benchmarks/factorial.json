@@ -1,6 +1,6 @@
 {
   "benchmark": "factorial",
-  "generated_at": "2026-11-23T11:07:03Z",
+  "generated_at": "2026-11-24T14:44:20Z",
   "positive_cases": [
     "factorial_0",
     "factorial_1",

@@ -103,28 +103,6 @@
             background: #e2e8f0;
             color: #334155;
         }
-        .version-chip.preview {
-            background: #fef3c7;
-            color: #92400e;
-        }
-        .preview-divider {
-            display: inline-block;
-            margin: 0 6px;
-            color: #94a3b8;
-        }
-        .preview-badge {
-            display: inline-block;
-            padding: 1px 6px;
-            margin-left: 6px;
-            border-radius: 3px;
-            background: #f59e0b;
-            color: white;
-            font-size: 0.7em;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            vertical-align: middle;
-        }
         .scenario {
             margin-top: 20px;
             padding-top: 16px;
@@ -150,8 +128,6 @@
         th { color: #6c757d; font-size: 0.8em; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600; }
         th:first-child, td:first-child { text-align: left; }
         td.metric-name { font-weight: 500; color: #333; }
-        th.preview-col, td.preview-cell { background: #fffbeb; }
-        th.preview-col { color: #92400e; }
         .cell-value { display: block; font-variant-numeric: tabular-nums; }
         .delta {
             display: block;
@@ -180,7 +156,7 @@
     </div>
 
     <div class="evolution-banner">
-        <strong>EVOLUTION</strong> &mdash; Default-variant mainnet timeline for this compiler/author. Deltas highlight improvement between releases. The rightmost <span style="background:#f59e0b;color:white;padding:0 4px;border-radius:2px;font-size:0.85em;font-weight:700;">preview</span> column (if present) is a sneak peek at a protocol version mainnet has not activated; its delta is computed against the latest mainnet column.
+        <strong>EVOLUTION</strong> &mdash; Default-variant mainnet timeline for this compiler/author. Deltas highlight improvement between releases.
     </div>
 
     <div class="header">
@@ -199,11 +175,9 @@
     <section class="timeline-section">
         <div class="version-chips">
             <span class="version-chip">1.45.0.0</span> &rarr; <span class="version-chip">1.61.0.0</span> &rarr; <span class="version-chip">1.64.0.0</span> &rarr; <span class="version-chip">1.65.0.0</span> &rarr; <span class="version-chip">1.67.0.0</span> &rarr; <span class="version-chip">1.71.0.0</span>
-            
             &middot; 7 scenarios with evolution
         </div>
 
-        
         
         
         <div class="scenario">
@@ -213,7 +187,6 @@
                     <tr>
                         <th>Metric</th>
                         <th>1.45.0.0</th><th>1.61.0.0</th><th>1.64.0.0</th><th>1.65.0.0</th><th>1.67.0.0</th><th>1.71.0.0</th>
-                        
                     </tr>
                 </thead>
                 <tbody>
@@ -256,7 +229,6 @@
                             <span class="delta delta-first delta-negative">-38.0%</span>
                         </td>
                         
-                        
                     </tr>
                     <tr>
                         <td class="metric-name">Memory Units</td>
@@ -296,7 +268,6 @@
                             <span class="delta delta-prev delta-zero">0.0%</span>
                             <span class="delta delta-first delta-negative">-37.7%</span>
                         </td>
-                        
                         
                     </tr>
                     <tr>
@@ -338,7 +309,6 @@
                             <span class="delta delta-first delta-negative">-17.9%</span>
                         </td>
                         
-                        
                     </tr>
                     <tr>
                         <td class="metric-name">Term Size (AST nodes)</td>
@@ -378,7 +348,6 @@
                             <span class="delta delta-prev delta-zero">0.0%</span>
                             <span class="delta delta-first delta-negative">-36.8%</span>
                         </td>
-                        
                         
                     </tr>
                     <tr>
@@ -420,7 +389,6 @@
                             <span class="delta delta-first delta-negative">-36.4%</span>
                         </td>
                         
-                        
                     </tr>
                 </tbody>
             </table>
@@ -433,7 +401,6 @@
                     <tr>
                         <th>Metric</th>
                         <th>1.45.0.0</th><th>1.61.0.0</th><th>1.64.0.0</th><th>1.65.0.0</th><th>1.67.0.0</th><th>1.71.0.0</th>
-                        
                     </tr>
                 </thead>
                 <tbody>
@@ -476,7 +443,6 @@
                             <span class="delta delta-first delta-negative">-33.7%</span>
                         </td>
                         
-                        
                     </tr>
                     <tr>
                         <td class="metric-name">Memory Units</td>
@@ -516,7 +482,6 @@
                             <span class="delta delta-prev delta-zero">0.0%</span>
                             <span class="delta delta-first delta-negative">-37.0%</span>
                         </td>
-                        
                         
                     </tr>
                     <tr>
@@ -558,7 +523,6 @@
                             <span class="delta delta-first delta-negative">-19.0%</span>
                         </td>
                         
-                        
                     </tr>
                     <tr>
                         <td class="metric-name">Term Size (AST nodes)</td>
@@ -598,7 +562,6 @@
                             <span class="delta delta-prev delta-zero">0.0%</span>
                             <span class="delta delta-first delta-negative">-32.5%</span>
                         </td>
-                        
                         
                     </tr>
                     <tr>
@@ -640,7 +603,6 @@
                             <span class="delta delta-first delta-negative">-35.4%</span>
                         </td>
                         
-                        
                     </tr>
                 </tbody>
             </table>
@@ -653,7 +615,6 @@
                     <tr>
                         <th>Metric</th>
                         <th>1.45.0.0</th><th>1.61.0.0</th><th>1.64.0.0</th><th>1.65.0.0</th><th>1.67.0.0</th><th>1.71.0.0</th>
-                        
                     </tr>
                 </thead>
                 <tbody>
@@ -696,7 +657,6 @@
                             <span class="delta delta-first delta-negative">-30.3%</span>
                         </td>
                         
-                        
                     </tr>
                     <tr>
                         <td class="metric-name">Memory Units</td>
@@ -736,7 +696,6 @@
                             <span class="delta delta-prev delta-zero">0.0%</span>
                             <span class="delta delta-first delta-negative">-32.1%</span>
                         </td>
-                        
                         
                     </tr>
                     <tr>
@@ -778,7 +737,6 @@
                             <span class="delta delta-first delta-negative">-13.7%</span>
                         </td>
                         
-                        
                     </tr>
                     <tr>
                         <td class="metric-name">Term Size (AST nodes)</td>
@@ -818,7 +776,6 @@
                             <span class="delta delta-prev delta-zero">0.0%</span>
                             <span class="delta delta-first delta-negative">-33.3%</span>
                         </td>
-                        
                         
                     </tr>
                     <tr>
@@ -860,7 +817,6 @@
                             <span class="delta delta-first delta-negative">-30.9%</span>
                         </td>
                         
-                        
                     </tr>
                 </tbody>
             </table>
@@ -873,7 +829,6 @@
                     <tr>
                         <th>Metric</th>
                         <th>1.45.0.0</th><th>1.61.0.0</th><th>1.64.0.0</th><th>1.65.0.0</th><th>1.67.0.0</th><th>1.71.0.0</th>
-                        
                     </tr>
                 </thead>
                 <tbody>
@@ -916,7 +871,6 @@
                             <span class="delta delta-first delta-negative">-39.5%</span>
                         </td>
                         
-                        
                     </tr>
                     <tr>
                         <td class="metric-name">Memory Units</td>
@@ -956,7 +910,6 @@
                             <span class="delta delta-prev delta-zero">0.0%</span>
                             <span class="delta delta-first delta-negative">-45.4%</span>
                         </td>
-                        
                         
                     </tr>
                     <tr>
@@ -998,7 +951,6 @@
                             <span class="delta delta-first delta-negative">-15.7%</span>
                         </td>
                         
-                        
                     </tr>
                     <tr>
                         <td class="metric-name">Term Size (AST nodes)</td>
@@ -1038,7 +990,6 @@
                             <span class="delta delta-prev delta-zero">0.0%</span>
                             <span class="delta delta-first delta-negative">-26.5%</span>
                         </td>
-                        
                         
                     </tr>
                     <tr>
@@ -1080,7 +1031,6 @@
                             <span class="delta delta-first delta-negative">-44.0%</span>
                         </td>
                         
-                        
                     </tr>
                 </tbody>
             </table>
@@ -1093,7 +1043,6 @@
                     <tr>
                         <th>Metric</th>
                         <th>1.45.0.0</th><th>1.61.0.0</th><th>1.64.0.0</th><th>1.65.0.0</th><th>1.67.0.0</th><th>1.71.0.0</th>
-                        
                     </tr>
                 </thead>
                 <tbody>
@@ -1136,7 +1085,6 @@
                             <span class="delta delta-first delta-negative">-40.0%</span>
                         </td>
                         
-                        
                     </tr>
                     <tr>
                         <td class="metric-name">Memory Units</td>
@@ -1176,7 +1124,6 @@
                             <span class="delta delta-prev delta-negative">-0.7%</span>
                             <span class="delta delta-first delta-negative">-42.9%</span>
                         </td>
-                        
                         
                     </tr>
                     <tr>
@@ -1218,7 +1165,6 @@
                             <span class="delta delta-first delta-negative">-49.8%</span>
                         </td>
                         
-                        
                     </tr>
                     <tr>
                         <td class="metric-name">Term Size (AST nodes)</td>
@@ -1258,7 +1204,6 @@
                             <span class="delta delta-prev delta-zero">0.0%</span>
                             <span class="delta delta-first delta-negative">-38.0%</span>
                         </td>
-                        
                         
                     </tr>
                     <tr>
@@ -1300,7 +1245,6 @@
                             <span class="delta delta-first delta-negative">-45.3%</span>
                         </td>
                         
-                        
                     </tr>
                 </tbody>
             </table>
@@ -1313,7 +1257,6 @@
                     <tr>
                         <th>Metric</th>
                         <th>1.45.0.0</th><th>1.61.0.0</th><th>1.64.0.0</th><th>1.65.0.0</th><th>1.67.0.0</th><th>1.71.0.0</th>
-                        
                     </tr>
                 </thead>
                 <tbody>
@@ -1356,7 +1299,6 @@
                             <span class="delta delta-first delta-negative">-45.0%</span>
                         </td>
                         
-                        
                     </tr>
                     <tr>
                         <td class="metric-name">Memory Units</td>
@@ -1396,7 +1338,6 @@
                             <span class="delta delta-prev delta-negative">-2.6%</span>
                             <span class="delta delta-first delta-negative">-42.4%</span>
                         </td>
-                        
                         
                     </tr>
                     <tr>
@@ -1438,7 +1379,6 @@
                             <span class="delta delta-first delta-negative">-48.2%</span>
                         </td>
                         
-                        
                     </tr>
                     <tr>
                         <td class="metric-name">Term Size (AST nodes)</td>
@@ -1478,7 +1418,6 @@
                             <span class="delta delta-prev delta-positive">+0.5%</span>
                             <span class="delta delta-first delta-negative">-35.0%</span>
                         </td>
-                        
                         
                     </tr>
                     <tr>
@@ -1520,7 +1459,6 @@
                             <span class="delta delta-first delta-negative">-44.6%</span>
                         </td>
                         
-                        
                     </tr>
                 </tbody>
             </table>
@@ -1533,7 +1471,6 @@
                     <tr>
                         <th>Metric</th>
                         <th>1.45.0.0</th><th>1.61.0.0</th><th>1.64.0.0</th><th>1.65.0.0</th><th>1.67.0.0</th><th>1.71.0.0</th>
-                        
                     </tr>
                 </thead>
                 <tbody>
@@ -1576,7 +1513,6 @@
                             <span class="delta delta-first delta-negative">-51.6%</span>
                         </td>
                         
-                        
                     </tr>
                     <tr>
                         <td class="metric-name">Memory Units</td>
@@ -1616,7 +1552,6 @@
                             <span class="delta delta-prev delta-negative">-0.6%</span>
                             <span class="delta delta-first delta-negative">-51.7%</span>
                         </td>
-                        
                         
                     </tr>
                     <tr>
@@ -1658,7 +1593,6 @@
                             <span class="delta delta-first delta-negative">-12.4%</span>
                         </td>
                         
-                        
                     </tr>
                     <tr>
                         <td class="metric-name">Term Size (AST nodes)</td>
@@ -1698,7 +1632,6 @@
                             <span class="delta delta-prev delta-negative">-7.0%</span>
                             <span class="delta delta-first delta-negative">-19.3%</span>
                         </td>
-                        
                         
                     </tr>
                     <tr>
@@ -1740,7 +1673,6 @@
                             <span class="delta delta-first delta-negative">-36.6%</span>
                         </td>
                         
-                        
                     </tr>
                 </tbody>
             </table>
@@ -1749,7 +1681,7 @@
     </section>
 
     <div class="footer">
-        <p>EVOLUTION &mdash; Generated by UPLC-CAPE on 2026-11-23 11:07:33 UTC &middot; <a href="https://github.com/IntersectMBO/UPLC-CAPE">View on GitHub</a> &middot; <a href="../../index.html">Production report</a></p>
+        <p>EVOLUTION &mdash; Generated by UPLC-CAPE on 2026-11-24 14:44:34 UTC &middot; <a href="https://github.com/IntersectMBO/UPLC-CAPE">View on GitHub</a> &middot; <a href="../../index.html">Production report</a></p>
     </div>
 
     <script>
