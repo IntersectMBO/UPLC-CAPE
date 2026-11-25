@@ -2,7 +2,7 @@
   "compiler": {
     "name": "Plinth",
     "version": "1.61.0.0",
-    "commit_hash": "d4c877e0b4b2ba38a90584c0e93368f72792ab51"
+    "commit_hash": "6d660700cf7d8c69a9d4b3c1c53e0d5f90ecc3d5"
   },
   "compilation_config": {
     "target": "uplc",
@@ -19,7 +19,7 @@
     "date": "2026-11-13T19:30:00Z",
     "source_available": true,
     "source_repository": "https://github.com/Unisay/plinth-cape-submissions",
-    "implementation_notes": "Revision 2 of the scenario (thread token): one script that runs as a minting policy for the token and as a spending validator for the funds, and reads its own hash from the script context. The plain validator: its source and fixture are byte for byte the ones of `Plinth_1.45.0.0_Unisay_plain`. Compiled with Plinth 1.61.0.0 and the `datatypes=BuiltinCasing` plugin flag. Requires plutus-core >= 1.61.0.0, which mainnet has run since the van Rossem hard fork (protocol version 11, 2026-07-18). Source: `lib/TwoPartyEscrow.hs` (+ `lib/TwoPartyEscrow/Fixture.hs`; `lib/Preview/TwoPartyEscrow.hs` holds the compile splice) in plinth-cape-submissions @ e1f91b9a999d1357bbcccebaa15aa61cfb35444f.",
-    "source_commit_hash": "e1f91b9a999d1357bbcccebaa15aa61cfb35444f"
+    "implementation_notes": "Revision 2 of the scenario (thread token): one script that runs as a minting policy for the token and as a spending validator for the funds, and reads its own hash from the script context. The plain validator: its source and fixture are byte for byte the ones of `Plinth_1.45.0.0_Unisay_plain`. Compiled with Plinth 1.61.0.0 and the `datatypes=BuiltinCasing` plugin flag. Requires plutus-core >= 1.61.0.0, which mainnet has run since the van Rossem hard fork (protocol version 11, 2026-07-18). Source: `lib/TwoPartyEscrow.hs` (+ `lib/TwoPartyEscrow/Fixture.hs`; `lib/Compiled/TwoPartyEscrow.hs` holds the compile splice) in plinth-cape-submissions @ cde46fe7a61f966e88467f256184a9f1de7c1306.",
+    "source_commit_hash": "cde46fe7a61f966e88467f256184a9f1de7c1306"
   }
 }

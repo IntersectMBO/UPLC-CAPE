@@ -2,13 +2,13 @@
 
 **Repository**: <https://github.com/Unisay/plinth-cape-submissions>
 
-**Branch**: `main`
+**Branch**: `plinth-1.65`
 
-**Commit**: `b77cd0c4987779f8f7d70a1ddd564b8765ecc9a3`
+**Commit**: `a67fabd5390f69fbf2397281e084ddab7eb12fbd`
 
-**Path**: `lib/LinearVesting.hs`
+**Path**: `lib/LinearVesting/AsData.hs`
 
-This submission compiles `lib/LinearVesting.hs` from the Plinth source repository with the Plinth (plutus-tx-plugin) 1.65.0.0 line.
+This submission compiles `lib/LinearVesting/AsData.hs` from the Plinth source repository with the Plinth (plutus-tx-plugin) 1.65.0.0 line.
 
 Production line with Plinth 1.65.0.0 (no BuiltinCasing). Plugin pragmas live in `plinth-cape-submissions.cabal`; validator modules carry no Plinth-specific options.
 
@@ -17,22 +17,17 @@ Production line with Plinth 1.65.0.0 (no BuiltinCasing). Plugin pragmas live in 
 ```bash
 git clone https://github.com/Unisay/plinth-cape-submissions
 cd plinth-cape-submissions
-git checkout b77cd0c4987779f8f7d70a1ddd564b8765ecc9a3
+git checkout a67fabd5390f69fbf2397281e084ddab7eb12fbd
 ```
 
-`CAPE_REPO` must point at the sibling UPLC-CAPE checkout; the build aborts if the variable is unset. The recommended place is `.envrc.local` (gitignored), e.g.:
-
-```sh
-export CAPE_REPO="$HOME/src/UPLC-CAPE"
-```
-
-Then enter the dev shell and run the generator:
+`CAPE_REPO` points the generator at the UPLC-CAPE checkout; the generator stops if it is unset. You can also set it in `.envrc.local`, which the branch's `.envrc` loads.
 
 ```bash
 nix develop
+export CAPE_REPO="$HOME/src/UPLC-CAPE"
 cabal run plinth-submissions
 ```
 
-The generator at this commit writes `$CAPE_REPO/submissions/linear_vesting/Plinth_1.65.0.0_Unisay/linear_vesting.uplc`, because the plain implementation was then the default. That output is the `linear_vesting.uplc` in this submission.
+The generator writes `$CAPE_REPO/submissions/linear_vesting/Plinth_1.65.0.0_Unisay_plain/linear_vesting.uplc`. After formatting with CAPE's `pretty-uplc`, it equals the `linear_vesting.uplc` in this submission.
 
 > Retained as the `plain` variant: this was the default implementation for the Plinth 1.65.0.0 line until the monadic decoder became the default (lower fee, size, CPU, and memory).

@@ -6,7 +6,7 @@
 
 ## Implementation Details
 
-- **Compiler**: Plinth (PlutusTx) 1.61.0.0 (preview)
+- **Compiler**: Plinth (PlutusTx) 1.61.0.0
 - **Implementation Approach**: High-level PlutusTx API validator with typed datum/redeemer
 - **Compilation Flags**: `no-conservative-optimisation`, `no-preserve-logging`, `remove-trace`, `target-version=1.1.0`, `datatypes=BuiltinCasing`
 
@@ -31,7 +31,7 @@ HTLC parameters (payer, recipient, stored hash, timeout) are carried on-chain as
 
 ## Notes
 
-- Source code: `lib/HTLC.hs`, `lib/HTLC/Fixture.hs`, `lib/Preview/HTLC.hs`
+- Source code: `lib/HTLC.hs`, `lib/HTLC/Fixture.hs`, `lib/Compiled/HTLC.hs`
 - Recompiled from the same source as the 1.45 submission with `BuiltinCasing` enabled
 - Datum and redeemer are encoded with [`PlutusTx.AsData.asData`](https://plutus.cardano.intersectmbo.org/docs/working-with-scripts/optimizing-scripts-with-asData) so field extraction is lazy; the validator pattern-matches on `ScriptContext` / `TxInfo` / `TxOut` / `Address` exactly once each (no field accessors on `asData` types) to avoid re-decoding the underlying `Data`
 - SHA-256 preimage check via `sha2_256` builtin

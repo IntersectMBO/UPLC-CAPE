@@ -2,9 +2,9 @@
 
 **Repository**: <https://github.com/Unisay/plinth-cape-submissions>
 
-**Branch**: `main`
+**Branch**: `plinth-1.65`
 
-**Commit**: `d078652f03d31ed728c1fb63f1d9f8824218494c`
+**Commit**: `a67fabd5390f69fbf2397281e084ddab7eb12fbd`
 
 **Path**: `lib/LinearVesting.hs` (+ `lib/Plinth/Decoder.hs`, `lib/Plinth/Decoder/Named.hs`, `lib/Plinth/Encoded.hs`)
 
@@ -15,20 +15,15 @@ The monadic linear vesting validator with builtin casing plus the `dropList` dec
 ```bash
 git clone https://github.com/Unisay/plinth-cape-submissions
 cd plinth-cape-submissions
-git checkout d078652f03d31ed728c1fb63f1d9f8824218494c
+git checkout a67fabd5390f69fbf2397281e084ddab7eb12fbd
 ```
 
-`CAPE_REPO` must point at the sibling UPLC-CAPE checkout; the build aborts if the variable is unset. The recommended place is `.envrc.local` (gitignored), e.g.:
-
-```sh
-export CAPE_REPO="$HOME/src/UPLC-CAPE"
-```
-
-Then enter the dev shell and run the generator:
+`CAPE_REPO` points the generator at the UPLC-CAPE checkout; the generator stops if it is unset. You can also set it in `.envrc.local`, which the branch's `.envrc` loads.
 
 ```bash
 nix develop
-cabal run --flags=preview plinth-submissions
+export CAPE_REPO="$HOME/src/UPLC-CAPE"
+cabal run --flags=builtincasing plinth-submissions
 ```
 
-The produced UPLC writes to `$CAPE_REPO/submissions/linear_vesting/Plinth_1.65.0.0_Unisay_preview/linear_vesting.uplc`, because the generator at this commit still names the casing output `_preview`. That file is this submission's artifact, moved into this directory when the preview track was retired, and it matches the UPLC here.
+The generator writes `$CAPE_REPO/submissions/linear_vesting/Plinth_1.65.0.0_Unisay/linear_vesting.uplc`. After formatting with CAPE's `pretty-uplc`, it equals the `linear_vesting.uplc` in this submission.

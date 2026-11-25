@@ -2,9 +2,9 @@
 
 **Repository**: <https://github.com/Unisay/plinth-cape-submissions>
 
-**Branch**: `plinth-1.64-plain-escrow-30min`
+**Branch**: `plinth-1.64`
 
-**Commit**: `aa83e453bbde1de6a947c79db2626828913f80a3`
+**Commit**: `1999e3dc700416dce562dd2b841700ccdaa4424c`
 
 **Path**: `lib/TwoPartyEscrow.hs`
 
@@ -15,20 +15,15 @@ This submission compiles `lib/TwoPartyEscrow.hs` from the Plinth source reposito
 ```bash
 git clone https://github.com/Unisay/plinth-cape-submissions
 cd plinth-cape-submissions
-git checkout aa83e453bbde1de6a947c79db2626828913f80a3
+git checkout 1999e3dc700416dce562dd2b841700ccdaa4424c
 ```
 
-`CAPE_REPO` must point at the sibling UPLC-CAPE checkout; the build aborts if the variable is unset. The recommended place is `.envrc.local` (gitignored), e.g.:
-
-```sh
-export CAPE_REPO="$HOME/src/UPLC-CAPE"
-```
-
-Then enter the dev shell and run the generator with the casing build flag (the source repo still gates it behind `preview` at this commit):
+`CAPE_REPO` points the generator at the UPLC-CAPE checkout; the generator stops if it is unset. You can also set it in `.envrc.local`, which the branch's `.envrc` loads.
 
 ```bash
 nix develop
-cabal run --flags=preview plinth-submissions
+export CAPE_REPO="$HOME/src/UPLC-CAPE"
+cabal run --flags=builtincasing plinth-submissions
 ```
 
-The produced UPLC writes to `$CAPE_REPO/submissions/two_party_escrow/Plinth_1.64.0.0_Unisay_builtincasing/two_party_escrow.uplc`, because the generator at this commit names the casing output `_builtincasing`. That file is this submission's artifact, moved into this directory when the preview track was retired, and it matches the UPLC here.
+The generator writes `$CAPE_REPO/submissions/two_party_escrow/Plinth_1.64.0.0_Unisay_plain/two_party_escrow.uplc`. After formatting with CAPE's `pretty-uplc`, it equals the `two_party_escrow.uplc` in this submission.

@@ -19,7 +19,7 @@
     "date": "2026-07-08T11:39:07Z",
     "source_available": true,
     "source_repository": "https://github.com/Unisay/plinth-cape-submissions",
-    "source_commit_hash": "6b75b5a3fe1cf56b195cc4222cf939a2812cee78",
-    "implementation_notes": "Compiled with Plinth 1.65.0.0 and the `datatypes=BuiltinCasing` plugin flag. Builtin casing has been a mainnet feature since the van Rossem hard fork (protocol version 11, 2026-07-18); plutus-tx-plugin 1.67 dropped the flag and enables casing under the default `SumsOfProducts`. This build additionally emits the batch-6 `dropList` builtin (van Rossem protocol version) for cursor gaps of three or more fields in the typed decoder, replacing the chained `tailList` induction with a single call whose term size does not grow with the gap; the emission was gated behind the same build flag, so the non-casing sibling for this line stays byte-identical. Source: `lib/HTLC.hs` (+ `lib/Plinth/Decoder.hs`, `lib/Plinth/Decoder/Named.hs`) in plinth-cape-submissions @ 6b75b5a3fe1cf56b195cc4222cf939a2812cee78."
+    "source_commit_hash": "a67fabd5390f69fbf2397281e084ddab7eb12fbd",
+    "implementation_notes": "Compiled with Plinth 1.65.0.0 and the `datatypes=BuiltinCasing` plugin flag. Builtin casing has been a mainnet feature since the van Rossem hard fork (protocol version 11, 2026-07-18); plutus-tx-plugin 1.67 dropped the flag and enables casing under the default `SumsOfProducts`. This build additionally emits the batch-6 `dropList` builtin (van Rossem protocol version) for cursor gaps of three or more fields in the typed decoder, replacing the chained `tailList` induction with a single call whose term size does not grow with the gap; the emission was gated behind the same build flag, so the non-casing sibling for this line stays byte-identical. Source: `lib/HTLC.hs` (+ `lib/Plinth/Decoder.hs`, `lib/Plinth/Decoder/Named.hs`) in plinth-cape-submissions @ a67fabd5390f69fbf2397281e084ddab7eb12fbd."
   }
 }

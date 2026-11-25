@@ -18,7 +18,7 @@
     "date": "2026-11-13T19:30:00Z",
     "source_available": true,
     "source_repository": "https://github.com/Unisay/plinth-cape-submissions",
-    "source_commit_hash": "22634af1e1702b3c21ee13adc1a1aaf0b108db29",
-    "implementation_notes": "Revision 2 of the scenario (thread token): one script that runs as a minting policy for the token and as a spending validator for the funds, and reads its own hash from the script context. In revision 2 this variant has the validator text of the plain family (`Plinth_1.45.0.0_Unisay_plain`): typed `PlutusLedgerApi.Data.V3` matching and a derived single-field `EscrowDatum`, with mint entries and the deposit datum compared by `Data` equality. The body is the one of `Plinth_1.67.0.0_Unisay_asdata`. Compiled with Plinth 1.65.0.0 without builtin casing, unlike the default artifact for this line. Source: `lib/TwoPartyEscrow/AsData.hs` (+ `lib/TwoPartyEscrow/Fixture.hs`) in plinth-cape-submissions @ 22634af1e1702b3c21ee13adc1a1aaf0b108db29."
+    "source_commit_hash": "a67fabd5390f69fbf2397281e084ddab7eb12fbd",
+    "implementation_notes": "Revision 2 of the scenario (thread token): one script that runs as a minting policy for the token and as a spending validator for the funds, and reads its own hash from the script context. In revision 2 this variant has the validator text of the plain family (`Plinth_1.45.0.0_Unisay_plain`): typed `PlutusLedgerApi.Data.V3` matching and a derived single-field `EscrowDatum`, with mint entries and the deposit datum compared by `Data` equality. The body is the one of `Plinth_1.67.0.0_Unisay_asdata`. Compiled with Plinth 1.65.0.0 without builtin casing, unlike the default artifact for this line. Source: `lib/TwoPartyEscrow/AsData.hs` (+ `lib/TwoPartyEscrow/Fixture.hs`) in plinth-cape-submissions @ a67fabd5390f69fbf2397281e084ddab7eb12fbd."
   }
 }
