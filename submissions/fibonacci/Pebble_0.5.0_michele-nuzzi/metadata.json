@@ -1,0 +1,27 @@
+{
+  "compiler": {
+    "name": "Pebble",
+    "version": "0.5.0",
+    "commit_hash": "4e0e403b81bd18033b55529eea3337747c06807c"
+  },
+  "compilation_config": {
+    "optimization_level": "default",
+    "target": "uplc",
+    "flags": [],
+    "min_protocol_version": 11
+  },
+  "contributors": [
+    {
+      "name": "Michele Nuzzi",
+      "organization": "Harmonic Labs",
+      "contact": "michele@harmoniclabs.tech"
+    }
+  ],
+  "submission": {
+    "date": "2026-10-26T00:00:00Z",
+    "source_available": true,
+    "source_repository": "https://github.com/HarmonicLabs/pebble",
+    "source_commit_hash": "4e0e403b81bd18033b55529eea3337747c06807c",
+    "implementation_notes": "Iterative pair-accumulator fibonacci compiled with Pebble 0.5.0 default settings (source: examples/uplc-cape/src/fibonacci.pebble). The compiler lowers the for-loop to a single tail-recursive UPLC function using UPLC 1.2 case/constr (builtin casing), so the artifact requires protocol version 11 (van Rossem), live on mainnet since 2026-07-18."
+  }
+}
