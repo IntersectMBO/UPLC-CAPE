@@ -2,9 +2,9 @@
 
 **Repository**: <https://github.com/Unisay/plinth-cape-submissions>
 
-**Branch**: `plinth-1.45-plain-escrow-30min`
+**Branch**: `plinth-1.45`
 
-**Commit**: `0c5402976e192975505a179609725531251b49cc`
+**Commit**: `162d30fb5919d82b3b27d2b5b0b50ffc0b689b25`
 
 **Path**: `lib/TwoPartyEscrow.hs`
 
@@ -17,22 +17,17 @@ Production line; mainnet plutus-core baseline.
 ```bash
 git clone https://github.com/Unisay/plinth-cape-submissions
 cd plinth-cape-submissions
-git checkout 0c5402976e192975505a179609725531251b49cc
+git checkout 162d30fb5919d82b3b27d2b5b0b50ffc0b689b25
 ```
 
-`CAPE_REPO` must point at the sibling UPLC-CAPE checkout; the build aborts if the variable is unset. The recommended place is `.envrc.local` (gitignored), e.g.:
-
-```sh
-export CAPE_REPO="$HOME/src/UPLC-CAPE"
-```
-
-Then enter the dev shell and run the generator:
+`CAPE_REPO` points the generator at the UPLC-CAPE checkout. If it is unset, the generator writes to `../UPLC-CAPE`.
 
 ```bash
 nix develop
+export CAPE_REPO="$HOME/src/UPLC-CAPE"
 cabal run plinth-submissions
 ```
 
-The produced UPLC writes to `$CAPE_REPO/submissions/two_party_escrow/Plinth_1.45.0.0_Unisay/two_party_escrow.uplc`, because the generator at this commit does not add the `_plain` suffix. That file matches the `two_party_escrow.uplc` in this submission.
+The generator writes `$CAPE_REPO/submissions/two_party_escrow/Plinth_1.45.0.0_Unisay_plain/two_party_escrow.uplc`. After formatting with CAPE's `pretty-uplc`, it equals the `two_party_escrow.uplc` in this submission.
 
 > Retained as the `plain` variant: this was the default implementation for the Plinth 1.45.0.0 line until the monadic decoder became the default (lower fee, size, CPU, and memory).

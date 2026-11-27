@@ -19,7 +19,7 @@
     "date": "2026-05-20T16:59:24Z",
     "source_available": true,
     "source_repository": "https://github.com/Unisay/plinth-cape-submissions",
-    "source_commit_hash": "5c014861ac6a7a0e85234ab8a7369a0c8f2adf20",
-    "implementation_notes": "Compiled with Plinth 1.64.0.0 and the `datatypes=BuiltinCasing` plugin flag. Builtin casing has been a mainnet feature since the van Rossem hard fork (protocol version 11, 2026-07-18); plutus-tx-plugin 1.67 dropped the flag and enables casing under the default `SumsOfProducts`. Source: lib/Ecd.hs in plinth-cape-submissions @ 5c014861ac6a7a0e85234ab8a7369a0c8f2adf20."
+    "source_commit_hash": "1999e3dc700416dce562dd2b841700ccdaa4424c",
+    "implementation_notes": "Compiled with Plinth 1.64.0.0 and the `datatypes=BuiltinCasing` plugin flag. Builtin casing has been a mainnet feature since the van Rossem hard fork (protocol version 11, 2026-07-18); plutus-tx-plugin 1.67 dropped the flag and enables casing under the default `SumsOfProducts`. Source: lib/Ecd.hs in plinth-cape-submissions @ 1999e3dc700416dce562dd2b841700ccdaa4424c."
   }
 }

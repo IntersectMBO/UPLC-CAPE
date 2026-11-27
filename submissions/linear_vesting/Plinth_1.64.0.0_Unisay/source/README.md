@@ -4,7 +4,7 @@
 
 **Branch**: `plinth-1.64`
 
-**Commit**: `284f04a91783db603e2fef2d460cb9b403f9f1a3`
+**Commit**: `1999e3dc700416dce562dd2b841700ccdaa4424c`
 
 **Path**: `lib/LinearVesting/Monadic.hs` (+ `lib/Plinth/Validator.hs`, `lib/Plinth/Decoder/Named.hs`, `lib/Plinth/Decoder/Named/ScriptContext.hs`, `lib/Plinth/Encoded.hs`)
 
@@ -15,14 +15,15 @@ Linear vesting validator written in `do`-notation on `Plinth.Validator`, a zero-
 ```bash
 git clone https://github.com/Unisay/plinth-cape-submissions
 cd plinth-cape-submissions
-git checkout 284f04a91783db603e2fef2d460cb9b403f9f1a3
+git checkout 1999e3dc700416dce562dd2b841700ccdaa4424c
 ```
 
-`CAPE_REPO` must point at the sibling UPLC-CAPE checkout (build aborts if unset); set it in `.envrc.local` (gitignored). Then:
+`CAPE_REPO` points the generator at the UPLC-CAPE checkout; the generator stops if it is unset. You can also set it in `.envrc.local`, which the branch's `.envrc` loads.
 
 ```bash
 nix develop
+export CAPE_REPO="$HOME/src/UPLC-CAPE"
 cabal run plinth-submissions
 ```
 
-The generator writes `$CAPE_REPO/submissions/linear_vesting/Plinth_1.64.0.0_Unisay_monadic/linear_vesting.uplc`; in this submission that artifact is committed as the default `Plinth_1.64.0.0_Unisay` (the previous plain implementation is retained as `Plinth_1.64.0.0_Unisay_plain`).
+The generator writes `$CAPE_REPO/submissions/linear_vesting/Plinth_1.64.0.0_Unisay/linear_vesting.uplc`. After formatting with CAPE's `pretty-uplc`, it equals the `linear_vesting.uplc` in this submission.

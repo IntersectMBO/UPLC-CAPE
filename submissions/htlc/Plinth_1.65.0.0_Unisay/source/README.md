@@ -2,9 +2,9 @@
 
 **Repository**: <https://github.com/Unisay/plinth-cape-submissions>
 
-**Branch**: `main`
+**Branch**: `plinth-1.65`
 
-**Commit**: `6b75b5a3fe1cf56b195cc4222cf939a2812cee78`
+**Commit**: `a67fabd5390f69fbf2397281e084ddab7eb12fbd`
 
 **Path**: `lib/HTLC.hs` (decoder DSL: `lib/Plinth/Decoder.hs`, `lib/Plinth/Decoder/Named.hs`)
 
@@ -15,20 +15,15 @@ This submission compiles `lib/HTLC.hs` from the Plinth source repository with th
 ```bash
 git clone https://github.com/Unisay/plinth-cape-submissions
 cd plinth-cape-submissions
-git checkout 6b75b5a3fe1cf56b195cc4222cf939a2812cee78
+git checkout a67fabd5390f69fbf2397281e084ddab7eb12fbd
 ```
 
-`CAPE_REPO` must point at the sibling UPLC-CAPE checkout; the build aborts if the variable is unset. The recommended place is `.envrc.local` (gitignored), e.g.:
-
-```sh
-export CAPE_REPO="$HOME/src/UPLC-CAPE"
-```
-
-Then enter the dev shell and run the generator with the casing build flag (the source repo still gates it behind `preview` at this commit):
+`CAPE_REPO` points the generator at the UPLC-CAPE checkout; the generator stops if it is unset. You can also set it in `.envrc.local`, which the branch's `.envrc` loads.
 
 ```bash
 nix develop
-cabal run --flags=preview plinth-submissions
+export CAPE_REPO="$HOME/src/UPLC-CAPE"
+cabal run --flags=builtincasing plinth-submissions
 ```
 
-The produced UPLC writes to `$CAPE_REPO/submissions/htlc/Plinth_1.65.0.0_Unisay_preview/htlc.uplc`, because the generator at this commit still names the casing output `_preview`. That file is this submission's artifact, moved into this directory when the preview track was retired, and it matches the UPLC here.
+The generator writes `$CAPE_REPO/submissions/htlc/Plinth_1.65.0.0_Unisay/htlc.uplc`. After formatting with CAPE's `pretty-uplc`, it equals the `htlc.uplc` in this submission.

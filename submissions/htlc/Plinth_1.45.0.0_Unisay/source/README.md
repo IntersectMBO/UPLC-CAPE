@@ -4,7 +4,7 @@
 
 **Branch**: `plinth-1.45`
 
-**Commit**: `49c94429c49b7c9e7d038e5685ba85e07b9d332b`
+**Commit**: `162d30fb5919d82b3b27d2b5b0b50ffc0b689b25`
 
 **Path**: `lib/HTLC/Monadic.hs` (+ `lib/Plinth/Validator.hs`, `lib/Plinth/Decoder/Named.hs`, `lib/Plinth/Decoder/Named/ScriptContext.hs`, `lib/Plinth/Encoded.hs`)
 
@@ -17,14 +17,15 @@ This submission is re-optimised for CAPE metrics schema 2.0.0, whose aggregates 
 ```bash
 git clone https://github.com/Unisay/plinth-cape-submissions
 cd plinth-cape-submissions
-git checkout 49c94429c49b7c9e7d038e5685ba85e07b9d332b
+git checkout 162d30fb5919d82b3b27d2b5b0b50ffc0b689b25
 ```
 
-`CAPE_REPO` must point at the sibling UPLC-CAPE checkout (build aborts if unset); set it in `.envrc.local` (gitignored). Then:
+`CAPE_REPO` points the generator at the UPLC-CAPE checkout. If it is unset, the generator writes to `../UPLC-CAPE`.
 
 ```bash
 nix develop
+export CAPE_REPO="$HOME/src/UPLC-CAPE"
 cabal run plinth-submissions
 ```
 
-The generator writes `$CAPE_REPO/submissions/htlc/Plinth_1.45.0.0_Unisay_monadic/htlc.uplc` (and regenerates the sibling `Plinth_1.45.0.0_Unisay` artifact unchanged, since HTLC.Monadic keeps its own compile splice and doesn't touch `HTLC.hs`).
+The generator writes `$CAPE_REPO/submissions/htlc/Plinth_1.45.0.0_Unisay/htlc.uplc`. After formatting with CAPE's `pretty-uplc`, it equals the `htlc.uplc` in this submission.

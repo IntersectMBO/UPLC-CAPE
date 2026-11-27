@@ -6,8 +6,7 @@
 
 ## Builtin casing
 
-Compiled with `datatypes=BuiltinCasing`, which mainnet has supported since the
-van Rossem hard fork (protocol version 11, 2026-07-18).
+Compiled with `datatypes=BuiltinCasing`, which mainnet has supported since the van Rossem hard fork (protocol version 11, 2026-07-18).
 
 ## Implementation Details
 
@@ -18,13 +17,11 @@ van Rossem hard fork (protocol version 11, 2026-07-18).
 
 ## Algorithm Description
 
-Same iterative Fibonacci algorithm as the 1.45.0.0 submission, but compiled with
-the Plinth 1.61.0.0 line to demonstrate the impact of newer compiler optimizations
-(including BuiltinCasing) on generated UPLC code.
+Same iterative Fibonacci algorithm as the 1.45.0.0 submission, but compiled with the Plinth 1.61.0.0 line to demonstrate the impact of newer compiler optimizations (including BuiltinCasing) on generated UPLC code.
 
 ## Reproducibility
 
 - **Source Available**: true
 - **Source Repository**: https://github.com/Unisay/plinth-cape-submissions
 - **Source Location**: `lib/FibonacciIterative.hs`
-- **Build Tool**: `cabal --project-file=cabal.project.preview run plinth-submissions`
+- **Build Tool**: `cabal run plinth-submissions`

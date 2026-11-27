@@ -19,7 +19,7 @@
     "date": "2026-06-22T14:29:56Z",
     "source_available": true,
     "source_repository": "https://github.com/Unisay/plinth-cape-submissions",
-    "source_commit_hash": "3efc19ad785a7dcb6aead5a936d18654f0649a2b",
-    "implementation_notes": "Compiled with Plinth 1.65.0.0 and the `datatypes=BuiltinCasing` plugin flag. Builtin casing has been a mainnet feature since the van Rossem hard fork (protocol version 11, 2026-07-18); plutus-tx-plugin 1.67 dropped the flag and enables casing under the default `SumsOfProducts`. Source: lib/Fibonacci.hs in plinth-cape-submissions @ 3efc19ad785a7dcb6aead5a936d18654f0649a2b."
+    "source_commit_hash": "a67fabd5390f69fbf2397281e084ddab7eb12fbd",
+    "implementation_notes": "Compiled with Plinth 1.65.0.0 and the `datatypes=BuiltinCasing` plugin flag. Builtin casing has been a mainnet feature since the van Rossem hard fork (protocol version 11, 2026-07-18); plutus-tx-plugin 1.67 dropped the flag and enables casing under the default `SumsOfProducts`. Source: lib/Fibonacci.hs in plinth-cape-submissions @ a67fabd5390f69fbf2397281e084ddab7eb12fbd."
   }
 }

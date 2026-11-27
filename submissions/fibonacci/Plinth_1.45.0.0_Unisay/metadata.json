@@ -17,8 +17,8 @@
   "submission": {
     "date": "2025-01-07T00:00:00Z",
     "source_available": true,
-    "source_repository": "https://github.com/IntersectMBO/UPLC-CAPE",
-    "source_commit_hash": "23a45dbdf6d59d600054be5a00d2727e1fa2d773",
+    "source_repository": "https://github.com/Unisay/plinth-cape-submissions",
+    "source_commit_hash": "162d30fb5919d82b3b27d2b5b0b50ffc0b689b25",
     "implementation_notes": "Iterative Fibonacci implementation using Plinth (PlutusTx) with O(n) time complexity. Uses accumulator-based approach with tail recursion to achieve ~1000x performance improvement over naive recursion. Targeting Plutus Core 1.1.0. Downgraded to Plutus 1.45 for mainnet compatibility (cardano-node 10.4.1)."
   }
 }

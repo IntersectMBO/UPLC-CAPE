@@ -2,9 +2,9 @@
 
 **Repository**: <https://github.com/Unisay/plinth-cape-submissions>
 
-**Branch**: `plinth-1.65-asdata-escrow-30min`
+**Branch**: `plinth-1.65`
 
-**Commit**: `22634af1e1702b3c21ee13adc1a1aaf0b108db29`
+**Commit**: `a67fabd5390f69fbf2397281e084ddab7eb12fbd`
 
 **Path**: `lib/TwoPartyEscrow/AsData.hs`
 
@@ -19,22 +19,17 @@ In revision 2 this module has the validator text of the plain family (`lib/TwoPa
 ```bash
 git clone https://github.com/Unisay/plinth-cape-submissions
 cd plinth-cape-submissions
-git checkout 22634af1e1702b3c21ee13adc1a1aaf0b108db29
+git checkout a67fabd5390f69fbf2397281e084ddab7eb12fbd
 ```
 
-`CAPE_REPO` must point at the sibling UPLC-CAPE checkout; the build aborts if the variable is unset. The recommended place is `.envrc.local` (gitignored), e.g.:
-
-```sh
-export CAPE_REPO="$HOME/src/UPLC-CAPE"
-```
-
-Then enter the dev shell and run the generator:
+`CAPE_REPO` points the generator at the UPLC-CAPE checkout; the generator stops if it is unset. You can also set it in `.envrc.local`, which the branch's `.envrc` loads.
 
 ```bash
 nix develop
+export CAPE_REPO="$HOME/src/UPLC-CAPE"
 cabal run plinth-submissions
 ```
 
-The produced UPLC writes to `$CAPE_REPO/submissions/two_party_escrow/Plinth_1.65.0.0_Unisay_asdata/two_party_escrow.uplc` and matches the `two_party_escrow.uplc` in this submission.
+The generator writes `$CAPE_REPO/submissions/two_party_escrow/Plinth_1.65.0.0_Unisay_asdata/two_party_escrow.uplc`. After formatting with CAPE's `pretty-uplc`, it equals the `two_party_escrow.uplc` in this submission.
 
 > Retained as the `asdata` variant: this was the default implementation for the Plinth 1.65.0.0 line until the monadic decoder became the default (lower fee, size, CPU, and memory).
